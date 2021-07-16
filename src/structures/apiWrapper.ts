@@ -1,4 +1,4 @@
-import * as CONSTANTS from '../data/constants';
+import * as CONSTANTS from '../../data/constants.json';
 import superagent from 'superagent';
 import Client from './client';
 
