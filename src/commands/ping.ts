@@ -1,10 +1,11 @@
 import Command from '../structures/command';
-import path from 'path';
+import * as path from 'path';
+import Client from '../structures/client';
 
 export default class PingCommand extends Command {
     name: string;
 
-    constructor (client) {
+    constructor (client: Client) {
         super(client);
         this.name = path.parse(__filename).name;
     }

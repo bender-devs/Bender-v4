@@ -15,7 +15,9 @@
     },
     "eslintConfig": {
         "parser": "@typescript-eslint/parser",
-        "plugins": ["@typescript-eslint"],
+        "plugins": [
+            "@typescript-eslint"
+        ],
         "env": {
             "node": true
         },
@@ -23,5 +25,9 @@
             "eslint:recommended",
             "plugin:@typescript-eslint/recommended"
         ]
+    },
+    "devDependencies": {
+        "@types/node": "^16.3.3",
+        "@types/ws": "^7.4.6"
     }
 }
