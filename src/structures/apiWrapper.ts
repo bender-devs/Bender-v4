@@ -5,12 +5,14 @@ import Client from './client';
 export default class APIWrapper {
     client: Client;
 
-    constructor(client) {
+    constructor(client: Client) {
         this.client = client;
     }
+
     static reformatResponse(response_data) {
         return response_data;
     }
+
     makeRequest(method, path, options) {
         path = CONSTANTS.API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
@@ -27,6 +29,7 @@ export default class APIWrapper {
             console.error(err);
         });
     }
+
     static guild = {
         fetchMembers(guild_id, after, limit = 1000) {
             return this.makeRequest('GET', `/guilds/${guild_id}/members`, { query: { after, limit } });
@@ -47,6 +50,7 @@ export default class APIWrapper {
             return this.makeRequest('PATCH', `/guilds/${guild_id}`, { data: guild_data });
         }
     }
+
     static role = {
         create(guild_id, role_data) {
             return this.makeRequest('POST', `/guilds/${guild_id}/roles`, role_data);
@@ -58,6 +62,7 @@ export default class APIWrapper {
             return this.makeRequest('DELETE', `/guilds/${guild_id}/roles/${role_id}`);
         },
     }
+
     static member = {
         fetch(guild_id, user_id) {
             return this.makeRequest('GET', `/guilds/${guild_id}/members/${user_id}`);
@@ -78,6 +83,7 @@ export default class APIWrapper {
             return this.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}`);
         }
     }
+
     static user = {
         fetch(user_id) {
 

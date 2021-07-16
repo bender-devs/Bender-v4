@@ -6,12 +6,15 @@ export default class SlashCommandHandler {
     constructor(client) {
         this.client = client;
     }
+
     checkPermissions(command) {
 
     }
+
     runCommand(command, args) {
 
     }
+
     handleCommand(interaction, command) {
         if (!interaction.guild_id && command.guildOnly) {
             const permMessage = this.client.utils.language.getAndReplace('GUILD_ONLY', { command: command.name });
@@ -24,4 +27,4 @@ export default class SlashCommandHandler {
             })
         }
     }
-}
+};

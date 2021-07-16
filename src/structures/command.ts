@@ -4,7 +4,8 @@ export default class Command {
     name: string;
     client: Client;
 
-    constructor(client) {
+    constructor(client: Client) {
+        this.name = name;
         this.client = client;
     }
 
