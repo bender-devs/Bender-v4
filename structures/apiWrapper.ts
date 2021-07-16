@@ -12,6 +12,7 @@ export default class APIWrapper {
         return response_data;
     }
     makeRequest(method, path, options) {
+        path = CONSTANTS.API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
         if (options.data)
             request.send(options.data);

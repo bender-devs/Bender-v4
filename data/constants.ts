@@ -1,4 +1,1 @@
-const CONSTANTS = {
-    API_BASE: 'https://discord.com/api'
-}
-module.exports = CONSTANTS;
+export const API_BASE = 'https://discord.com/api';
