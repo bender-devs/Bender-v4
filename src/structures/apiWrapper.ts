@@ -1,6 +1,7 @@
 import * as CONSTANTS from '../data/constants.json';
 import * as superagent from 'superagent';
 import Client from './client';
+import * as customTypes from '../data/customTypes';
 
 export default class APIWrapper {
     client: Client;
@@ -9,11 +10,11 @@ export default class APIWrapper {
         this.client = client;
     }
 
-    static reformatResponse(response_data: Record<string, any>) {
+    static reformatResponse(response_data: superagent.Response) {
         return response_data;
     }
 
-    static makeRequest(method: string, path: string, options: Record<string, any>): Record<string, any> {
+    static async makeRequest(method: string, path: string, options: customTypes.RequestOptions): customTypes.RequestResponse {
         path = CONSTANTS.API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
         if (options.data)
@@ -28,36 +29,38 @@ export default class APIWrapper {
         }).then(APIWrapper.reformatResponse, (err: Error) => {
             console.error(err);
             // TODO: handle error properly
+            return err;
         });
     }
 
     guild = {
-        fetchMembers(guild_id: string, after: string, limit = 1000) {
+        async fetchMembers(guild_id: string, limit = 1000, after?: string | undefined): customTypes.RequestResponse {
             return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/members`, { 
                 query: { after, limit },
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        fetchAllMembers(guild_id: string) {
+        async fetchAllMembers(guild_id: string): customTypes.RequestResponse {
             // TODO: call fetchMembers in a loop to get all guild members
+            return this.fetchMembers(guild_id, 1000);
         },
-        fetchBans(guild_id: string) {
+        async fetchBans(guild_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/bans`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        ban(guild_id: string, user_id: string, ban_data: Record<string, string | number>) {
+        async ban(guild_id: string, user_id: string, ban_data: customTypes.BanData): customTypes.RequestResponse {
             return APIWrapper.makeRequest('PUT', `/guilds/${guild_id}/bans/${user_id}`, { 
                 data: ban_data,
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        unban(guild_id: string, user_id: string) {
+        async unban(guild_id: string, user_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/bans/${user_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        update(guild_id: string, guild_data: Record<string, any>) {
+        async update(guild_id: string, guild_data: customTypes.GuildData): customTypes.RequestResponse {
             return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}`, { 
                 data: guild_data,
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
@@ -66,19 +69,19 @@ export default class APIWrapper {
     }
 
     static role = {
-        create(guild_id: string, role_data: Record<string, any>) {
+        async create(guild_id: string, role_data: customTypes.RoleData): customTypes.RequestResponse {
             return APIWrapper.makeRequest('POST', `/guilds/${guild_id}/roles`, {
                 data: role_data,
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        update(guild_id: string, role_id: string, role_data: Record<string, any>) {
+        async update(guild_id: string, role_id: string, role_data: customTypes.RoleData): customTypes.RequestResponse {
             return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/roles/${role_id}`, {
                 data: role_data,
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        delete(guild_id: string, role_id: string) {
+        async delete(guild_id: string, role_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/roles/${role_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
@@ -86,34 +89,34 @@ export default class APIWrapper {
     }
 
     static member = {
-        fetch(guild_id: string, user_id: string) {
+        async fetch(guild_id: string, user_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/members/${user_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        addRole(guild_id: string, user_id: string, role_id: string) {
+        async addRole(guild_id: string, user_id: string, role_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('PUT', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        removeRole(guild_id: string, user_id: string, role_id: string) {
+        async removeRole(guild_id: string, user_id: string, role_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        setRoles(guild_id: string, user_id: string, role_id_array: Array<string>) {
+        async setRoles(guild_id: string, user_id: string, role_id_array: Array<string>): customTypes.RequestResponse {
             return this.update(guild_id, user_id, { 
                 data: { roles: role_id_array },
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        update(guild_id: string, user_id: string, member_data: Record<string, any>) {
+        async update(guild_id: string, user_id: string, member_data: customTypes.MemberData): customTypes.RequestResponse {
             return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/members/${user_id}`, { 
                 data: member_data,
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
         },
-        kick(guild_id: string, user_id: string) {
+        async kick(guild_id: string, user_id: string): customTypes.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}`, {
                 headers: { authorization: `Bot ${process.env.TOKEN}` }
             });
@@ -121,11 +124,30 @@ export default class APIWrapper {
     }
 
     static user = {
-        fetch(user_id: string) {
-
+        async fetch(user_id: string): customTypes.RequestResponse {
+            return APIWrapper.makeRequest('GET', `/users/${user_id}`, {
+                headers: { authorization: `Bot ${process.env.TOKEN}` }
+            });
         },
-        send(user_id: string, message_data: Record<string, any>) {
+        async send(user_id: string, message_data: customTypes.MessageData): customTypes.RequestResponse {
+            // TODO: check channel cache for DM with this user
+            // if not create it as below
+            await APIWrapper.makeRequest('POST', `/users/@me/channels`, {
+                data: { recipient_id: user_id },
+                headers: { authorization: `Bot ${process.env.TOKEN}` }
+            });
+            // handle the error or collect the channel ID above
+            const channelID = '';
+            return APIWrapper.channel.send(channelID, message_data);
+        }
+    }
 
+    static channel = {
+        async send(channel_id: string, message: customTypes.MessageData): customTypes.RequestResponse {
+            return APIWrapper.makeRequest('POST', `/channels/${channel_id}/messages`, {
+                data: message,
+                headers: { authorization: `Bot ${process.env.TOKEN}` }
+            });
         }
     }
 }

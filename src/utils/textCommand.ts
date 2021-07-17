@@ -3,7 +3,7 @@ import Command from '../structures/command';
 import CommandArgs from '../structures/commandArgs';
 import Message from '../structures/discord/message';
 
-class TextCommandHandler {
+export default class TextCommandHandler {
     client: Client;
 
     constructor (client: Client) {

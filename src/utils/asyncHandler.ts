@@ -1,3 +1,3 @@
-class AsyncHandler {
+export default class AsyncHandler {
     
 }
