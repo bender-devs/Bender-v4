@@ -1,25 +1,28 @@
 import Client from '../structures/client';
+import Command from '../structures/command';
+import CommandArgs from '../structures/commandArgs';
+import Message from '../structures/discord/message';
 
 class TextCommandHandler {
     client: Client;
 
-    constructor (client) {
+    constructor (client: Client) {
         this.client = client;
     }
 
-    parseCommand(input) {
+    parseCommand(input: string) {
 
     }
-    parseArgs(command, argString) {
+    parseArgs(command: Command, argString: string) {
 
     }
-    checkPermissions(command, message) {
+    checkPermissions(command: Command, message: Message) {
         
     }
-    handleEdit(command, message, oldMessage) {
+    handleEdit(command: Command, message: Message, oldMessage: Message) {
 
     }
-    runCommand(command, args) {
+    runCommand(command: Command, args: CommandArgs) {
 
     }
 }

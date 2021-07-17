@@ -1,21 +1,24 @@
 import Client from '../structures/client';
+import Command from '../structures/command';
+import CommandArgs from '../structures/commandArgs';
+import Interaction from '../structures/discord/interaction';
 
 export default class SlashCommandHandler {
     client: Client;
     
-    constructor(client) {
+    constructor(client: Client) {
         this.client = client;
     }
 
-    checkPermissions(command) {
+    checkPermissions(command: Command) {
 
     }
 
-    runCommand(command, args) {
+    runCommand(command: Command, args: CommandArgs) {
 
     }
 
-    handleCommand(interaction, command) {
+    handleCommand(interaction: Interaction, command: Command) {
         if (!interaction.guild_id && command.guildOnly) {
             const permMessage = this.client.utils.language.getAndReplace('GUILD_ONLY', { command: command.name });
             return this.client.utils.commandResponse.sendInteractionResponse({

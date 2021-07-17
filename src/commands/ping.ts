@@ -1,13 +1,15 @@
 import Command from '../structures/command';
 import * as path from 'path';
 import Client from '../structures/client';
+import CommandArgs from '../structures/commandArgs';
 
-export default class PingCommand extends Command {
-    name: string;
+export default class PingCommand implements Command {
+    client: Client;
+    readonly name: string = path.parse(__filename).name;
+    readonly guildOnly: boolean = false;
 
     constructor (client: Client) {
-        super(client);
-        this.name = path.parse(__filename).name;
+        this.client = client;
     }
 
     static options = [{
@@ -17,11 +19,7 @@ export default class PingCommand extends Command {
         choices: ['api', 'roundtrip']
     }]
 
-    static guildOnly = false
-
-    static showLoading = false
-
-    run(args) {
+    run(args: CommandArgs) {
 
     }
 }
