@@ -1,7 +1,7 @@
 import * as CONSTANTS from '../data/constants.json';
 import * as superagent from 'superagent';
 //import Client from './client';
-import * as types from '../data/customTypes';
+import * as types from './types';
 
 const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
 
@@ -94,6 +94,11 @@ export default class APIWrapper {
     }
 
     static role = {
+        async list(guild_id: types.Snowflake): types.RequestResponse {
+            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/roles`, {
+                headers: AUTH_HEADER
+            });
+        },
         async create(guild_id: types.Snowflake, role_data: types.Role, reason?: string): types.RequestResponse {
             return APIWrapper.makeRequest('POST', `/guilds/${guild_id}/roles`, {
                 data: role_data,
@@ -111,7 +116,7 @@ export default class APIWrapper {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async editPositions(guild_id: types.Snowflake, role_position_data: Array<types.RolePositionData>, reason?: string): types.RequestResponse {
+        async setPositions(guild_id: types.Snowflake, role_position_data: Array<types.RolePositionData>, reason?: string): types.RequestResponse {
             return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/roles`, {
                 data: role_position_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
@@ -150,6 +155,12 @@ export default class APIWrapper {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
+        async setSelfNick(guild_id: types.Snowflake, nick: string | null, reason?: string): types.RequestResponse {
+            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/members/@me/nick`, { 
+                data: { nick },
+                headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
+            });
+        },
         async kick(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string): types.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
@@ -168,7 +179,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async create(guild_id: types.Snowflake, emoji_data: types.EmojiData, reason?: string): types.RequestResponse {
+        async create(guild_id: types.Snowflake, emoji_data: types.EmojiCreateData, reason?: string): types.RequestResponse {
             return APIWrapper.makeRequest('POST', `/guilds/${guild_id}/emojis`, {
                 data: emoji_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
@@ -233,6 +244,26 @@ export default class APIWrapper {
         async deleteOverwrite(channel_id: types.Snowflake, overwrite_id: types.Snowflake, reason?: string): types.RequestResponse {
             return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/permissions/${overwrite_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
+            });
+        },
+        async setPositions(guild_id: types.Snowflake, channel_position_data: Array<types.ChannelPositionData>, reason?: string): types.RequestResponse {
+            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/channels`, {
+                data: channel_position_data,
+                headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
+            });
+        }
+    }
+
+    static voice = {
+        async move(guild_id: types.Snowflake, user_id: types.Snowflake, new_channel_id: types.Snowflake): types.RequestResponse {
+            return APIWrapper.member.edit(guild_id, user_id, { channel_id: new_channel_id });
+        },
+        async kick(guild_id: types.Snowflake, user_id: types.Snowflake): types.RequestResponse {
+            return APIWrapper.member.edit(guild_id, user_id, { channel_id: null });
+        },
+        async fetchRegions(): types.RequestResponse {
+            return APIWrapper.makeRequest('GET', `/voice/regions`, {
+                headers: AUTH_HEADER
             });
         }
     }
@@ -304,11 +335,5 @@ export default class APIWrapper {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
-    }
-
-    static async fetchRegions(): types.RequestResponse {
-        return APIWrapper.makeRequest('GET', `/voice/regions`, {
-            headers: AUTH_HEADER
-        });
     }
 }

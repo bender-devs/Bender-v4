@@ -3,7 +3,7 @@ import * as superagent from 'superagent';
 /************ request types ************/
 
 export type RequestOptions = {
-    data?: Record<string, unknown> | Array<unknown>;
+    data?: Record<string, unknown> | unknown[];
     headers?: RequestHeaders;
     query?: Record<string, unknown>;
     retries?: number;
@@ -18,16 +18,26 @@ export type RequestResponse = Promise<superagent.Response | Error>;
 /************ guild types ************/
 
 export type User = {
-    id: Snowflake,
-    username: string,
-    discriminator: number
+    id: Snowflake;
+    username: string;
+    discriminator: number;
+    avatar: string | null;
+    bot?: boolean;
+    system?: boolean;
+    mfa_enabled?: boolean;
+    locale?: string;
+    varified?: boolean;
+    email?: string;
+    flags?: Flags;
+    premium_type?: 0 | 1 | 2;
+    public_flags?: Flags;
 }
 
 export type Presence = {
     user: User;
     guild_id: Snowflake;
     status: Status;
-    activities: Array<Activity>;
+    activities: Activity[];
     client_status: ClientStatus;
 };
 
@@ -54,7 +64,7 @@ export type Activity = {
     secrets?: ActivitySecrets;
     instance?: boolean;
     flags?: Bitfield;
-    buttons?: Array<ActivityButton>;
+    buttons?: ActivityButton[];
 };
 
 type ActivityTimestamps = {
@@ -90,8 +100,8 @@ export type Guild = {
     icon: string | null;
     owner_id: Snowflake;
     verification_level: 0 | 1 | 2 | 3 | 4;
-    roles: Array<Role>;
-    emojis: Array<Emoji>;
+    roles: Role[];
+    emojis: Emoji[];
     premium_tier: 0 | 1 | 2 | 3; 
     approximate_member_count?: number;
     approximate_presence_count?: number;
@@ -101,11 +111,11 @@ export interface GatewayGuild extends Guild {
     joined_at: Timestamp;
     unavailable: boolean;
     member_count: number;
-    voice_states: Array<VoiceState>;
-    members: Array<Member>;
-    channels: Array<Channel>;
-    threads: Array<ThreadChannel>;
-    presences?: Array<Presence>;
+    voice_states: VoiceState[];
+    members: Member[];
+    channels: Channel[];
+    threads: ThreadChannel[];
+    presences?: Presence[];
 }
 
 // explanation of features: https://canary.discord.com/developers/docs/resources/guild#guild-object-guild-features
@@ -149,17 +159,10 @@ type RoleTags = {
 
 /************ member types ************/
 
-export type MemberData = {
-    nick?: string;
-    roles?: Array<Snowflake>;
-    deaf?: boolean;
-    mute?: boolean;
-}
-
 export type Member = {
     user?: User; // Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects
     nick?: string;
-    roles: Array<Snowflake>;
+    roles: Snowflake[];
     joined_at: Timestamp;
     premium_since?: Timestamp | null;
     deaf: boolean;
@@ -186,7 +189,7 @@ export type Channel = {
     name?: string;
     guild_id?: Snowflake;
     position?: number;
-    permission_overwrites?: Array<PermissionOverwrites>;
+    permission_overwrites?: PermissionOverwrites[];
 }
 
 interface NestableChannel extends Channel {
@@ -206,7 +209,7 @@ export interface TextChannel extends TextBasedChannel {
 }
 interface DMBasedChannel extends Channel {
     type: 1 | 3;
-    recipients: Array<User>;
+    recipients: User[];
 }
 export interface DMChannel extends DMBasedChannel {
     type: 1;
@@ -268,7 +271,7 @@ export type ThreadMember = {
     id?: Snowflake,
     user_id?: Snowflake;
     join_timestamp: Timestamp;
-    flags: number;
+    flags: Flags;
 }
 
 export type Region = {
@@ -290,18 +293,28 @@ export type PermissionOverwrites = {
 /************ message types ************/
 
 export type Message = {
-    content?: string;
+    id: Snowflake;
+    channel_id: Snowflake;
+    guild_id?: Snowflake;
+    author: User;
+    member?: Member; // only included in MESSAGE_CREATE and MESSAGE_UPDATE
+    content: string;
+    timestamp: Timestamp;
+    edited_timestamp: Timestamp | null;
+    tts: boolean;
+    mention_everyone: boolean;
+    mentions?: User[];
     file?: Buffer;
-    embeds?: Array<Embed>;
+    embeds?: Embed[];
     allowed_mentions?: AllowedMentions;
     message_reference?: MessageReference;
-    components?: Array<MessageComponent>;
+    components?: MessageComponent[];
 }
 
 export type AllowedMentions = {
     parse: Array<"roles" | "users" | "everyone">;
-    roles: Array<Snowflake>;
-    users: Array<Snowflake>;
+    roles: Snowflake[];
+    users: Snowflake[];
     replied_user?: boolean;
 };
 
@@ -318,7 +331,7 @@ type MessageComponent = {
 };
 export interface MessageComponentRow extends MessageComponent {
     type: 1;
-    components: Array<MessageComponent>;
+    components: MessageComponent[];
 }
 export interface MessageComponentButton extends MessageComponent {
     type: 2;
@@ -333,7 +346,7 @@ export interface MessageComponentSelect extends MessageComponent {
     type: 3;
     custom_id?: string;
     disabled?: boolean;
-    options: Array<MessageComponentSelectOption>;
+    options: MessageComponentSelectOption[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -361,7 +374,7 @@ export type Embed = {
     video?: EmbedMedia;
     provider?: EmbedProvider;
     author?: EmbedAuthor;
-    fields?: Array<EmbedField>;
+    fields?: EmbedField[];
 }
 
 export type EmbedFooter = {
@@ -401,7 +414,7 @@ export type Emoji = {
     name: string | null;
     id: Snowflake | null;
     animated?: boolean;
-    roles?: Array<Snowflake>;
+    roles?: Snowflake[];
     user?: User;
     require_colons?: boolean;
     managed?: boolean;
@@ -415,25 +428,40 @@ export type Ban = {
 
 /****** editing/fetching types ******/
 
+export type MemberData = {
+    nick?: string;
+    roles?: Snowflake[];
+    deaf?: boolean;
+    mute?: boolean;
+    channel_id?: Snowflake | null;
+}
+
 export type UserData = {
     username?: string;
     avatar?: ImageData | null;
 }
 
-export type EmojiData = {
+export type EmojiCreateData = {
     name: string;
     image: ImageData;
-    roles: Array<string>;
+    roles: string[];
 }
 
 export type EmojiEditData = {
     name?: string;
-    roles?: Array<string>;
+    roles?: string[];
 }
 
 export type RolePositionData = {
     id: Snowflake;
     position?: number | null;
+}
+
+export type ChannelPositionData = {
+    id: Snowflake;
+    position: number | null;
+    lock_permissions?: boolean | null;
+    parent_id?: Snowflake | null;
 }
 
 export type MessageFetchData = {
@@ -450,13 +478,22 @@ export type ReactionFetchData = {
 
 export type PruneCountData = {
     days: number,
-    include_roles?: Array<Snowflake>;
+    include_roles?: Snowflake[];
 }
 
 export type PruneData = {
     days: number,
-    include_roles?: Array<Snowflake>;
+    include_roles?: Snowflake[];
     compute_prune_count: boolean;
+}
+
+export type MessageData = {
+    content?: string;
+    file?: Buffer;
+    embeds?: Embed[];
+    allowed_mentions?: AllowedMentions;
+    message_reference?: MessageReference;
+    components?: MessageComponent[];
 }
 
 /****** special dev types ******/
@@ -465,16 +502,19 @@ export type PruneData = {
 type Timestamp = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
 // bitfield number represented as string
-type Bitfield = `${bigint}`;
+type Bitfield = `${number | bigint}`;
+
+// bitfield number represented as number
+type Flags = number;
 
 // URI encoded image
-type ImageData = string;
+type ImageData = `data:image/${"jpeg" | "png" | "gif"};base64,${string}`;
 
 // Any kind of URL
 type URL = `${string}://${string}`;
 
 // Discord Snowflake, 18-20 digits
-export type Snowflake = `${bigint | number | "@me"}`;
+export type Snowflake = `${number | bigint | "@me"}`;
 
 // Unix timestamp (millis since epoch)
 type UnixTimestamp = number;
