@@ -13,7 +13,11 @@ export type RequestOptions = {
 
 export type RequestHeaders = Record<string, string>;
 
-export type RequestResponse = Promise<superagent.Response | Error>;
+interface TypedResponse<BodyType> extends superagent.Response {
+    body: BodyType;
+}
+
+export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType> | Error>;
 
 /************ guild types ************/
 
@@ -93,29 +97,76 @@ type ActivityButton = {
 
 /************ guild types ************/
 
-// this is incomplete, see https://canary.discord.com/developers/docs/resources/guild#guild-object-guild-structure
 export type Guild = {
     id: Snowflake;
     name: string;
     icon: string | null;
+    splash: string | null;
+    discovery_splash: string | null;
     owner_id: Snowflake;
+    afk_channel_id: Snowflake | null;
+    afk_timeout: number;
+    widget_enabled?: boolean;
+    widget_channel_id?: Snowflake | null;
     verification_level: 0 | 1 | 2 | 3 | 4;
+    default_message_notifications: 0 | 1;
+    explicit_content_filter: 0 | 1 | 2;
     roles: Role[];
     emojis: Emoji[];
-    premium_tier: 0 | 1 | 2 | 3; 
+    features: GuildFeature[];
+    mfa_level: 0 | 1;
+    application_id: Snowflake | null;
+    system_channel_id: Snowflake | null;
+    system_channel_flags: Flags;
+    rules_channel_id: Snowflake | null;
+    max_presences?: number | null;
+    max_members?: number;
+    vanity_url_code: string | null;
+    description: string | null;
+    banner: string | null;
+    premium_tier: 0 | 1 | 2 | 3;
+    premium_subscription_count?: number;
+    preferred_locale: string;
+    public_updates_channel_id: Snowflake | null;
+    max_video_channel_users?: number;
     approximate_member_count?: number;
     approximate_presence_count?: number;
+    welcome_screen?: WelcomeScreen;
+    nsfw_level: 0 | 1 | 2 | 3;
 };
 
+type WelcomeScreen = {
+    description: string | null;
+    welcome_channels: WelcomeChannel[];
+}
+type WelcomeChannel = {
+    channel_id: Snowflake;
+    description: string;
+    emoji_id: Snowflake | null;
+    emoji_name: string | null;
+}
+
+// the following props are only sent in GUILD_CREATE
 export interface GatewayGuild extends Guild {
     joined_at: Timestamp;
+    large: boolean;
     unavailable: boolean;
     member_count: number;
     voice_states: VoiceState[];
     members: Member[];
-    channels: Channel[];
+    channels: GuildChannel[];
     threads: ThreadChannel[];
-    presences?: Presence[];
+    presences: Presence[];
+    stage_instances: StageInstance[];
+}
+
+type StageInstance = {
+    id: Snowflake;
+    guild_id: Snowflake;
+    channel_id: Snowflake;
+    topic: string;
+    privacy_level: 1 | 2;
+    discoverable_disabled: boolean;
 }
 
 // explanation of features: https://canary.discord.com/developers/docs/resources/guild#guild-object-guild-features
@@ -192,11 +243,15 @@ export type Channel = {
     permission_overwrites?: PermissionOverwrites[];
 }
 
-interface NestableChannel extends Channel {
+export interface GuildChannel extends Channel {
     parent_id?: Snowflake;
 }
+export interface DMBasedChannel extends Channel {
+    type: 1 | 3;
+    recipients: User[];
+}
 
-interface TextBasedChannel extends NestableChannel {
+interface TextBasedChannel extends GuildChannel {
     topic?: string | null;
     nsfw: boolean;
     last_message_id?: Snowflake | null;
@@ -207,16 +262,12 @@ interface TextBasedChannel extends NestableChannel {
 export interface TextChannel extends TextBasedChannel {
     type: 0;
 }
-interface DMBasedChannel extends Channel {
-    type: 1 | 3;
-    recipients: User[];
-}
 export interface DMChannel extends DMBasedChannel {
     type: 1;
 }
-export interface VoiceBasedChannel extends NestableChannel {
+export interface VoiceBasedChannel extends GuildChannel {
     type: 2 | 13;
-    rtc_region: Region | null;
+    rtc_region: VoiceRegion | null;
     bitrate: number;
     user_limit: number;
     video_quality_mode?: 1 | 2;
@@ -239,7 +290,7 @@ export interface NewsChannel extends TextBasedChannel {
 export interface StoreChannel extends TextBasedChannel {
     type: 6;
 }
-interface ThreadChannel extends NestableChannel {
+interface ThreadChannel extends GuildChannel {
     type: 10 | 11 | 12;
     thread_metadata: ThreadMeta;
     member: ThreadMember;
@@ -274,7 +325,7 @@ export type ThreadMember = {
     flags: Flags;
 }
 
-export type Region = {
+export type VoiceRegion = {
     id: Snowflake,
     name: string;
     vip: boolean;
@@ -426,7 +477,42 @@ export type Ban = {
     user: User;
 };
 
+export type PruneResult = {
+    pruned: number;
+}
+
 /****** editing/fetching types ******/
+
+export type GuildData = {
+    name?: string;
+    verification_level?: 0 | 1 | 2 | 3 | 4 | null;
+    default_message_notifications?: 0 | 1 | null;
+    explicit_content_filter?: 0 | 1 | 2 | null;
+    afk_channel_id?: Snowflake | null;
+    afk_timeout?: number;
+    icon?: ImageData | null;
+    owner_id?: Snowflake;
+    splash?: ImageData | null;
+    discovery_splash?: ImageData | null;
+    banner?: ImageData | null;
+    system_channel_id?: Snowflake | null;
+    system_channel_flags?: Flags;
+    rules_channel_id?: Snowflake | null;
+    public_updates_channel_id?: Snowflake | null;
+    preferred_locale?: string | null;
+    features?: GuildFeature[];
+    description?: string | null;
+}
+
+export type RoleData = {
+    name?: string;
+    color?: number;
+    hoist?: boolean;
+    position?: number;
+    permissions?: Bitfield;
+    managed?: boolean;
+    mentionable?: boolean;
+}
 
 export type MemberData = {
     nick?: string;
@@ -498,6 +584,13 @@ export type MessageData = {
 
 /****** special dev types ******/
 
+type CustomEmojiIdentifier = `${string}:${Snowflake}`;
+
+type UnicodeEmoji = string;
+
+// formatted as name:id (i.e. ) or Unicode emoji (i.e. 🔥)
+export type EmojiIdentifier = CustomEmojiIdentifier | UnicodeEmoji;
+
 // ISO8601 timestamp
 type Timestamp = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
@@ -514,7 +607,9 @@ type ImageData = `data:image/${"jpeg" | "png" | "gif"};base64,${string}`;
 type URL = `${string}://${string}`;
 
 // Discord Snowflake, 18-20 digits
-export type Snowflake = `${number | bigint | "@me"}`;
+export type Snowflake = `${number | bigint}`;
+
+export type SnowflakeOrMe = Snowflake | "@me";
 
 // Unix timestamp (millis since epoch)
 type UnixTimestamp = number;

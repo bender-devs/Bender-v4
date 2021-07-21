@@ -23,7 +23,7 @@ export default class APIWrapper {
         return headers;
     }
 
-    static async makeRequest(method: string, path: string, options: types.RequestOptions): types.RequestResponse {
+    static async makeRequest<ResponseType>(method: string, path: string, options: types.RequestOptions): types.RequestResponse<ResponseType> {
         path = CONSTANTS.API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
         if (options.data)
@@ -43,81 +43,86 @@ export default class APIWrapper {
     }
 
     static guild = {
-        async fetch(guild_id: types.Snowflake, with_counts = true): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}`, { 
+        async fetch(guild_id: types.Snowflake, with_counts = true) {
+            return APIWrapper.makeRequest<types.Guild>('GET', `/guilds/${guild_id}`, { 
                 query: { with_counts },
                 headers: AUTH_HEADER
             });
         },
-        async edit(guild_id: types.Snowflake, guild_data: types.Guild, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}`, { 
+        async edit(guild_id: types.Snowflake, guild_data: types.GuildData, reason?: string) {
+            return APIWrapper.makeRequest<types.Guild>('PATCH', `/guilds/${guild_id}`, { 
                 data: guild_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async fetchPruneCount(guild_id: types.Snowflake, prune_count_data: types.PruneCountData): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/prune`, { 
+        async fetchPruneCount(guild_id: types.Snowflake, prune_count_data: types.PruneCountData) {
+            return APIWrapper.makeRequest<types.PruneResult>('GET', `/guilds/${guild_id}/prune`, { 
                 query: prune_count_data,
                 headers: AUTH_HEADER
             });
         },
-        async prune(guild_id: types.Snowflake, prune_data: types.PruneData, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/prune`, { 
+        async prune(guild_id: types.Snowflake, prune_data: types.PruneData, reason?: string) {
+            return APIWrapper.makeRequest<types.PruneResult>('GET', `/guilds/${guild_id}/prune`, { 
                 query: prune_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
+            });
+        },
+        async fetchRegions(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.VoiceRegion[]>('GET', `/guilds/${guild_id}/regions`, { 
+                headers: AUTH_HEADER
             });
         }
     }
 
     static ban = {
-        async fetch(guild_id: types.Snowflake, user_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/bans/${user_id}`, { 
+        async fetch(guild_id: types.Snowflake, user_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Ban>('GET', `/guilds/${guild_id}/bans/${user_id}`, { 
                 headers: AUTH_HEADER
             });
         },
-        async list(guild_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/bans`, { 
+        async list(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Ban[]>('GET', `/guilds/${guild_id}/bans`, { 
                 headers: AUTH_HEADER
             });
         },
-        async create(guild_id: types.Snowflake, user_id: types.Snowflake, delete_message_days = 0, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PUT', `/guilds/${guild_id}/bans/${user_id}`, { 
+        async create(guild_id: types.Snowflake, user_id: types.Snowflake, delete_message_days = 0, reason?: string) {
+            return APIWrapper.makeRequest<null>('PUT', `/guilds/${guild_id}/bans/${user_id}`, { 
                 data: { delete_message_days },
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async delete(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/bans/${user_id}`, {
+        async delete(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/guilds/${guild_id}/bans/${user_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
     }
 
     static role = {
-        async list(guild_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/roles`, {
+        async list(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Role[]>('GET', `/guilds/${guild_id}/roles`, {
                 headers: AUTH_HEADER
             });
         },
-        async create(guild_id: types.Snowflake, role_data: types.Role, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('POST', `/guilds/${guild_id}/roles`, {
+        async create(guild_id: types.Snowflake, role_data: types.RoleData, reason?: string) {
+            return APIWrapper.makeRequest<types.Role>('POST', `/guilds/${guild_id}/roles`, {
                 data: role_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async edit(guild_id: types.Snowflake, role_id: types.Snowflake, role_data: types.Role, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/roles/${role_id}`, {
+        async edit(guild_id: types.Snowflake, role_id: types.Snowflake, role_data: types.RoleData, reason?: string) {
+            return APIWrapper.makeRequest<types.Role>('PATCH', `/guilds/${guild_id}/roles/${role_id}`, {
                 data: role_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async delete(guild_id: types.Snowflake, role_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/roles/${role_id}`, {
+        async delete(guild_id: types.Snowflake, role_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/guilds/${guild_id}/roles/${role_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async setPositions(guild_id: types.Snowflake, role_position_data: Array<types.RolePositionData>, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/roles`, {
+        async setPositions(guild_id: types.Snowflake, role_position_data: Array<types.RolePositionData>, reason?: string) {
+            return APIWrapper.makeRequest<types.Role[]>('PATCH', `/guilds/${guild_id}/roles`, {
                 data: role_position_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -125,68 +130,68 @@ export default class APIWrapper {
     }
 
     static member = {
-        async fetch(guild_id: types.Snowflake, user_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/members/${user_id}`, {
+        async fetch(guild_id: types.Snowflake, user_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Member>('GET', `/guilds/${guild_id}/members/${user_id}`, {
                 headers: AUTH_HEADER
             });
         },
-        async list(guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake | undefined): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/members`, { 
+        async list(guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake | undefined) {
+            return APIWrapper.makeRequest<types.Member[]>('GET', `/guilds/${guild_id}/members`, { 
                 query: { after, limit },
                 headers: AUTH_HEADER
             });
         },
-        async addRole(guild_id: types.Snowflake, user_id: types.Snowflake, role_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PUT', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
+        async addRole(guild_id: types.Snowflake, user_id: types.Snowflake, role_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('PUT', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async deleteRole(guild_id: types.Snowflake, user_id: types.Snowflake, role_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
+        async deleteRole(guild_id: types.Snowflake, user_id: types.Snowflake, role_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/guilds/${guild_id}/members/${user_id}/roles/${role_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async setRoles(guild_id: types.Snowflake, user_id: types.Snowflake, role_id_array: Array<types.Snowflake>, reason?: string): types.RequestResponse {
+        async setRoles(guild_id: types.Snowflake, user_id: types.Snowflake, role_id_array: Array<types.Snowflake>, reason?: string) {
             return this.edit(guild_id, user_id, { roles: role_id_array }, reason);
         },
-        async edit(guild_id: types.Snowflake, user_id: types.Snowflake, member_data: types.MemberData, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/members/${user_id}`, { 
+        async edit(guild_id: types.Snowflake, user_id: types.Snowflake, member_data: types.MemberData, reason?: string) {
+            return APIWrapper.makeRequest<types.Member>('PATCH', `/guilds/${guild_id}/members/${user_id}`, { 
                 data: member_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async setSelfNick(guild_id: types.Snowflake, nick: string | null, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/members/@me/nick`, { 
+        async setSelfNick(guild_id: types.Snowflake, nick: string | null, reason?: string) {
+            return APIWrapper.makeRequest<string>('PATCH', `/guilds/${guild_id}/members/@me/nick`, { 
                 data: { nick },
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async kick(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/guilds/${guild_id}/members/${user_id}`, {
+        async kick(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/guilds/${guild_id}/members/${user_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
     }
 
     static emoji = {
-        async list(guild_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/emojis`, {
+        async list(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Emoji[]>('GET', `/guilds/${guild_id}/emojis`, {
                 headers: AUTH_HEADER
             });
         },
-        async fetch(guild_id: types.Snowflake, emoji_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/guilds/${guild_id}/emojis/${emoji_id}`, {
+        async fetch(guild_id: types.Snowflake, emoji_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Emoji>('GET', `/guilds/${guild_id}/emojis/${emoji_id}`, {
                 headers: AUTH_HEADER
             });
         },
-        async create(guild_id: types.Snowflake, emoji_data: types.EmojiCreateData, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('POST', `/guilds/${guild_id}/emojis`, {
+        async create(guild_id: types.Snowflake, emoji_data: types.EmojiCreateData, reason?: string) {
+            return APIWrapper.makeRequest<types.Emoji>('POST', `/guilds/${guild_id}/emojis`, {
                 data: emoji_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async edit(guild_id: types.Snowflake, emoji_id: types.Snowflake, emoji_data: types.EmojiEditData, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/emojis/${emoji_id}`, {
+        async edit(guild_id: types.Snowflake, emoji_id: types.Snowflake, emoji_data: types.EmojiEditData, reason?: string) {
+            return APIWrapper.makeRequest<types.Emoji>('PATCH', `/guilds/${guild_id}/emojis/${emoji_id}`, {
                 data: emoji_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -194,15 +199,18 @@ export default class APIWrapper {
     }
 
     static user = {
-        async fetch(user_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/users/${user_id}`, {
+        async fetch(user_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.User>('GET', `/users/${user_id}`, {
                 headers: AUTH_HEADER
             });
         },
-        async send(user_id: types.Snowflake, message_data: types.Message): types.RequestResponse {
+        async fetchSelf() {
+            return this.fetch("@me");
+        },
+        async send(user_id: types.Snowflake, message_data: types.MessageData) {
             // TODO: check channel cache for DM with this user
             // if not create it as below
-            await APIWrapper.makeRequest('POST', `/users/@me/channels`, {
+            await APIWrapper.makeRequest<types.DMChannel>('POST', `/users/@me/channels`, {
                 data: { recipient_id: user_id },
                 headers: AUTH_HEADER
             });
@@ -210,8 +218,8 @@ export default class APIWrapper {
             const channelID: types.Snowflake = '00000000000000000000';
             return APIWrapper.message.create(channelID, message_data);
         },
-        async modifySelf(user_data: types.UserData): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/users/@me`, { 
+        async modifySelf(user_data: types.UserData) {
+            return APIWrapper.makeRequest<types.User>('PATCH', `/users/@me`, { 
                 data: user_data,
                 headers: AUTH_HEADER
             });
@@ -219,35 +227,35 @@ export default class APIWrapper {
     }
 
     static channel = {
-        async fetch(channel_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/channels/${channel_id}`, { 
+        async fetch(channel_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Channel>('GET', `/channels/${channel_id}`, { 
                 headers: AUTH_HEADER
             });
         },
-        async edit(channel_id: types.Snowflake, channel_data: types.ChannelData, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/channels/${channel_id}`, {
+        async edit(channel_id: types.Snowflake, channel_data: types.ChannelData, reason?: string) {
+            return APIWrapper.makeRequest<types.Channel>('PATCH', `/channels/${channel_id}`, {
                 data: channel_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async delete(channel_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}`, {
+        async delete(channel_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<types.Channel>('DELETE', `/channels/${channel_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async setOverwrite(channel_id: types.Snowflake, overwrite_id: types.Snowflake, overwrite_data: types.PermissionOverwrites, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PUT', `/channels/${channel_id}/permissions/${overwrite_id}`, {
+        async setOverwrite(channel_id: types.Snowflake, overwrite_id: types.Snowflake, overwrite_data: types.PermissionOverwrites, reason?: string) {
+            return APIWrapper.makeRequest<types.GuildChannel>('PUT', `/channels/${channel_id}/permissions/${overwrite_id}`, {
                 data: overwrite_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async deleteOverwrite(channel_id: types.Snowflake, overwrite_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/permissions/${overwrite_id}`, {
+        async deleteOverwrite(channel_id: types.Snowflake, overwrite_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<types.GuildChannel>('DELETE', `/channels/${channel_id}/permissions/${overwrite_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async setPositions(guild_id: types.Snowflake, channel_position_data: Array<types.ChannelPositionData>, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/guilds/${guild_id}/channels`, {
+        async setPositions(guild_id: types.Snowflake, channel_position_data: Array<types.ChannelPositionData>, reason?: string) {
+            return APIWrapper.makeRequest<null>('PATCH', `/guilds/${guild_id}/channels`, {
                 data: channel_position_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -255,50 +263,50 @@ export default class APIWrapper {
     }
 
     static voice = {
-        async move(guild_id: types.Snowflake, user_id: types.Snowflake, new_channel_id: types.Snowflake): types.RequestResponse {
+        async move(guild_id: types.Snowflake, user_id: types.Snowflake, new_channel_id: types.Snowflake) {
             return APIWrapper.member.edit(guild_id, user_id, { channel_id: new_channel_id });
         },
-        async kick(guild_id: types.Snowflake, user_id: types.Snowflake): types.RequestResponse {
+        async kick(guild_id: types.Snowflake, user_id: types.Snowflake) {
             return APIWrapper.member.edit(guild_id, user_id, { channel_id: null });
         },
-        async fetchRegions(): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/voice/regions`, {
+        async fetchRegions() {
+            return APIWrapper.makeRequest<types.VoiceRegion[]>('GET', `/voice/regions`, {
                 headers: AUTH_HEADER
             });
         }
     }
 
     static message = {
-        async fetchMany(channel_id: types.Snowflake, fetch_data: types.MessageFetchData): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/channels/${channel_id}`, {
+        async fetchMany(channel_id: types.Snowflake, fetch_data: types.MessageFetchData) {
+            return APIWrapper.makeRequest<types.Message[]>('GET', `/channels/${channel_id}/messages`, {
                 query: fetch_data,
                 headers: AUTH_HEADER
             });
         },
-        async fetch(channel_id: types.Snowflake, message_id: types.Snowflake): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/channels/${channel_id}/messages/${message_id}`, {
+        async fetch(channel_id: types.Snowflake, message_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Message>('GET', `/channels/${channel_id}/messages/${message_id}`, {
                 headers: AUTH_HEADER
             });
         },
-        async create(channel_id: types.Snowflake, message: types.Message): types.RequestResponse {
-            return APIWrapper.makeRequest('POST', `/channels/${channel_id}/messages`, {
+        async create(channel_id: types.Snowflake, message: types.MessageData) {
+            return APIWrapper.makeRequest<types.Message>('POST', `/channels/${channel_id}/messages`, {
                 data: message,
                 headers: AUTH_HEADER
             });
         },
-        async edit(channel_id: types.Snowflake, message_id: types.Snowflake, message_data: types.Message): types.RequestResponse {
-            return APIWrapper.makeRequest('PATCH', `/channels/${channel_id}/messages/${message_id}`, {
+        async edit(channel_id: types.Snowflake, message_id: types.Snowflake, message_data: types.MessageData) {
+            return APIWrapper.makeRequest<types.Message>('PATCH', `/channels/${channel_id}/messages/${message_id}`, {
                 data: message_data,
                 headers: AUTH_HEADER
             });
         },
-        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/messages/${message_id}`, {
+        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/channels/${channel_id}/messages/${message_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async deleteMany(channel_id: types.Snowflake, message_ids: Array<types.Snowflake>, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('POST', `/channels/${channel_id}/messages/bulk-delete`, {
+        async deleteMany(channel_id: types.Snowflake, message_ids: Array<types.Snowflake>, reason?: string) {
+            return APIWrapper.makeRequest<null>('POST', `/channels/${channel_id}/messages/bulk-delete`, {
                 data: { messages: message_ids },
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -306,32 +314,32 @@ export default class APIWrapper {
     }
 
     static reaction = {
-        async create(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string): types.RequestResponse {
-            return APIWrapper.makeRequest('PUT', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}/@me`, {
+        async create(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string) {
+            return APIWrapper.makeRequest<null>('PUT', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}/@me`, {
                 headers: AUTH_HEADER
             });
         },
-        async listUsers(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, fetch_data: types.ReactionFetchData): types.RequestResponse {
-            return APIWrapper.makeRequest('GET', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}`, {
+        async listUsers(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, fetch_data: types.ReactionFetchData) {
+            return APIWrapper.makeRequest<types.User[]>('GET', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}`, {
                 query: fetch_data,
                 headers: AUTH_HEADER
             });
         },
-        async deleteSelf(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, reason?: string): types.RequestResponse {
+        async deleteSelf(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, reason?: string) {
             return this.delete(channel_id, message_id, emoji_identifier, '@me', reason);
         },
-        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, user_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}/${user_id}`, {
+        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, user_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}/${user_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async deleteEmoji(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}`, {
+        async deleteEmoji(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         },
-        async deleteAll(channel_id: types.Snowflake, message_id: types.Snowflake, reason?: string): types.RequestResponse {
-            return APIWrapper.makeRequest('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions`, {
+        async deleteAll(channel_id: types.Snowflake, message_id: types.Snowflake, reason?: string) {
+            return APIWrapper.makeRequest<null>('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
