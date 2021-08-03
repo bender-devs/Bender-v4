@@ -210,16 +210,20 @@ type RoleTags = {
 
 /************ member types ************/
 
-export type Member = {
+export interface PartialMember {
     user?: User; // Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects
     nick?: string;
     roles: Snowflake[];
     joined_at: Timestamp;
     premium_since?: Timestamp | null;
+    pending?: boolean; // member screening, only included in GUILD_* events
+    permissions?: Bitfield; // only provided in Interaction objects; includes overwrites
+}
+
+export interface Member extends PartialMember {
+    user: User;
     deaf: boolean;
     mute: boolean;
-    pending?: boolean; // member screening
-    permissions?: Bitfield; // only provided in Interaction objects; includes overwrites
 }
 
 /************ channel types ************/
@@ -234,18 +238,37 @@ export type ChannelData = {
     thread_metadata?: ThreadMeta;
 }
 
-export type Channel = {
+/* channel types
+ * GUILD_TEXT	0
+ * DM	1
+ * GUILD_VOICE	2
+ * GROUP_DM	3
+ * GUILD_CATEGORY	4
+ * GUILD_NEWS	5
+ * GUILD_STORE	6
+ * GUILD_NEWS_THREAD	10
+ * GUILD_PUBLIC_THREAD	11
+ * GUILD_PRIVATE_THREAD	12
+ * GUILD_STAGE_VOICE	13
+ */
+type ChannelType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 11 | 12 | 13;
+
+type PartialChannel = {
     id: Snowflake;
-    type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 11 | 12 | 13;
+    type: ChannelType;
     name?: string;
-    guild_id?: Snowflake;
-    position?: number;
     permission_overwrites?: PermissionOverwrites[];
+}
+
+export interface Channel extends PartialChannel {
+    position?: number;
 }
 
 export interface GuildChannel extends Channel {
     parent_id?: Snowflake;
+    guild_id: Snowflake;
 }
+
 export interface DMBasedChannel extends Channel {
     type: 1 | 3;
     recipients: User[];
@@ -259,12 +282,15 @@ interface TextBasedChannel extends GuildChannel {
     last_pin_timestamp?: Timestamp | null;
     default_auto_archive_duration?: number;
 }
+
 export interface TextChannel extends TextBasedChannel {
     type: 0;
 }
+
 export interface DMChannel extends DMBasedChannel {
     type: 1;
 }
+
 export interface VoiceBasedChannel extends GuildChannel {
     type: 2 | 13;
     rtc_region: VoiceRegion | null;
@@ -272,24 +298,30 @@ export interface VoiceBasedChannel extends GuildChannel {
     user_limit: number;
     video_quality_mode?: 1 | 2;
 }
+
 export interface VoiceChannel extends VoiceBasedChannel {
     type: 2;
 }
+
 export interface GroupDMChannel extends DMBasedChannel {
     type: 3;
     owner_id: Snowflake;
     application_id?: Snowflake;
     icon: string | null;
 }
+
 export interface CategoryChannel extends Channel {
     type: 4;
 }
+
 export interface NewsChannel extends TextBasedChannel {
     type: 5;
 }
+
 export interface StoreChannel extends TextBasedChannel {
     type: 6;
 }
+
 interface ThreadChannel extends GuildChannel {
     type: 10 | 11 | 12;
     thread_metadata: ThreadMeta;
@@ -298,15 +330,19 @@ interface ThreadChannel extends GuildChannel {
     member_count: number;
     owner_id: Snowflake;
 }
+
 export interface NewsThreadChannel extends ThreadChannel {
     type: 10;
 }
+
 export interface PublicThreadChannel extends ThreadChannel {
     type: 11;
 }
+
 export interface PrivateThreadChannel extends ThreadChannel {
     type: 12;
 }
+
 export interface VoiceStageChannel extends VoiceBasedChannel {
     type: 13;
 }
@@ -339,6 +375,137 @@ export type PermissionOverwrites = {
     type: 0 | 1;
     allow: Bitfield;
     deny: Bitfield;
+}
+
+/************ interaction types ************/
+
+type InteractionType = 1 | 2 | 3; // 1 = ping, 2 = command, 3 = component
+
+export type Interaction = {
+    id: Snowflake;
+    application_id: Snowflake;
+    type: InteractionType;
+    data?: InteractionData;
+    guild_id?: Snowflake;
+    channel_id?: Snowflake;
+    member?: Member;
+    user?: User;
+    token: string;
+    version: 1;
+    message?: Message;
+}
+
+export type InteractionData = {
+    id: Snowflake;
+    name: string;
+    resolved?: InteractionDataResolved;
+    options?: InteractionDataOption[];
+    custom_id: string;
+    component_type: MessageComponentType;
+}
+
+export type InteractionDataResolved = {
+    users?: Record<Snowflake, User>;
+    members?: Record<Snowflake, PartialMember>;
+    roles?: Record<Snowflake, Role>;
+    channels?: Record<Snowflake, PartialChannel>;
+}
+
+export type InteractionDataOption = {
+    name: string;
+    type: CommandOptionType;
+    value?: CommandOptionValue;
+    options?: InteractionDataOption[];
+}
+
+/* response types:
+ * PONG 1
+ * CHANNEL_MESSAGE_WITH_SOURCE  4
+ * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE 5
+ * DEFERRED_UPDATE_MESSAGE  6
+ * UPDATE_MESSAGE   7
+ */
+type InteractionResponseType = {
+    type: 1 | 4 | 5 | 6 | 7;
+}
+
+export type InteractionResponse = {
+    type: InteractionResponseType;
+    data?: InteractionResponseData;
+}
+
+export type InteractionResponseData = {
+    tts?: boolean;
+    content?: string;
+    embeds?: Embed[];
+    allowed_mentions?: AllowedMentions;
+    flags?: Flags;
+    components?: MessageComponent[];
+}
+
+export type MessageInteraction = {
+    id: Snowflake;
+    type: InteractionType;
+    name: string;
+    user: User;
+}
+
+/****** slash command types ******/
+
+// for creating/editing only
+export type CommandData = {
+    name: string;
+    description: string;
+    options?: CommandOption[];
+    default_permission?: boolean;
+}
+
+export interface Command extends CommandData {
+    id: Snowflake;
+    application_id: Snowflake;
+    guild_id?: Snowflake;
+}
+
+/* command option types:
+ * SUB_COMMAND	1
+ * SUB_COMMAND_GROUP	2
+ * STRING	3
+ * INTEGER	4
+ * BOOLEAN	5
+ * USER	6
+ * CHANNEL	7
+ * ROLE	8
+ * MENTIONABLE	9
+ */
+export type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export type CommandOptionValue = CommandOption | string | number | boolean | User | Channel | Role;
+
+export type CommandOption = {
+    type: CommandOptionType;
+    name: string;
+    description: string;
+    required?: boolean;
+    choices?: CommandOptionChoice[];
+    options?: CommandOption[];
+}
+
+type CommandOptionChoice = {
+    name: string;
+    value: string | number;
+}
+
+export type CommandPermissions = {
+    id: Snowflake;
+    application_id: Snowflake;
+    guild_id: Snowflake;
+    permissions: CommandPermissionsData[];
+}
+
+export type CommandPermissionsData = {
+    id: Snowflake;
+    type: 1 | 2; // 1 = role, 2 = user
+    permission: boolean;
 }
 
 /************ message types ************/
@@ -376,9 +543,12 @@ export type MessageReference = {
     fail_if_not_exists?: boolean;
 };
 
+/****** message component types ******/
+
 // https://canary.discord.com/developers/docs/interactions/message-components#component-object
+type MessageComponentType = 1 | 2 | 3;
 type MessageComponent = {
-    type: 1 | 2 | 3;
+    type: MessageComponentType;
 };
 export interface MessageComponentRow extends MessageComponent {
     type: 1;

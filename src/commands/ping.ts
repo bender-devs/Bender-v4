@@ -12,6 +12,8 @@ export default class PingCommand implements Command {
         this.client = client;
     }
 
+    static global = true;
+
     static options = [{
         type: 3,
         name: 'type',
