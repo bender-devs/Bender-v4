@@ -372,6 +372,12 @@ export default class APIWrapper {
             return APIWrapper.makeRequest<null>('DELETE', `/applications/${application_id}/commands/${command_id}`, {
                 headers: AUTH_HEADER
             });
+        },
+        async replaceAll(application_id: types.Snowflake, commands_data: types.CommandData[]) {
+            return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/commands`, {
+                headers: AUTH_HEADER,
+                data: commands_data
+            });
         }
     }
 
@@ -381,13 +387,97 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
+        async create(application_id: types.Snowflake, guild_id: types.Snowflake, command_data: types.CommandData[]) {
+            return APIWrapper.makeRequest<types.Command>('POST', `/applications/${application_id}/guilds/${guild_id}/commands`, {
+                headers: AUTH_HEADER,
+                data: command_data
+            });
+        },
+        async get(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Command>('GET', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async edit(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandData) {
+            return APIWrapper.makeRequest<types.Command>('PATCH', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER,
+                data: command_data
+            });
+        },
+        async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, commands_data: types.CommandData[]) {
+            return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands`, {
+                headers: AUTH_HEADER,
+                data: commands_data
+            });
+        }
     }
 
-    static interaction = {
-        async respond(interaction_id: types.Snowflake, interaction_token: string, interaction_response: types.InteractionResponse) {
-            return APIWrapper.makeRequest<>('POST', `/interactions/${interaction_id}/${interaction_token}/callback`, {
+    static guildCommandPermissions = {
+        async list(application_id: types.Snowflake, guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.CommandPermissions[]>('GET', `/applications/${application_id}/guilds/${guild_id}/commands/permissions`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async get(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.CommandPermissions>('GET', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}/permissions`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async edit(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake, permissions_data: types.CommandPermissionsData) {
+            return APIWrapper.makeRequest<types.Command>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}/permissions`, {
+                headers: AUTH_HEADER,
+                data: permissions_data
+            });
+        },
+        async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, permissions_data: types.CommandPermissionsData[]) {
+            return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands/permissions`, {
+                headers: AUTH_HEADER,
+                data: permissions_data
+            });
+        }
+    }
+
+    static interactionResponse = {
+        async create(interaction_id: types.Snowflake, interaction_token: string, interaction_response: types.InteractionResponse) {
+            return APIWrapper.makeRequest<types.Message>('POST', `/interactions/${interaction_id}/${interaction_token}/callback`, {
                 headers: AUTH_HEADER,
                 data: interaction_response
+            });
+        },
+        async get(application_id: types.Snowflake, interaction_token: string) {
+            return APIWrapper.makeRequest<types.Message>('GET', `/webhooks/${application_id}/${interaction_token}/messages/@original`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async edit(application_id: types.Snowflake, interaction_token: string, message_data: types.MessageData) {
+            return APIWrapper.makeRequest<types.Message>('PATCH', `/webhooks/${application_id}/${interaction_token}/messages/@original`, {
+                headers: AUTH_HEADER,
+                data: message_data
+            });
+        },
+        async delete(application_id: types.Snowflake, interaction_token: string) {
+            return APIWrapper.makeRequest<types.Message>('DELETE', `/webhooks/${application_id}/${interaction_token}/messages/@original`, {
+                headers: AUTH_HEADER
+            });
+        },
+    }
+
+    static interactionFollowup = {
+        async create(application_id: types.Snowflake, interaction_token: string, message_data: types.MessageData) {
+            return APIWrapper.makeRequest<types.Message>('POST', `/webhooks/${application_id}/${interaction_token}`, {
+                headers: AUTH_HEADER,
+                data: message_data
+            });
+        },
+        async edit(application_id: types.Snowflake, interaction_token: string, message_id: types.Snowflake, message_data: types.MessageData) {
+            return APIWrapper.makeRequest<types.Message>('PATCH', `/webhooks/${application_id}/${interaction_token}/messages/${message_id}`, {
+                headers: AUTH_HEADER,
+                data: message_data
+            });
+        },
+        async delete(application_id: types.Snowflake, interaction_token: string, message_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Message>('DELETE', `/webhooks/${application_id}/${interaction_token}/messages/${message_id}`, {
+                headers: AUTH_HEADER
             });
         },
     }
