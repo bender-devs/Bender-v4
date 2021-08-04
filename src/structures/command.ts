@@ -7,4 +7,8 @@ export default interface Command {
     guildOnly: boolean;
     global: boolean; // whether this is a top-level/global slash command
     options?: types.CommandOption[];
+    default_permission: boolean;
+
+    run(args: types.CommandOption[]): types.RequestResponse<>;
+    runText(argString: string): types.RequestResponse<>;
 }

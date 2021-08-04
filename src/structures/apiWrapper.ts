@@ -199,7 +199,7 @@ export default class APIWrapper {
     }
 
     static user = {
-        async fetch(user_id: types.Snowflake) {
+        async fetch(user_id: types.SnowflakeOrMe) {
             return APIWrapper.makeRequest<types.User>('GET', `/users/${user_id}`, {
                 headers: AUTH_HEADER
             });
@@ -328,7 +328,7 @@ export default class APIWrapper {
         async deleteSelf(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, reason?: string) {
             return this.delete(channel_id, message_id, emoji_identifier, '@me', reason);
         },
-        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, user_id: types.Snowflake, reason?: string) {
+        async delete(channel_id: types.Snowflake, message_id: types.Snowflake, emoji_identifier: string, user_id: types.SnowflakeOrMe, reason?: string) {
             return APIWrapper.makeRequest<null>('DELETE', `/channels/${channel_id}/messages/${message_id}/reactions/${emoji_identifier}/${user_id}`, {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -343,5 +343,52 @@ export default class APIWrapper {
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
+    }
+
+    static globalCommand = {
+        async list(application_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/commands`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async create(application_id: types.Snowflake, command: types.CommandData) {
+            return APIWrapper.makeRequest<types.Command>('POST', `/applications/${application_id}/commands`, {
+                headers: AUTH_HEADER,
+                data: command
+            });
+        },
+        async get(application_id: types.Snowflake, command_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Command>('GET', `/applications/${application_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async edit(application_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandData) {
+            return APIWrapper.makeRequest<types.Command>('PATCH', `/applications/${application_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER,
+                data: command_data
+            });
+        },
+        async delete(application_id: types.Snowflake, command_id: types.Snowflake) {
+            return APIWrapper.makeRequest<null>('DELETE', `/applications/${application_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER
+            });
+        }
+    }
+
+    static guildCommand = {
+        async list(application_id: types.Snowflake, guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/guilds/${guild_id}/commands`, {
+                headers: AUTH_HEADER
+            });
+        },
+    }
+
+    static interaction = {
+        async respond(interaction_id: types.Snowflake, interaction_token: string, interaction_response: types.InteractionResponse) {
+            return APIWrapper.makeRequest<>('POST', `/interactions/${interaction_id}/${interaction_token}/callback`, {
+                headers: AUTH_HEADER,
+                data: interaction_response
+            });
+        },
     }
 }
