@@ -21,6 +21,11 @@ export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType> 
 
 /************ guild types ************/
 
+export type UserData = {
+    username?: string;
+    avatar?: ImageData | null;
+}
+
 export type User = {
     id: Snowflake;
     username: string;
@@ -96,6 +101,27 @@ type ActivityButton = {
 }
 
 /************ guild types ************/
+
+export type GuildData = {
+    name?: string;
+    verification_level?: 0 | 1 | 2 | 3 | 4 | null;
+    default_message_notifications?: 0 | 1 | null;
+    explicit_content_filter?: 0 | 1 | 2 | null;
+    afk_channel_id?: Snowflake | null;
+    afk_timeout?: number;
+    icon?: ImageData | null;
+    owner_id?: Snowflake;
+    splash?: ImageData | null;
+    discovery_splash?: ImageData | null;
+    banner?: ImageData | null;
+    system_channel_id?: Snowflake | null;
+    system_channel_flags?: Flags;
+    rules_channel_id?: Snowflake | null;
+    public_updates_channel_id?: Snowflake | null;
+    preferred_locale?: string | null;
+    features?: GuildFeature[];
+    description?: string | null;
+}
 
 export type Guild = {
     id: Snowflake;
@@ -188,6 +214,57 @@ export type VoiceState = {
     request_to_speak_timestamp: Timestamp | null;
 };
 
+export type Ban = {
+    reason: string | null;
+    user: User;
+};
+
+export type ReactionFetchData = {
+    limit: number;
+    after?: Snowflake;
+}
+
+/****** member prune types ******/
+
+export type PruneResult = {
+    pruned: number;
+}
+
+export type PruneCountData = {
+    days: number,
+    include_roles?: Snowflake[];
+}
+
+export type PruneData = {
+    days: number,
+    include_roles?: Snowflake[];
+    compute_prune_count: boolean;
+}
+
+/****** emoji types ******/
+
+export type Emoji = {
+    name: string | null;
+    id: Snowflake | null;
+    animated?: boolean;
+    roles?: Snowflake[];
+    user?: User;
+    require_colons?: boolean;
+    managed?: boolean;
+    available?: boolean;
+};
+
+export type EmojiCreateData = {
+    name: string;
+    image: ImageData;
+    roles: string[];
+}
+
+export type EmojiEditData = {
+    name?: string;
+    roles?: string[];
+}
+
 /************ role types ************/
 
 export type Role = {
@@ -202,13 +279,36 @@ export type Role = {
     tags?: RoleTags;
 }
 
+export type RoleData = {
+    name?: string;
+    color?: number;
+    hoist?: boolean;
+    position?: number;
+    permissions?: Bitfield;
+    managed?: boolean;
+    mentionable?: boolean;
+}
+
 type RoleTags = {
     bot_id?: Snowflake;
     integration_id?: Snowflake;
     premium_subscriber?: null;
 }
 
+export type RolePositionData = {
+    id: Snowflake;
+    position?: number | null;
+}
+
 /************ member types ************/
+
+export type MemberData = {
+    nick?: string;
+    roles?: Snowflake[];
+    deaf?: boolean;
+    mute?: boolean;
+    channel_id?: Snowflake | null;
+}
 
 export interface PartialMember {
     user?: User; // Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects
@@ -377,6 +477,13 @@ export type PermissionOverwrites = {
     deny: Bitfield;
 }
 
+export type ChannelPositionData = {
+    id: Snowflake;
+    position: number | null;
+    lock_permissions?: boolean | null;
+    parent_id?: Snowflake | null;
+}
+
 /************ interaction types ************/
 
 type InteractionType = 1 | 2 | 3; // 1 = ping, 2 = command, 3 = component
@@ -425,9 +532,7 @@ export type InteractionDataOption = {
  * DEFERRED_UPDATE_MESSAGE  6
  * UPDATE_MESSAGE   7
  */
-type InteractionResponseType = {
-    type: 1 | 4 | 5 | 6 | 7;
-}
+type InteractionResponseType = 1 | 4 | 5 | 6 | 7;
 
 export type InteractionResponse = {
     type: InteractionResponseType;
@@ -543,6 +648,22 @@ export type MessageReference = {
     fail_if_not_exists?: boolean;
 };
 
+export type MessageData = {
+    content?: string;
+    file?: Buffer;
+    embeds?: Embed[];
+    allowed_mentions?: AllowedMentions;
+    message_reference?: MessageReference;
+    components?: MessageComponent[];
+}
+
+export type MessageFetchData = {
+    limit: number;
+    around?: Snowflake;
+    before?: Snowflake;
+    after?: Snowflake;
+}
+
 /****** message component types ******/
 
 // https://canary.discord.com/developers/docs/interactions/message-components#component-object
@@ -625,132 +746,9 @@ export type EmbedField = {
     inline?: boolean;
 };
 
-/************ client types ************/
-
-export type ClientConnectionOptions = {}; // TODO: fisnish
-
 /************ misc types ************/
 
-export type Emoji = {
-    name: string | null;
-    id: Snowflake | null;
-    animated?: boolean;
-    roles?: Snowflake[];
-    user?: User;
-    require_colons?: boolean;
-    managed?: boolean;
-    available?: boolean;
-};
-
-export type Ban = {
-    reason: string | null;
-    user: User;
-};
-
-export type PruneResult = {
-    pruned: number;
-}
-
-/****** editing/fetching types ******/
-
-export type GuildData = {
-    name?: string;
-    verification_level?: 0 | 1 | 2 | 3 | 4 | null;
-    default_message_notifications?: 0 | 1 | null;
-    explicit_content_filter?: 0 | 1 | 2 | null;
-    afk_channel_id?: Snowflake | null;
-    afk_timeout?: number;
-    icon?: ImageData | null;
-    owner_id?: Snowflake;
-    splash?: ImageData | null;
-    discovery_splash?: ImageData | null;
-    banner?: ImageData | null;
-    system_channel_id?: Snowflake | null;
-    system_channel_flags?: Flags;
-    rules_channel_id?: Snowflake | null;
-    public_updates_channel_id?: Snowflake | null;
-    preferred_locale?: string | null;
-    features?: GuildFeature[];
-    description?: string | null;
-}
-
-export type RoleData = {
-    name?: string;
-    color?: number;
-    hoist?: boolean;
-    position?: number;
-    permissions?: Bitfield;
-    managed?: boolean;
-    mentionable?: boolean;
-}
-
-export type MemberData = {
-    nick?: string;
-    roles?: Snowflake[];
-    deaf?: boolean;
-    mute?: boolean;
-    channel_id?: Snowflake | null;
-}
-
-export type UserData = {
-    username?: string;
-    avatar?: ImageData | null;
-}
-
-export type EmojiCreateData = {
-    name: string;
-    image: ImageData;
-    roles: string[];
-}
-
-export type EmojiEditData = {
-    name?: string;
-    roles?: string[];
-}
-
-export type RolePositionData = {
-    id: Snowflake;
-    position?: number | null;
-}
-
-export type ChannelPositionData = {
-    id: Snowflake;
-    position: number | null;
-    lock_permissions?: boolean | null;
-    parent_id?: Snowflake | null;
-}
-
-export type MessageFetchData = {
-    limit: number;
-    around?: Snowflake;
-    before?: Snowflake;
-    after?: Snowflake;
-}
-
-export type ReactionFetchData = {
-    limit: number;
-    after?: Snowflake;
-}
-
-export type PruneCountData = {
-    days: number,
-    include_roles?: Snowflake[];
-}
-
-export type PruneData = {
-    days: number,
-    include_roles?: Snowflake[];
-    compute_prune_count: boolean;
-}
-
-export type MessageData = {
-    content?: string;
-    file?: Buffer;
-    embeds?: Embed[];
-    allowed_mentions?: AllowedMentions;
-    message_reference?: MessageReference;
-    components?: MessageComponent[];
-}
+export type ClientConnectionOptions = {}; // TODO: finish
 
 /****** special dev types ******/
 
@@ -783,3 +781,8 @@ export type SnowflakeOrMe = Snowflake | "@me";
 
 // Unix timestamp (millis since epoch)
 type UnixTimestamp = number;
+
+/* what the run() or runText() functions in commands can return.
+ * may add more types later.
+ */
+export type CommandResponse = Message;

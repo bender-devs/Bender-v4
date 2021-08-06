@@ -1,13 +1,13 @@
-import Client from '../structures/client';
+import Bot from '../structures/bot';
 import Command from '../structures/command';
 import CommandArgs from '../structures/commandArgs';
 import Message from '../structures/discord/message';
 
 export default class TextCommandHandler {
-    client: Client;
+    bot: Bot;
 
-    constructor (client: Client) {
-        this.client = client;
+    constructor (bot: Bot) {
+        this.bot = bot;
     }
 
     parseCommand(input: string) {

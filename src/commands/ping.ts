@@ -1,13 +1,14 @@
 import Command from '../structures/command';
 import * as path from 'path';
-import Client from '../structures/client';
+import Bot from '../structures/bot';
+import * as types from '../structures/types';
 
 export default class PingCommand implements Command {
-    client: Client;
+    bot: Bot;
     readonly name: string = path.parse(__filename).name;
 
-    constructor (client: Client) {
-        this.client = client;
+    constructor (bot: Bot) {
+        this.bot = bot;
     }
 
     static guildOnly = false;
@@ -20,11 +21,11 @@ export default class PingCommand implements Command {
         choices: ['api', 'roundtrip']
     }]
 
-    run(args: CommandOption[]) {
-
+    run(args: types.CommandOption[]): types.RequestResponse<types.CommandResponse> {
+        return
     }
 
-    runText(argString: string) {
+    runText(argString: string): types.RequestResponse<types.CommandResponse> {
 
     }
 }

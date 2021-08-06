@@ -1,16 +1,10 @@
-import * as CONSTANTS from '../data/constants.json';
+import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
-//import Client from './client';
 import * as types from './types';
 
 const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
 
 export default class APIWrapper {
-    /*client: Client;
-
-    constructor(client: Client) {
-        this.client = client;
-    }*/
 
     static reformatResponse(response_data: superagent.Response) {
         return response_data;
@@ -357,7 +351,7 @@ export default class APIWrapper {
                 data: command
             });
         },
-        async get(application_id: types.Snowflake, command_id: types.Snowflake) {
+        async fetch(application_id: types.Snowflake, command_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.Command>('GET', `/applications/${application_id}/commands/${command_id}`, {
                 headers: AUTH_HEADER
             });
@@ -393,7 +387,7 @@ export default class APIWrapper {
                 data: command_data
             });
         },
-        async get(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
+        async fetch(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.Command>('GET', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}`, {
                 headers: AUTH_HEADER
             });
@@ -418,7 +412,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async get(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
+        async fetch(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.CommandPermissions>('GET', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}/permissions`, {
                 headers: AUTH_HEADER
             });
@@ -444,7 +438,7 @@ export default class APIWrapper {
                 data: interaction_response
             });
         },
-        async get(application_id: types.Snowflake, interaction_token: string) {
+        async fetch(application_id: types.Snowflake, interaction_token: string) {
             return APIWrapper.makeRequest<types.Message>('GET', `/webhooks/${application_id}/${interaction_token}/messages/@original`, {
                 headers: AUTH_HEADER
             });

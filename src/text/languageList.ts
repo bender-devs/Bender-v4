@@ -1,7 +1,7 @@
 import * as en from './EN.json';
 
-export type LangMap = Record<string, Record<string, string>>;
+export type LangMap = Record<string, Lang>;
 
-const map: LangMap = { en };
+export type Lang = Record<string, string>;
 
-export default map;
+export const languages: LangMap = { en };

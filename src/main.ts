@@ -1,9 +1,9 @@
 import * as dotenv from "dotenv";
-import Client from "./structures/client";
+import Bot from "./structures/bot";
 
 dotenv.config();
 
 // TODO: process cli arguments
 process.env.TOKEN = process.env.TOKEN_PRODUCTION;
 
-const client = new Client();
+const bot = new Bot();

@@ -1,27 +1,27 @@
-import Client from '../structures/client';
+import Bot from '../structures/bot';
 import Command from '../structures/command';
-import CommandArgs from '../structures/commandArgs';
-import Interaction from '../structures/discord/interaction';
+import * as types from '../structures/types';
+import LanguageUtils from './language';
 
 export default class SlashCommandHandler {
-    client: Client;
+    bot: Bot;
     
-    constructor(client: Client) {
-        this.client = client;
+    constructor(bot: Bot) {
+        this.bot = bot;
     }
 
     checkPermissions(command: Command) {
 
     }
 
-    runCommand(command: Command, args: CommandArgs) {
+    runCommand(command: Command, args: types.CommandOption[]) {
 
     }
 
-    handleCommand(interaction: Interaction, command: Command) {
+    handleCommand(interaction: types.Interaction, command: Command) {
         if (!interaction.guild_id && command.guildOnly) {
-            const permMessage = this.client.utils.language.getAndReplace('GUILD_ONLY', { command: command.name });
-            return this.client.utils.commandResponse.sendInteractionResponse({
+            const permMessage = LanguageUtils.getAndReplace('GUILD_ONLY', { command: command.name });
+            return this.bot.api.sendInteractionResponse(interaction, {
                 type: 4,
                 data: {
                     content: permMessage,
