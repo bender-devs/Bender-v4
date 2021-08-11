@@ -9,6 +9,6 @@ export default interface Command {
     options?: types.CommandOption[];
     default_permission: boolean;
 
-    run(args: types.CommandOption[]): types.RequestResponse<types.CommandResponse>;
-    runText(argString: string): types.RequestResponse<types.CommandResponse>;
+    run(interaction: types.Interaction, args: types.CommandOption[]): types.RequestResponse<types.CommandResponse>;
+    runText(msg: types.Message, argString: string): types.RequestResponse<types.CommandResponse>;
 }

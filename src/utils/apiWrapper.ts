@@ -1,6 +1,6 @@
 import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
-import * as types from './types';
+import * as types from '../structures/types';
 
 const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
 
@@ -95,6 +95,11 @@ export default class APIWrapper {
     static role = {
         async list(guild_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.Role[]>('GET', `/guilds/${guild_id}/roles`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async fetch(guild_id: types.Snowflake, role_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Role[]>('GET', `/guilds/${guild_id}/roles/${role_id}`, {
                 headers: AUTH_HEADER
             });
         },
@@ -201,16 +206,11 @@ export default class APIWrapper {
         async fetchSelf() {
             return this.fetch("@me");
         },
-        async send(user_id: types.Snowflake, message_data: types.MessageData) {
-            // TODO: check channel cache for DM with this user
-            // if not create it as below
-            await APIWrapper.makeRequest<types.DMChannel>('POST', `/users/@me/channels`, {
+        async createDM(user_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.DMChannel>('POST', `/users/@me/channels`, {
                 data: { recipient_id: user_id },
                 headers: AUTH_HEADER
             });
-            // TODO: handle the error or collect the channel ID above
-            const channelID: types.Snowflake = '00000000000000000000';
-            return APIWrapper.message.create(channelID, message_data);
         },
         async modifySelf(user_data: types.UserData) {
             return APIWrapper.makeRequest<types.User>('PATCH', `/users/@me`, { 

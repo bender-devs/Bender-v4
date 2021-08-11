@@ -1,7 +1,4 @@
-import * as en from './EN.json';
+import * as en from './EN';
+import * as types from '../structures/types';
 
-export type LangMap = Record<string, Lang>;
-
-export type Lang = Record<string, string>;
-
-export const languages: LangMap = { en };
+export const languages: types.LangMap = { en };

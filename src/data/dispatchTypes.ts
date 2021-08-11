@@ -1,9 +1,10 @@
 export const events = [
+    // API request events
     "GUILD_GET",
     "GUILD_EDIT",
     "GUILD_GET_PRUNE_COUNT",
     "GUILD_PRUNE",
-    "GUILD_FETCH_REGIONS",
+    "GUILD_GET_REGIONS",
 
     "BAN_GET",
     "BAN_LIST",
@@ -11,6 +12,7 @@ export const events = [
     "BAN_REMOVE",
 
     "ROLE_LIST",
+    "ROLE_GET",
     "ROLE_ADD",
     "ROLE_EDIT",
     "ROLE_REMOVE",
@@ -30,7 +32,49 @@ export const events = [
     "EMOJI_ADD",
     "EMOJI_EDIT",
 
-    "USER_GET"
+    "USER_GET",
+    "USER_GET_SELF",
+    "USER_SEND",
+    "USER_EDIT_SELF",
+
+    "CHANNEL_GET",
+    "CHANNEL_EDIT",
+    "CHANNEL_REMOVE",
+    "CHANNEL_SET_OVERWRITE",
+    "CHANNEL_REMOVE_OVERWRITE",
+    "CHANNEL_SET_POSITIONS",
+
+    "VOICE_MOVE",
+    "VOICE_KICK",
+    "VOICE_GET_REGIONS",
+
+    "MESSAGE_LIST",
+    "MESSAGE_GET",
+    "MESSAGE_ADD",
+    "MESSAGE_EDIT",
+    "MESSAGE_REMOVE",
+    "MESSAGE_BULK_REMOVE",
+
+    "REACTION_ADD",
+    "REACTION_LIST",
+    "REACTION_REMOVE_SELF",
+    "REACTION_REMOVE",
+    "REACTION_REMOVE_EMOJI",
+    "REACTION_REMOVE_ALL",
+
+    "SLASH_COMMAND_LIST",
+    "SLASH_COMMAND_ADD",
+    "SLASH_COMMAND_GET",
+    "SLASH_COMMAND_EDIT",
+    "SLASH_COMMAND_REMOVE",
+    "SLASH_COMMAND_BULK_EDIT",
+
+    "GUILD_SLASH_COMMAND_LIST",
+    "GUILD_SLASH_COMMAND_ADD",
+    "GUILD_SLASH_COMMAND_GET",
+    "GUILD_SLASH_COMMAND_EDIT",
+    "GUILD_SLASH_COMMAND_REMOVE",
+    "GUILD_SLASH_COMMAND_BULK_EDIT"
 ] as const;
 
 export type eventName = typeof events[number];

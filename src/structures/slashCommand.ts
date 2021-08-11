@@ -1,7 +1,7 @@
-import Bot from '../structures/bot';
-import Command from '../structures/command';
-import * as types from '../structures/types';
-import LanguageUtils from './language';
+import Bot from './bot';
+import Command from './command';
+import * as types from './types';
+import LanguageUtils from '../utils/language';
 
 export default class SlashCommandHandler {
     bot: Bot;
@@ -11,11 +11,11 @@ export default class SlashCommandHandler {
     }
 
     checkPermissions(command: Command) {
-
+        // TODO: complete this
     }
 
-    runCommand(command: Command, args: types.CommandOption[]) {
-
+    runCommand(command: Command, interaction: types.Interaction, args: types.CommandOption[]) {
+        return command.run(interaction, args);
     }
 
     handleCommand(interaction: types.Interaction, command: Command) {
@@ -29,5 +29,6 @@ export default class SlashCommandHandler {
                 }
             })
         }
+        // TODO: complete this
     }
 };

@@ -1,9 +1,10 @@
 import * as langUtils from 'iso-lang-codes';
-import {languages, Lang, LangMap} from '../text/languageList';
+import { languages } from '../text/languageList';
+import * as types from '../structures/types';
 
 export default class LanguageUtils {
 
-    static getAndReplace(id: string, replaceMap: Record<string, string> = {}, langID = 'en'): string {
+    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID = 'en'): string {
         langID = langID.toLowerCase();
         if (!this.isSupportedLangID(langID)) {
             langID = 'en';
@@ -24,11 +25,11 @@ export default class LanguageUtils {
         return langID.toLowerCase() in languages;
     }
 
-    static getLanguage(langID: string): Lang {
+    static getLanguage(langID: string): types.Lang {
         return languages[langID];
     }
 
-    static getLanguageMap(): LangMap {
+    static getLanguageMap(): types.LangMap {
         return languages;
     }
 };

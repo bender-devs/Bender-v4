@@ -19,6 +19,8 @@ interface TypedResponse<BodyType> extends superagent.Response {
 
 export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType> | Error>;
 
+export type ResponseError = superagent.ResponseError;
+
 /************ guild types ************/
 
 export type UserData = {
@@ -749,6 +751,12 @@ export type EmbedField = {
 /************ misc types ************/
 
 export type ClientConnectionOptions = {}; // TODO: finish
+
+export type LangMap = Record<string, Lang>;
+
+export type Lang = Record<string, string>;
+
+export type ReplaceMap = Record<string, string>;
 
 /****** special dev types ******/
 
