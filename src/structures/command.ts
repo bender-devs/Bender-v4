@@ -1,5 +1,5 @@
 import Bot from './bot';
-import * as types from './types';
+import * as types from '../data/types';
 
 export default interface Command {
     name: string;

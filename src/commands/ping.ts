@@ -1,7 +1,7 @@
 import Command from '../structures/command';
 import * as path from 'path';
 import Bot from '../structures/bot';
-import * as types from '../structures/types';
+import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
 
 export default class PingCommand implements Command {

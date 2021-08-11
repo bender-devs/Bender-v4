@@ -1,6 +1,6 @@
 import * as langUtils from 'iso-lang-codes';
 import { languages } from '../text/languageList';
-import * as types from '../structures/types';
+import * as types from '../data/types';
 
 export default class LanguageUtils {
 

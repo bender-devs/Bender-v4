@@ -1,6 +1,6 @@
 import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
-import * as types from '../structures/types';
+import * as types from '../data/types';
 
 const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
 

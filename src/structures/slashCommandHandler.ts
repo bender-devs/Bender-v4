@@ -1,6 +1,6 @@
 import Bot from './bot';
 import Command from './command';
-import * as types from './types';
+import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
 
 export default class SlashCommandHandler {

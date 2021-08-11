@@ -1,5 +1,5 @@
 import { EventEmitter } from 'stream';
-import * as types from './types';
+import * as types from '../data/types';
 import APIInterface from './apiInterface';
 import * as redis from 'redis';
 

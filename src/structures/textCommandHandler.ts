@@ -1,6 +1,6 @@
 import Bot from './bot';
 import Command from './command';
-import * as types from '../structures/types';
+import * as types from '../data/types';
 
 export default class TextCommandHandler {
     bot: Bot;

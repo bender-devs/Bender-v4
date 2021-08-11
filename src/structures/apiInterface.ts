@@ -1,7 +1,7 @@
 // this file sits between the client files and api wrapper and manages things like rate limits and errors.
 import APIWrapper from '../utils/apiWrapper';
 import Bot from './bot';
-import * as types from './types';
+import * as types from '../data/types';
 
 export default class APIInterface {
     bot: Bot;

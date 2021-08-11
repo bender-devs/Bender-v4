@@ -1,0 +1,5 @@
+{
+    "GUILD_ONLY_SLASH": "🛠 This command is only available in servers, not DMs.",
+    "GUILD_ONLY_TEXT": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
+    "PONG": "🏓 Pong! `{{millis}}ms`"
+}
