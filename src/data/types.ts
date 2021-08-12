@@ -1,4 +1,5 @@
 import * as superagent from 'superagent';
+import * as num from './numberTypes';
 
 /************ request types ************/
 
@@ -13,7 +14,7 @@ export type RequestOptions = {
 
 export type RequestHeaders = Record<string, string>;
 
-interface TypedResponse<BodyType> extends superagent.Response {
+export interface TypedResponse<BodyType> extends superagent.Response {
     body: BodyType;
 }
 
@@ -40,7 +41,7 @@ export type User = {
     varified?: boolean;
     email?: string;
     flags?: Flags;
-    premium_type?: 0 | 1 | 2;
+    premium_type?: num.PREMIUM_TYPES;
     public_flags?: Flags;
 }
 
@@ -52,9 +53,9 @@ export type Presence = {
     client_status: ClientStatus;
 };
 
-type Status = "idle" | "dnd" | "online" | "offline";
+export type Status = "idle" | "dnd" | "online" | "offline";
 
-type ClientStatus = {
+export type ClientStatus = {
     desktop?: Status;
     mobile?: Status;
     web?: Status;
@@ -62,7 +63,7 @@ type ClientStatus = {
 
 export type Activity = {
     name: string;
-    type: 0 | 1 | 2 | 3 | 4 | 5;
+    type: num.ACTIVITY_TYPES;
     url?: URL | null;
     created_at: UnixTimestamp;
     timestamps?: ActivityTimestamps;
@@ -78,26 +79,26 @@ export type Activity = {
     buttons?: ActivityButton[];
 };
 
-type ActivityTimestamps = {
+export type ActivityTimestamps = {
     start?: UnixTimestamp;
     end?: UnixTimestamp;
 }
-type ActivityParty = {
+export type ActivityParty = {
     id?: Snowflake; // TODO: Should this be string instead?
-    size?: [number, number];
+    size?: [current_size: number, max_size: number];
 }
-type ActivityAssets = {
+export type ActivityAssets = {
     large_image?: URL;
     large_text?: string;
     small_image?: URL;
     small_text?: string;
 }
-type ActivitySecrets = {
+export type ActivitySecrets = {
     join?: string;
     spectate?: string;
     match?: string;
 }
-type ActivityButton = {
+export type ActivityButton = {
     label: string;
     url: URL;
 }
@@ -106,9 +107,9 @@ type ActivityButton = {
 
 export type GuildData = {
     name?: string;
-    verification_level?: 0 | 1 | 2 | 3 | 4 | null;
-    default_message_notifications?: 0 | 1 | null;
-    explicit_content_filter?: 0 | 1 | 2 | null;
+    verification_level?: num.VERIFICATION_LEVELS | null;
+    default_message_notifications?: num.MESSAGE_NOTIFICATION_LEVELS | null;
+    explicit_content_filter?: num.EXPLICIT_FILTER_LEVELS | null;
     afk_channel_id?: Snowflake | null;
     afk_timeout?: number;
     icon?: ImageData | null;
@@ -136,13 +137,13 @@ export type Guild = {
     afk_timeout: number;
     widget_enabled?: boolean;
     widget_channel_id?: Snowflake | null;
-    verification_level: 0 | 1 | 2 | 3 | 4;
-    default_message_notifications: 0 | 1;
-    explicit_content_filter: 0 | 1 | 2;
+    verification_level: num.VERIFICATION_LEVELS;
+    default_message_notifications: num.MESSAGE_NOTIFICATION_LEVELS;
+    explicit_content_filter: num.EXPLICIT_FILTER_LEVELS;
     roles: Role[];
     emojis: Emoji[];
     features: GuildFeature[];
-    mfa_level: 0 | 1;
+    mfa_level: num.MFA_LEVELS;
     application_id: Snowflake | null;
     system_channel_id: Snowflake | null;
     system_channel_flags: Flags;
@@ -152,7 +153,7 @@ export type Guild = {
     vanity_url_code: string | null;
     description: string | null;
     banner: string | null;
-    premium_tier: 0 | 1 | 2 | 3;
+    premium_tier: num.PREMIUM_TIERS;
     premium_subscription_count?: number;
     preferred_locale: string;
     public_updates_channel_id: Snowflake | null;
@@ -160,14 +161,19 @@ export type Guild = {
     approximate_member_count?: number;
     approximate_presence_count?: number;
     welcome_screen?: WelcomeScreen;
-    nsfw_level: 0 | 1 | 2 | 3;
+    nsfw_level: num.NSFW_LEVELS;
 };
 
-type WelcomeScreen = {
+export type UnavailableGuild = {
+    id: Snowflake,
+    unavailable?: true
+}
+
+export type WelcomeScreen = {
     description: string | null;
     welcome_channels: WelcomeChannel[];
 }
-type WelcomeChannel = {
+export type WelcomeChannel = {
     channel_id: Snowflake;
     description: string;
     emoji_id: Snowflake | null;
@@ -188,12 +194,12 @@ export interface GatewayGuild extends Guild {
     stage_instances: StageInstance[];
 }
 
-type StageInstance = {
+export type StageInstance = {
     id: Snowflake;
     guild_id: Snowflake;
     channel_id: Snowflake;
     topic: string;
-    privacy_level: 1 | 2;
+    privacy_level: num.STAGE_PRIVACY_LEVELS;
     discoverable_disabled: boolean;
 }
 
@@ -291,7 +297,7 @@ export type RoleData = {
     mentionable?: boolean;
 }
 
-type RoleTags = {
+export type RoleTags = {
     bot_id?: Snowflake;
     integration_id?: Snowflake;
     premium_subscriber?: null;
@@ -340,24 +346,9 @@ export type ChannelData = {
     thread_metadata?: ThreadMeta;
 }
 
-/* channel types
- * GUILD_TEXT	0
- * DM	1
- * GUILD_VOICE	2
- * GROUP_DM	3
- * GUILD_CATEGORY	4
- * GUILD_NEWS	5
- * GUILD_STORE	6
- * GUILD_NEWS_THREAD	10
- * GUILD_PUBLIC_THREAD	11
- * GUILD_PRIVATE_THREAD	12
- * GUILD_STAGE_VOICE	13
- */
-type ChannelType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 11 | 12 | 13;
-
-type PartialChannel = {
+export type PartialChannel = {
     id: Snowflake;
-    type: ChannelType;
+    type: num.CHANNEL_TYPES;
     name?: string;
     permission_overwrites?: PermissionOverwrites[];
 }
@@ -372,11 +363,11 @@ export interface GuildChannel extends Channel {
 }
 
 export interface DMBasedChannel extends Channel {
-    type: 1 | 3;
+    type: num.CHANNEL_TYPES.DM | num.CHANNEL_TYPES.GROUP_DM;
     recipients: User[];
 }
 
-interface TextBasedChannel extends GuildChannel {
+export interface TextBasedChannel extends GuildChannel {
     topic?: string | null;
     nsfw: boolean;
     last_message_id?: Snowflake | null;
@@ -386,46 +377,46 @@ interface TextBasedChannel extends GuildChannel {
 }
 
 export interface TextChannel extends TextBasedChannel {
-    type: 0;
+    type: num.CHANNEL_TYPES.GUILD_TEXT;
 }
 
 export interface DMChannel extends DMBasedChannel {
-    type: 1;
+    type: num.CHANNEL_TYPES.DM;
 }
 
 export interface VoiceBasedChannel extends GuildChannel {
-    type: 2 | 13;
+    type: num.CHANNEL_TYPES.GUILD_VOICE | num.CHANNEL_TYPES.GUILD_STAGE_VOICE;
     rtc_region: VoiceRegion | null;
     bitrate: number;
     user_limit: number;
-    video_quality_mode?: 1 | 2;
+    video_quality_mode?: num.VIDEO_QUALITY_MODES;
 }
 
 export interface VoiceChannel extends VoiceBasedChannel {
-    type: 2;
+    type: num.CHANNEL_TYPES.GUILD_VOICE;
 }
 
 export interface GroupDMChannel extends DMBasedChannel {
-    type: 3;
+    type: num.CHANNEL_TYPES.GROUP_DM;
     owner_id: Snowflake;
     application_id?: Snowflake;
     icon: string | null;
 }
 
 export interface CategoryChannel extends Channel {
-    type: 4;
+    type: num.CHANNEL_TYPES.GUILD_CATEGORY;
 }
 
 export interface NewsChannel extends TextBasedChannel {
-    type: 5;
+    type: num.CHANNEL_TYPES.GUILD_NEWS;
 }
 
 export interface StoreChannel extends TextBasedChannel {
-    type: 6;
+    type: num.CHANNEL_TYPES.GUILD_STORE;
 }
 
-interface ThreadChannel extends GuildChannel {
-    type: 10 | 11 | 12;
+export interface ThreadChannel extends GuildChannel {
+    type: num.CHANNEL_TYPES.GUILD_NEWS_THREAD | num.CHANNEL_TYPES.GUILD_PUBLIC_THREAD | num.CHANNEL_TYPES.GUILD_PRIVATE_THREAD;
     thread_metadata: ThreadMeta;
     member: ThreadMember;
     message_count: number;
@@ -434,19 +425,19 @@ interface ThreadChannel extends GuildChannel {
 }
 
 export interface NewsThreadChannel extends ThreadChannel {
-    type: 10;
+    type: num.CHANNEL_TYPES.GUILD_NEWS_THREAD;
 }
 
 export interface PublicThreadChannel extends ThreadChannel {
-    type: 11;
+    type: num.CHANNEL_TYPES.GUILD_PUBLIC_THREAD;
 }
 
 export interface PrivateThreadChannel extends ThreadChannel {
-    type: 12;
+    type: num.CHANNEL_TYPES.GUILD_PRIVATE_THREAD;
 }
 
 export interface VoiceStageChannel extends VoiceBasedChannel {
-    type: 13;
+    type: num.CHANNEL_TYPES.GUILD_STAGE_VOICE;
 }
 
 export type ThreadMeta = {
@@ -474,7 +465,7 @@ export type VoiceRegion = {
 
 export type PermissionOverwrites = {
     id: Snowflake;
-    type: 0 | 1;
+    type: num.PERMISSION_OVERWRITE_TYPES;
     allow: Bitfield;
     deny: Bitfield;
 }
@@ -488,12 +479,10 @@ export type ChannelPositionData = {
 
 /************ interaction types ************/
 
-type InteractionType = 1 | 2 | 3; // 1 = ping, 2 = command, 3 = component
-
 export type Interaction = {
     id: Snowflake;
     application_id: Snowflake;
-    type: InteractionType;
+    type: num.INTERACTION_REQUEST_TYPES;
     data?: InteractionData;
     guild_id?: Snowflake;
     channel_id?: Snowflake;
@@ -510,7 +499,7 @@ export type InteractionData = {
     resolved?: InteractionDataResolved;
     options?: InteractionDataOption[];
     custom_id: string;
-    component_type: MessageComponentType;
+    component_type: num.MESSAGE_COMPONENT_TYPES;
 }
 
 export type InteractionDataResolved = {
@@ -522,22 +511,13 @@ export type InteractionDataResolved = {
 
 export type InteractionDataOption = {
     name: string;
-    type: CommandOptionType;
+    type: num.COMMAND_OPTION_TYPES;
     value?: CommandOptionValue;
     options?: InteractionDataOption[];
 }
 
-/* response types:
- * PONG 1
- * CHANNEL_MESSAGE_WITH_SOURCE  4
- * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE 5
- * DEFERRED_UPDATE_MESSAGE  6
- * UPDATE_MESSAGE   7
- */
-type InteractionResponseType = 1 | 4 | 5 | 6 | 7;
-
 export type InteractionResponse = {
-    type: InteractionResponseType;
+    type: num.INTERACTION_CALLBACK_TYPES;
     data?: InteractionResponseData;
 }
 
@@ -552,7 +532,7 @@ export type InteractionResponseData = {
 
 export type MessageInteraction = {
     id: Snowflake;
-    type: InteractionType;
+    type: num.INTERACTION_REQUEST_TYPES;
     name: string;
     user: User;
 }
@@ -573,23 +553,10 @@ export interface Command extends CommandData {
     guild_id?: Snowflake;
 }
 
-/* command option types:
- * SUB_COMMAND	1
- * SUB_COMMAND_GROUP	2
- * STRING	3
- * INTEGER	4
- * BOOLEAN	5
- * USER	6
- * CHANNEL	7
- * ROLE	8
- * MENTIONABLE	9
- */
-export type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-
 export type CommandOptionValue = CommandOption | string | number | boolean | User | Channel | Role;
 
 export type CommandOption = {
-    type: CommandOptionType;
+    type: num.COMMAND_OPTION_TYPES;
     name: string;
     description: string;
     required?: boolean;
@@ -597,7 +564,7 @@ export type CommandOption = {
     options?: CommandOption[];
 }
 
-type CommandOptionChoice = {
+export type CommandOptionChoice = {
     name: string;
     value: string | number;
 }
@@ -611,7 +578,7 @@ export type CommandPermissions = {
 
 export type CommandPermissionsData = {
     id: Snowflake;
-    type: 1 | 2; // 1 = role, 2 = user
+    type: num.COMMAND_PERMISSION_TYPES;
     permission: boolean;
 }
 
@@ -669,25 +636,24 @@ export type MessageFetchData = {
 /****** message component types ******/
 
 // https://canary.discord.com/developers/docs/interactions/message-components#component-object
-type MessageComponentType = 1 | 2 | 3;
-type MessageComponent = {
-    type: MessageComponentType;
+export type MessageComponent = {
+    type: num.MESSAGE_COMPONENT_TYPES;
 };
 export interface MessageComponentRow extends MessageComponent {
-    type: 1;
+    type: num.MESSAGE_COMPONENT_TYPES.ACTION_ROW;
     components: MessageComponent[];
 }
 export interface MessageComponentButton extends MessageComponent {
-    type: 2;
+    type: num.MESSAGE_COMPONENT_TYPES.BUTTON;
     custom_id?: string;
     disabled?: boolean;
-    style?: 1 | 2 | 3 | 4 | 5;
+    style?: num.BUTTON_STYLES;
     label?: string;
     emoji?: Emoji;
     url?: URL;
 }
 export interface MessageComponentSelect extends MessageComponent {
-    type: 3;
+    type: num.MESSAGE_COMPONENT_TYPES.SELECT_MENU;
     custom_id?: string;
     disabled?: boolean;
     options: MessageComponentSelectOption[];
@@ -750,8 +716,6 @@ export type EmbedField = {
 
 /************ misc types ************/
 
-export type ClientConnectionOptions = {}; // TODO: finish
-
 export type LangMap = Record<string, Lang>;
 
 export type Lang = Record<string, string>;
@@ -760,27 +724,27 @@ export type ReplaceMap = Record<string, string>;
 
 /****** special dev types ******/
 
-type CustomEmojiIdentifier = `${string}:${Snowflake}`;
+export type CustomEmojiIdentifier = `${string}:${Snowflake}`;
 
-type UnicodeEmoji = string;
+export type UnicodeEmoji = string;
 
 // formatted as name:id (i.e. ) or Unicode emoji (i.e. 🔥)
 export type EmojiIdentifier = CustomEmojiIdentifier | UnicodeEmoji;
 
 // ISO8601 timestamp
-type Timestamp = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
+export type Timestamp = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
 // bitfield number represented as string
-type Bitfield = `${number | bigint}`;
+export type Bitfield = `${number | bigint}`;
 
 // bitfield number represented as number
-type Flags = number;
+export type Flags = number;
 
 // URI encoded image
-type ImageData = `data:image/${"jpeg" | "png" | "gif"};base64,${string}`;
+export type ImageData = `data:image/${"jpeg" | "png" | "gif"};base64,${string}`;
 
 // Any kind of URL
-type URL = `${string}://${string}`;
+export type URL = `${string}://${string}`;
 
 // Discord Snowflake, 18-20 digits
 export type Snowflake = `${number | bigint}`;
@@ -788,9 +752,14 @@ export type Snowflake = `${number | bigint}`;
 export type SnowflakeOrMe = Snowflake | "@me";
 
 // Unix timestamp (millis since epoch)
-type UnixTimestamp = number;
+export type UnixTimestamp = number;
 
 /* what the run() or runText() functions in commands can return.
  * may add more types later.
  */
 export type CommandResponse = Message;
+
+export type PartialApplication = {
+    id: Snowflake,
+    flags: Flags
+}
