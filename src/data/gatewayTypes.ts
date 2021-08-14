@@ -9,20 +9,20 @@ export type GatewayPayload = {
     op: num.GATEWAY_OPCODES,
     d: GatewayData,
     s: SequenceNumber,
-    t: GatewayEventName | null
+    t: EventName | null
 }
 
 type SequenceNumber = number | null;
 
 /********* events *********/
 
-export type GatewayEventName = typeof events[number];
+export type EventName = typeof events[number];
 
 export interface EventPayload extends GatewayPayload {
     op: num.GATEWAY_OPCODES.DISPATCH,
     d: EventData,
     s: number,
-    t: GatewayEventName
+    t: EventName
 }
 
 type EventData = ReadyData | types.Channel | ChannelPinsUpdateData | ThreadSyncData | types.ThreadMember | ThreadMembersUpdateData | types.Guild | types.UnavailableGuild | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData; // TODO: finish
@@ -184,7 +184,7 @@ export interface IdentifyPayload extends NonEventPayload {
     d: IdentifyData,
 }
 
-type IdentifyData = {
+export type IdentifyData = {
     token: string,
     properties: ConnectionProperties,
     compress?: boolean,
@@ -297,3 +297,19 @@ export interface HeartbeatAckPayload extends NonEventPayload {
 }
 
 type HeartbeatAckData = undefined;
+
+/********* misc ********/
+
+export type GatewayInfo = {
+    url: types.URL
+}
+
+export interface GatewayBotInfo extends GatewayInfo {
+    shards: number,
+    session_start_limit: {
+        total: number,
+        remaining: number,
+        reset_after: number,
+        max_concurrency: number
+    }
+}

@@ -116,6 +116,11 @@ export const enum INTERACTION_CALLBACK_TYPES {
     UPDATE_MESSAGE
 };
 
+// https://canary.discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
+export const enum INTERACTION_CALLBACK_FLAGS {
+    EPHEMERAL = 1 << 6
+};
+
 // https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type
 export const enum COMMAND_OPTION_TYPES {
     SUB_COMMAND = 1,

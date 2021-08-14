@@ -1,14 +1,11 @@
 import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
 import * as types from '../data/types';
+import * as gatewayTypes from '../data/gatewayTypes';
 
 const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
 
 export default class APIWrapper {
-
-    static reformatResponse(response_data: superagent.Response) {
-        return response_data;
-    }
 
     static addReasonHeader(headers: types.RequestHeaders, reason?: string): types.RequestHeaders {
         if (reason) {
@@ -29,10 +26,6 @@ export default class APIWrapper {
         return request.retry(options.retries || 3).timeout({
             response: options.responseTimeout || 60000,
             deadline: options.deadlineTimeout || 120000
-        }).then(APIWrapper.reformatResponse, (err: Error) => {
-            console.error(err);
-            // TODO: handle error properly
-            return err;
         });
     }
 
@@ -474,5 +467,17 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
+    }
+
+    static gateway = {
+        async fetchURL() {
+            return APIWrapper.makeRequest<gatewayTypes.GatewayInfo>('GET', `/gateway`, {});
+        },
+
+        async fetchBotInfo() {
+            return APIWrapper.makeRequest<gatewayTypes.GatewayBotInfo>('GET', `/gateway/bot`, {
+                headers: AUTH_HEADER
+            });
+        }
     }
 }

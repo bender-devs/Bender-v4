@@ -1,21 +1,21 @@
 import { EventEmitter } from 'stream';
 import * as types from '../data/types';
+import * as gatewayTypes from '../data/gatewayTypes';
 import APIInterface from './apiInterface';
-import * as redis from 'redis';
+import CacheHandler from '../utils/cacheHandler';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
+    cache: CacheHandler;
     user!: types.User;
-    redisClient: redis.RedisClient;
 
     constructor() {
         super();
-        this.api = new APIInterface(this);
-        this.redisClient = redis.createClient();
-        this.redisClient.on("error", err => this.emit("redis_error", err));
+        this.api = new APIInterface(this, true);
+        this.cache = new CacheHandler(this);
     }
 
-    connect(options: types.ClientConnectionOptions) {
-        
+    async connect(options: gatewayTypes.IdentifyData) {
+        const gatewayInfo = await this.api.gateway.getBotInfo();
     }
 }

@@ -18,7 +18,7 @@ export interface TypedResponse<BodyType> extends superagent.Response {
     body: BodyType;
 }
 
-export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType> | Error>;
+export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType>>;
 
 export type ResponseError = superagent.ResponseError;
 
@@ -38,7 +38,7 @@ export type User = {
     system?: boolean;
     mfa_enabled?: boolean;
     locale?: string;
-    varified?: boolean;
+    verified?: boolean;
     email?: string;
     flags?: Flags;
     premium_type?: num.PREMIUM_TYPES;
@@ -763,3 +763,5 @@ export type PartialApplication = {
     id: Snowflake,
     flags: Flags
 }
+
+export type stringMap = Record<string, string>;
