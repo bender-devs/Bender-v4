@@ -6,13 +6,18 @@ import CacheHandler from '../utils/cacheHandler';
 import Gateway from './gateway';
 import Logger from './logger';
 import { GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS } from '../data/constants';
+import { CLIENT_STATE } from '../data/numberTypes';
+import EventManager from './eventManager';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
     cache: CacheHandler;
     gateway: Gateway;
     logger: Logger;
+    events: EventManager;
+
     timeouts: types.TimeoutList;
+    state: CLIENT_STATE; 
     user!: types.User;
 
     constructor() {
@@ -21,9 +26,16 @@ export default class Bot extends EventEmitter {
         this.cache = new CacheHandler(this);
         this.gateway = new Gateway(this);
         this.logger = new Logger(this);
+        this.events = new EventManager(this);
+
         this.timeouts = {
             gatewayError: []
         };
+        this.state = CLIENT_STATE.DEAD;
+
+        this.on('READY', this.events.ready);
+        this.on('RESUMED', this.events.resumed);
+        // TODO: add remaining events
     }
 
     async connect(identifyData: gatewayTypes.IdentifyData, autoReconnect = true, useCache = false) {

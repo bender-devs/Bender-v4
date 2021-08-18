@@ -195,3 +195,11 @@ export const enum INTENT_FLAGS {
 export const enum GATEWAY_VERSIONS {
     CURRENT = 9
 }
+
+export const enum CLIENT_STATE {
+    ALIVE,
+    DEAD,
+    CONNECTING,
+    RECONNECTING,
+    WAITING
+}

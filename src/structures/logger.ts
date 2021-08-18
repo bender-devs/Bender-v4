@@ -16,7 +16,7 @@ export default class Logger {
         this.#moduleColors = {};
     }
 
-    handleError(error: Error, returnValue: any, ...debugInfo: any) {
+    handleError(error: Error, returnValue: any = error, ...debugInfo: any) {
         this.debug(error.name, ...debugInfo);
         console.error(error);
         // TODO: log in error channel

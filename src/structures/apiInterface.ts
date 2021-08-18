@@ -41,12 +41,20 @@ export default class APIInterface {
 
     user = {
         send: async (user_id: types.Snowflake, message_data: types.MessageData) => {
-            // TODO: check channel cache for DM with this user
-            // if not create it as below
-            await APIWrapper.user.createDM(user_id)
-            // TODO: handle the error or collect the channel ID above
-            const channelID: types.Snowflake = '00000000000000000000';
+            let channelID = await this.bot.cache.dmChannels.get(user_id);
+            if (!channelID) {
+                const newChannel = await this.user.createDM(user_id).catch(this.handleError);
+                if (!newChannel) {
+                    this.bot.logger.debug('CREATE_DM_FAILED', user_id);
+                    return null;
+                }
+                channelID = newChannel.id;
+            }
             return APIWrapper.message.create(channelID, message_data)
+                .then(res => res.body).catch(this.handleError);
+        },
+        createDM: async (user_id: types.Snowflake) => {
+            return APIWrapper.user.createDM(user_id)
                 .then(res => res.body).catch(this.handleError);
         }
     }
