@@ -11,7 +11,7 @@ export default class Bot extends EventEmitter {
     api: APIInterface;
     cache: CacheHandler;
     gateway: Gateway;
-    log: Logger;
+    logger: Logger;
     timeouts: types.TimeoutList;
     user!: types.User;
 
@@ -20,19 +20,25 @@ export default class Bot extends EventEmitter {
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
         this.gateway = new Gateway(this);
-        this.log = new Logger(this);
+        this.logger = new Logger(this);
         this.timeouts = {
             gatewayError: []
         };
     }
 
-    async connect(identifyData: gatewayTypes.IdentifyData, autoReconnect: boolean) {
-        let gatewayInfo = await this.cache.gatewayInfo.get();
-        if (!gatewayInfo) {
-            gatewayInfo = await this.api.gateway.getBotInfo().catch(err => this.log.handleError(err, null));
+    async connect(identifyData: gatewayTypes.IdentifyData, autoReconnect = true, useCache = false) {
+        let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
+        if (useCache) {
+            gatewayInfo = await this.cache.gatewayInfo.get();
         }
         if (!gatewayInfo) {
-            this.log.handleError(new Error('Failed to get gateway info.'), null);
+            gatewayInfo = await this.api.gateway.getBotInfo().catch(err => this.logger.handleError(err, null));
+        }
+        if (!gatewayInfo) {
+            this.logger.handleError({
+                name: 'GET_GATEWAY_FAILED',
+                message: 'Failed to get gateway info.'
+            }, null);
             if (autoReconnect) {
                 this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData, true), GATEWAY_ERROR_RECONNECT_TIMEOUT));
             }

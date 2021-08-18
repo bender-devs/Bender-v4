@@ -17,7 +17,7 @@ export default class APIInterface {
 
         }
         // TODO: finish this
-        return this.bot.log.handleError(error, null);
+        return this.bot.logger.handleError(error, null);
     }
 
     gateway = {

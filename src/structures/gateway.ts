@@ -22,14 +22,14 @@ export default class Gateway extends EventEmitter {
                 this.#promiseResolve(true);
                 this.#promiseResolve = null;
             }
-            this.bot.log.debug('[GATEWAY_CONNECT]', ev);
+            this.bot.logger.debug('GATEWAY_CONNECT', ev);
         });
         this.on('error', (ev: Event) => {
             if (this.#promiseReject) {
                 this.#promiseReject(ev);
                 this.#promiseReject = null;
             }
-            this.bot.log.handleError({
+            this.bot.logger.handleError({
                 name: 'GATEWAY_GENERIC_ERROR',
                 message: ev.type
             }, null, ev);
@@ -66,13 +66,13 @@ export default class Gateway extends EventEmitter {
 
     async sendData(data: unknown) {
         if (!this.ws) {
-            return this.bot.log.handleError({
+            return this.bot.logger.handleError({
                 name: 'PAYLOAD_SENT_BEFORE_WS',
                 message: gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS
             }, null);
         }
         if (this.ws.readyState !== WebSocket.OPEN) {
-            return this.bot.log.handleError({
+            return this.bot.logger.handleError({
                 name: 'PAYLOAD_SENT_BEFORE_CONNECT',
                 message: gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT
             }, null);
@@ -82,7 +82,7 @@ export default class Gateway extends EventEmitter {
             stringifiedData = JSON.stringify(data);
         }
         catch(err) {
-            this.bot.log.handleError(err, null);
+            this.bot.logger.handleError(err, null);
         }
         if (!stringifiedData) {
             return null;
