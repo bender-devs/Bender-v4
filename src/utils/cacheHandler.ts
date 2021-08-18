@@ -14,6 +14,7 @@ import * as types from "../data/types";
 import Bot from "../structures/bot";
 import { promisify } from "util";
 import * as redis from 'redis';
+import { GatewayBotInfo } from "../data/gatewayTypes";
 
 // would've preferred to use Snowflake instead of string here but TS was complaining
 type GuildMap = Record<string, types.Guild>;
@@ -32,18 +33,19 @@ const hsetExpirePromisify = (command: hsetExpireType) => promisify(command);
 export default class CacheHandler {
     bot: Bot;
     redisClient: redis.RedisClient;
+    gateway: types.URL | null = null;
     #guilds: GuildMap;
     #members: GuildMemberMap;
     #channels: ChannelMap;
 
     #get: (key: string) => Promise<string | null>;
+    #getMultiMixed: (string_keys: string[], hash_keys: string[]) => Promise<unknown>;
     #hget: (key: string, field: string) => Promise<string | null>;
     #hgetall: (key: string) => Promise<types.StringMap | null>;
     #set: (key: string, value: string) => Promise<unknown>;
     #setExpire: (key: string, value: string, expire: types.UnixTimestamp) => Promise<unknown>;
-    #setMulti: (key: string, value: types.StringMap, expire?: types.UnixTimestamp) => Promise<unknown>;
+    #setMultiMixed: (key: string, top_level_values: types.StringMap | null, values: StringMapMap | null, expire?: types.UnixTimestamp) => Promise<unknown>;
     #hset: (key: string, fields: types.StringMap) => Promise<unknown>;
-    #hsetMulti: (key: string, value: StringMapMap, expire?: types.UnixTimestamp) => Promise<unknown>;
     #hsetExpire: (key: string, value: types.StringMap, expire: types.UnixTimestamp) => Promise<unknown>;
 
     constructor(bot: Bot) {
@@ -52,22 +54,42 @@ export default class CacheHandler {
         this.redisClient.on("error", err => this.bot.emit("REDIS_ERROR", err));
 
         this.#get = promisify(this.redisClient.get).bind(this.redisClient);
+
+        const getMultiMixed = (string_keys: string[], hash_keys: string[]) => {
+            const multi = this.redisClient.multi();
+            for (const key of string_keys) {
+                multi.get(key);
+            }
+            for (const hkey of hash_keys) {
+                multi.hgetall(hkey);
+            }
+            return multi.exec;
+        }
+        this.#getMultiMixed = promisify(getMultiMixed).bind(this.redisClient);
+
         this.#hget = promisify(this.redisClient.hget).bind(this.redisClient);
         this.#hgetall = promisify(this.redisClient.hgetall).bind(this.redisClient);
         this.#set = promisify(this.redisClient.set).bind(this.redisClient);
 
-        const setMulti = (key: string, value: types.StringMap, expire?: types.UnixTimestamp) => {
+        const setMultiMixed = (key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestamp) => {
             const multi = this.redisClient.multi();
-            for (const subkey in value) {
+            for (const subkey in string_values) {
                 const elemKey = `${key}.${subkey}`;
-                multi.set(elemKey, value[subkey]);
+                multi.set(elemKey, string_values[subkey]);
+                if (expire) {
+                    multi.expireat(elemKey, expire);
+                }
+            }
+            for (const subkey in hash_values) {
+                const elemKey = `${key}.${subkey}`;
+                multi.hset(elemKey, hash_values[subkey]);
                 if (expire) {
                     multi.expireat(elemKey, expire);
                 }
             }
             return multi.exec;
         }
-        this.#setMulti = promisify(setMulti).bind(this.redisClient);
+        this.#setMultiMixed = promisify(setMultiMixed).bind(this.redisClient);
 
         const setExpire = (key: string, value: string, expire: types.UnixTimestamp) => {
             return this.redisClient.multi().set(key, value).expireat(key, expire / 1000).exec;
@@ -75,19 +97,6 @@ export default class CacheHandler {
         this.#setExpire = promisify(setExpire).bind(this.redisClient);
         
         this.#hset = hsetPromisify(this.redisClient.hset).bind(this.redisClient);
-
-        const hsetMulti = (key: string, value: StringMapMap, expire?: types.UnixTimestamp) => {
-            const multi = this.redisClient.multi();
-            for (const subkey in value) {
-                const elemKey = `${key}.${subkey}`;
-                multi.hset(elemKey, value[subkey]);
-                if (expire) {
-                    multi.expireat(elemKey, expire);
-                }
-            }
-            return multi.exec;
-        }
-        this.#hsetMulti = promisify(hsetMulti).bind(this.redisClient);
 
         const hsetExpire = (key: string, value: types.StringMap, expire: types.UnixTimestamp) => {
             return this.redisClient.multi().hset(key, value).expireat(key, expire / 1000).exec;
@@ -124,16 +133,16 @@ export default class CacheHandler {
 
     hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.#hsetMulti(key, value, expire);
+            return this.#setMultiMixed(key, null, value, expire);
         }
-        return this.#hsetMulti(key, value);
+        return this.#setMultiMixed(key, null, value);
     }
 
     setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.#setMulti(key, value, expire);
+            return this.#setMultiMixed(key, value, null, expire);
         }
-        return this.#setMulti(key, value);
+        return this.#setMultiMixed(key, value, null);
     }
 
     members = {
@@ -223,7 +232,7 @@ export default class CacheHandler {
 
     dmChannels = {
         get: async (user_id: types.Snowflake) => {
-            const cid = await this.#get(`dm_channels.${user_id}`);
+            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => null);
             return cid === null ? null : cid as types.Snowflake;
         },
         set: (user_id: types.Snowflake, dm_channel_id: types.Snowflake) => {
@@ -231,6 +240,41 @@ export default class CacheHandler {
         },
         setAll: (dm_channel_ids: types.StringMap) => {
             this.setMulti('dm_channels', dm_channel_ids);
+        }
+    }
+
+    gatewayInfo = {
+        get: async () => {
+            return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
+                if (Array.isArray(data) && data.length === 3) {
+                    const obj: GatewayBotInfo = {
+                        url: data[0],
+                        shards: data[1],
+                        session_start_limit: {
+                            total: parseInt(data[2].total),
+                            remaining: parseInt(data[2].remaining),
+                            reset_after: parseInt(data[2].reset_at) - Date.now(),
+                            max_concurrency: parseInt(data[2].max_concurrency)
+                        }
+                    }
+                    return obj;
+                }
+                return null;
+            }).catch(() => null);
+        },
+        set: async (gateway_bot_info: GatewayBotInfo) => {
+            const reset_at = Date.now() + gateway_bot_info.session_start_limit.reset_after;
+            this.#setMultiMixed('gateway', {
+                url: gateway_bot_info.url,
+                shards: gateway_bot_info.shards+''
+            }, {
+                session_start_limit: {
+                    total: gateway_bot_info.session_start_limit.total+'',
+                    remaining: gateway_bot_info.session_start_limit.remaining+'',
+                    reset_at: reset_at+'',
+                    max_concurrency: gateway_bot_info.session_start_limit.max_concurrency+''
+                }
+            }, reset_at).catch(() => null);
         }
     }
 }

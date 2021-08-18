@@ -796,3 +796,7 @@ export type DynamicStringMap = Partial<StringMap>;
 export type StringBool = "true" | "false";
 
 export type StringNum = `${number}`;
+
+export type TimeoutList = {
+    gatewayError: NodeJS.Timeout[];
+}

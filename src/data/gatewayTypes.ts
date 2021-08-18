@@ -3,7 +3,25 @@ import * as num from './numberTypes';
 import events from './eventTypes';
 import * as types from './types';
 
+/************ gateway errors ************/
+
+export const enum ERRORS {
+    PAYLOAD_SENT_BEFORE_WS = 'Tried to send data before the WebSocket was established.',
+    PAYLOAD_SENT_BEFORE_CONNECT  = 'Tried to send data before the WebSocket was CONNECTed.'
+}
+
+export interface GatewayError extends Error {
+    name: ERRORS,
+    message: ERRORS
+}
+
 /************ gateway payload types ************/
+
+export type GatewayParams = {
+    v: num.GATEWAY_VERSIONS,
+    encoding: 'json' | 'etf',
+    compress?: 'zlib-stream'
+}
 
 export type GatewayPayload = {
     op: num.GATEWAY_OPCODES,
@@ -25,7 +43,7 @@ export interface EventPayload extends GatewayPayload {
     t: EventName
 }
 
-type EventData = ReadyData | types.Channel | ChannelPinsUpdateData | ThreadSyncData | types.ThreadMember | ThreadMembersUpdateData | types.Guild | types.UnavailableGuild | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData; // TODO: finish
+export type EventData = ReadyData | types.Channel | ChannelPinsUpdateData | ThreadSyncData | types.ThreadMember | ThreadMembersUpdateData | types.Guild | types.UnavailableGuild | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData;
 
 /****** ready ******/
 

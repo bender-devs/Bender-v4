@@ -190,3 +190,8 @@ export const enum INTENT_FLAGS {
     DIRECT_MESSAGE_REACTIONS = 1 << 13,
     DIRECT_MESSAGE_TYPING = 1 << 14
 }
+
+// https://discord.com/developers/docs/topics/gateway#gateways-gateway-versions
+export const enum GATEWAY_VERSIONS {
+    CURRENT = 9
+}
