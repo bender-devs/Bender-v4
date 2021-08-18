@@ -29,11 +29,14 @@ export type UserData = {
     avatar?: ImageData | null;
 }
 
-export type User = {
+export type UserBase = {
     id: Snowflake;
     username: string;
     discriminator: number;
     avatar: string | null;
+}
+
+export interface User extends UserBase {
     bot?: boolean;
     system?: boolean;
     mfa_enabled?: boolean;
@@ -43,6 +46,27 @@ export type User = {
     flags?: Flags;
     premium_type?: num.PREMIUM_TYPES;
     public_flags?: Flags;
+}
+
+export type StringPremiumTypes = `${num.PREMIUM_TYPES}`;
+
+export interface UserBaseHash extends DynamicStringMap {
+    id: Snowflake;
+    username: string;
+    discriminator: StringNum;
+    avatar: string;
+}
+
+export interface UserHash extends UserBaseHash {
+    bot?: StringBool;
+    system?: StringBool;
+    mfa_enabled?: StringBool;
+    locale?: string;
+    verified?: StringBool;
+    email?: string;
+    flags?: StringNum;
+    premium_type?: StringPremiumTypes;
+    public_flags?: StringNum;
 }
 
 export type Presence = {
@@ -764,4 +788,11 @@ export type PartialApplication = {
     flags: Flags
 }
 
-export type stringMap = Record<string, string>;
+export type StringMap = Record<string, string>;
+
+// Used for objects with optional fields (namely users for redis cache.) This is just a workaround to get the compiler to play nice; shouldn't be used to manually set fields to undefined.
+export type DynamicStringMap = Partial<StringMap>;
+
+export type StringBool = "true" | "false";
+
+export type StringNum = `${number}`;
