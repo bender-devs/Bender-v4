@@ -100,6 +100,25 @@ export const enum PERMISSION_OVERWRITE_TYPES {
     MEMBER
 };
 
+// https://canary.discord.com/developers/docs/resources/sticker#sticker-object-sticker-types
+export const enum STICKER_TYPES {
+    STANDARD = 1,
+    GUILD
+}
+
+// https://canary.discord.com/developers/docs/resources/sticker#sticker-object-sticker-format-types
+export const enum STICKER_FORMAT_TYPES {
+    PNG = 1,
+    APNG,
+    LOTTIE
+}
+
+// https://canary.discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors
+export const enum INTEGRATION_EXPIRE_BEHAVIORS {
+    REMOVE_ROLE,
+    KICK
+}
+
 // https://canary.discord.com/developers/docs/interactions/slash-commands#interaction-object-interaction-request-type
 export const enum INTERACTION_REQUEST_TYPES {
     PING = 1,
@@ -121,7 +140,7 @@ export const enum INTERACTION_CALLBACK_FLAGS {
     EPHEMERAL = 1 << 6
 };
 
-// https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type
+// https://canary.discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type
 export const enum COMMAND_OPTION_TYPES {
     SUB_COMMAND = 1,
     SUB_COMMAND_GROUP,
@@ -134,7 +153,7 @@ export const enum COMMAND_OPTION_TYPES {
     MENTIONABLE
 }
 
-// https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissiontype
+// https://canary.discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissiontype
 export const enum COMMAND_PERMISSION_TYPES {
     ROLE = 1,
     USER
@@ -191,7 +210,7 @@ export const enum INTENT_FLAGS {
     DIRECT_MESSAGE_TYPING = 1 << 14
 }
 
-// https://discord.com/developers/docs/topics/gateway#gateways-gateway-versions
+// https://canary.discord.com/developers/docs/topics/gateway#gateways-gateway-versions
 export const enum GATEWAY_VERSIONS {
     CURRENT = 9
 }

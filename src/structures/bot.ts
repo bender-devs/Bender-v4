@@ -33,9 +33,7 @@ export default class Bot extends EventEmitter {
         };
         this.state = CLIENT_STATE.DEAD;
 
-        this.on('READY', this.events.ready);
-        this.on('RESUMED', this.events.resumed);
-        // TODO: add remaining events
+        this.events.addAllListeners();
     }
 
     async connect(identifyData: gatewayTypes.IdentifyData, autoReconnect = true, useCache = false) {

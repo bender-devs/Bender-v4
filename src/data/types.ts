@@ -1,4 +1,6 @@
 import * as superagent from 'superagent';
+import Bot from '../structures/bot';
+import { EventName, LowercaseEventName } from './gatewayTypes';
 import * as num from './numberTypes';
 
 /************ request types ************/
@@ -297,6 +299,23 @@ export type EmojiEditData = {
     roles?: string[];
 }
 
+/****** sticker types ******/
+
+export type Sticker = {
+    id: Snowflake;
+    pack_id?: Snowflake;
+    name: string;
+    description: string;
+    tags: string;
+    asset: ''; // deprecated
+    type: num.STICKER_TYPES;
+    format_type: num.STICKER_FORMAT_TYPES;
+    available?: boolean;
+    guild_id?: Snowflake;
+    user?: User;
+    sort_value?: number;
+}
+
 /************ role types ************/
 
 export type Role = {
@@ -499,6 +518,42 @@ export type ChannelPositionData = {
     position: number | null;
     lock_permissions?: boolean | null;
     parent_id?: Snowflake | null;
+}
+
+/************ integration types ************/
+
+export type Integration = {
+    id: Snowflake;
+    name: string;
+    type: IntegrationType;
+    enabled: boolean;
+    syncing?: boolean;
+    role_id?: Snowflake;
+    enable_emoticons?: boolean;
+    expire_behavior?: num.INTEGRATION_EXPIRE_BEHAVIORS;
+    expire_grace_period?: number;
+    user?: User;
+    account: IntegrationAccount;
+    synced_at?: Timestamp;
+    subscriber_count?: number;
+    revoked?: boolean;
+    application?: IntegrationApplication;
+}
+
+export type IntegrationType = 'twitch' | 'youtube' | 'discord';
+
+export type IntegrationAccount = {
+    id: string;
+    name: string;
+}
+
+export type IntegrationApplication = {
+    id: Snowflake;
+    name: string;
+    icon: string | null;
+    description: string;
+    summary: string;
+    bot?: User;
 }
 
 /************ interaction types ************/
@@ -800,3 +855,21 @@ export type StringNum = `${number}`;
 export type TimeoutList = {
     gatewayError: NodeJS.Timeout[];
 }
+
+/*** event handler types ***/
+
+export type EventHandlerFunction = (event: any) => any; // wanted to use event: EventData here but ts is shit
+
+export class EventHandler {
+    bot: Bot;
+    name: EventName;
+    cacheHandler?: EventHandlerFunction;
+    handler!: EventHandlerFunction;
+
+    constructor(eventName: LowercaseEventName, bot: Bot) {
+        this.name = eventName.toUpperCase() as EventName;
+        this.bot = bot;
+    }
+}
+
+export const NON_WAITING_EVENTS: EventName[] = ['READY', 'RESUMED'];

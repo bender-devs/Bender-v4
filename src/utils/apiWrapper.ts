@@ -23,7 +23,9 @@ export default class APIWrapper {
             request.set(options.headers);
         if (options.query)
             request.query(options.query);
-        return request.retry(options.retries || 3).timeout({
+        if (options.retries)
+            request.retry(options.retries);
+        return request.timeout({
             response: options.responseTimeout || 60000,
             deadline: options.deadlineTimeout || 120000
         });

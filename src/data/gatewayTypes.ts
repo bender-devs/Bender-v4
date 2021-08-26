@@ -7,7 +7,7 @@ import * as types from './types';
 
 export const enum ERRORS {
     PAYLOAD_SENT_BEFORE_WS = 'Tried to send data before the WebSocket was established.',
-    PAYLOAD_SENT_BEFORE_CONNECT  = 'Tried to send data before the WebSocket was CONNECTed.'
+    PAYLOAD_SENT_BEFORE_CONNECT  = 'Tried to send data before the WebSocket was connected.'
 }
 
 export interface GatewayError extends Error {
@@ -35,6 +35,8 @@ export type SequenceNumber = number | null;
 /********* events *********/
 
 export type EventName = typeof events[number];
+export type LowercaseEventName = Lowercase<EventName>;
+export const LowercaseEventNames = events.map(name => name.toLowerCase());
 
 export interface EventPayload extends GatewayPayload {
     op: num.GATEWAY_OPCODES.DISPATCH,
@@ -43,8 +45,7 @@ export interface EventPayload extends GatewayPayload {
     t: EventName
 }
 
-export type EventData = ReadyData | types.Channel | ChannelPinsUpdateData | ThreadSyncData | types.ThreadMember | ThreadMembersUpdateData | types.Guild | types.UnavailableGuild | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData;
-// TODO: add the rest of the events
+export type EventData = ReadyData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | InteractionCreateData | StageInstanceUpdateData;
 
 /****** ready ******/
 
@@ -66,8 +67,10 @@ export type ReadyData = {
 
 export interface ChannelEventPayload extends EventPayload {
     t: 'CHANNEL_CREATE' | 'CHANNEL_UPDATE' | 'CHANNEL_DELETE',
-    d: types.Channel
+    d: ChannelUpdateData
 }
+
+export type ChannelUpdateData = types.Channel;
 
 export interface ChannelPinsUpdatePayload extends EventPayload {
     t: 'CHANNEL_PINS_UPDATE',
@@ -82,8 +85,10 @@ export type ChannelPinsUpdateData = {
 
 export interface ThreadEventPayload extends EventPayload {
     t: 'THREAD_CREATE' | 'THREAD_UPDATE' | 'THREAD_DELETE',
-    d: types.ThreadChannel
+    d: ThreadUpdateData
 }
+
+export type ThreadUpdateData = types.ThreadChannel;
 
 export interface ThreadSyncPayload extends EventPayload {
     t: 'THREAD_LIST_SYNC',
@@ -99,8 +104,10 @@ export type ThreadSyncData = {
 
 export interface ThreadMemberUpdatePayload extends EventPayload {
     t: 'THREAD_MEMBER_UPDATE',
-    d: types.ThreadMember
+    d: ThreadMemberUpdateData
 }
+
+export type ThreadMemberUpdateData = types.ThreadMember;
 
 export interface ThreadMembersUpdatePayload extends EventPayload {
     t: 'THREAD_MEMBERS_UPDATE',
@@ -119,18 +126,24 @@ export type ThreadMembersUpdateData = {
 
 export interface GuildCreatePayload extends EventPayload {
     t: 'GUILD_CREATE',
-    d: types.GatewayGuild
+    d: GuildCreateData
 }
+
+export type GuildCreateData = types.GatewayGuild;
 
 export interface GuildUpdatePayload extends EventPayload {
     t: 'GUILD_UPDATE',
-    d: types.Guild
+    d: GuildUpdateData
 }
+
+export type GuildUpdateData = types.Guild;
 
 export interface GuildDeletePayload extends EventPayload {
     t: 'GUILD_DELETE',
-    d: types.UnavailableGuild
+    d: GuildDeleteData
 }
+
+export type GuildDeleteData = types.UnavailableGuild;
 
 export interface GuildBanEventPayload extends EventPayload {
     t: 'GUILD_BAN_ADD' | 'GUILD_BAN_REMOVE',
@@ -150,6 +163,16 @@ export interface GuildEmojisUpdatePayload extends EventPayload {
 export type GuildEmojisUpdateData = {
     guild_id: types.Snowflake,
     emojis: types.Emoji[]
+}
+
+export interface GuildStickersUpdatePayload extends EventPayload {
+    t: 'GUILD_STICKERS_UPDATE',
+    d: GuildStickersUpdateData
+}
+
+export type GuildStickersUpdateData = {
+    guild_id: types.Snowflake,
+    stickers: types.Sticker[]
 }
 
 export interface GuildIntegrationsUpdatePayload extends EventPayload {
@@ -180,7 +203,268 @@ export interface GuildMemberRemoveData extends types.Member {
     user: types.User
 }
 
-// TODO: add the rest of the events
+export interface GuildMemberUpdatePayload extends EventPayload {
+    t: 'GUILD_MEMBER_UPDATE',
+    d: GuildMemberUpdateData
+}
+
+export interface GuildMemberUpdateData extends types.MemberData {
+    guild_id: types.Snowflake,
+    roles: types.Snowflake[],
+    user: types.User
+}
+
+export interface GuildMembersChunkPayload extends EventPayload {
+    t: 'GUILD_MEMBERS_CHUNK',
+    d: GuildMembersChunkData
+}
+
+export type GuildMembersChunkData = {
+    guild_id: types.Snowflake,
+    members: types.Member[],
+    chunk_index: number,
+    chunk_count: number,
+    not_found?: types.Snowflake[],
+    presences?: types.Presence[],
+    nonce?: string
+}
+
+export interface GuildRoleUpdatePayload extends EventPayload {
+    t: 'GUILD_ROLE_CREATE' | 'GUILD_ROLE_UPDATE',
+    d: GuildRoleUpdateData
+}
+
+export type GuildRoleUpdateData = {
+    guild_id: types.Snowflake,
+    role: types.Role
+}
+
+export interface GuildRoleDeletePayload extends EventPayload {
+    t: 'GUILD_ROLE_DELETE',
+    d: GuildRoleUpdateData
+}
+
+export type GuildRoleDeleteData = {
+    guild_id: types.Snowflake,
+    role_id: types.Snowflake
+}
+
+/****** integrations ******/
+
+export interface IntegrationUpdatePayload extends EventPayload {
+    t: 'INTEGRATION_CREATE' | 'INTEGRATION_UPDATE',
+    d: IntegrationUpdateData
+}
+
+export interface IntegrationUpdateData extends types.Integration {
+    guild_id: types.Snowflake
+}
+
+export interface IntegrationDeletePayload extends EventPayload {
+    t: 'INTEGRATION_DELETE',
+    d: IntegrationDeleteData
+}
+
+export type IntegrationDeleteData = {
+    id: types.Snowflake
+    guild_id: types.Snowflake,
+    application_id?: types.Snowflake
+}
+
+/****** invites ******/
+
+export interface InviteCreatePayload extends EventPayload {
+    t: 'INVITE_CREATE',
+    d: InviteCreateData
+}
+
+export type InviteCreateData = {
+    channel_id: types.Snowflake,
+    code: string;
+    created_at: types.Timestamp,
+    guild_id?: types.Snowflake,
+    inviter?: types.User,
+    max_age: number,
+    max_uses: number,
+    target_type?: number,
+    target_user?: types.User,
+    target_application?: types.PartialApplication,
+    temporary: boolean,
+    uses: number
+}
+
+export interface InviteDeletePayload extends EventPayload {
+    t: 'INVITE_DELETE',
+    d: InviteDeleteData
+}
+
+export type InviteDeleteData = Pick<InviteCreateData, 'channel_id' | 'code' | 'guild_id'>;
+
+/****** messages ******/
+
+export interface MessageCreatePayload extends EventPayload {
+    t: 'MESSAGE_CREATE',
+    d: MessageCreateData
+}
+
+export type MessageCreateData = types.Message;
+
+export interface MessageUpdatePayload extends EventPayload {
+    t: 'MESSAGE_UPDATE',
+    d: MessageUpdateData
+}
+
+export interface MessageUpdateData extends Partial<types.Message> {
+    id: types.Snowflake,
+    channel_id: types.Snowflake
+}
+
+export interface MessageDeletePayload extends EventPayload {
+    t: 'MESSAGE_DELETE',
+    d: MessageDeleteData
+}
+
+export type MessageDeleteData = Pick<types.Message, 'id' | 'channel_id' | 'guild_id'>;
+
+export interface MessageDeleteBulkPayload extends EventPayload {
+    t: 'MESSAGE_DELETE_BULK',
+    d: MessageDeleteBulkData
+}
+
+export interface MessageDeleteBulkData extends Pick<types.Message, 'channel_id' | 'guild_id'> {
+    ids: types.Snowflake[]
+};
+
+/****** reactions ******/
+
+export interface ReactionAddPayload extends EventPayload {
+    t: 'MESSAGE_REACTION_ADD',
+    d: ReactionAddData
+}
+
+export type ReactionAddData = {
+    user_id: types.Snowflake,
+    channel_id: types.Snowflake,
+    message_id: types.Snowflake,
+    guild_id?: types.Snowflake,
+    member?: types.Member,
+    emoji: types.Emoji;
+}
+
+export interface ReactionRemovePayload extends EventPayload {
+    t: 'MESSAGE_REACTION_REMOVE',
+    d: ReactionRemoveData
+}
+
+export type ReactionRemoveData = Omit<ReactionAddData, 'member'>;
+
+export interface ReactionRemoveAllPayload extends EventPayload {
+    t: 'MESSAGE_REACTION_REMOVE_ALL',
+    d: ReactionRemoveAllData
+}
+
+export type ReactionRemoveAllData = Pick<ReactionAddData, 'channel_id' | 'message_id' | 'guild_id'>;
+
+export interface ReactionRemoveEmojiPayload extends EventPayload {
+    t: 'MESSAGE_REACTION_REMOVE_EMOJI',
+    d: ReactionRemoveEmojiData
+}
+
+export type ReactionRemoveEmojiData = Omit<ReactionRemoveData, 'user_id'>;
+
+/****** presences ******/
+
+export interface PresenceUpdatePayload extends EventPayload {
+    t: 'PRESENCE_UPDATE',
+    d: PresenceUpdateData
+}
+
+export type PresenceUpdateData = types.Presence;
+
+/****** typing ******/
+
+export interface TypingStartPayload extends EventPayload {
+    t: 'TYPING_START',
+    d: TypingStartData
+}
+
+export type TypingStartData = {
+    channel_id: types.Snowflake,
+    guild_id?: types.Snowflake,
+    user_id: types.Snowflake,
+    timestamp: types.UnixTimestamp,
+    member?: types.Member;
+}
+
+/****** users ******/
+
+export interface UserUpdatePayload extends EventPayload {
+    t: 'USER_UPDATE',
+    d: UserUpdateData
+}
+
+export type UserUpdateData = types.User;
+
+/****** voice ******/
+
+export interface VoiceStateUpdatePayload extends EventPayload {
+    t: 'VOICE_STATE_UPDATE',
+    d: VoiceStateUpdateData
+}
+
+export type VoiceStateUpdateData = types.VoiceState;
+
+export interface VoiceServerUpdatePayload extends EventPayload {
+    t: 'VOICE_SERVER_UPDATE',
+    d: VoiceServerUpdateData
+}
+
+export type VoiceServerUpdateData = {
+    token: string,
+    guild_id: types.Snowflake,
+    endpoint: string | null;
+}
+
+/****** webhooks ******/
+
+export interface WebhooksUpdatePayload extends EventPayload {
+    t: 'WEBHOOKS_UPDATE',
+    d: UserUpdateData
+}
+
+export type WebhooksUpdateData = {
+    guild_id: types.Snowflake,
+    channel_id: types.Snowflake
+}
+
+/****** commands ******/
+
+export interface CommandUpdatePayload extends EventPayload {
+    t: 'APPLICATION_COMMAND_CREATE' | 'APPLICATION_COMMAND_UPDATE' | 'APPLICATION_COMMAND_DELETE',
+    d: CommandUpdateData
+}
+
+export type CommandUpdateData = types.Command;
+
+/****** interactions ******/
+
+export interface InteractionCreatePayload extends EventPayload {
+    t: 'INTERACTION_CREATE',
+    d: InteractionCreateData
+}
+
+export type InteractionCreateData = types.Interaction;
+
+/****** stage instances ******/
+
+export interface StageInstanceUpdatePayload extends EventPayload {
+    t: 'STAGE_INSTANCE_CREATE' | 'STAGE_INSTANCE_UPDATE' | 'STAGE_INSTANCE_DELETE',
+    d: StageInstanceUpdateData
+}
+
+export type StageInstanceUpdateData = types.StageInstance;
+
+
 
 /********* non-events *********/
 
@@ -189,7 +473,7 @@ export interface NonEventPayload extends GatewayPayload {
     t: null
 }
 
-export type GatewayData = EventData | SequenceNumber | IdentifyData | PresenceUpdateData | VoiceUpdateData | ResumeData | ReconnectData | RequestMembersData | InvalidSessionData | HelloData | HeartbeatAckData;
+export type GatewayData = EventData | SequenceNumber | IdentifyData | UpdatePresenceData | VoiceUpdateData | ResumeData | ReconnectData | RequestMembersData | InvalidSessionData | HelloData | HeartbeatAckData;
 
 /****** heartbeat ******/
 
@@ -225,12 +509,12 @@ export type ShardConnectionData = [shard_id: number, num_shards: number];
 
 /****** presence update ******/
 
-export interface PresenceUpdatePayload extends NonEventPayload {
+export interface UpdatePresencePayload extends NonEventPayload {
     op: num.GATEWAY_OPCODES.PRESENCE_UPDATE,
-    d: PresenceUpdateData,
+    d: UpdatePresenceData,
 }
 
-export type PresenceUpdateData = {
+export type UpdatePresenceData = {
     since: number | null;
     status: types.Status;
     activities: types.Activity[];
