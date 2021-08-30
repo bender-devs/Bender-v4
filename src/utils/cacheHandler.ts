@@ -2,13 +2,14 @@
 redis = global cache (used for all shards/bot versions)
 - users
 - user dm channel ids
-- commands
+- shard information (?)
 
 localized cache:
 - guilds
 - members
 - roles
 - channels
+- commands (could be global but that would add too much complexity)
 */
 import * as types from "../data/types";
 import Bot from "../structures/bot";
@@ -148,6 +149,58 @@ export default class CacheHandler {
         return this.#setMultiMixed(key, value, null);
     }
 
+    
+
+    guilds = {
+        get: (guild_id: types.Snowflake): types.CachedGuild | null => {
+            return this.#guilds[guild_id] || null;
+        },
+        create: (guild: types.GatewayGuild): void => {
+            const channels: ChannelMap = {};
+            for (const channel of guild.channels) {
+                channels[channel.id] = channel;
+            }
+            const threads: ThreadMap = {};
+            for (const thread of guild.threads) {
+                threads[thread.id] = thread;
+            }
+            const members: MemberMap = {};
+            for (const member of guild.members) {
+                members[member.user.id] = member;
+            }
+            const presences: PresenceMap = {};
+            for (const presence of guild.presences) {
+                presences[presence.user.id] = presence;
+            }
+            const roles: RoleMap = {};
+            for (const role of guild.roles) {
+                roles[role.id] = role;
+            }
+            const emojis: EmojiMap = {};
+            for (const emoji of guild.emojis) {
+                emojis[emoji.id] = emoji;
+            }
+            const voiceStates: VoiceStateMap = {};
+            for (const voiceState of guild.voice_states) {
+                voiceStates[voiceState.user_id] = voiceState;
+            }
+            const stageInstances: StageInstanceMap = {};
+            for (const stageInstance of guild.stage_instances) {
+                stageInstances[stageInstance.id] = stageInstance;
+            }
+            const newGuild: types.CachedGuild = Object.assign({}, guild, {
+                channels, threads, members, presences, roles, emojis, voice_states: voiceStates, stage_instances: stageInstances
+            });
+            this.#guilds[guild.id] = newGuild;
+        },
+        update: (guild: types.Guild): void => {
+            Object.assign(this.#guilds[guild.id], guild);
+        },
+        delete: (guild_id: types.Snowflake): void => {
+            delete this.#guilds[guild_id];
+        }
+    }
+
     members = {
         get: (guild_id: types.Snowflake, user_id: types.Snowflake): types.Member | null => {
             const guild = this.guilds.get(guild_id);
@@ -246,102 +299,6 @@ export default class CacheHandler {
         }
     }
 
-    guilds = {
-        get: (guild_id: types.Snowflake): types.CachedGuild | null => {
-            return this.#guilds[guild_id] || null;
-        },
-        create: (guild: types.GatewayGuild): void => {
-            const channels: ChannelMap = {};
-            for (const channel of guild.channels) {
-                channels[channel.id] = channel;
-            }
-            const threads: ThreadMap = {};
-            for (const thread of guild.threads) {
-                threads[thread.id] = thread;
-            }
-            const members: MemberMap = {};
-            for (const member of guild.members) {
-                members[member.user.id] = member;
-            }
-            const presences: PresenceMap = {};
-            for (const presence of guild.presences) {
-                presences[presence.user.id] = presence;
-            }
-            const roles: RoleMap = {};
-            for (const role of guild.roles) {
-                roles[role.id] = role;
-            }
-            const emojis: EmojiMap = {};
-            for (const emoji of guild.emojis) {
-                emojis[emoji.id] = emoji;
-            }
-            const voiceStates: VoiceStateMap = {};
-            for (const voiceState of guild.voice_states) {
-                voiceStates[voiceState.user_id] = voiceState;
-            }
-            const stageInstances: StageInstanceMap = {};
-            for (const stageInstance of guild.stage_instances) {
-                stageInstances[stageInstance.id] = stageInstance;
-            }
-            const newGuild: types.CachedGuild = Object.assign({}, guild, {
-                channels, threads, members, presences, roles, emojis, voice_states: voiceStates, stage_instances: stageInstances
-            });
-            this.#guilds[guild.id] = newGuild;
-        },
-        update: (guild: types.Guild): void => {
-            Object.assign(this.#guilds[guild.id], guild);
-        },
-        delete: (guild_id: types.Snowflake): void => {
-            delete this.#guilds[guild_id];
-        }
-    }
-
-    users = {
-        get: async (user_id: types.Snowflake): Promise<types.User | null> => {
-            return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
-        },
-        set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
-            return this.set(user_id, this.users._serialize(user)).then(() => {});
-        },
-        addChunk: async (user_list: UserMap): Promise<void> => {
-            const obj: StringMapMap = {};
-            for (const id in user_list) {
-                obj[id] = this.users._serialize(user_list[id]);
-            }
-            return this.hsetMulti('users', obj).then(() => {});
-        },
-        _serialize: (user: types.User): types.StringMap => {
-            const obj: types.UserHash = {
-                id: user.id,
-                username: user.username,
-                discriminator: user.discriminator.toString() as types.StringNum,
-                avatar: user.avatar || 'null'
-            }
-            if (user.bot) obj.bot = 'true';
-            if (user.system) obj.system = 'true';
-            if (user.mfa_enabled) obj.mfa_enabled = 'true';
-            if (user.verified) obj.verified = 'true';
-            if (user.locale) obj.locale = user.locale;
-            if (user.email) obj.email = user.email;
-            if (user.flags) obj.flags = user.flags.toString() as types.StringNum;
-            if (user.public_flags) obj.public_flags = user.public_flags.toString() as types.StringNum;
-            if (user.premium_type) obj.premium_type = user.premium_type.toString() as types.StringPremiumTypes;
-            return obj as types.StringMap;
-        },
-        _deserialize: (user_hash: types.UserHash | null): types.User | null => {
-            if (user_hash === null) {
-                return null;
-            }
-            const obj: types.User = {
-                id: user_hash.id,
-                username: user_hash.username,
-                discriminator: parseInt(user_hash.discriminator),
-                avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
-            }
-            return obj;
-        }
-    }
-
     channels = {
         get: (guild_id: types.Snowflake, channel_id: types.Snowflake): types.Channel | null => {
             const guild = this.guilds.get(guild_id);
@@ -411,6 +368,52 @@ export default class CacheHandler {
         },
         setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
             return this.setMulti('dm_channels', dm_channel_ids).then(() => {});
+        }
+    }
+
+    users = {
+        get: async (user_id: types.Snowflake): Promise<types.User | null> => {
+            return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
+        },
+        set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
+            return this.set(user_id, this.users._serialize(user)).then(() => {});
+        },
+        addChunk: async (user_list: UserMap): Promise<void> => {
+            const obj: StringMapMap = {};
+            for (const id in user_list) {
+                obj[id] = this.users._serialize(user_list[id]);
+            }
+            return this.hsetMulti('users', obj).then(() => {});
+        },
+        _serialize: (user: types.User): types.StringMap => {
+            const obj: types.UserHash = {
+                id: user.id,
+                username: user.username,
+                discriminator: user.discriminator.toString() as types.StringNum,
+                avatar: user.avatar || 'null'
+            }
+            if (user.bot) obj.bot = 'true';
+            if (user.system) obj.system = 'true';
+            if (user.mfa_enabled) obj.mfa_enabled = 'true';
+            if (user.verified) obj.verified = 'true';
+            if (user.locale) obj.locale = user.locale;
+            if (user.email) obj.email = user.email;
+            if (user.flags) obj.flags = user.flags.toString() as types.StringNum;
+            if (user.public_flags) obj.public_flags = user.public_flags.toString() as types.StringNum;
+            if (user.premium_type) obj.premium_type = user.premium_type.toString() as types.StringPremiumTypes;
+            return obj as types.StringMap;
+        },
+        _deserialize: (user_hash: types.UserHash | null): types.User | null => {
+            if (user_hash === null) {
+                return null;
+            }
+            const obj: types.User = {
+                id: user_hash.id,
+                username: user_hash.username,
+                discriminator: parseInt(user_hash.discriminator),
+                avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
+            }
+            return obj;
         }
     }
 
