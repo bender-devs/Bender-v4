@@ -8,6 +8,7 @@ import Logger from './logger';
 import { GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS } from '../data/constants';
 import { CLIENT_STATE } from '../data/numberTypes';
 import EventManager from './eventManager';
+import Shard from './shard';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -16,17 +17,24 @@ export default class Bot extends EventEmitter {
     logger: Logger;
     events: EventManager;
 
+    shard?: Shard;
+
     timeouts: types.TimeoutList;
     state: CLIENT_STATE; 
     user!: types.User;
+    application?: types.PartialApplication;
 
-    constructor() {
+    constructor(shard_data?: gatewayTypes.ShardConnectionData) {
         super();
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
         this.gateway = new Gateway(this);
         this.logger = new Logger(this);
         this.events = new EventManager(this);
+
+        if (shard_data) {
+            this.shard = new Shard(this, shard_data);
+        }
 
         this.timeouts = {
             gatewayError: []
