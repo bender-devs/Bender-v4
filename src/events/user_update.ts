@@ -8,7 +8,7 @@ export default class UserUpdateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: UserUpdateData) => {
-
+        this.bot.cache.users.set(eventData.id, eventData);
     }
 
     handler = (eventData: UserUpdateData) => {

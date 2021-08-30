@@ -1,5 +1,6 @@
 import * as superagent from 'superagent';
 import Bot from '../structures/bot';
+import { ChannelMap, MemberMap, PresenceMap, StageInstanceMap, ThreadMap, VoiceStateMap, RoleMap, EmojiMap } from '../utils/cacheHandler';
 import { EventName, LowercaseEventName } from './gatewayTypes';
 import * as num from './numberTypes';
 
@@ -131,25 +132,12 @@ export type ActivityButton = {
 
 /************ guild types ************/
 
-export type GuildData = {
-    name?: string;
-    verification_level?: num.VERIFICATION_LEVELS | null;
-    default_message_notifications?: num.MESSAGE_NOTIFICATION_LEVELS | null;
-    explicit_content_filter?: num.EXPLICIT_FILTER_LEVELS | null;
-    afk_channel_id?: Snowflake | null;
-    afk_timeout?: number;
+type GuildDataPartial = Partial<Pick<Guild, 'name' | 'verification_level' | 'default_message_notifications' | 'explicit_content_filter' | 'afk_channel_id' | 'afk_timeout' | 'owner_id' | 'banner' | 'system_channel_id' | 'system_channel_flags' | 'rules_channel_id' | 'public_updates_channel_id' | 'preferred_locale' | 'features' | 'description'>>;
+
+export interface GuildData extends GuildDataPartial {
     icon?: ImageData | null;
-    owner_id?: Snowflake;
     splash?: ImageData | null;
     discovery_splash?: ImageData | null;
-    banner?: ImageData | null;
-    system_channel_id?: Snowflake | null;
-    system_channel_flags?: Flags;
-    rules_channel_id?: Snowflake | null;
-    public_updates_channel_id?: Snowflake | null;
-    preferred_locale?: string | null;
-    features?: GuildFeature[];
-    description?: string | null;
 }
 
 export type Guild = {
@@ -207,17 +195,32 @@ export type WelcomeChannel = {
 }
 
 // the following props are only sent in GUILD_CREATE
-export interface GatewayGuild extends Guild {
+export interface GatewayGuildBase extends Guild {
     joined_at: Timestamp;
     large: boolean;
     unavailable: boolean;
     member_count: number;
+}
+
+// the following props are only sent in GUILD_CREATE
+export interface GatewayGuild extends GatewayGuildBase {
     voice_states: VoiceState[];
     members: Member[];
     channels: GuildChannel[];
     threads: ThreadChannel[];
     presences: Presence[];
     stage_instances: StageInstance[];
+}
+
+export interface CachedGuild extends Omit<GatewayGuildBase, 'roles' | 'emojis'> {
+    voice_states: VoiceStateMap;
+    members: MemberMap;
+    channels: ChannelMap;
+    threads: ThreadMap;
+    presences: PresenceMap;
+    stage_instances: StageInstanceMap;
+    roles: RoleMap;
+    emojis: EmojiMap;
 }
 
 export type StageInstance = {
@@ -279,7 +282,7 @@ export type PruneData = {
 
 export type Emoji = {
     name: string | null;
-    id: Snowflake | null;
+    id: Snowflake; // TODO: according to https://discord.com/developers/docs/resources/emoji#emoji-object this is nullable, but I don't see how
     animated?: boolean;
     roles?: Snowflake[];
     user?: User;
@@ -397,26 +400,54 @@ export type PartialChannel = {
 }
 
 export interface Channel extends PartialChannel {
+    // guild fields
+    guild_id?: Snowflake;
     position?: number;
-}
+    parent_id?: Snowflake | null;
 
-export interface GuildChannel extends Channel {
-    parent_id?: Snowflake;
-    guild_id: Snowflake;
-}
+    // dm fields
+    recipients?: User[];
 
-export interface DMBasedChannel extends Channel {
-    type: num.CHANNEL_TYPES.DM | num.CHANNEL_TYPES.GROUP_DM;
-    recipients: User[];
-}
-
-export interface TextBasedChannel extends GuildChannel {
+    // text fields
     topic?: string | null;
     nsfw: boolean;
     last_message_id?: Snowflake | null;
     rate_limit_per_user?: number;
     last_pin_timestamp?: Timestamp | null;
     default_auto_archive_duration?: number;
+
+    // voice fields
+    rtc_region?: VoiceRegion | null;
+    bitrate?: number;
+    user_limit?: number;
+    video_quality_mode?: num.VIDEO_QUALITY_MODES;
+
+    // group dm fields
+    owner_id?: Snowflake; // also used in threads
+    application_id?: Snowflake;
+    icon?: string | null;
+
+    // thread fields
+    thread_metadata?: ThreadMeta;
+    member?: ThreadMember;
+    message_count?: number;
+    member_count?: number;
+}
+
+export interface GuildChannel extends Channel {
+    guild_id: Snowflake;
+    position: number;
+    recipients: undefined;
+}
+
+export interface DMBasedChannel extends Channel {
+    type: num.CHANNEL_TYPES.DM | num.CHANNEL_TYPES.GROUP_DM;
+    recipients: User[];
+    guild_id: undefined;
+}
+
+export interface TextBasedChannel extends GuildChannel {
+    nsfw: boolean;
 }
 
 export interface TextChannel extends TextBasedChannel {
@@ -425,6 +456,7 @@ export interface TextChannel extends TextBasedChannel {
 
 export interface DMChannel extends DMBasedChannel {
     type: num.CHANNEL_TYPES.DM;
+    owner_id: undefined;
 }
 
 export interface VoiceBasedChannel extends GuildChannel {
@@ -432,7 +464,6 @@ export interface VoiceBasedChannel extends GuildChannel {
     rtc_region: VoiceRegion | null;
     bitrate: number;
     user_limit: number;
-    video_quality_mode?: num.VIDEO_QUALITY_MODES;
 }
 
 export interface VoiceChannel extends VoiceBasedChannel {
@@ -442,12 +473,12 @@ export interface VoiceChannel extends VoiceBasedChannel {
 export interface GroupDMChannel extends DMBasedChannel {
     type: num.CHANNEL_TYPES.GROUP_DM;
     owner_id: Snowflake;
-    application_id?: Snowflake;
     icon: string | null;
 }
 
-export interface CategoryChannel extends Channel {
+export interface CategoryChannel extends GuildChannel {
     type: num.CHANNEL_TYPES.GUILD_CATEGORY;
+    parent_id: undefined | null;
 }
 
 export interface NewsChannel extends TextBasedChannel {
@@ -482,6 +513,10 @@ export interface PrivateThreadChannel extends ThreadChannel {
 export interface VoiceStageChannel extends VoiceBasedChannel {
     type: num.CHANNEL_TYPES.GUILD_STAGE_VOICE;
 }
+
+//export type GuildChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | ThreadChannel | NewsThreadChannel | PublicThreadChannel | VoiceStageChannel;
+
+//export type Channel = GuildChannel | DMChannel |  GroupDMChannel;
 
 export type ThreadMeta = {
     archived: boolean;

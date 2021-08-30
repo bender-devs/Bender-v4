@@ -8,7 +8,7 @@ export default class GuildRoleDeleteHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: GuildRoleDeleteData) => {
-
+        this.bot.cache.roles.delete(eventData.guild_id, eventData.role_id);
     }
 
     handler = (eventData: GuildRoleDeleteData) => {

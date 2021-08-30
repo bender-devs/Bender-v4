@@ -8,7 +8,12 @@ export default class GuildDeleteHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: GuildDeleteData) => {
-
+        if (eventData.unavailable) {
+            this.bot.cache.unavailableGuilds.push(eventData.id);
+        } else {
+            // TODO: extra things when the bot is kicked
+        }
+        this.bot.cache.guilds.delete(eventData.id);
     }
 
     handler = (eventData: GuildDeleteData) => {

@@ -8,7 +8,7 @@ export default class GuildMemberAddHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: GuildMemberAddData) => {
-
+        this.bot.cache.members.set(eventData.guild_id, eventData);
     }
 
     handler = (eventData: GuildMemberAddData) => {

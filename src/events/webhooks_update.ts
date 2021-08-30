@@ -7,10 +7,6 @@ export default class WebhooksUpdateHandler extends EventHandler {
         super(__filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: WebhooksUpdateData) => {
-
-    }
-
     handler = (eventData: WebhooksUpdateData) => {
 
     }

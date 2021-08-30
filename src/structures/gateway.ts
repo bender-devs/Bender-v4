@@ -7,6 +7,8 @@ import { EventEmitter } from 'stream';
 
 export default class Gateway extends EventEmitter {
     bot: Bot;
+    version?: number;
+    sessionID?: string;
     ws!: WebSocket;
 
     #promiseResolve: ((value: unknown) => void) | null = null;

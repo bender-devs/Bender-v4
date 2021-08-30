@@ -14,14 +14,19 @@ import * as types from "../data/types";
 import Bot from "../structures/bot";
 import { promisify } from "util";
 import * as redis from 'redis';
-import { GatewayBotInfo } from "../data/gatewayTypes";
+import { GatewayBotInfo, GuildMemberUpdateData } from "../data/gatewayTypes";
 
-// would've preferred to use Snowflake instead of string here but TS was complaining
-type GuildMap = Record<string, types.Guild>;
-type MemberMap = Record<string, types.Member>;
-type GuildMemberMap = Record<string, MemberMap>;
+// would've preferred to use Snowflake instead of string here but TS just sets it to a generic object type
+export type ChannelMap = Record<string, types.Channel>;
+export type ThreadMap = Record<string, types.ThreadChannel>;
+export type MemberMap = Record<string, types.Member>;
+export type PresenceMap = Record<string, types.Presence>;
+export type VoiceStateMap = Record<string, types.VoiceState>;
+export type StageInstanceMap = Record<string, types.StageInstance>;
+export type RoleMap = Record<string, types.Role>;
+export type EmojiMap = Record<string, types.Emoji>;
+type CachedGuildMap = Record<string, types.CachedGuild>;
 type UserMap = Record<string, types.User>;
-type ChannelMap = Record<string, types.Channel>;
 type StringMapMap = Record<string, types.StringMap>;
 
 // doing these tricks because promisify() doesn't choose the correct overload
@@ -34,9 +39,8 @@ export default class CacheHandler {
     bot: Bot;
     redisClient: redis.RedisClient;
     gateway: types.URL | null = null;
-    #guilds: GuildMap;
-    #members: GuildMemberMap;
-    #channels: ChannelMap;
+    unavailableGuilds: types.Snowflake[];
+    #guilds: CachedGuildMap;
 
     #get: (key: string) => Promise<string | null>;
     #getMultiMixed: (string_keys: string[], hash_keys: string[]) => Promise<unknown>;
@@ -103,9 +107,8 @@ export default class CacheHandler {
         }
         this.#hsetExpire = hsetExpirePromisify(hsetExpire).bind(this.redisClient);
 
+        this.unavailableGuilds = [];
         this.#guilds = {};
-        this.#members = {};
-        this.#channels = {};
     }
 
     get(key: string, subkey?: string | true) {
@@ -146,29 +149,150 @@ export default class CacheHandler {
     }
 
     members = {
-        get: (guild_id: any, user_id: types.Snowflake): types.Member | null => {
-            return this.#members[guild_id]?.[user_id] || null;
+        get: (guild_id: types.Snowflake, user_id: types.Snowflake): types.Member | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            return guild.members[user_id] || null;
         },
-        set: (guild_id: any, user_id: types.Snowflake, member: types.Member): void => {
-            /*if (!this.#members[guild_id]) {
-                this.#members[guild_id] = {};
-            }*/
-            this.#members[guild_id][user_id] = member;
+        set: (guild_id: types.Snowflake, member: types.Member): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].members[member.user.id] = member;
         },
-        setAll: (guild_id: any, member_list: MemberMap): void => {
-            this.#members[guild_id] = member_list;
+        update: (member_data: GuildMemberUpdateData): void => {
+            if (!this.guilds.get(member_data.guild_id)) {
+                return;
+            }
+            Object.assign(this.#guilds[member_data.guild_id].members[member_data.user.id], member_data);
         },
-        addChunk: (guild_id: any, member_list: MemberMap): void => {
-            Object.assign(this.#members[guild_id], member_list);
+        delete: (guild_id: types.Snowflake, user_id: types.Snowflake): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            delete this.#guilds[guild_id].members[user_id];
+        },
+        setAll: (guild_id: types.Snowflake, member_list: MemberMap): void => {
+            this.#guilds[guild_id].members = member_list;
+        },
+        addChunk: (guild_id: types.Snowflake, members: types.Member[]): void => {
+            const memberMap: MemberMap = {};
+            for (const member of members) {
+                memberMap[member.user.id] = member;
+            }
+            Object.assign(this.#guilds[guild_id].members, memberMap);
+        }
+    }
+
+    roles = {
+        get: (guild_id: types.Snowflake, role_id: types.Snowflake): types.Role | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            return guild.roles[role_id] || null;
+        },
+        set: (guild_id: types.Snowflake, role: types.Role): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].roles[role.id] = role;
+        },
+        update: (guild_id: types.Snowflake, role: types.Role): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            Object.assign(this.#guilds[guild_id].roles[role.id], role);
+        },
+        delete: (guild_id: types.Snowflake, role_id: types.Snowflake): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            delete this.#guilds[guild_id].roles[role_id];
+        }
+    }
+
+    emojis = {
+        get: (guild_id: types.Snowflake, emoji_id: types.Snowflake): types.Emoji | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            return guild.emojis[emoji_id] || null;
+        },
+        set: (guild_id: types.Snowflake, emoji: types.Emoji): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].emojis[emoji.id] = emoji;
+        },
+        setAll: (guild_id: types.Snowflake, emojis: types.Emoji[]): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            const emojiMap: EmojiMap = {};
+            for (const emoji of emojis) {
+                emojiMap[emoji.id] = emoji;
+            }
+            this.#guilds[guild_id].emojis = emojiMap;
+        },
+        delete: (guild_id: types.Snowflake, emoji_id: types.Snowflake): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            delete this.#guilds[guild_id].emojis[emoji_id];
         }
     }
 
     guilds = {
-        get: (guild_id: types.Snowflake): types.Guild | null => {
+        get: (guild_id: types.Snowflake): types.CachedGuild | null => {
             return this.#guilds[guild_id] || null;
         },
-        set: (guild_id: types.Snowflake, guild: types.Guild): void => {
-            this.#guilds[guild_id] = guild;
+        create: (guild: types.GatewayGuild): void => {
+            const channels: ChannelMap = {};
+            for (const channel of guild.channels) {
+                channels[channel.id] = channel;
+            }
+            const threads: ThreadMap = {};
+            for (const thread of guild.threads) {
+                threads[thread.id] = thread;
+            }
+            const members: MemberMap = {};
+            for (const member of guild.members) {
+                members[member.user.id] = member;
+            }
+            const presences: PresenceMap = {};
+            for (const presence of guild.presences) {
+                presences[presence.user.id] = presence;
+            }
+            const roles: RoleMap = {};
+            for (const role of guild.roles) {
+                roles[role.id] = role;
+            }
+            const emojis: EmojiMap = {};
+            for (const emoji of guild.emojis) {
+                emojis[emoji.id] = emoji;
+            }
+            const voiceStates: VoiceStateMap = {};
+            for (const voiceState of guild.voice_states) {
+                voiceStates[voiceState.user_id] = voiceState;
+            }
+            const stageInstances: StageInstanceMap = {};
+            for (const stageInstance of guild.stage_instances) {
+                stageInstances[stageInstance.id] = stageInstance;
+            }
+            const newGuild: types.CachedGuild = Object.assign({}, guild, {
+                channels, threads, members, presences, roles, emojis, voice_states: voiceStates, stage_instances: stageInstances
+            });
+            this.#guilds[guild.id] = newGuild;
+        },
+        update: (guild: types.Guild): void => {
+            Object.assign(this.#guilds[guild.id], guild);
+        },
+        delete: (guild_id: types.Snowflake): void => {
+            delete this.#guilds[guild_id];
         }
     }
 
@@ -177,14 +301,14 @@ export default class CacheHandler {
             return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
         set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
-            this.set(user_id, this.users._serialize(user));
+            return this.set(user_id, this.users._serialize(user)).then(() => {});
         },
-        addChunk: (user_list: UserMap): void => {
+        addChunk: async (user_list: UserMap): Promise<void> => {
             const obj: StringMapMap = {};
             for (const id in user_list) {
                 obj[id] = this.users._serialize(user_list[id]);
             }
-            this.hsetMulti('users', obj);
+            return this.hsetMulti('users', obj).then(() => {});
         },
         _serialize: (user: types.User): types.StringMap => {
             const obj: types.UserHash = {
@@ -204,7 +328,7 @@ export default class CacheHandler {
             if (user.premium_type) obj.premium_type = user.premium_type.toString() as types.StringPremiumTypes;
             return obj as types.StringMap;
         },
-        _deserialize: (user_hash: types.UserHash | null) => {
+        _deserialize: (user_hash: types.UserHash | null): types.User | null => {
             if (user_hash === null) {
                 return null;
             }
@@ -219,32 +343,79 @@ export default class CacheHandler {
     }
 
     channels = {
-        get: (channel_id: types.Snowflake) => {
-            return this.#channels[channel_id];
+        get: (guild_id: types.Snowflake, channel_id: types.Snowflake): types.Channel | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            return guild.channels[channel_id] || null;
         },
-        set: (channel_id: types.Snowflake, channel: types.Channel) => {
-            this.#channels[channel_id] = channel;
+        set: (channel: types.Channel): void => {
+            if (!channel.guild_id) {
+                return; // ignore dm channels
+            }
+            if (!this.guilds.get(channel.guild_id)) {
+                return;
+            }
+            this.#guilds[channel.guild_id].channels[channel.id] = channel;
         },
-        setAll: (channel_map: ChannelMap) => {
-            this.#channels = channel_map;
+        delete: (guild_id: types.Snowflake, channel_id: types.Snowflake): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            delete this.#guilds[guild_id].channels[channel_id];
+        },
+        setAll: (guild_id: types.Snowflake, channel_map: ChannelMap): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].channels = channel_map;
+        }
+    }
+
+    threads = {
+        get: (guild_id: types.Snowflake, thread_id: types.Snowflake): types.ThreadChannel | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            return guild.threads[thread_id] || null;
+        },
+        set: (thread: types.ThreadChannel): void => {
+            if (!this.guilds.get(thread.guild_id)) {
+                return;
+            }
+            this.#guilds[thread.guild_id].threads[thread.id] = thread;
+        },
+        delete: (guild_id: types.Snowflake, thread_id: types.Snowflake): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            delete this.#guilds[guild_id].threads[thread_id];
+        },
+        setAll: (guild_id: types.Snowflake, thread_map: ThreadMap): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].threads = thread_map;
         }
     }
 
     dmChannels = {
-        get: async (user_id: types.Snowflake) => {
+        get: async (user_id: types.Snowflake): Promise<types.Snowflake | null> => {
             const cid = await this.#get(`dm_channels.${user_id}`).catch(() => null);
             return cid === null ? null : cid as types.Snowflake;
         },
-        set: (user_id: types.Snowflake, dm_channel_id: types.Snowflake) => {
-            this.set(`dm_channels.${user_id}`, dm_channel_id);
+        set: async (user_id: types.Snowflake, dm_channel_id: types.Snowflake): Promise<void> => {
+            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => {});
         },
-        setAll: (dm_channel_ids: types.StringMap) => {
-            this.setMulti('dm_channels', dm_channel_ids);
+        setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
+            return this.setMulti('dm_channels', dm_channel_ids).then(() => {});
         }
     }
 
     gatewayInfo = {
-        get: async () => {
+        get: async (): Promise<GatewayBotInfo | null> => {
             return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
                 if (Array.isArray(data) && data.length === 3) {
                     const obj: GatewayBotInfo = {
@@ -262,9 +433,9 @@ export default class CacheHandler {
                 return null;
             }).catch(() => null);
         },
-        set: async (gateway_bot_info: GatewayBotInfo) => {
+        set: async (gateway_bot_info: GatewayBotInfo): Promise<void> => {
             const reset_at = Date.now() + gateway_bot_info.session_start_limit.reset_after;
-            this.#setMultiMixed('gateway', {
+            return this.#setMultiMixed('gateway', {
                 url: gateway_bot_info.url,
                 shards: gateway_bot_info.shards+''
             }, {
@@ -274,7 +445,7 @@ export default class CacheHandler {
                     reset_at: reset_at+'',
                     max_concurrency: gateway_bot_info.session_start_limit.max_concurrency+''
                 }
-            }, reset_at).catch(() => null);
+            }, reset_at).then(() => {}).catch(() => {});
         }
     }
 }

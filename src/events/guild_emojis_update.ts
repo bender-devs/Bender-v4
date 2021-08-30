@@ -8,7 +8,7 @@ export default class GuildEmojisUpdateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: GuildEmojisUpdateData) => {
-
+        this.bot.cache.emojis.setAll(eventData.guild_id, eventData.emojis);
     }
 
     handler = (eventData: GuildEmojisUpdateData) => {

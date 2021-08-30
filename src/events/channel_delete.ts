@@ -8,10 +8,13 @@ export default class ChannelDeleteHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: ChannelUpdateData) => {
-
+        if (!eventData.guild_id) {
+            return; // ignore dm channels
+        }
+        this.bot.cache.channels.delete(eventData.guild_id, eventData.id);
     }
 
     handler = (eventData: ChannelUpdateData) => {
-
+        // TODO: update settings if they have become invalid
     }
 }

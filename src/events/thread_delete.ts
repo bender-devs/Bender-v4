@@ -8,7 +8,7 @@ export default class ThreadDeleteHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: ThreadUpdateData) => {
-
+        this.bot.cache.threads.delete(eventData.guild_id, eventData.id);
     }
 
     handler = (eventData: ThreadUpdateData) => {

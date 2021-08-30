@@ -8,7 +8,7 @@ export default class GuildRoleCreateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: GuildRoleUpdateData) => {
-
+        this.bot.cache.roles.set(eventData.guild_id, eventData.role);
     }
 
     handler = (eventData: GuildRoleUpdateData) => {
