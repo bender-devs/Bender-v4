@@ -8,9 +8,10 @@ export default class MessageCreateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: MessageCreateData) => {
-        // if message is a dm (no guild_id) and the author has no cached dm channel, cache the channel
-        if (!eventData.guild_id && !this.bot.cache.dmChannels.get(eventData.author.id)) {
-            this.bot.cache.dmChannels.set(eventData.author.id, eventData.channel_id);
+        if (eventData.guild_id) {
+            this.bot.cache.messages.set(eventData);
+        } else {
+            this.bot.cache.dmMessages.set(eventData);
         }
     }
 

@@ -15,20 +15,35 @@ import * as types from "../data/types";
 import Bot from "../structures/bot";
 import { promisify } from "util";
 import * as redis from 'redis';
-import { GatewayBotInfo, GuildMemberUpdateData } from "../data/gatewayTypes";
+import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData } from "../data/gatewayTypes";
 
 // would've preferred to use Snowflake instead of string here but TS just sets it to a generic object type
-export type ChannelMap = Record<string, types.Channel>;
-export type ThreadMap = Record<string, types.ThreadChannel>;
-export type MemberMap = Record<string, types.Member>;
-export type PresenceMap = Record<string, types.Presence>;
-export type VoiceStateMap = Record<string, types.VoiceState>;
-export type StageInstanceMap = Record<string, types.StageInstance>;
+type ChannelMap = Record<string, types.Channel>;
+type ThreadMap = Record<string, types.ThreadChannel>;
+type MemberMap = Record<string, types.Member>;
+type PresenceMap = Record<string, types.Presence>;
+type VoiceStateMap = Record<string, types.VoiceState>;
+type StageInstanceMap = Record<string, types.StageInstance>;
 export type RoleMap = Record<string, types.Role>;
 export type EmojiMap = Record<string, types.Emoji>;
-type CachedGuildMap = Record<string, types.CachedGuild>;
+type CachedGuildMap = Record<string, CachedGuild>;
 type UserMap = Record<string, types.User>;
+type MessageMap = Record<string, types.Message>;
+type MessageMapMap = Record<string, MessageMap>;
 type StringMapMap = Record<string, types.StringMap>;
+
+type GatewayGuildOmit = Omit<types.GatewayGuildBase, 'roles' | 'emojis'>;
+export interface CachedGuild extends GatewayGuildOmit {
+    voice_states: VoiceStateMap;
+    members: MemberMap;
+    channels: ChannelMap;
+    threads: ThreadMap;
+    presences: PresenceMap;
+    stage_instances: StageInstanceMap;
+    roles: RoleMap;
+    emojis: EmojiMap;
+    message_cache: MessageMapMap;
+}
 
 // doing these tricks because promisify() doesn't choose the correct overload
 type hsetType = (key: string, fields: types.StringMap, callback: redis.Callback<number>) => boolean;
@@ -42,6 +57,7 @@ export default class CacheHandler {
     gateway: types.URL | null = null;
     unavailableGuilds: types.Snowflake[];
     #guilds: CachedGuildMap;
+    #dmMessages: MessageMapMap;
 
     #get: (key: string) => Promise<string | null>;
     #getMultiMixed: (string_keys: string[], hash_keys: string[]) => Promise<unknown>;
@@ -110,6 +126,7 @@ export default class CacheHandler {
 
         this.unavailableGuilds = [];
         this.#guilds = {};
+        this.#dmMessages = {};
     }
 
     get(key: string, subkey?: string | true) {
@@ -152,7 +169,7 @@ export default class CacheHandler {
     
 
     guilds = {
-        get: (guild_id: types.Snowflake): types.CachedGuild | null => {
+        get: (guild_id: types.Snowflake): CachedGuild | null => {
             return this.#guilds[guild_id] || null;
         },
         create: (guild: types.GatewayGuild): void => {
@@ -188,8 +205,8 @@ export default class CacheHandler {
             for (const stageInstance of guild.stage_instances) {
                 stageInstances[stageInstance.id] = stageInstance;
             }
-            const newGuild: types.CachedGuild = Object.assign({}, guild, {
-                channels, threads, members, presences, roles, emojis, voice_states: voiceStates, stage_instances: stageInstances
+            const newGuild: CachedGuild = Object.assign({}, guild, {
+                channels, threads, members, presences, roles, emojis, voice_states: voiceStates, stage_instances: stageInstances, message_cache: {}
             });
             this.#guilds[guild.id] = newGuild;
         },
@@ -330,6 +347,74 @@ export default class CacheHandler {
         }
     }
 
+    messages = {
+        get: (guild_id: types.Snowflake, channel_id: types.Snowflake, message_id: types.Snowflake): types.Message | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            if (!guild.message_cache[channel_id]) {
+                return null;
+            }
+            return guild.message_cache[channel_id][message_id] || null;
+        },
+        set: (message: types.Message): void => {
+            if (!message.guild_id) {
+                return; // ignore dm messages
+            }
+            const guild = this.guilds.get(message.guild_id);
+            if (!guild) {
+                return;
+            }
+            if (!guild.message_cache[message.channel_id]) {
+                this.#guilds[message.guild_id].message_cache[message.channel_id] = {};
+            }
+            this.#guilds[message.guild_id].message_cache[message.channel_id][message.id] = message;
+        },
+        update: (message: MessageUpdateData): void => {
+            if (!message.guild_id) {
+                return; // ignore dm messages
+            }
+            const guild = this.guilds.get(message.guild_id);
+            if (!guild?.message_cache[message.channel_id]?.[message.id]) {
+                return;
+            }
+            Object.assign(this.#guilds[message.guild_id].message_cache[message.channel_id][message.id], message);
+        },
+        delete: (guild_id: types.Snowflake, channel_id: types.Snowflake, message_id: types.Snowflake): void => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return;
+            }
+            if (!guild.message_cache[channel_id]) {
+                return;
+            }
+            delete this.#guilds[guild_id].message_cache[channel_id][message_id];
+        },
+        deleteChunk: (guild_id: types.Snowflake, channel_id: types.Snowflake, message_ids: types.Snowflake[]): void => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return;
+            }
+            if (!guild.message_cache[channel_id]) {
+                return;
+            }
+            for (const messageID of message_ids) {
+                delete this.#guilds[guild_id].message_cache[channel_id][messageID];
+            }
+        },
+        addChunk: (guild_id: types.Snowflake, channel_id: types.Snowflake, message_map: MessageMap): void => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return;
+            }
+            if (!guild.message_cache[channel_id]) {
+                this.#guilds[guild_id].message_cache[channel_id] = {};
+            }
+            Object.assign(this.#guilds[guild_id].message_cache[channel_id], message_map);
+        }
+    }
+
     threads = {
         get: (guild_id: types.Snowflake, thread_id: types.Snowflake): types.ThreadChannel | null => {
             const guild = this.guilds.get(guild_id);
@@ -358,19 +443,6 @@ export default class CacheHandler {
         }
     }
 
-    dmChannels = {
-        get: async (user_id: types.Snowflake): Promise<types.Snowflake | null> => {
-            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => null);
-            return cid === null ? null : cid as types.Snowflake;
-        },
-        set: async (user_id: types.Snowflake, dm_channel_id: types.Snowflake): Promise<void> => {
-            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => {});
-        },
-        setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
-            return this.setMulti('dm_channels', dm_channel_ids).then(() => {});
-        }
-    }
-
     users = {
         get: async (user_id: types.Snowflake): Promise<types.User | null> => {
             return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
@@ -385,6 +457,7 @@ export default class CacheHandler {
             }
             return this.hsetMulti('users', obj).then(() => {});
         },
+        // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
             const obj: types.UserHash = {
                 id: user.id,
@@ -414,6 +487,66 @@ export default class CacheHandler {
                 avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
             }
             return obj;
+        }
+    }
+
+    dmChannels = {
+        get: async (user_id: types.Snowflake): Promise<types.Snowflake | null> => {
+            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => null);
+            return cid === null ? null : cid as types.Snowflake;
+        },
+        set: async (user_id: types.Snowflake, dm_channel_id: types.Snowflake): Promise<void> => {
+            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => {});
+        },
+        setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
+            return this.setMulti('dm_channels', dm_channel_ids).then(() => {});
+        }
+        // TODO: decache dm channel when associated user is decached?
+    }
+
+    dmMessages = {
+        get: (channel_id: types.Snowflake, message_id: types.Snowflake): types.Message | null => {
+            if (!this.#dmMessages[channel_id]) {
+                return null;
+            }
+            return this.#dmMessages[channel_id][message_id] || null;
+        },
+        set: (message: types.Message): void => {
+            if (message.guild_id) {
+                return; // ignore guild messages
+            }
+            this.dmChannels.get(message.author.id).then(channel_id => {
+                if (!channel_id) {
+                    this.dmChannels.set(message.author.id, message.channel_id);
+                }
+            })
+            if (!this.#dmMessages[message.channel_id]) {
+                this.#dmMessages[message.channel_id] = {};
+            }
+            this.#dmMessages[message.channel_id][message.id] = message;
+        },
+        update: (message: MessageUpdateData): void => {
+            if (message.guild_id) {
+                return; // ignore guild messages
+            }
+            if (!this.#dmMessages[message.channel_id]?.[message.id]) {
+                return;
+            }
+            Object.assign(this.#dmMessages[message.channel_id][message.id], message);
+        },
+        delete: (channel_id: types.Snowflake, message_id: types.Snowflake): void => {
+            if (!this.#dmMessages[channel_id]) {
+                return;
+            }
+            delete this.#dmMessages[channel_id][message_id];
+        },
+        deleteChunk: (channel_id: types.Snowflake, message_ids: types.Snowflake[]): void => {
+            if (!this.#dmMessages[channel_id]) {
+                return;
+            }
+            for (const messageID of message_ids) {
+                delete this.#dmMessages[channel_id][messageID];
+            }
         }
     }
 

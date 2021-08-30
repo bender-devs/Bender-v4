@@ -8,7 +8,11 @@ export default class MessageDeleteBulkHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: MessageDeleteBulkData) => {
-
+        if (eventData.guild_id) {
+            this.bot.cache.messages.deleteChunk(eventData.guild_id, eventData.channel_id, eventData.ids);
+        } else {
+            this.bot.cache.dmMessages.deleteChunk(eventData.channel_id, eventData.ids);   
+        }
     }
 
     handler = (eventData: MessageDeleteBulkData) => {

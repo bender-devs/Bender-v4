@@ -1,6 +1,5 @@
 import * as superagent from 'superagent';
 import Bot from '../structures/bot';
-import { ChannelMap, MemberMap, PresenceMap, StageInstanceMap, ThreadMap, VoiceStateMap, RoleMap, EmojiMap } from '../utils/cacheHandler';
 import { EventName, LowercaseEventName } from './gatewayTypes';
 import * as num from './numberTypes';
 
@@ -210,17 +209,6 @@ export interface GatewayGuild extends GatewayGuildBase {
     threads: ThreadChannel[];
     presences: Presence[];
     stage_instances: StageInstance[];
-}
-
-export interface CachedGuild extends Omit<GatewayGuildBase, 'roles' | 'emojis'> {
-    voice_states: VoiceStateMap;
-    members: MemberMap;
-    channels: ChannelMap;
-    threads: ThreadMap;
-    presences: PresenceMap;
-    stage_instances: StageInstanceMap;
-    roles: RoleMap;
-    emojis: EmojiMap;
 }
 
 export type StageInstance = {

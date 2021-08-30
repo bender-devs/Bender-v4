@@ -8,26 +8,29 @@ type ChalkColor = typeof chalkColors[number];
 
 
 export default class Logger {
-    bot: Bot;
+    bot?: Bot;
     #moduleColors: Record<string, ChalkColor>;
 
-    constructor(bot: Bot) {
+    constructor(bot?: Bot) {
         this.bot = bot;
         this.#moduleColors = {};
     }
 
-    handleError(error: Error, returnValue: any = error, ...debugInfo: any) {
+    handleError(error: Error, returnValue: any = error, ...debugInfo: any[]) {
         this.debug(error.name, ...debugInfo);
         console.error(error);
+        if (!this.bot) {
+            return returnValue;
+        }
         // TODO: log in error channel
         return returnValue;
     }
 
-    log(...args: any) {
+    log(...args: any[]) {
         console.log(...args);
     }
 
-    debug(moduleName: string, ...args: any) {
+    debug(moduleName: string, ...args: any[]) {
         if (!CONSTANTS.DEBUG) return;
         let color = this.#moduleColors[moduleName] || null;
         if (!color) {
