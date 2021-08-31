@@ -55,7 +55,7 @@ export interface ReadyPayload extends EventPayload {
 }
 
 export type ReadyData = {
-    v: number;
+    v: num.GATEWAY_VERSIONS;
 	user: types.User;
 	guilds: types.UnavailableGuild[];
 	session_id: string;

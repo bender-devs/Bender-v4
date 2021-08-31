@@ -3,6 +3,7 @@ import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
+import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
 
 export default class PingCommand implements Command {
     bot: Bot;
@@ -25,25 +26,25 @@ export default class PingCommand implements Command {
         this.bot = bot;
     }
 
-    run(interaction: types.Interaction, args: types.CommandOption[]): types.RequestResponse<types.CommandResponse> {
+    run(interaction: types.Interaction, args: types.CommandOption[]): types.CommandResponse {
         const millis = args[0].choices?.[0].value === 'roundtrip' ? 420 : 69; // TODO: real numbers
-        return this.bot.api.sendInteractionResponse(interaction, {
-            type: 4,
+        return this.bot.api.interaction.sendResponse(interaction, {
+            type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
                 content: this.getPongMessage(millis),
-                flags: 64
+                flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
             }
         });
     }
 
-    runText(msg: types.Message, argString: string): types.RequestResponse<types.CommandResponse> {
+    runText(msg: types.Message, argString: string): types.CommandResponse {
         const millis = argString.toLowerCase() === 'roundtrip' ? 420 : 69; // TODO: real numbers
         if (!msg.guild_id) {
-            return this.bot.api.dmUser(msg.author.id, {
+            return this.bot.api.user.send(msg.author.id, {
                 content: this.getPongMessage(millis)
             })
         }
-        return this.bot.api.sendMessage(msg.channel_id, {
+        return this.bot.api.channel.send(msg.channel_id, {
             content: this.getPongMessage(millis)
         })
     }

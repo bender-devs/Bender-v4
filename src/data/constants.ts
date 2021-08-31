@@ -4,6 +4,8 @@ import { GATEWAY_VERSIONS } from "./numberTypes";
 
 export const API_BASE = "https://discord.com/api/v9";
 
+export const GATEWAY_ERROR_RECONNECT = true;
+
 export const GATEWAY_ERROR_RECONNECT_TIMEOUT = 30000; // how many ms to wait when failing to connect to gateway
 
 export const GATEWAY_PARAMS: GatewayParams = {
@@ -12,3 +14,5 @@ export const GATEWAY_PARAMS: GatewayParams = {
 }
 
 export const DEBUG = true;
+
+export const USE_CACHE = true;

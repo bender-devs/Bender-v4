@@ -859,7 +859,7 @@ export type UnixTimestamp = number;
 /* what the run() or runText() functions in commands can return.
  * may add more types later.
  */
-export type CommandResponse = Message;
+export type CommandResponse = Promise<Message | void>;
 
 export type PartialApplication = {
     id: Snowflake,
@@ -896,3 +896,7 @@ export class EventHandler {
 }
 
 export const NON_WAITING_EVENTS: EventName[] = ['READY', 'RESUMED'];
+
+/*** permission types ***/
+
+export type PermissionName = keyof typeof num.PERMISSIONS;

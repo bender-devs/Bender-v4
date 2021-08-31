@@ -5,7 +5,7 @@ import APIInterface from './apiInterface';
 import CacheHandler from '../utils/cacheHandler';
 import Gateway from './gateway';
 import Logger from './logger';
-import { GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS } from '../data/constants';
+import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, USE_CACHE } from '../data/constants';
 import { CLIENT_STATE } from '../data/numberTypes';
 import EventManager from './eventManager';
 import Shard from './shard';
@@ -18,11 +18,12 @@ export default class Bot extends EventEmitter {
     events: EventManager;
 
     shard?: Shard;
-
-    timeouts: types.TimeoutList;
-    state: CLIENT_STATE; 
     user!: types.User;
     application?: types.PartialApplication;
+
+    timeouts: types.TimeoutList;
+    state: CLIENT_STATE;
+    useCache: boolean;
 
     constructor(shard_data?: gatewayTypes.ShardConnectionData) {
         super();
@@ -40,13 +41,14 @@ export default class Bot extends EventEmitter {
             gatewayError: []
         };
         this.state = CLIENT_STATE.DEAD;
+        this.useCache = USE_CACHE;
 
         this.events.addAllListeners();
     }
 
-    async connect(identifyData: gatewayTypes.IdentifyData, autoReconnect = true, useCache = false) {
+    async connect(identifyData: gatewayTypes.IdentifyData) {
         let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
-        if (useCache) {
+        if (this.useCache) {
             gatewayInfo = await this.cache.gatewayInfo.get();
         }
         if (!gatewayInfo) {
@@ -56,9 +58,9 @@ export default class Bot extends EventEmitter {
             this.logger.handleError({
                 name: 'GET_GATEWAY_FAILED',
                 message: 'Failed to get gateway info.'
-            }, null);
-            if (autoReconnect) {
-                this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData, true), GATEWAY_ERROR_RECONNECT_TIMEOUT));
+            });
+            if (GATEWAY_ERROR_RECONNECT) {
+                this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData), GATEWAY_ERROR_RECONNECT_TIMEOUT));
             }
             return null;
         }
