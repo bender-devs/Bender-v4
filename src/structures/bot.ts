@@ -52,13 +52,12 @@ export default class Bot extends EventEmitter {
             gatewayInfo = await this.cache.gatewayInfo.get();
         }
         if (!gatewayInfo) {
-            gatewayInfo = await this.api.gateway.getBotInfo().catch(err => this.logger.handleError(err, null));
+            gatewayInfo = await this.api.gateway.getBotInfo().catch(err => {
+                this.logger.handleError('GET GATEWAY', err);
+                return null;
+            });
         }
         if (!gatewayInfo) {
-            this.logger.handleError({
-                name: 'GET_GATEWAY_FAILED',
-                message: 'Failed to get gateway info.'
-            });
             if (GATEWAY_ERROR_RECONNECT) {
                 this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData), GATEWAY_ERROR_RECONNECT_TIMEOUT));
             }

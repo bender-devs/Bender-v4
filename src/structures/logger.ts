@@ -16,21 +16,21 @@ export default class Logger {
         this.#moduleColors = {};
     }
 
-    handleError(error: Error, returnValue: any = error, ...debugInfo: any[]) {
-        this.debug(error.name, ...debugInfo);
+    handleError(moduleName: string | null, error: Error | string, ...debugInfo: any[]): void {
+        this.debug(moduleName || 'ERROR', ...debugInfo);
         console.error(error);
         if (!this.bot) {
-            return returnValue;
+            return;
         }
         // TODO: log in error channel
-        return returnValue;
+        return;
     }
 
-    log(...args: any[]) {
+    log(...args: any[]): void {
         console.log(...args);
     }
 
-    debug(moduleName: string, ...args: any[]) {
+    debug(moduleName: string, ...args: any[]): void {
         if (!CONSTANTS.DEBUG) return;
         let color = this.#moduleColors[moduleName] || null;
         if (!color) {

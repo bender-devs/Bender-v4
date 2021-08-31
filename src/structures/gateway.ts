@@ -24,17 +24,14 @@ export default class Gateway extends EventEmitter {
                 this.#promiseResolve(true);
                 this.#promiseResolve = null;
             }
-            this.bot.logger.debug('GATEWAY_CONNECT', ev);
+            this.bot.logger.debug('GATEWAY CONNECT', ev);
         });
         this.on('error', (ev: Event) => {
             if (this.#promiseReject) {
                 this.#promiseReject(ev);
                 this.#promiseReject = null;
             }
-            this.bot.logger.handleError({
-                name: 'GATEWAY_GENERIC_ERROR',
-                message: ev.type
-            }, null, ev);
+            this.bot.logger.handleError('GATEWAY ERROR', ev.type, ev);
         });
         this.on('message', (ev: MessageEvent): boolean => {
             const genericPayload: gatewayTypes.GatewayPayload = ev.data;
@@ -68,23 +65,17 @@ export default class Gateway extends EventEmitter {
 
     async sendData(data: unknown) {
         if (!this.ws) {
-            return this.bot.logger.handleError({
-                name: 'PAYLOAD_SENT_BEFORE_WS',
-                message: gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS
-            }, null);
+            return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS);
         }
         if (this.ws.readyState !== WebSocket.OPEN) {
-            return this.bot.logger.handleError({
-                name: 'PAYLOAD_SENT_BEFORE_CONNECT',
-                message: gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT
-            }, null);
+            return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT);
         }
         let stringifiedData: string | null = null;
         try {
             stringifiedData = JSON.stringify(data);
         }
         catch(err) {
-            this.bot.logger.handleError(err, null);
+            this.bot.logger.handleError('GATEWAY sendData', err);
         }
         if (!stringifiedData) {
             return null;

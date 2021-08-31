@@ -859,7 +859,7 @@ export type UnixTimestamp = number;
 /* what the run() or runText() functions in commands can return.
  * may add more types later.
  */
-export type CommandResponse = Promise<Message | void>;
+export type CommandResponse = Promise<Message | null>;
 
 export type PartialApplication = {
     id: Snowflake,

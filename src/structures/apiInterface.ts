@@ -12,12 +12,13 @@ export default class APIInterface {
         this.cacheEnabled = cache;
     }
 
-    handleError(error: types.ResponseError): void {
+    handleError(error: types.ResponseError): null {
         if (error.status === 429) {
 
         }
         // TODO: finish this
-        this.bot.logger.handleError(error);
+        this.bot.logger.handleError('API INTERFACE', error);
+        return null;
     }
 
     gateway = {
@@ -45,8 +46,8 @@ export default class APIInterface {
             if (!channelID) {
                 const newChannel = await this.user.createDM(user_id).catch(this.handleError);
                 if (!newChannel) {
-                    this.bot.logger.debug('CREATE_DM_FAILED', user_id);
-                    return;
+                    this.bot.logger.debug('CREATE DM FAILED', user_id);
+                    return null;
                 }
                 channelID = newChannel.id;
             }

@@ -1,3 +1,4 @@
+import { UnixTimestamp } from "../data/types";
 import Logger from "../structures/logger";
 
 const shardOperations = ['ping', 'pong', 'get_value', 'get_values'] as const;
@@ -13,10 +14,13 @@ export type ShardMessage = {
 export default class ShardManager {
     shard_count: number;
     logger: Logger;
+    #lastActivityTimestamps: number[];
 
     constructor(count: number) {
         this.shard_count = count;
         this.logger = new Logger();
+        this.#lastActivityTimestamps = new Array<UnixTimestamp>(count);
+        this.#lastActivityTimestamps.fill(0);
         process.on('message', this.handleMessage);
     }
 
@@ -37,11 +41,7 @@ export default class ShardManager {
                 });
             }
             case 'pong': {
-                return this.sendMessage({
-                    operation: 'pong',
-                    fromShard: null,
-                    toShards: [message.fromShard]
-                });
+                this.#lastActivityTimestamps[message.fromShard] = Date.now();
             }
         }
     }
@@ -75,8 +75,7 @@ export default class ShardManager {
             }
         } catch(err) {
             if (logger) {
-                logger.debug('PARSING SHARD MESSAGE FAILED', message);
-                logger.handleError(err);
+                logger.handleError('PARSING SHARD MESSAGE FAILED', err, message);
             }
             return null;
         }
