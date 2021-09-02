@@ -16,8 +16,20 @@ export const GATEWAY_PARAMS: GatewayParams = {
     encoding: 'json'
 }
 
-/***** general constants *****/
+/***** bender constants *****/
+
+export const VERSION = '4.0.0';
+
+export const DOMAIN = 'benderbot.co';
+
+export const WEBSITE = `https://${DOMAIN}`;
+
+export const DASHBOARD = `https://dashboard.${DOMAIN}`;
+
+/***** discord constants *****/
 
 export const API_BASE = "https://discord.com/api/v9";
 
 export const DISCORD_EPOCH = 1420070400000;
+
+export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION})`;

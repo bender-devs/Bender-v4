@@ -3,7 +3,11 @@ import * as superagent from 'superagent';
 import * as types from '../data/types';
 import * as gatewayTypes from '../data/gatewayTypes';
 
-const AUTH_HEADER: types.RequestHeaders = { authorization: `Bot ${process.env.TOKEN}` };
+const USER_AGENT_HEADER: types.RequestHeaders = {
+    'user-agent': CONSTANTS.USER_AGENT
+};
+
+const AUTH_HEADER: types.RequestHeaders = Object.assign({ authorization: `Bot ${process.env.TOKEN}` }, USER_AGENT_HEADER);
 
 export default class APIWrapper {
 
@@ -473,7 +477,9 @@ export default class APIWrapper {
 
     static gateway = {
         async fetchURL() {
-            return APIWrapper.makeRequest<gatewayTypes.GatewayInfo>('GET', `/gateway`, {});
+            return APIWrapper.makeRequest<gatewayTypes.GatewayInfo>('GET', `/gateway`, {
+                headers: USER_AGENT_HEADER
+            });
         },
 
         async fetchBotInfo() {

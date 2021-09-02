@@ -6,7 +6,7 @@ import * as num from './numberTypes';
 /************ request types ************/
 
 export type RequestOptions = {
-    data?: Record<string, unknown> | unknown[];
+    data?: Record<string, unknown> | unknown[] | GuildData; // added this since GuildData is an interface and can't be indexed properly
     headers?: RequestHeaders;
     query?: Record<string, unknown>;
     retries?: number;

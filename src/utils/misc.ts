@@ -15,6 +15,7 @@ export default class MiscUtils {
         const idInt = BigInt(id);
         return Number(idInt >> BigInt(22)) + DISCORD_EPOCH;
     }
+    
     // https://discord.com/developers/docs/reference#snowflake-ids-in-pagination-generating-a-snowflake-id-from-a-timestamp-example
     static timestampToSnowflake(timestamp: UnixTimestamp) {
         return (timestamp - DISCORD_EPOCH) << 22;
