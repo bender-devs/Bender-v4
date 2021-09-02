@@ -28,8 +28,10 @@ export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
 /***** discord constants *****/
 
-export const API_BASE = "https://discord.com/api/v9";
+export const API_BASE = 'https://discord.com/api/v9';
 
 export const DISCORD_EPOCH = 1420070400000;
 
-export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION})`;
+export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`;
+
+export const CDN_BASE = 'https://cdn.discordapp.com/';
