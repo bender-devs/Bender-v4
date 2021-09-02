@@ -1,7 +1,7 @@
-import { Timestamp, UnixTimestamp } from "../data/types";
+import { Timestamp, UnixTimestampMillis } from "../data/types";
 
 export default class TimeUtils {
-    static parseTimestampMillis(timestamp: Timestamp): UnixTimestamp {
+    static parseTimestampMillis(timestamp: Timestamp): UnixTimestampMillis {
         return Date.parse(timestamp);
     }
 }

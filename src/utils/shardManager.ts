@@ -1,4 +1,4 @@
-import { UnixTimestamp } from "../data/types";
+import { UnixTimestampMillis } from "../data/types";
 import Logger from "../structures/logger";
 
 const shardOperations = ['ping', 'pong', 'get_value', 'get_values'] as const;
@@ -19,7 +19,7 @@ export default class ShardManager {
     constructor(count: number) {
         this.shard_count = count;
         this.logger = new Logger();
-        this.#lastActivityTimestamps = new Array<UnixTimestamp>(count);
+        this.#lastActivityTimestamps = new Array<UnixTimestampMillis>(count);
         this.#lastActivityTimestamps.fill(0);
         process.on('message', this.handleMessage);
     }

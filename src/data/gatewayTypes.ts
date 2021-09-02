@@ -395,7 +395,7 @@ export type TypingStartData = {
     channel_id: types.Snowflake;
     guild_id?: types.Snowflake;
     user_id: types.Snowflake;
-    timestamp: types.UnixTimestamp;
+    timestamp: types.UnixTimestampMillis;
     member?: types.Member;
 }
 

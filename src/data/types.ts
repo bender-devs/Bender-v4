@@ -91,7 +91,7 @@ export type Activity = {
     name: string;
     type: num.ACTIVITY_TYPES;
     url?: URL | null;
-    created_at: UnixTimestamp;
+    created_at: UnixTimestampMillis;
     timestamps?: ActivityTimestamps;
     application_id?: Snowflake;
     details?: string | null;
@@ -106,8 +106,8 @@ export type Activity = {
 };
 
 export type ActivityTimestamps = {
-    start?: UnixTimestamp;
-    end?: UnixTimestamp;
+    start?: UnixTimestampMillis;
+    end?: UnixTimestampMillis;
 }
 export type ActivityParty = {
     id?: Snowflake; // TODO: Should this be string instead?
@@ -853,8 +853,11 @@ export type Snowflake = `${number | bigint}`;
 
 export type SnowflakeOrMe = Snowflake | "@me";
 
-// Unix timestamp (millis since epoch)
+// Unix timestamp (seconds since epoch)
 export type UnixTimestamp = number;
+
+// Unix timestamp (millis since epoch)
+export type UnixTimestampMillis = number;
 
 /* what the run() or runText() functions in commands can return.
  * may add more types later.

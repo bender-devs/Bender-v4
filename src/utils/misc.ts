@@ -1,5 +1,5 @@
 import { DISCORD_EPOCH } from "../data/constants";
-import { Snowflake, UnixTimestamp } from "../data/types";
+import { Snowflake, UnixTimestampMillis } from "../data/types";
 
 export default class MiscUtils {
     static parseQueryString(data: Record<string, string | number>): string {
@@ -11,13 +11,13 @@ export default class MiscUtils {
     }
 
     // https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
-    static snowflakeToTimestamp(id: Snowflake): UnixTimestamp {
+    static snowflakeToTimestamp(id: Snowflake): UnixTimestampMillis {
         const idInt = BigInt(id);
         return Number(idInt >> BigInt(22)) + DISCORD_EPOCH;
     }
-    
+
     // https://discord.com/developers/docs/reference#snowflake-ids-in-pagination-generating-a-snowflake-id-from-a-timestamp-example
-    static timestampToSnowflake(timestamp: UnixTimestamp) {
+    static timestampToSnowflake(timestamp: UnixTimestampMillis) {
         return (timestamp - DISCORD_EPOCH) << 22;
     }
 }

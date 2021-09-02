@@ -47,7 +47,7 @@ export interface CachedGuild extends GatewayGuildOmit {
 // doing these tricks because promisify() doesn't choose the correct overload
 type hsetType = (key: string, fields: types.StringMap, callback: redis.Callback<number>) => boolean;
 const hsetPromisify = (command: hsetType) => promisify(command);
-type hsetExpireType = (key: string, fields: types.StringMap, expire: types.UnixTimestamp) => (callback: redis.Callback<any[]>) => boolean;
+type hsetExpireType = (key: string, fields: types.StringMap, expire: types.UnixTimestampMillis) => (callback: redis.Callback<any[]>) => boolean;
 const hsetExpirePromisify = (command: hsetExpireType) => promisify(command);
 
 export default class CacheHandler {
@@ -63,10 +63,10 @@ export default class CacheHandler {
     #hget: (key: string, field: string) => Promise<string | null>;
     #hgetall: (key: string) => Promise<types.StringMap | null>;
     #set: (key: string, value: string) => Promise<unknown>;
-    #setExpire: (key: string, value: string, expire: types.UnixTimestamp) => Promise<unknown>;
-    #setMultiMixed: (key: string, top_level_values: types.StringMap | null, values: StringMapMap | null, expire?: types.UnixTimestamp) => Promise<unknown>;
+    #setExpire: (key: string, value: string, expire: types.UnixTimestampMillis) => Promise<unknown>;
+    #setMultiMixed: (key: string, top_level_values: types.StringMap | null, values: StringMapMap | null, expire?: types.UnixTimestampMillis) => Promise<unknown>;
     #hset: (key: string, fields: types.StringMap) => Promise<unknown>;
-    #hsetExpire: (key: string, value: types.StringMap, expire: types.UnixTimestamp) => Promise<unknown>;
+    #hsetExpire: (key: string, value: types.StringMap, expire: types.UnixTimestampMillis) => Promise<unknown>;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -91,7 +91,7 @@ export default class CacheHandler {
         this.#hgetall = promisify(this.redisClient.hgetall).bind(this.redisClient);
         this.#set = promisify(this.redisClient.set).bind(this.redisClient);
 
-        const setMultiMixed = (key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestamp) => {
+        const setMultiMixed = (key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestampMillis) => {
             const multi = this.redisClient.multi();
             for (const subkey in string_values) {
                 const elemKey = `${key}.${subkey}`;
@@ -111,14 +111,14 @@ export default class CacheHandler {
         }
         this.#setMultiMixed = promisify(setMultiMixed).bind(this.redisClient);
 
-        const setExpire = (key: string, value: string, expire: types.UnixTimestamp) => {
+        const setExpire = (key: string, value: string, expire: types.UnixTimestampMillis) => {
             return this.redisClient.multi().set(key, value).expireat(key, expire / 1000).exec;
         }    
         this.#setExpire = promisify(setExpire).bind(this.redisClient);
         
         this.#hset = hsetPromisify(this.redisClient.hset).bind(this.redisClient);
 
-        const hsetExpire = (key: string, value: types.StringMap, expire: types.UnixTimestamp) => {
+        const hsetExpire = (key: string, value: types.StringMap, expire: types.UnixTimestampMillis) => {
             return this.redisClient.multi().hset(key, value).expireat(key, expire / 1000).exec;
         }
         this.#hsetExpire = hsetExpirePromisify(hsetExpire).bind(this.redisClient);
@@ -138,7 +138,7 @@ export default class CacheHandler {
         return this.#get(key);
     }
 
-    set(key: string, value: string | types.StringMap, expire?: types.UnixTimestamp) {
+    set(key: string, value: string | types.StringMap, expire?: types.UnixTimestampMillis) {
         if (typeof value === 'string') {
             if (expire) {
                 return this.#setExpire(key, value, expire);
@@ -151,14 +151,14 @@ export default class CacheHandler {
         return this.#hset(key, value);
     }
 
-    hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestamp) {
+    hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestampMillis) {
         if (expire) {
             return this.#setMultiMixed(key, null, value, expire);
         }
         return this.#setMultiMixed(key, null, value);
     }
 
-    setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestamp) {
+    setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestampMillis) {
         if (expire) {
             return this.#setMultiMixed(key, value, null, expire);
         }

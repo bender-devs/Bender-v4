@@ -1,4 +1,4 @@
-import { UnixTimestamp } from "../data/types";
+import { UnixTimestampMillis } from "../data/types";
 import Bot from "../structures/bot";
 
 export default class AsyncHandler {
@@ -8,7 +8,7 @@ export default class AsyncHandler {
         this.bot = bot;
     }
 
-    schedule(timestamp: UnixTimestamp, taskHandler: () => void) {
+    schedule(timestamp: UnixTimestampMillis, taskHandler: () => void) {
         // TODO: use node-cron?
     }
 }
