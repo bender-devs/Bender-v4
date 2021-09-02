@@ -17,19 +17,18 @@ import { promisify } from "util";
 import * as redis from 'redis';
 import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData } from "../data/gatewayTypes";
 
-// would've preferred to use Snowflake instead of string here but TS just sets it to a generic object type
-type ChannelMap = Record<string, types.Channel>;
-type ThreadMap = Record<string, types.ThreadChannel>;
-type MemberMap = Record<string, types.Member>;
-type PresenceMap = Record<string, types.Presence>;
-type VoiceStateMap = Record<string, types.VoiceState>;
-type StageInstanceMap = Record<string, types.StageInstance>;
-export type RoleMap = Record<string, types.Role>;
-export type EmojiMap = Record<string, types.Emoji>;
-type CachedGuildMap = Record<string, CachedGuild>;
-type UserMap = Record<string, types.User>;
-type MessageMap = Record<string, types.Message>;
-type MessageMapMap = Record<string, MessageMap>;
+type ChannelMap = Record<types.Snowflake, types.Channel>;
+type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
+type MemberMap = Record<types.Snowflake, types.Member>;
+type PresenceMap = Record<types.Snowflake, types.Presence>;
+type VoiceStateMap = Record<types.Snowflake, types.VoiceState>;
+type StageInstanceMap = Record<types.Snowflake, types.StageInstance>;
+export type RoleMap = Record<types.Snowflake, types.Role>;
+export type EmojiMap = Record<types.Snowflake, types.Emoji>;
+type CachedGuildMap = Record<types.Snowflake, CachedGuild>;
+type UserMap = Record<types.Snowflake, types.User>;
+type MessageMap = Record<types.Snowflake, types.Message>;
+type MessageMapMap = Record<types.Snowflake, MessageMap>;
 type StringMapMap = Record<string, types.StringMap>;
 
 type GatewayGuildOmit = Omit<types.GatewayGuildBase, 'roles' | 'emojis'>;
@@ -452,7 +451,8 @@ export default class CacheHandler {
         },
         addChunk: async (user_list: UserMap): Promise<void> => {
             const obj: StringMapMap = {};
-            for (const id in user_list) {
+            let id: types.Snowflake;
+            for (id in user_list) {
                 obj[id] = this.users._serialize(user_list[id]);
             }
             return this.hsetMulti('users', obj).then(() => {});
