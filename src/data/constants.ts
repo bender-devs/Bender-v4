@@ -13,7 +13,8 @@ export const GATEWAY_ERROR_RECONNECT_TIMEOUT = 30000; // how many ms to wait whe
 
 export const GATEWAY_PARAMS: GatewayParams = {
     v: GATEWAY_VERSIONS.CURRENT,
-    encoding: 'json'
+    encoding: 'json',
+    compress: 'zlib-stream'
 }
 
 /***** bender constants *****/
