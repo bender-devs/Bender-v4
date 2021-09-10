@@ -903,3 +903,9 @@ export const NON_WAITING_EVENTS: EventName[] = ['READY', 'RESUMED'];
 /*** permission types ***/
 
 export type PermissionName = keyof typeof num.PERMISSIONS;
+
+export type BenderPermission = RoleHierarchyPermission | RoleListPermission | DiscordPermission;
+
+export type RoleHierarchyPermission = Snowflake;
+export type RoleListPermission = Snowflake[];
+export type DiscordPermission = PermissionName;

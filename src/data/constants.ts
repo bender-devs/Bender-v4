@@ -36,3 +36,9 @@ export const DISCORD_EPOCH = 1420070400000;
 export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`;
 
 export const CDN_BASE = 'https://cdn.discordapp.com/';
+
+/***** miscellaneous constants *****/
+
+export const ID_REGEX = /\b\d{17,19}\b/;
+
+export const ID_REGEX_EXACT = /^\d{17,19}$/;
