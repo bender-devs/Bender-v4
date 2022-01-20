@@ -27,6 +27,12 @@ export const WEBSITE = `https://${DOMAIN}`;
 
 export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
+export const PUBLIC_KEY = ''; // TODO: fill this in
+
+export const SHARDED = false;
+
+export const SHARD_COUNT = 9;
+
 /***** discord constants *****/
 
 export const API_BASE = 'https://discord.com/api/v9';
@@ -36,6 +42,10 @@ export const DISCORD_EPOCH = 1420070400000;
 export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`;
 
 export const CDN_BASE = 'https://cdn.discordapp.com/';
+
+/***** webserver constants *****/
+
+export const WEBSERVER_PORT = 9001;
 
 /***** miscellaneous constants *****/
 

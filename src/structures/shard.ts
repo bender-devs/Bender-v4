@@ -4,6 +4,7 @@ import Bot from "./bot";
 
 export default class Shard {
     bot: Bot;
+    manager!: ShardManager;
     id!: number;
     total_shards!: number;
 
