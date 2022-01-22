@@ -46,7 +46,7 @@ export default class WebServer {
         try {
             body = JSON.stringify(request.body);
         } catch(err) {
-            this.logger.handleError('webServer validateHeaders', err+'');
+            this.logger.handleError('webServer validateHeaders', err);
         }
 
         if (!signature || !timestamp || !body) {

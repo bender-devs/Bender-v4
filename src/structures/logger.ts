@@ -16,7 +16,7 @@ export default class Logger {
         this.#moduleColors = {};
     }
 
-    handleError(moduleName: string | null, error: Error | string, ...debugInfo: any[]): void {
+    handleError(moduleName: string | null, error: any, ...debugInfo: any[]): void {
         this.debug(moduleName || 'ERROR', ...debugInfo);
         console.error(error);
         if (!this.bot) {

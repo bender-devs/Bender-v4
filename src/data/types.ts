@@ -593,6 +593,8 @@ export type Interaction = {
     token: string;
     version: 1;
     message?: Message;
+    locale?: string;
+    guild_locale?: string;
 }
 
 export type InteractionData = {
@@ -600,8 +602,10 @@ export type InteractionData = {
     name: string;
     resolved?: InteractionDataResolved;
     options?: InteractionDataOption[];
-    custom_id: string;
-    component_type: num.MESSAGE_COMPONENT_TYPES;
+    custom_id?: string;
+    component_type?: num.MESSAGE_COMPONENT_TYPES;
+    values?: string[];
+    target_id?: Snowflake;
 }
 
 export type InteractionDataResolved = {
@@ -639,12 +643,13 @@ export type MessageInteraction = {
     user: User;
 }
 
-/****** slash command types ******/
+/****** application command types ******/
 
 // for creating/editing only
 export type CommandData = {
     name: string;
-    description: string;
+    type?: num.COMMAND_TYPES;
+    description?: string;
     options?: CommandOption[];
     default_permission?: boolean;
 }
@@ -653,6 +658,8 @@ export interface Command extends CommandData {
     id: Snowflake;
     application_id: Snowflake;
     guild_id?: Snowflake;
+    description: string;
+    version: Snowflake;
 }
 
 export type CommandOptionValue = CommandOption | string | number | boolean | User | Channel | Role;

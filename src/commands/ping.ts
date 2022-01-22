@@ -4,6 +4,7 @@ import Bot from '../structures/bot';
 import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
 import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
+import APIError from '../structures/apiError';
 
 export default class PingCommand implements Command {
     bot: Bot;
@@ -34,6 +35,9 @@ export default class PingCommand implements Command {
                 content: this.getPongMessage(millis),
                 flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
             }
+        }).catch((err: APIError) => {
+            this.bot.logger.handleError(';ping', err);
+            return null;
         });
     }
 

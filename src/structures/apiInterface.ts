@@ -1,5 +1,6 @@
 // this file sits between the client files and api wrapper and manages things like rate limits, cache, and errors.
 import APIWrapper from '../utils/apiWrapper';
+import APIError from './apiError';
 import Bot from './bot';
 import * as types from '../data/types';
 
@@ -13,7 +14,11 @@ export default class APIInterface {
     }
 
     handleError(error: types.ResponseError): null {
-        // TODO: parse into APIError if applicable
+        const apiError = APIError.parseError(error.response?.body);
+        if (apiError) {
+            this.bot.logger.debug('API ERROR', apiError);
+            throw APIError;
+        }
         this.bot.logger.handleError('API INTERFACE', error);
         return null;
     }

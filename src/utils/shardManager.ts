@@ -2,8 +2,14 @@ import { Interaction, InteractionResponse, UnixTimestampMillis } from "../data/t
 import Logger from "../structures/logger";
 import { randomUUID } from "crypto";
 import * as child_process from "child_process";
+import { RESPAWN_DEAD_SHARDS } from "../data/constants";
 
-const shardOperations = ['ping', 'pong', 'request_values', 'receive_values'] as const;
+const shardOperations = [
+    'ping', // ping a shard to make sure it's responsive
+    'pong', // response to ping
+    'request_values', // request values from a shard
+    'receive_values' // respond with requested values
+] as const;
 type ShardOperation = typeof shardOperations[number];
 
 type FetchCallback = (message: ShardMessage) => any;
@@ -18,30 +24,59 @@ export type ShardMessage = {
 
 export default class ShardManager {
     shardCount: number;
-    #shardProcesses: child_process.ChildProcess[];
+    #shardProcesses: (child_process.ChildProcess | null)[];
     logger: Logger;
-    #lastActivityTimestamps: number[];
+    #lastActivityTimestamps: UnixTimestampMillis[];
     #callbacks: Record<string, FetchCallback>;
 
     constructor(count: number) {
         this.shardCount = count;
-        this.#shardProcesses = new Array<child_process.ChildProcess>(count);
+        this.#shardProcesses = [];
+        this.#shardProcesses.fill(null, 0, count-1);
         this.logger = new Logger();
-        this.#lastActivityTimestamps = new Array<UnixTimestampMillis>(count);
-        this.#lastActivityTimestamps.fill(0);
+        this.#lastActivityTimestamps = [];
+        this.#lastActivityTimestamps.fill(0, 0, count-1);
         this.#callbacks = {};
         process.on('message', this.handleMessage);
     }
 
     spawnProcesses() {
         for (let i = 0; i < this.shardCount; i++) {
-            const shardProcess = child_process.execFile('../main', {
-                env: Object.assign({}, process.env, { 
-                    SHARD_ID: i,
-                    SHARD_COUNT: this.shardCount
-                })
-            });
-            this.#shardProcesses[i] = shardProcess;
+            this.spawnProcess(i);
+        }
+    }
+
+    spawnProcess(shardID: number): child_process.ChildProcess {
+        const shardProcess = child_process.execFile('../main', {
+            env: Object.assign({}, process.env, { 
+                SHARD_ID: shardID,
+                SHARD_COUNT: this.shardCount
+            })
+        });
+        shardProcess.on('error', (err: Error) => {
+            this.logger.handleError(`UNHANDLED EXCEPTION [SHARD ${shardID}]`, err);
+        });
+        shardProcess.on('disconnect', () => this.handleDeadProcess(shardID));
+        shardProcess.on('exit', () => this.handleDeadProcess(shardID));
+        shardProcess.on('message', (messageString: string) => {
+            const message = this.parseMessage(messageString);
+            if (message) {
+                this.processMessage(message);
+            }
+        });
+        this.#lastActivityTimestamps[shardID] = Date.now();
+        this.#shardProcesses[shardID] = shardProcess;
+        return shardProcess;
+    }
+
+    handleDeadProcess(shardID: number) {
+        const proc = this.#shardProcesses[shardID];
+        if (proc && !proc.exitCode) {
+            proc.kill(1);
+        }
+        this.#shardProcesses[shardID] = null;
+        if (RESPAWN_DEAD_SHARDS) {
+            this.spawnProcess(shardID);
         }
     }
 
@@ -74,7 +109,7 @@ export default class ShardManager {
         try {
             messageString = JSON.stringify(message);
         } catch(err) {
-            this.logger.handleError('dispatchMessage JSON.stringify', err+'', message);
+            this.logger.handleError('dispatchMessage JSON.stringify', err, message);
             return;
         }
         return proc.send(messageString);
@@ -130,7 +165,7 @@ export default class ShardManager {
             }
         } catch(err) {
             if (logger) {
-                logger.handleError('PARSING SHARD MESSAGE FAILED', err+'', message);
+                logger.handleError('PARSING SHARD MESSAGE FAILED', err, message);
             }
             return null;
         }

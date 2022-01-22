@@ -123,7 +123,8 @@ export const enum INTEGRATION_EXPIRE_BEHAVIORS {
 export const enum INTERACTION_REQUEST_TYPES {
     PING = 1,
     APPLICATION_COMMAND,
-    MESSAGE_COMPONENT
+    MESSAGE_COMPONENT,
+    APPLICATION_COMMAND_AUTOCOMPLETE
 };
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type
@@ -132,13 +133,21 @@ export const enum INTERACTION_CALLBACK_TYPES {
     CHANNEL_MESSAGE_WITH_SOURCE = 4,
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
     DEFERRED_UPDATE_MESSAGE,
-    UPDATE_MESSAGE
+    UPDATE_MESSAGE,
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
 };
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
 export const enum INTERACTION_CALLBACK_FLAGS {
     EPHEMERAL = 1 << 6
 };
+
+// https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types
+export const enum COMMAND_TYPES {
+    CHAT_INPUT = 1,
+    USER,
+    MESSAGE
+}
 
 // https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type
 export const enum COMMAND_OPTION_TYPES {

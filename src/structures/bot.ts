@@ -47,6 +47,7 @@ export default class Bot extends EventEmitter {
     }
 
     async connect(identifyData: gatewayTypes.IdentifyData) {
+        this.timeouts.gatewayError = [];
         let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
         if (this.useCache) {
             gatewayInfo = await this.cache.gatewayInfo.get();

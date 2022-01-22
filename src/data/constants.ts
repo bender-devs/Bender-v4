@@ -35,6 +35,8 @@ export const SHARDED = false;
 
 export const SHARD_COUNT = 9;
 
+export const RESPAWN_DEAD_SHARDS = true;
+
 export const INTENTS = INTENT_FLAGS.GUILDS & INTENT_FLAGS.GUILD_MEMBERS & INTENT_FLAGS.GUILD_BANS & INTENT_FLAGS.GUILD_EMOJIS_AND_STICKERS & INTENT_FLAGS.GUILD_WEBHOOKS & INTENT_FLAGS.GUILD_PRESENCES & INTENT_FLAGS.GUILD_MESSAGES & INTENT_FLAGS.GUILD_MESSAGE_REACTIONS & INTENT_FLAGS.DIRECT_MESSAGES;
 
 export const CONNECT_DATA: IdentifyData = {
@@ -56,6 +58,8 @@ export const CONNECT_DATA: IdentifyData = {
     },
     intents: INTENTS
 };
+
+export const AUTO_RESTART = true;
 
 /***** discord constants *****/
 
