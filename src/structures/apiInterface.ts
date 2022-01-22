@@ -13,10 +13,7 @@ export default class APIInterface {
     }
 
     handleError(error: types.ResponseError): null {
-        if (error.status === 429) {
-
-        }
-        // TODO: finish this
+        // TODO: parse into APIError if applicable
         this.bot.logger.handleError('API INTERFACE', error);
         return null;
     }

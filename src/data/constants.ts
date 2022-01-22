@@ -1,5 +1,7 @@
-import { GatewayParams } from "./gatewayTypes";
+import { GatewayParams, IdentifyData } from "./gatewayTypes";
 import { GATEWAY_VERSIONS } from "./numberTypes";
+import { ACTIVITY_TYPES, INTENT_FLAGS } from './numberTypes';
+import MiscUtils from "../utils/misc";
 
 /***** bot options *****/
 
@@ -32,6 +34,28 @@ export const PUBLIC_KEY = ''; // TODO: fill this in
 export const SHARDED = false;
 
 export const SHARD_COUNT = 9;
+
+export const INTENTS = INTENT_FLAGS.GUILDS & INTENT_FLAGS.GUILD_MEMBERS & INTENT_FLAGS.GUILD_BANS & INTENT_FLAGS.GUILD_EMOJIS_AND_STICKERS & INTENT_FLAGS.GUILD_WEBHOOKS & INTENT_FLAGS.GUILD_PRESENCES & INTENT_FLAGS.GUILD_MESSAGES & INTENT_FLAGS.GUILD_MESSAGE_REACTIONS & INTENT_FLAGS.DIRECT_MESSAGES;
+
+export const CONNECT_DATA: IdentifyData = {
+    token: '', // assigned later
+    properties: {
+        $os: MiscUtils.getOSType(),
+        $browser: 'Custom (https://benderbot.co)',
+        $device: 'Custom (https://benderbot.co)'
+    },
+    presence: {
+        since: null,
+        afk: false,
+        status: 'dnd',
+        activities: [{
+            name: 'Starting up...',
+            type: ACTIVITY_TYPES.PLAYING,
+            created_at: 0
+        }]
+    },
+    intents: INTENTS
+};
 
 /***** discord constants *****/
 

@@ -19,7 +19,7 @@ export default class Shard {
     }
 
     processMessage(message: ShardMessage) {
-
+        // TODO: copy and modify code from ShardManager
     }
 
     handleMessage(message: string) {
@@ -32,7 +32,7 @@ export default class Shard {
 
     sendMessage(message: ShardMessage) {
         const stringifiedMessage = JSON.stringify(message);
-
+        // TODO: copy and modify code from ShardManager
     }
 
     parseMessage(message: string): ShardMessage | null {

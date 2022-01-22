@@ -1,7 +1,7 @@
-import { Interaction, InteractionResponse, InteractionResponseData, UnixTimestampMillis } from "../data/types";
+import { Interaction, InteractionResponse, UnixTimestampMillis } from "../data/types";
 import Logger from "../structures/logger";
 import { randomUUID } from "crypto";
-import APIWrapper from "./apiWrapper";
+import * as child_process from "child_process";
 
 const shardOperations = ['ping', 'pong', 'request_values', 'receive_values'] as const;
 type ShardOperation = typeof shardOperations[number];
@@ -18,20 +18,31 @@ export type ShardMessage = {
 
 export default class ShardManager {
     shardCount: number;
-    #shardPIDs: number[];
+    #shardProcesses: child_process.ChildProcess[];
     logger: Logger;
     #lastActivityTimestamps: number[];
     #callbacks: Record<string, FetchCallback>;
 
     constructor(count: number) {
         this.shardCount = count;
-        this.#shardPIDs = new Array<number>(count);
-        this.#shardPIDs.fill(-1);
+        this.#shardProcesses = new Array<child_process.ChildProcess>(count);
         this.logger = new Logger();
         this.#lastActivityTimestamps = new Array<UnixTimestampMillis>(count);
         this.#lastActivityTimestamps.fill(0);
         this.#callbacks = {};
         process.on('message', this.handleMessage);
+    }
+
+    spawnProcesses() {
+        for (let i = 0; i < this.shardCount; i++) {
+            const shardProcess = child_process.execFile('../main', {
+                env: Object.assign({}, process.env, { 
+                    SHARD_ID: i,
+                    SHARD_COUNT: this.shardCount
+                })
+            });
+            this.#shardProcesses[i] = shardProcess;
+        }
     }
 
     sendMessage(message: ShardMessage) {
@@ -46,20 +57,27 @@ export default class ShardManager {
         } else {
             toShards = message.toShards;
         }
-        const toPIDs: number[] = [];
+        const toProcesses: child_process.ChildProcess[] = [];
         for (const shardID of toShards) {
-            const pid = this.#shardPIDs[shardID];
-            if (pid && pid > 1) {
-                toPIDs.push(pid);
+            const proc = this.#shardProcesses[shardID];
+            if (proc) {
+                toProcesses.push(proc);
             }
         }
-        for (const pid of toPIDs) {
-            this.dispatchMessage(pid, message);
+        for (const proc of toProcesses) {
+            this.dispatchMessage(proc, message);
         }
     }
 
-    dispatchMessage(pid: number, message: ShardMessage) {
-        // TODO: send message to process using shard pid
+    dispatchMessage(proc: child_process.ChildProcess, message: ShardMessage) {
+        let messageString = '';
+        try {
+            messageString = JSON.stringify(message);
+        } catch(err) {
+            this.logger.handleError('dispatchMessage JSON.stringify', err+'', message);
+            return;
+        }
+        return proc.send(messageString);
     }
 
     processMessage(message: ShardMessage) {

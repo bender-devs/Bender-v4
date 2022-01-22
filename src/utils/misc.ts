@@ -1,5 +1,6 @@
 import { DISCORD_EPOCH } from "../data/constants";
 import { Snowflake, UnixTimestampMillis } from "../data/types";
+import * as os from "os";
 
 export default class MiscUtils {
     static parseQueryString(data: Record<string, string | number>): string {
@@ -8,6 +9,18 @@ export default class MiscUtils {
             qs += `${qs ? '&' : '?'}${key}=${encodeURIComponent(data[key])}`;
         }
         return qs;
+    }
+
+    static getOSType() {
+        const type = os.type();
+        switch (type) {
+            case 'Darwin':
+                return 'macOS';
+            case 'Windows_NT':
+                return 'Windows';
+            default:
+                return type;
+        }
     }
 
     // https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right

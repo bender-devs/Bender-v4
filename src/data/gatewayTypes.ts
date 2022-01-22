@@ -382,7 +382,10 @@ export interface PresenceUpdatePayload extends EventPayload {
     d: PresenceUpdateData;
 }
 
-export type PresenceUpdateData = types.Presence;
+export interface PresenceUpdateData extends Pick<types.Presence, 'activities' | 'status'> {
+    since: types.UnixTimestampMillis | null,
+    afk: boolean
+};
 
 /****** typing ******/
 
