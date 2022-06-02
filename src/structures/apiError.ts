@@ -19,17 +19,23 @@ export default class APIError {
     code: API_ERRORS;
     message: string;
     errors: APISubError[];
+    status: number;
 
-    constructor(code: API_ERRORS, message: string) {
+    constructor(code: API_ERRORS, message: string, status: number) {
         this.code = code;
         this.message = message;
         this.errors = [];
+        this.status = status;
     }
 
     static parseError(responseError: ResponseError): APIError | null {
         const body = responseError.response?.body;
+        const status = responseError.status;
+        if (!status || status < 400) {
+            return null;
+        }
         if (typeof body === 'object' && body.code && body.message) {
-            const apiError = new APIError(body.code, body.message);
+            const apiError = new APIError(body.code, body.message, status);
             if (body.errors) {
                 apiError.errors = this.parseSubErrors(body.errors);
             }

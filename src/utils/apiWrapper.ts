@@ -2,12 +2,21 @@ import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
 import * as types from '../data/types';
 import * as gatewayTypes from '../data/gatewayTypes';
+import APIError from '../structures/apiError';
 
 const USER_AGENT_HEADER: types.RequestHeaders = {
     'user-agent': CONSTANTS.USER_AGENT
 };
 
 const AUTH_HEADER: types.RequestHeaders = Object.assign({ authorization: `Bot ${process.env.TOKEN}` }, USER_AGENT_HEADER);
+
+// expose hidden properties used for retrying requests
+declare module "superagent" {
+    interface SuperAgentRequest {
+        _retries?: number;
+        _retry: () => Promise<superagent.Response>;
+    }
+}
 
 export default class APIWrapper {
 
@@ -30,11 +39,48 @@ export default class APIWrapper {
         // TODO: default retries, use callback to decide whether 429's should be retried
         // https://visionmedia.github.io/superagent/#retrying-requests
         if (options.retries)
-            request.retry(options.retries);
+            request.retry(options.retries, APIWrapper.shouldRetry);
         return request.timeout({
             response: options.responseTimeout || 60000,
             deadline: options.deadlineTimeout || 120000
+        }).catch((responseError: superagent.ResponseError) => {
+            if (responseError.status === 429) {
+                const resetString = responseError.response?.get('X-RateLimit-Reset');
+                let resetDelay = -1;
+                if (resetString) {
+                    const resetTimestamp = parseInt(resetString);
+                    resetDelay = resetTimestamp - Date.now();
+                }
+                if (resetString && resetDelay >= 0 && resetDelay <= CONSTANTS.MAX_RATE_LIMIT_DELAY) {
+                    if (request._retries) {
+                        request._retries++;
+                    } else {
+                        request._retries = 1;
+                    }
+                    return APIWrapper.delay(resetDelay).then(request._retry);
+                }
+            }
+            const error = APIError.parseError(responseError);
+            if (error) {
+                throw error;
+            } else {
+                throw responseError;
+            }
         });
+    }
+
+    private static shouldRetry(err: Error, response: superagent.Response) {
+        if (response.status === 429) {
+            // using custom retry logic above to include rate limit delays
+            return false;
+        }
+        return true;
+    }
+
+    private static delay(time: number) {
+        return new Promise<void>((resolve) => {
+            setTimeout(resolve, time);
+        })
     }
 
     static guild = {

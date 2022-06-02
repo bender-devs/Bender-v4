@@ -71,6 +71,8 @@ export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`
 
 export const CDN_BASE = 'https://cdn.discordapp.com/';
 
+export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only when wait time is at or below this number
+
 /***** webserver constants *****/
 
 export const WEBSERVER_PORT = 9001;
