@@ -1,6 +1,6 @@
 {
     "name": "bender",
-    "main": "bender.js",
+    "main": "main.ts",
     "author": "bender-devs",
     "license": "GNU AGPLv3",
     "private": true,
@@ -16,8 +16,7 @@
         "mongodb": "^4.1.1",
         "redis": "^3.1.2",
         "superagent": "^6.1.0",
-        "tweetnacl": "^1.0.3",
-        "typescript": "^4.4.2"
+        "tweetnacl": "^1.0.3"
     },
     "eslintConfig": {
         "parser": "@typescript-eslint/parser",
@@ -32,7 +31,12 @@
             "plugin:@typescript-eslint/recommended"
         ]
     },
+    "scripts": {
+        "preinstall": "npm i -g typescript@^4.4.2",
+        "start": "cd dist && node main.js"
+    },
     "devDependencies": {
+        "typescript": "^4.4.2",
         "@types/node": "^16.7.10",
         "@types/redis": "^2.8.31",
         "@types/superagent": "^4.1.12",

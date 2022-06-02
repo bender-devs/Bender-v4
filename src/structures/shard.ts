@@ -31,7 +31,7 @@ export default class Shard {
     }
 
     sendMessage(message: ShardMessage) {
-        const stringifiedMessage = JSON.stringify(message);
+        //const stringifiedMessage = JSON.stringify(message);
         // TODO: copy and modify code from ShardManager
     }
 
