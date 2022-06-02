@@ -34,7 +34,7 @@ export default class Gateway extends EventEmitter {
                 this.#promiseResolve(true);
                 this.#promiseResolve = null;
             }
-            this.bot.logger.debug('GATEWAY CONNECT', ev);
+            this.bot.logger.debug('GATEWAY CONNECTED', ev);
         });
 
         this.on('error', (ev: Event) => {
@@ -127,8 +127,9 @@ export default class Gateway extends EventEmitter {
     }
 
     async connect(gatewayURL: types.URL, params: gatewayTypes.GatewayParams) {
-        const queryString = MiscUtils.parseQueryString(params);
-        this.ws = new WebSocket(gatewayURL + queryString);
+        const wsURL = gatewayURL + MiscUtils.parseQueryString(params);
+        this.bot.logger.debug('GATEWAY CONNECT', wsURL)
+        this.ws = new WebSocket(wsURL);
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
@@ -145,6 +146,7 @@ export default class Gateway extends EventEmitter {
             s: null,
             t: null
         }
+        this.bot.logger.debug('GATEWAY IDENTIFY', payload);
         return this.sendData(payload);
     }
 
@@ -155,6 +157,7 @@ export default class Gateway extends EventEmitter {
             s: null,
             t: null
         }
+        this.bot.logger.debug('GATEWAY HEARTBEAT', payload);
         return this.sendData(payload);
     }
 
