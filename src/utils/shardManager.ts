@@ -2,7 +2,7 @@ import { Interaction, InteractionResponse, UnixTimestampMillis } from "../data/t
 import Logger from "../structures/logger";
 import { randomUUID } from "crypto";
 import * as child_process from "child_process";
-import { RESPAWN_DEAD_SHARDS } from "../data/constants";
+import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART } from "../data/constants";
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive
@@ -72,7 +72,11 @@ export default class ShardManager {
     handleDeadProcess(shardID: number) {
         const proc = this.#shardProcesses[shardID];
         if (proc && !proc.exitCode) {
-            proc.kill(1);
+            proc.kill(EXIT_CODE_RESTART);
+        } else if (proc?.exitCode === EXIT_CODE_NO_RESTART) {
+            // TODO: kill all shards?
+            this.#shardProcesses[shardID] = null;
+            return;
         }
         this.#shardProcesses[shardID] = null;
         if (RESPAWN_DEAD_SHARDS) {

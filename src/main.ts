@@ -1,6 +1,6 @@
 import "dotenv/config";
 import Bot from "./structures/bot";
-import { SHARDED, SHARD_COUNT, CONNECT_DATA } from "./data/constants";
+import { SHARDED, SHARD_COUNT, CONNECT_DATA, EXIT_CODE_NO_RESTART } from "./data/constants";
 import ShardManager from "./utils/shardManager";
 import Shard from "./structures/shard";
 import { IdentifyData } from "./data/gatewayTypes";
@@ -10,7 +10,7 @@ const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
 
 if (!TOKEN) {
     console.error('ERROR: No token provided.');
-    process.exit(1);
+    process.exit(EXIT_CODE_NO_RESTART);
 }
 
 console.log('Bot starting, token length: ' + TOKEN.length)

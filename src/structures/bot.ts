@@ -5,7 +5,7 @@ import APIInterface from './apiInterface';
 import CacheHandler from '../utils/cacheHandler';
 import Gateway from './gateway';
 import Logger from './logger';
-import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, USE_CACHE } from '../data/constants';
+import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, EXIT_CODE_NO_RESTART, USE_CACHE } from '../data/constants';
 import { CLIENT_STATE } from '../data/numberTypes';
 import EventManager from './eventManager';
 import Shard from './shard';
@@ -70,7 +70,7 @@ export default class Bot extends EventEmitter {
                 return null; // TODO: better way to indicate a retry will happen?
             } else {
                 this.logger.handleError('GET GATEWAY', 'Failed to get gateway, and retrying is not enabled.');
-                process.exit(1);
+                process.exit(EXIT_CODE_NO_RESTART);
             }
         }
         this.logger.debug('BOT CONNECT', gatewayInfo);

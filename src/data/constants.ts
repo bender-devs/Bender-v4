@@ -60,6 +60,8 @@ export const CONNECT_DATA: IdentifyData = {
 };
 
 export const AUTO_RESTART = true;
+export const EXIT_CODE_RESTART = 1;
+export const EXIT_CODE_NO_RESTART = 69;
 
 /***** discord constants *****/
 
