@@ -177,7 +177,9 @@ export default class EventManager {
             return null;
         }
         this.bot.logger.debug(eventHandler.name, eventData);
-        // TODO: handle caching here?
+        if (eventHandler.cacheHandler) {
+            eventHandler.cacheHandler(eventData);
+        }
         return eventHandler.handler(eventData);
     }
 

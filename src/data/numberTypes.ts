@@ -297,7 +297,7 @@ export const enum GATEWAY_ERRORS {
 
 // additional disconnect codes for client-side disconnects
 export const enum CUSTOM_GATEWAY_ERRORS {
-    RECONNECT_REQUESTED = 69001,
+    RECONNECT_REQUESTED = 4997,
     INVALID_SESSION,
     HEARTBEAT_TIMEOUT
 }

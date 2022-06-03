@@ -42,6 +42,14 @@ export default class APIInterface {
         }
     }
 
+    message = {
+        edit: async (message: types.Message, message_data: types.MessageData) => {
+            // TODO: apply default options (i.e. allowed_mentions)
+            return APIWrapper.message.edit(message.channel_id, message.id, message_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
+
     user = {
         send: async (user_id: types.Snowflake, message_data: types.MessageData) => {
             let channelID = await this.bot.cache.dmChannels.get(user_id);
@@ -93,4 +101,43 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
+
+    command = {
+        list: async () => {
+            return APIWrapper.globalCommand.list(this.bot.user.id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        create: async (command: types.CommandCreateData) => {
+            return APIWrapper.globalCommand.create(this.bot.user.id, command)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        fetch: async (command_id: types.Snowflake) => {
+            return APIWrapper.globalCommand.fetch(this.bot.user.id, command_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        edit: async(command_id: types.Snowflake, command_data: types.CommandEditData) => {
+            return APIWrapper.globalCommand.edit(this.bot.user.id, command_id, command_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        delete: async (command_id: types.Snowflake) => {
+            return APIWrapper.globalCommand.delete(this.bot.user.id, command_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        replaceAll: async (commands_data: types.CommandCreateData[]) => {
+            // make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord
+            const strippedCommands: types.CommandCreateData[] = [];
+            commands_data.forEach(command => {
+                const newCommand = Object.assign({}, command);
+                // @ts-ignore: Can't find a better way to remove this property.
+                delete newCommand.bot;
+                strippedCommands.push(newCommand);
+            })
+            this.bot.logger.debug('UPDATE COMMAND LIST', strippedCommands);
+
+            return APIWrapper.globalCommand.replaceAll(this.bot.user.id, strippedCommands)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
+
+    // TODO: lots of missing methods here
 }

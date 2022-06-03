@@ -9,6 +9,9 @@ import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAM
 import { CLIENT_STATE } from '../data/numberTypes';
 import EventManager from './eventManager';
 import Shard from './shard';
+import SlashCommandManager from './slashCommandManager';
+import SlashCommandHandler from './slashCommandHandler';
+import MiscUtils from '../utils/misc';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -16,6 +19,8 @@ export default class Bot extends EventEmitter {
     gateway: Gateway;
     logger: Logger;
     events: EventManager;
+    commandManager: SlashCommandManager;
+    commandHandler: SlashCommandHandler;
 
     shard?: Shard;
     user!: types.User;
@@ -32,6 +37,8 @@ export default class Bot extends EventEmitter {
         this.gateway = new Gateway(this);
         this.logger = new Logger(this);
         this.events = new EventManager(this);
+        this.commandManager = new SlashCommandManager(this);
+        this.commandHandler = new SlashCommandHandler(this);
 
         if (shard_data) {
             this.shard = new Shard(this, shard_data);
@@ -73,8 +80,10 @@ export default class Bot extends EventEmitter {
                 process.exit(EXIT_CODE_NO_RESTART);
             }
         }
+        this.cache.gatewayInfo.set(gatewayInfo);
         this.logger.debug('BOT CONNECT', gatewayInfo);
-        return this.gateway.connect(gatewayInfo.url, GATEWAY_PARAMS).then(() => {
+        const wsURL = gatewayInfo.url + MiscUtils.parseQueryString(GATEWAY_PARAMS);
+        return this.gateway.connect(wsURL).then(() => {
             return this.gateway.identify(identifyData);
         });
     }

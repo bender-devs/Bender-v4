@@ -13,8 +13,6 @@ if (!TOKEN) {
     process.exit(EXIT_CODE_NO_RESTART);
 }
 
-console.log('Bot starting, token length: ' + TOKEN.length)
-
 const connectionData: IdentifyData = Object.assign({}, CONNECT_DATA, { token: TOKEN });
 
 if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
@@ -29,7 +27,6 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     const shardManager = new ShardManager(SHARD_COUNT);
     shardManager.spawnProcesses();
 } else {
-    console.log('Starting without shards')
     const bot = new Bot();
     bot.connect(connectionData);
 }
