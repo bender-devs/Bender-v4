@@ -16,7 +16,7 @@ export const GATEWAY_ERROR_RECONNECT_TIMEOUT = 30000; // how many ms to wait whe
 export const GATEWAY_PARAMS: GatewayParams = {
     v: GATEWAY_VERSIONS.CURRENT,
     encoding: 'json',
-    compress: 'zlib-stream'
+    //compress: 'zlib-stream' // disabled for now due to errors
 }
 
 /***** bender constants *****/
@@ -72,6 +72,16 @@ export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`
 export const CDN_BASE = 'https://cdn.discordapp.com/';
 
 export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only when wait time is at or below this number
+
+/***** redis constants *****/
+
+export const REDIS_HOST = '10.10.20.2';
+
+export const REDIS_PORT = 6379;
+
+export const REDIS_USER = 'default';
+
+// REDIS_PASS defined in .env file
 
 /***** webserver constants *****/
 

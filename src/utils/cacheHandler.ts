@@ -16,6 +16,7 @@ import Bot from "../structures/bot";
 import { promisify } from "util";
 import * as redis from 'redis';
 import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData } from "../data/gatewayTypes";
+import { REDIS_HOST, REDIS_PORT, REDIS_USER } from "../data/constants";
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
@@ -70,12 +71,18 @@ export default class CacheHandler {
 
     constructor(bot: Bot) {
         this.bot = bot;
-        this.redisClient = redis.createClient();
+        let authString = '';
+        if (REDIS_USER && process.env.REDIS_PASS) {
+           authString = `${REDIS_USER}:${encodeURIComponent(process.env.REDIS_PASS)}@`;
+        }
+        this.redisClient = redis.createClient({
+            url: `redis://${authString}${REDIS_HOST}:${REDIS_PORT}`
+        });
         this.redisClient.on("error", err => this.bot.emit("REDIS_ERROR", err));
 
         this.#get = promisify(this.redisClient.get).bind(this.redisClient);
 
-        const getMultiMixed = (string_keys: string[], hash_keys: string[]) => {
+        const getMultiMixed = async (string_keys: string[], hash_keys: string[]) => {
             const multi = this.redisClient.multi();
             for (const key of string_keys) {
                 multi.get(key);
@@ -83,9 +90,17 @@ export default class CacheHandler {
             for (const hkey of hash_keys) {
                 multi.hgetall(hkey);
             }
-            return multi.exec;
+            return new Promise((resolve, reject) => {
+                multi.exec((err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                })
+            });
         }
-        this.#getMultiMixed = promisify(getMultiMixed).bind(this.redisClient);
+        this.#getMultiMixed = getMultiMixed.bind(this.redisClient);
 
         this.#hget = promisify(this.redisClient.hget).bind(this.redisClient);
         this.#hgetall = promisify(this.redisClient.hgetall).bind(this.redisClient);

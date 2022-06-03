@@ -8,7 +8,9 @@ const USER_AGENT_HEADER: types.RequestHeaders = {
     'user-agent': CONSTANTS.USER_AGENT
 };
 
-const AUTH_HEADER: types.RequestHeaders = Object.assign({ authorization: `Bot ${process.env.TOKEN}` }, USER_AGENT_HEADER);
+const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
+
+const AUTH_HEADER: types.RequestHeaders = Object.assign({ authorization: `Bot ${TOKEN}` }, USER_AGENT_HEADER);
 
 // expose hidden properties used for retrying requests
 declare module "superagent" {

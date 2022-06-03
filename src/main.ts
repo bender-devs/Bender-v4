@@ -1,23 +1,21 @@
-import * as dotenv from "dotenv";
+import "dotenv/config";
 import Bot from "./structures/bot";
 import { SHARDED, SHARD_COUNT, CONNECT_DATA } from "./data/constants";
 import ShardManager from "./utils/shardManager";
 import Shard from "./structures/shard";
 import { IdentifyData } from "./data/gatewayTypes";
 
-dotenv.config();
+console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
+const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
 
-// TODO: process cli arguments
-process.env.TOKEN = process.env.TOKEN_ALPHA || '';
-
-if (!process.env.TOKEN) {
+if (!TOKEN) {
     console.error('ERROR: No token provided.');
     process.exit(1);
 }
 
-console.log('Bot starting, token length: ' + process.env.TOKEN.length)
+console.log('Bot starting, token length: ' + TOKEN.length)
 
-const connectionData: IdentifyData = Object.assign({}, CONNECT_DATA, { token: process.env.TOKEN });
+const connectionData: IdentifyData = Object.assign({}, CONNECT_DATA, { token: TOKEN });
 
 if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     const id = parseInt(process.env.SHARD_ID);

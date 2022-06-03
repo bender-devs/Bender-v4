@@ -26,11 +26,11 @@ export default class APIInterface {
     gateway = {
         getURL: async () => {
             return APIWrapper.gateway.fetchURL()
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         getBotInfo: async () => {
             return APIWrapper.gateway.fetchBotInfo()
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
 
@@ -38,7 +38,7 @@ export default class APIInterface {
         send: async (channel_id: types.Snowflake, message_data: types.MessageData) => {
             // TODO: apply default options (i.e. allowed_mentions)
             return APIWrapper.message.create(channel_id, message_data)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
 
@@ -46,7 +46,7 @@ export default class APIInterface {
         send: async (user_id: types.Snowflake, message_data: types.MessageData) => {
             let channelID = await this.bot.cache.dmChannels.get(user_id);
             if (!channelID) {
-                const newChannel = await this.user.createDM(user_id).catch(this.handleError);
+                const newChannel = await this.user.createDM(user_id).catch(this.handleError.bind(this));
                 if (!newChannel) {
                     this.bot.logger.debug('CREATE DM FAILED', user_id);
                     return null;
@@ -54,43 +54,43 @@ export default class APIInterface {
                 channelID = newChannel.id;
             }
             return APIWrapper.message.create(channelID, message_data)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         createDM: async (user_id: types.Snowflake) => {
             return APIWrapper.user.createDM(user_id)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
 
     interaction = {
         sendResponse: async (interaction: types.Interaction, interaction_response: types.InteractionResponse) => {
             return APIWrapper.interactionResponse.create(interaction.id, interaction.token, interaction_response)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         getResponse: async (interaction: types.Interaction) => {
             return APIWrapper.interactionResponse.fetch(this.bot.user.id, interaction.token)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         editResponse: async (interaction: types.Interaction, message_data: types.MessageData) => {
             return APIWrapper.interactionResponse.edit(this.bot.user.id, interaction.token, message_data)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         deleteResponse: async (interaction: types.Interaction) => {
             return APIWrapper.interactionResponse.delete(this.bot.user.id, interaction.token)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
 
         sendFollowup: async (interaction: types.Interaction, message_data: types.MessageData) => {
             return APIWrapper.interactionFollowup.create(this.bot.user.id, interaction.token, message_data)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         editFollowup: async (interaction: types.Interaction, message_id: types.Snowflake, message_data: types.MessageData) => {
             return APIWrapper.interactionFollowup.edit(this.bot.user.id, interaction.token, message_id, message_data)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         },
         deleteFollowup: async (interaction: types.Interaction, message_id: types.Snowflake) => {
             return APIWrapper.interactionFollowup.delete(this.bot.user.id, interaction.token, message_id)
-                .then(res => res.body).catch(this.handleError);
+                .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
 }

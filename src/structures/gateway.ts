@@ -7,6 +7,7 @@ import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS } from '../data/constants';
 import { inflate, constants as zconst } from 'zlib';
 import { promisify } from 'util';
+import * as WebSocket from 'ws';
 
 const inflateAsync = promisify(inflate);
 
@@ -133,9 +134,9 @@ export default class Gateway extends EventEmitter {
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
-            this.ws.onopen = (ev: Event) => this.emit('connect', ev);
-            this.ws.onerror = (ev: Event) => this.emit('error', ev);
-            this.ws.onmessage = (ev: MessageEvent) => this.emit('message', ev);
+            this.ws.onopen = (ev: WebSocket.OpenEvent) => this.emit('connect', ev);
+            this.ws.onerror = (ev: WebSocket.ErrorEvent) => this.emit('error', ev);
+            this.ws.onmessage = (ev: WebSocket.MessageEvent) => this.emit('message', ev);
         });
     }
 
