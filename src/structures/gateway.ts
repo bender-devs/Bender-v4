@@ -1,7 +1,5 @@
 import * as gatewayTypes from '../data/gatewayTypes';
-import * as types from '../data/types';
 import Bot from './bot';
-import MiscUtils from '../utils/misc';
 import { CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../data/numberTypes';
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
@@ -16,11 +14,13 @@ export default class Gateway extends EventEmitter {
     version?: number;
     sessionID?: string;
     ws!: WebSocket;
+    ping: number = -1;
 
     #promiseResolve: ((value: unknown) => void) | null = null;
     #promiseReject: ((value: unknown) => void) | null = null;
     #heartbeatInterval: NodeJS.Timeout | null = null;
     #heartbeatTimeout: NodeJS.Timeout | null = null;
+    #lastHeartbeat: number = -1;
     #lastSequenceNumber: number | null = null;
     #identifyData: gatewayTypes.IdentifyData | null = null;
 
@@ -143,6 +143,8 @@ export default class Gateway extends EventEmitter {
                     return false;
                 }
                 case GATEWAY_OPCODES.HEARTBEAT_ACK: {
+                    this.ping = Date.now() - this.#lastHeartbeat;
+                    this.#lastHeartbeat = -1;
                     if (this.#heartbeatTimeout) {
                         clearTimeout(this.#heartbeatTimeout);
                     }
@@ -152,12 +154,12 @@ export default class Gateway extends EventEmitter {
             return false;
         });
 
-        this.on('disconnect', (ev: WebSocket.CloseEvent) => {
+        this.on('disconnect', (eventCode: WebSocket.CloseEvent) => {
             if (this.#heartbeatInterval) {
                 clearInterval(this.#heartbeatInterval);
             }
-            this.bot.logger.handleError('WEBSOCKET DISCONNECT', ev);
-            switch (ev.code) {
+            this.bot.logger.handleError('WEBSOCKET DISCONNECT', eventCode, {eventCode});
+            switch (eventCode.code) {
                 case GATEWAY_ERRORS.AUTHENTICATION_FAILED:
                 case GATEWAY_ERRORS.INVALID_SHARD:
                 case GATEWAY_ERRORS.SHARDING_REQUIRED:
@@ -181,7 +183,7 @@ export default class Gateway extends EventEmitter {
                             token: this.#identifyData.token
                         });
                     } else if (this.#identifyData) {
-                        return this.identify(this.#identifyData);
+                        return this.bot.connect(this.#identifyData);
                     }
                     process.exit(EXIT_CODE_RESTART);
                 }
@@ -214,17 +216,18 @@ export default class Gateway extends EventEmitter {
         return this.ws.send(stringifiedData);
     }
 
-    async connect(gatewayURL: types.URL, params: gatewayTypes.GatewayParams) {
-        const wsURL = gatewayURL + MiscUtils.parseQueryString(params);
+    async connect(wsURL: string, addListeners = true) {
         this.bot.logger.debug('GATEWAY CONNECT', wsURL)
         this.ws = new WebSocket(wsURL);
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
-            this.ws.on('open', (ev: WebSocket.OpenEvent) => this.emit('connect', ev));
-            this.ws.on('error', (ev: WebSocket.ErrorEvent) => this.emit('error', ev));
-            this.ws.on('message', (ev: WebSocket.MessageEvent) => this.emit('message', ev));
-            this.ws.on('close', (ev: WebSocket.CloseEvent) => this.emit('disconnect', ev));
+            if (addListeners) {
+                this.ws.on('open', (ev: WebSocket.OpenEvent) => this.emit('connect', ev));
+                this.ws.on('error', (ev: WebSocket.ErrorEvent) => this.emit('error', ev));
+                this.ws.on('message', (ev: WebSocket.MessageEvent) => this.emit('message', ev));
+                this.ws.on('close', (ev: WebSocket.CloseEvent) => this.emit('disconnect', ev));
+            }
         });
     }
 
@@ -251,6 +254,7 @@ export default class Gateway extends EventEmitter {
         this.#heartbeatTimeout = setTimeout(() => {
             this.ws.close(CUSTOM_GATEWAY_ERRORS.HEARTBEAT_TIMEOUT);
         }, HEARTBEAT_TIMEOUT);
+        this.#lastHeartbeat = Date.now();
         return this.sendData(payload);
     }
 
@@ -277,13 +281,14 @@ export default class Gateway extends EventEmitter {
     }
 
     async resume(resumeData: gatewayTypes.ResumeData) {
+        await this.connect(this.ws.url, false);
         const payload: gatewayTypes.ResumePayload = {
             op: GATEWAY_OPCODES.RESUME,
             d: resumeData,
             s: null,
             t: null
         }
-        this.bot.logger.debug('SEND GATEWAY RESUME', payload);
+        this.bot.logger.debug('GATEWAY RESUME', payload);
         return this.sendData(payload);
     }
     

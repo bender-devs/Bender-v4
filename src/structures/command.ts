@@ -1,14 +1,10 @@
 import Bot from './bot';
 import * as types from '../data/types';
 
-export default interface Command {
-    name: string;
+export default interface Command extends types.CommandCreateData {
     bot: Bot;
-    guildOnly: boolean;
-    global: boolean; // whether this is a top-level/global slash command
-    options?: types.CommandOption[];
-    default_permission: boolean;
+    dm_permission: boolean;
 
-    run(interaction: types.Interaction, args: types.CommandOption[]): types.CommandResponse;
+    run(interaction: types.Interaction): types.CommandResponse;
     runText(msg: types.Message, argString: string): types.CommandResponse;
 }

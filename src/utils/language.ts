@@ -4,17 +4,21 @@ import * as types from '../data/types';
 
 export default class LanguageUtils {
 
-    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID = 'en'): string {
+    static get(id: string, langID = 'en'): string {
         langID = langID.toLowerCase();
         if (!this.isSupportedLangID(langID)) {
             langID = 'en';
         }
-        let text = languages[langID][id];
+        return languages[langID][id] || '';
+    }
+
+    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID = 'en'): string {
+        let text = LanguageUtils.get(id, langID);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
             text = text.replace(replaceRegex, replaceMap[key])
         }
-        return text || '';
+        return text;
     }
 
     static isValidLangID(langID: string): boolean {

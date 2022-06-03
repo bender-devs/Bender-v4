@@ -1,4 +1,6 @@
 {
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
-    "PONG": "🏓 Pong! `{{millis}}ms`"
+    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
+    "PONG_BLANK": "🏓 Pong!",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)"
 }
