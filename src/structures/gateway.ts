@@ -5,11 +5,27 @@ import MiscUtils from '../utils/misc';
 import { GATEWAY_OPCODES } from '../data/numberTypes';
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS } from '../data/constants';
-import { inflate, constants as zconst } from 'zlib';
-import { promisify } from 'util';
+import * as zlib from 'zlib';
 import * as WebSocket from 'ws';
 
-const inflateAsync = promisify(inflate);
+const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
+
+const inflator = zlib.createInflate({
+    chunkSize: 65535,
+    flush: zlib.constants.Z_SYNC_FLUSH
+});
+
+const inflateAsync = (data: Buffer) => {
+    return new Promise<Buffer>((resolve, reject) => {
+        inflator.once('data', inflatedData => {
+            resolve(inflatedData);
+        });
+        inflator.once('error', err => {
+            reject(err);
+        })
+        inflator.write(data);
+    })
+}
 
 export default class Gateway extends EventEmitter {
     bot: Bot;
@@ -47,21 +63,27 @@ export default class Gateway extends EventEmitter {
         });
 
         this.on('message', async (ev: MessageEvent): Promise<boolean> => {
-            this.bot.logger.debug('GATEWAY MESSAGE', ev.data);
             // decode from buffer to string
             let payloadText: string;
             if (typeof ev.data === 'string') {
                 payloadText = ev.data;
             } else if (ev.data instanceof Buffer) {
-                const lastChar = ev.data[ev.data.length - 1];
-                if (GATEWAY_PARAMS.compress && lastChar === zconst.Z_SYNC_FLUSH) {
+                let suffixed = true;
+                const suffix = ev.data.slice(-4);
+                for (let i = 0; i < suffix.length; i++) {
+                    if (suffix[i] !== ZLIB_SUFFIX[i]) {
+                        suffixed = false;
+                        break;
+                    }
+                }
+                if (GATEWAY_PARAMS.compress && suffixed) {
                     let err: Error | null = null;
-                    payloadText = await inflateAsync(ev.data).then(data => data.toString()).catch(error => {
+                    payloadText = await inflateAsync(ev.data).then(data => data.toString('utf8')).catch(error => {
                         err = error;
                         return '';
                     });
                     if (err || !payloadText) {
-                        this.bot.logger.handleError('GATEWAY MESSAGE ZLIB ERROR', 'Failed to parse gateway message:', err, ev.data);
+                        this.bot.logger.handleError('GATEWAY MESSAGE ERROR', err);
                         return false;
                     }
                 } else {
@@ -78,6 +100,7 @@ export default class Gateway extends EventEmitter {
                 this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, ev.data);
                 return false;
             }
+            this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
             switch(parsedPayload.op) {
                 case GATEWAY_OPCODES.DISPATCH: {
                     const payload = parsedPayload as gatewayTypes.EventPayload;
