@@ -645,21 +645,63 @@ export type MessageInteraction = {
 
 /****** application command types ******/
 
-// for creating/editing only
-export type CommandData = {
-    name: string;
-    type?: num.COMMAND_TYPES;
-    description?: string;
-    options?: CommandOption[];
-    default_permission?: boolean;
-}
+const localeList = [
+    'da',    // Danish          Dansk
+    'de',    // German          Deutsch
+    'en-GB', // English, UK
+    'en-US', // English, US
+    'es-ES', // Spanish         Español
+    'fr',    // French          Français
+    'hr',    // Croation        Hrvatski
+    'it',	 // Italian         Italiano
+    'lt',	 // Lithuanian	    Lietuviškai
+    'hu',	 // Hungarian	    Magyar
+    'nl',	 // Dutch	        Nederlands
+    'no',	 // Norwegian	    Norsk
+    'pl',	 // Polish	        Polski
+    'pt-BR', // Portuguese, Brazilian	Português do Brasil
+    'ro',	 // Romanian, Romania	    Română
+    'fi',	 // Finnish	        Suomi
+    'sv-SE', // Swedish	        Svenska
+    'vi',	 // Vietnamese	    Tiếng Việt
+    'tr',	 // Turkish	        Türkçe
+    'cs',	 // Czech	        Čeština
+    'el',	 // Greek	        Ελληνικά
+    'bg',	 // Bulgarian	    български
+    'ru',	 // Russian	        Pусский
+    'uk',	 // Ukrainian	    Українська
+    'hi',	 // Hindi	        हिन्दी
+    'th',	 // Thai	        ไทย
+    'zh-CN', // Chinese, China	中文
+    'ja',	 // Japanese	    日本語
+    'zh-TW', // Chinese, Taiwan	繁體中文
+    'ko',	 // Korean	        한국어
+] as const;
+export type Locale = typeof localeList[number];
+export type LocaleDict = Record<Locale, string>;
 
-export interface Command extends CommandData {
+export type CommandBase = {
+    name?: string;
+    name_localizations?: LocaleDict;
+    description?: string;
+    description_localizations?: LocaleDict;
+    options?: CommandOption[];
+    default_member_permissions?: Bitfield | null;
+    dm_permission?: boolean | null;
+    type?: num.COMMAND_TYPES;
+}
+export interface CommandCreateData extends CommandBase {
+    name: string;
+    description: string;
+}
+export type CommandEditData = Omit<CommandBase, "type">;
+
+export interface Command extends CommandCreateData {
     id: Snowflake;
     application_id: Snowflake;
     guild_id?: Snowflake;
-    description: string;
     version: Snowflake;
+    type: num.COMMAND_TYPES;
 }
 
 export type CommandOptionValue = CommandOption | string | number | boolean | User | Channel | Role;

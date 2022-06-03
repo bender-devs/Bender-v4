@@ -165,7 +165,8 @@ export const enum COMMAND_OPTION_TYPES {
 // https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissiontype
 export const enum COMMAND_PERMISSION_TYPES {
     ROLE = 1,
-    USER
+    USER,
+    CHANNEL
 }
 
 // https://discord.com/developers/docs/interactions/message-components#component-object-component-types

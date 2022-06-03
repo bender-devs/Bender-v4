@@ -392,7 +392,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async create(application_id: types.Snowflake, command: types.CommandData) {
+        async create(application_id: types.Snowflake, command: types.CommandCreateData) {
             return APIWrapper.makeRequest<types.Command>('POST', `/applications/${application_id}/commands`, {
                 headers: AUTH_HEADER,
                 data: command
@@ -403,7 +403,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async edit(application_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandData) {
+        async edit(application_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) {
             return APIWrapper.makeRequest<types.Command>('PATCH', `/applications/${application_id}/commands/${command_id}`, {
                 headers: AUTH_HEADER,
                 data: command_data
@@ -414,7 +414,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async replaceAll(application_id: types.Snowflake, commands_data: types.CommandData[]) {
+        async replaceAll(application_id: types.Snowflake, commands_data: types.CommandCreateData[]) {
             return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/commands`, {
                 headers: AUTH_HEADER,
                 data: commands_data
@@ -428,7 +428,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async create(application_id: types.Snowflake, guild_id: types.Snowflake, command_data: types.CommandData[]) {
+        async create(application_id: types.Snowflake, guild_id: types.Snowflake, command_data: types.CommandCreateData) {
             return APIWrapper.makeRequest<types.Command>('POST', `/applications/${application_id}/guilds/${guild_id}/commands`, {
                 headers: AUTH_HEADER,
                 data: command_data
@@ -439,13 +439,13 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async edit(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandData) {
+        async edit(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) {
             return APIWrapper.makeRequest<types.Command>('PATCH', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}`, {
                 headers: AUTH_HEADER,
                 data: command_data
             });
         },
-        async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, commands_data: types.CommandData[]) {
+        async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, commands_data: types.CommandCreateData[]) {
             return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands`, {
                 headers: AUTH_HEADER,
                 data: commands_data
