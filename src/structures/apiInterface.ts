@@ -23,6 +23,8 @@ export default class APIInterface {
         return null;
     }
 
+    // TODO: grab info from rate limit headers and cache it to avoid 429's
+
     gateway = {
         getURL: async () => {
             return APIWrapper.gateway.fetchURL()
