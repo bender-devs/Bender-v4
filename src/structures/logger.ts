@@ -35,7 +35,7 @@ export default class Logger {
         let color = this.#moduleColors[moduleName] || null;
         if (!color) {
             const len = Object.keys(this.#moduleColors).length;
-            const colorIndex = len === 0 ? 0 : (len % chalkColors.length + 1);
+            const colorIndex = len % (chalkColors.length - 1);
             color = chalkColors[colorIndex];
             this.#moduleColors[moduleName] = color;
         }

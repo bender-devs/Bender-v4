@@ -1,6 +1,6 @@
 import { EventHandler } from "../data/types";
 import { LowercaseEventName, ReadyData } from "../data/gatewayTypes";
-import { CLIENT_STATE } from "../data/numberTypes";
+import { ACTIVITY_TYPES, CLIENT_STATE } from "../data/numberTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -24,6 +24,16 @@ export default class ReadyHandler extends EventHandler {
     }
 
     handler = (eventData: ReadyData) => {
-        
+        // TODO: initialize database, other setup stuff
+        this.bot.gateway.updatePresence({
+            since: Date.now(),
+            status: 'online',
+            afk: false,
+            activities: [{
+                name: '/help | benderbot.co',
+                type: ACTIVITY_TYPES.WATCHING,
+                created_at: Date.now()
+            }]
+        });
     }
 }

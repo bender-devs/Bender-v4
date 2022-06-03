@@ -19,6 +19,8 @@ export const GATEWAY_PARAMS: GatewayParams = {
     compress: 'zlib-stream'
 }
 
+export const HEARTBEAT_TIMEOUT = 15000;
+
 /***** bender constants *****/
 
 export const VERSION = '4.0.0';

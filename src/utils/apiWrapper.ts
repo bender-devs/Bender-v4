@@ -38,8 +38,6 @@ export default class APIWrapper {
             request.set(options.headers);
         if (options.query)
             request.query(options.query);
-        // TODO: default retries, use callback to decide whether 429's should be retried
-        // https://visionmedia.github.io/superagent/#retrying-requests
         if (options.retries)
             request.retry(options.retries, APIWrapper.shouldRetry);
         return request.timeout({

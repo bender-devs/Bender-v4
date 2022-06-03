@@ -294,6 +294,13 @@ export const enum GATEWAY_ERRORS {
     DISALLOWED_INTENTS
 }
 
+// additional disconnect codes for client-side disconnects
+export const enum CUSTOM_GATEWAY_ERRORS {
+    RECONNECT_REQUESTED = 69001,
+    INVALID_SESSION,
+    HEARTBEAT_TIMEOUT
+}
+
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
 export const enum API_ERRORS {
 	GENERAL_ERROR,
