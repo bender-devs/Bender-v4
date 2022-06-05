@@ -25,7 +25,7 @@ export default class ReadyHandler extends EventHandler {
     }
 
     handler = (eventData: ReadyData) => {
-        this.bot.logger.log(`\n\nLocked and loaded. Time to kill all humans?\n[Logged in as ${this.bot.user.username}#${this.bot.user.discriminator} | ${this.bot.shard ? `Shard ${this.bot.shard.id}` : 'Not sharded'} | v${VERSION}]\n\n`);
+        this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${this.bot.user.username}#${this.bot.user.discriminator} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
         // TODO: initialize database, other setup stuff
 

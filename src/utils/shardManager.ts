@@ -2,7 +2,7 @@ import { Interaction, InteractionResponse, UnixTimestampMillis } from "../data/t
 import Logger from "../structures/logger";
 import { randomUUID } from "crypto";
 import * as child_process from "child_process";
-import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART } from "../data/constants";
+import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE } from "../data/constants";
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive
@@ -47,11 +47,12 @@ export default class ShardManager {
     }
 
     spawnProcess(shardID: number): child_process.ChildProcess {
-        const shardProcess = child_process.execFile('../main', {
+        const shardProcess = child_process.spawn(SHARD_SPAWN_COMMAND, [SHARD_SPAWN_FILE], {
             env: Object.assign({}, process.env, { 
                 SHARD_ID: shardID,
                 SHARD_COUNT: this.shardCount
-            })
+            }),
+            stdio: 'inherit'
         });
         shardProcess.on('error', (err: Error) => {
             this.logger.handleError(`UNHANDLED EXCEPTION [SHARD ${shardID}]`, err);
@@ -71,6 +72,7 @@ export default class ShardManager {
 
     handleDeadProcess(shardID: number) {
         const proc = this.#shardProcesses[shardID];
+        this.logger.moduleLog(`Shard ${shardID}`, `Process died${proc?.exitCode ? ` with exit code ${proc.exitCode}` : ''}, rip`);
         if (proc && !proc.exitCode) {
             proc.kill(EXIT_CODE_RESTART);
         } else if (proc?.exitCode === EXIT_CODE_NO_RESTART) {
@@ -80,6 +82,7 @@ export default class ShardManager {
         }
         this.#shardProcesses[shardID] = null;
         if (RESPAWN_DEAD_SHARDS) {
+            this.logger.debug(`Shard ${shardID}`, 'Respawning...');
             this.spawnProcess(shardID);
         }
     }

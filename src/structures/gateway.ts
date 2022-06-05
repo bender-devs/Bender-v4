@@ -6,6 +6,11 @@ import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_REST
 import * as zlib from 'zlib';
 import * as WebSocket from 'ws';
 
+declare module 'ws' {
+    // not sure why this wasn't exported from @types/ws
+    type RawData = Buffer | ArrayBuffer | Buffer[];
+}
+
 const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
 
 export default class Gateway extends EventEmitter {
@@ -16,6 +21,7 @@ export default class Gateway extends EventEmitter {
     ws!: WebSocket;
     ping: number = -1;
 
+    #beginTimestamp: number = -1;
     #promiseResolve: ((value: unknown) => void) | null = null;
     #promiseReject: ((value: unknown) => void) | null = null;
     #heartbeatInterval: NodeJS.Timeout | null = null;
@@ -31,6 +37,7 @@ export default class Gateway extends EventEmitter {
         return new Promise<Buffer>((resolve, reject) => {
             this.#inflateResolve = resolve;
             this.#inflateReject = reject;
+            // TODO: apparently there's a race condition here? unhandled zlib data happens on connect occasionally
             this.#inflator.write(data);
         })
     }
@@ -62,30 +69,31 @@ export default class Gateway extends EventEmitter {
             }
         });
 
-        this.on('connect', (ev: WebSocket.OpenEvent) => {
+        this.on('connect', () => {
             if (this.#promiseResolve) {
                 this.#promiseResolve(true);
                 this.#promiseResolve = null;
             }
-            this.bot.logger.debug('GATEWAY CONNECTED', ev);
+            this.ping = Date.now() - this.#beginTimestamp;
+            this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
         });
 
-        this.on('error', (ev: WebSocket.ErrorEvent) => {
+        this.on('error', (err: Error) => {
             if (this.#promiseReject) {
-                this.#promiseReject(ev);
+                this.#promiseReject(err);
                 this.#promiseReject = null;
             }
-            this.bot.logger.handleError('GATEWAY ERROR', ev.type, ev);
+            this.bot.logger.handleError('GATEWAY ERROR', err);
         });
 
-        this.on('message', async (eventData: WebSocket.MessageEvent): Promise<boolean> => {
-            //this.bot.logger.debug('GATEWAY MESSAGE', eventData);
+        this.on('message', async (data: WebSocket.RawData, isBinary: boolean): Promise<boolean> => {
+            //this.bot.logger.debug('GATEWAY MESSAGE', data);
             let payloadText: string;
-            if (typeof eventData === 'string') {
-                payloadText = eventData;
-            } else if (eventData instanceof Buffer) {
+            if (typeof data === 'string') {
+                payloadText = data;
+            } else if (data instanceof Buffer) {
                 let suffixed = true;
-                const suffix = eventData.slice(-4);
+                const suffix = data.slice(-4);
                 for (let i = 0; i < suffix.length; i++) {
                     if (suffix[i] !== ZLIB_SUFFIX[i]) {
                         suffixed = false;
@@ -94,7 +102,7 @@ export default class Gateway extends EventEmitter {
                 }
                 if (GATEWAY_PARAMS.compress && suffixed) {
                     let err: Error | null = null;
-                    payloadText = await this.#inflate(eventData).then(data => data.toString('utf8')).catch(error => {
+                    payloadText = await this.#inflate(data).then(data => data.toString('utf8')).catch(error => {
                         err = error;
                         return '';
                     });
@@ -103,17 +111,17 @@ export default class Gateway extends EventEmitter {
                         return false;
                     }
                 } else {
-                    payloadText = this.decoder.decode(eventData);
+                    payloadText = this.decoder.decode(data);
                 }
             } else {
-                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', eventData);
+                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', data);
                 return false;
             }
             let parsedPayload: gatewayTypes.GatewayPayload;
             try {
                 parsedPayload = JSON.parse(payloadText);
             } catch(err) {
-                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, eventData);
+                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, data);
                 return false;
             }
             this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
@@ -154,19 +162,19 @@ export default class Gateway extends EventEmitter {
             return false;
         });
 
-        this.on('disconnect', (eventCode: WebSocket.CloseEvent) => {
+        this.on('disconnect', (code: number, reason: Buffer) => {
             if (this.#heartbeatInterval) {
                 clearInterval(this.#heartbeatInterval);
             }
-            this.bot.logger.handleError('WEBSOCKET DISCONNECT', eventCode, {eventCode});
-            switch (eventCode.code) {
+            this.bot.logger.handleError('WEBSOCKET DISCONNECT', { code, reason });
+            switch (code) {
                 case GATEWAY_ERRORS.AUTHENTICATION_FAILED:
                 case GATEWAY_ERRORS.INVALID_SHARD:
                 case GATEWAY_ERRORS.SHARDING_REQUIRED:
                 case GATEWAY_ERRORS.INVALID_VERSION:
                 case GATEWAY_ERRORS.INVALID_INTENTS:
                 case GATEWAY_ERRORS.DISALLOWED_INTENTS: {
-                    this.bot.logger.log('FATAL: Not reconnecting this client.');
+                    this.bot.logger.moduleLog('FATAL WS CODE', 'Not reconnecting this client.');
                     process.exit(EXIT_CODE_NO_RESTART);
                 }
                 case CUSTOM_GATEWAY_ERRORS.INVALID_SESSION:
@@ -217,16 +225,17 @@ export default class Gateway extends EventEmitter {
     }
 
     async connect(wsURL: string, addListeners = true) {
-        this.bot.logger.debug('GATEWAY CONNECT', wsURL)
+        this.bot.logger.debug('GATEWAY CONNECT', wsURL);
+        this.#beginTimestamp = Date.now();
         this.ws = new WebSocket(wsURL);
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
             if (addListeners) {
-                this.ws.on('open', (ev: WebSocket.OpenEvent) => this.emit('connect', ev));
-                this.ws.on('error', (ev: WebSocket.ErrorEvent) => this.emit('error', ev));
-                this.ws.on('message', (ev: WebSocket.MessageEvent) => this.emit('message', ev));
-                this.ws.on('close', (ev: WebSocket.CloseEvent) => this.emit('disconnect', ev));
+                this.ws.on('open', () => this.emit('connect'));
+                this.ws.on('error', (err: Error) => this.emit('error', err));
+                this.ws.on('message', (data: Buffer, isBinary: boolean) => this.emit('message', data, isBinary));
+                this.ws.on('close', (code: number, reason: Buffer) => this.emit('disconnect', code, reason));
             }
         });
     }

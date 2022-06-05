@@ -27,18 +27,42 @@ export default class Logger {
     }
 
     log(...args: any[]): void {
+        const shardMarkup = this.#getShardMarkup();
+        if (shardMarkup) {
+            return console.log(shardMarkup, ...args);
+        }
         console.log(...args);
+    }
+
+    moduleLog(moduleName: string, ...args: any[]): void {
+        const color = this.#getColor(moduleName);
+        const moduleMarkup = chalk[color].bold(`[${moduleName}]`);
+        const shardMarkup = this.#getShardMarkup();
+        console.log(shardMarkup + moduleMarkup, ...args);
     }
 
     debug(moduleName: string, ...args: any[]): void {
         if (!CONSTANTS.DEBUG) return;
-        let color = this.#moduleColors[moduleName] || null;
-        if (!color) {
-            const len = Object.keys(this.#moduleColors).length;
-            const colorIndex = len % (chalkColors.length - 1);
-            color = chalkColors[colorIndex];
-            this.#moduleColors[moduleName] = color;
+        return this.moduleLog(moduleName, ...args);
+    }
+
+    #getColor(moduleName: string): ChalkColor {
+        if (this.#moduleColors[moduleName]) {
+            return this.#moduleColors[moduleName];
         }
-        console.log(chalk[color].bold(`[${moduleName}]`), ...args);
+        const len = Object.keys(this.#moduleColors).length;
+        const colorIndex = len % (chalkColors.length - 1);
+        const newColor = chalkColors[colorIndex];
+        this.#moduleColors[moduleName] = newColor;
+        return newColor;
+    }
+
+    #getShardMarkup(): string {
+        if (!this.bot?.shard) {
+            return '';
+        }
+        const shardText = `Shard ${this.bot.shard.id}`;
+        const shardColor = this.#getColor(shardText);
+        return chalk[shardColor].bold(`[${shardText}]`) + ' ';
     }
 }
