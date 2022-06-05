@@ -43,42 +43,9 @@ export default class PingCommand extends CommandUtils implements ICommand {
         });
     }
 
-    runText(msg: types.Message, argString: string): types.CommandResponse {
-        const roundtrip = argString.toLowerCase() !== 'api';
-        let millis = 0, startTimestamp = Date.now();
-        if (!roundtrip) {
-            millis = this.bot.gateway.ping;
-        }
-        const thenCallback = roundtrip ? this.roundtripCallbackText : () => null;
-        if (!msg.guild_id) {
-            return this.bot.api.user.send(msg.author.id, {
-                content: this.getPongMessage(roundtrip, millis)
-            }).then(message => thenCallback.bind(this)(message, startTimestamp)).catch((err: APIError) => {
-                this.bot.logger.handleError('COMMAND FAILED: ;ping', err);
-                return null;
-            });
-        }
-        return this.bot.api.channel.send(msg.channel_id, {
-            content: this.getPongMessage(roundtrip, millis)
-        }).then(message => thenCallback.bind(this)(message, startTimestamp)).catch((err: APIError) => {
-            this.bot.logger.handleError('COMMAND FAILED: ;ping', err);
-            return null;
-        });
-    }
-
     roundtripCallback(interaction: types.Interaction, startTimestamp: number) {
         const millis = Date.now() - startTimestamp;
         return this.bot.api.interaction.editResponse(interaction, {
-            content: this.getPongMessage(true, millis)
-        });
-    }
-
-    roundtripCallbackText(message: types.Message | null, startTimestamp: number) {
-        if (!message) {
-            return null;
-        }
-        const millis = Date.now() - startTimestamp;
-        return this.bot.api.message.edit(message, {
             content: this.getPongMessage(true, millis)
         });
     }
