@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { GuildDeleteData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { GuildDeleteData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class GuildDeleteHandler extends EventHandler {
+export default class GuildDeleteHandler extends EventHandler<GuildDeleteData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -18,7 +18,7 @@ export default class GuildDeleteHandler extends EventHandler {
         this.bot.cache.guilds.delete(eventData.id);
     }
 
-    handler = (eventData: GuildDeleteData) => {
-
+    handler = (/*eventData: GuildDeleteData*/) => {
+        // event unused for now
     }
 }

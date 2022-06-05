@@ -1,10 +1,10 @@
-import { EventHandler } from "../data/types";
-import { GuildCreateData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
-import TimeUtils from "../utils/time";
+import { EventHandler } from '../data/types';
+import { GuildCreateData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
+import TimeUtils from '../utils/time';
 
-export default class GuildCreateHandler extends EventHandler {
+export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);

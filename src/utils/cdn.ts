@@ -1,5 +1,5 @@
-import { Snowflake } from "../data/types";
-import { CDN_BASE } from "../data/constants";
+import { Snowflake } from '../data/types';
+import { CDN_BASE } from '../data/constants';
 
 export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';
 

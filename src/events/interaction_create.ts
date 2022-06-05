@@ -1,16 +1,16 @@
-import { EventHandler } from "../data/types";
-import { InteractionCreateData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
-import { INTERACTION_REQUEST_TYPES } from "../data/numberTypes";
+import { EventHandler } from '../data/types';
+import { InteractionCreateData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
+import { INTERACTION_REQUEST_TYPES } from '../data/numberTypes';
 
-export default class InteractionCreateHandler extends EventHandler {
+export default class InteractionCreateHandler extends EventHandler<InteractionCreateData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: InteractionCreateData) => {
+    cacheHandler = (/*eventData: InteractionCreateData*/) => {
         // TODO: cache interactions?
     }
 

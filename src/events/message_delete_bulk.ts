@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { MessageDeleteBulkData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { MessageDeleteBulkData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class MessageDeleteBulkHandler extends EventHandler {
+export default class MessageDeleteBulkHandler extends EventHandler<MessageDeleteBulkData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -17,7 +17,7 @@ export default class MessageDeleteBulkHandler extends EventHandler {
         }
     }
 
-    handler = (eventData: MessageDeleteBulkData) => {
+    handler = (/*eventData: MessageDeleteBulkData*/) => {
         // TODO: if delete logging is enabled, post to log channel
     }
 }

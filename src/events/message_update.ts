@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { MessageUpdateData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { MessageUpdateData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class MessageUpdateHandler extends EventHandler {
+export default class MessageUpdateHandler extends EventHandler<MessageUpdateData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -17,7 +17,7 @@ export default class MessageUpdateHandler extends EventHandler {
         }
     }
 
-    handler = (eventData: MessageUpdateData) => {
+    handler = (/*eventData: MessageUpdateData*/) => {
         // TODO: if content changed and edit logging is enabled, post to log channel
     }
 }

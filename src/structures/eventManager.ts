@@ -171,7 +171,7 @@ export default class EventManager {
         this.webhooks_update = new webhooks_update(this.bot);
     }
 
-    handleEvent(eventHandler: EventHandler, eventData: gatewayTypes.EventData, requireReadyState = true) {
+    handleEvent(eventHandler: EventHandler<gatewayTypes.EventData>, eventData: gatewayTypes.EventData, requireReadyState = true) {
         if (requireReadyState && this.bot.state !== CLIENT_STATE.ALIVE) {
             this.bot.logger.debug(eventHandler.name, 'skipped due to client not ready');
             return null;
@@ -187,7 +187,7 @@ export default class EventManager {
         for (const eventName of events) { // add all events
             const lowercaseEventName = eventName.toLowerCase() as gatewayTypes.LowercaseEventName;
             const requireReadyState = !NON_WAITING_EVENTS.includes(eventName);
-            this.bot.on(eventName, (eventData: gatewayTypes.EventData) => this.handleEvent(this[lowercaseEventName], eventData, requireReadyState))
+            this.bot.on(eventName, (eventData: gatewayTypes.EventData) => this.handleEvent(this[lowercaseEventName] as EventHandler<gatewayTypes.EventData>, eventData, requireReadyState))
         }
     }
 }

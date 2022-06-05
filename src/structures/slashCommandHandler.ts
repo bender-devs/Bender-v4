@@ -17,4 +17,4 @@ export default class SlashCommandHandler {
         // TODO: complete this
         return this.runCommand(command, interaction);
     }
-};
+}

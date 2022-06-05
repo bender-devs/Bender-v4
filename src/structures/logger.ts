@@ -1,9 +1,9 @@
-import Bot from "./bot";
+import Bot from './bot';
 import * as CONSTANTS from '../data/constants';
 import * as chalk from 'chalk';
 
 // omitting black because dark mode
-const chalkColors = ["red", "green", "yellow", "blue", "magenta", "cyan", "white", "gray"] as const;
+const chalkColors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'] as const;
 type ChalkColor = typeof chalkColors[number];
 
 
@@ -16,7 +16,7 @@ export default class Logger {
         this.#moduleColors = {};
     }
 
-    handleError(moduleName: string | null, error: any, ...debugInfo: any[]): void {
+    handleError(moduleName: string | null, error: unknown, ...debugInfo: unknown[]): void {
         this.debug(moduleName || 'ERROR', ...debugInfo);
         console.error(error);
         if (!this.bot) {
@@ -26,7 +26,7 @@ export default class Logger {
         return;
     }
 
-    log(...args: any[]): void {
+    log(...args: unknown[]): void {
         const shardMarkup = this.#getShardMarkup();
         if (shardMarkup) {
             return console.log(shardMarkup, ...args);
@@ -34,15 +34,17 @@ export default class Logger {
         console.log(...args);
     }
 
-    moduleLog(moduleName: string, ...args: any[]): void {
+    moduleLog(moduleName: string, ...args: unknown[]): void {
         const color = this.#getColor(moduleName);
         const moduleMarkup = chalk[color].bold(`[${moduleName}]`);
         const shardMarkup = this.#getShardMarkup();
         console.log(shardMarkup + moduleMarkup, ...args);
     }
 
-    debug(moduleName: string, ...args: any[]): void {
-        if (!CONSTANTS.DEBUG) return;
+    debug(moduleName: string, ...args: unknown[]): void {
+        if (!CONSTANTS.DEBUG) {
+            return;
+        }
         return this.moduleLog(moduleName, ...args);
     }
 

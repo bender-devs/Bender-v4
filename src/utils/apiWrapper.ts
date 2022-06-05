@@ -13,7 +13,7 @@ const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
 const AUTH_HEADER: types.RequestHeaders = Object.assign({ authorization: `Bot ${TOKEN}` }, USER_AGENT_HEADER);
 
 // expose hidden properties used for retrying requests
-declare module "superagent" {
+declare module 'superagent' {
     interface SuperAgentRequest {
         _retries?: number;
         _retry: () => Promise<superagent.Response>;
@@ -32,14 +32,18 @@ export default class APIWrapper {
     static async makeRequest<ResponseType>(method: string, path: string, options: types.RequestOptions): types.RequestResponse<ResponseType> {
         path = CONSTANTS.API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
-        if (options.data)
+        if (options.data) {
             request.send(options.data);
-        if (options.headers)
+        }
+        if (options.headers) {
             request.set(options.headers);
-        if (options.query)
+        }
+        if (options.query) {
             request.query(options.query);
-        if (options.retries)
+        }
+        if (options.retries) {
             request.retry(options.retries, APIWrapper.shouldRetry);
+        }
         return request.timeout({
             response: options.responseTimeout || 60000,
             deadline: options.deadlineTimeout || 120000
@@ -69,7 +73,7 @@ export default class APIWrapper {
         });
     }
 
-    private static shouldRetry(err: Error, response: superagent.Response) {
+    private static shouldRetry(_err: Error, response: superagent.Response) {
         if (response.status === 429) {
             // using custom retry logic above to include rate limit delays
             return false;
@@ -251,7 +255,7 @@ export default class APIWrapper {
             });
         },
         async fetchSelf() {
-            return this.fetch("@me");
+            return this.fetch('@me');
         },
         async createDM(user_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.DMChannel>('POST', `/users/@me/channels`, {

@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { GuildMemberAddData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { GuildMemberAddData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class GuildMemberAddHandler extends EventHandler {
+export default class GuildMemberAddHandler extends EventHandler<GuildMemberAddData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -13,7 +13,7 @@ export default class GuildMemberAddHandler extends EventHandler {
         this.bot.cache.members.set(eventData.guild_id, eventData);
     }
 
-    handler = (eventData: GuildMemberAddData) => {
+    handler = (/*eventData: GuildMemberAddData*/) => {
         // TODO: send join DM if configured
         // TODO: send to member log if configured
         // TODO: send to mod member log if configured

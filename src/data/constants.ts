@@ -1,8 +1,8 @@
-import { GatewayParams, IdentifyData } from "./gatewayTypes";
-import { GATEWAY_VERSIONS } from "./numberTypes";
+import { GatewayParams, IdentifyData } from './gatewayTypes';
+import { GATEWAY_VERSIONS } from './numberTypes';
 import { ACTIVITY_TYPES, INTENT_FLAGS } from './numberTypes';
-import MiscUtils from "../utils/misc";
-import { Snowflake } from "./types";
+import MiscUtils from '../utils/misc';
+import { Snowflake } from './types';
 
 /***** bot options *****/
 

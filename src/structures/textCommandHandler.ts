@@ -1,6 +1,6 @@
 import Bot from './bot';
-import { ICommand } from './command';
-import * as types from '../data/types';
+//import { ICommand } from './command';
+//import * as types from '../data/types';
 
 export default class TextCommandHandler {
     bot: Bot;
@@ -9,16 +9,16 @@ export default class TextCommandHandler {
         this.bot = bot;
     }
 
-    parseCommand(input: string) {
+    parseCommand(/*input: string*/) {
         // TODO: finish this
     }
-    checkPermissions(command: ICommand, message: types.Message) {
+    checkPermissions(/*command: ICommand, message: types.Message*/) {
         // TODO: finish this
     }
-    handleEdit(command: ICommand, message: types.Message, oldMessage: types.Message) {
+    handleEdit(/*command: ICommand, message: types.Message, oldMessage: types.Message*/) {
         // TODO: finish this
     }
-    runCommand(command: ICommand, argString: string) {
+    runCommand(/*command: ICommand, argString: string*/) {
         // TODO: finish this
     }
 }

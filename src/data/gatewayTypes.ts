@@ -44,8 +44,7 @@ export interface EventPayload extends GatewayPayload {
     s: number;
     t: EventName;
 }
-
-export type EventData = ReadyData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | InteractionCreateData | StageInstanceUpdateData;
+export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | InteractionCreateData | StageInstanceUpdateData;
 
 /****** ready ******/
 
@@ -62,6 +61,13 @@ export type ReadyData = {
 	shard?: ShardConnectionData;
 	application: types.PartialApplication;
 }
+
+export interface ResumedPayload extends EventPayload {
+    t: 'RESUMED';
+    d: ResumedData;
+}
+
+export type ResumedData = null;
 
 /****** channels/threads ******/
 
@@ -336,7 +342,7 @@ export interface MessageDeleteBulkPayload extends EventPayload {
 
 export interface MessageDeleteBulkData extends Pick<types.Message, 'channel_id' | 'guild_id'> {
     ids: types.Snowflake[];
-};
+}
 
 /****** reactions ******/
 
@@ -385,7 +391,7 @@ export interface PresenceUpdatePayload extends EventPayload {
 export interface PresenceUpdateData extends Pick<types.Presence, 'activities' | 'status'> {
     since: types.UnixTimestampMillis | null,
     afk: boolean
-};
+}
 
 /****** typing ******/
 

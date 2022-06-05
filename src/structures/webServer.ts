@@ -1,14 +1,14 @@
-import ShardManager from "../utils/shardManager";
-import * as express from "express";
-import Logger from "./logger";
-import { WEBSERVER_PORT, PUBLIC_KEY } from "../data/constants";
-import * as nacl from "tweetnacl";
+import ShardManager from '../utils/shardManager';
+import * as express from 'express';
+import Logger from './logger';
+import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants';
+import * as nacl from 'tweetnacl';
 
 export default class WebServer {
     shardManager: ShardManager
     app: express.Application;
     logger: Logger;
-    initialized: boolean = false;
+    initialized = false;
 
     constructor(shardManager: ShardManager) {
         this.shardManager = shardManager;

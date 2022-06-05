@@ -1,7 +1,7 @@
-import { ID_REGEX_EXACT, OWNERS } from "../data/constants";
-import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from "../data/numberTypes";
-import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from "../data/types"; 
-import { CachedGuild } from "./cacheHandler";
+import { ID_REGEX_EXACT, OWNERS } from '../data/constants';
+import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../data/numberTypes';
+import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../data/types'; 
+import { CachedGuild } from './cacheHandler';
 
 type PermBitfield = Bitfield | Flags | bigint;
 type SimplifiedOverwrites = {
@@ -82,7 +82,9 @@ export default class PermissionUtils {
         let bitfield = everyonePerms;
         for (const roleID of roleIDs) {
             const role = guild.roles[roleID];
-            if (!role) continue;
+            if (!role) {
+                continue;
+            }
             bitfield |= BigInt(role.permissions);
         }
         return bitfield;
@@ -107,7 +109,9 @@ export default class PermissionUtils {
         if (Array.isArray(perm)) {
             for (const roleID of perm) {
                 for (const memberRoleID of member.roles) {
-                    if (roleID === memberRoleID) return true;
+                    if (roleID === memberRoleID) {
+                        return true;
+                    }
                 }
             }
             return false;

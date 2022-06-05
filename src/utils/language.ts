@@ -36,4 +36,4 @@ export default class LanguageUtils {
     static getLanguageMap(): types.LangMap {
         return languages;
     }
-};
+}

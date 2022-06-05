@@ -129,9 +129,7 @@ export default class APIInterface {
             // make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord
             const strippedCommands: types.CommandCreateData[] = [];
             commands_data.forEach(command => {
-                const newCommand = Object.assign({}, command);
-                // @ts-ignore: Can't find a better way to remove this property.
-                delete newCommand.bot;
+                const newCommand = Object.assign({}, command, { bot: undefined });
                 strippedCommands.push(newCommand);
             })
             this.bot.logger.debug('UPDATE COMMAND LIST', strippedCommands);

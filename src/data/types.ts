@@ -1,6 +1,6 @@
 import * as superagent from 'superagent';
 import Bot from '../structures/bot';
-import { EventName, LowercaseEventName } from './gatewayTypes';
+import { EventData, EventName, LowercaseEventName } from './gatewayTypes';
 import * as num from './numberTypes';
 
 /************ request types ************/
@@ -79,7 +79,7 @@ export type Presence = {
     client_status: ClientStatus;
 };
 
-export type Status = "idle" | "dnd" | "online" | "offline";
+export type Status = 'idle' | 'dnd' | 'online' | 'offline';
 
 export type ClientStatus = {
     desktop?: Status;
@@ -221,7 +221,7 @@ export type StageInstance = {
 }
 
 // explanation of features: https://canary.discord.com/developers/docs/resources/guild#guild-object-guild-features
-export type GuildFeature = "ANIMATED_ICON" | "BANNER" | "COMMERCE" | "COMMUNITY" | "DISCOVERABLE" | "FEATURABLE" | "INVITE_SPLASH" | "MEMBER_VERIFICATION_GATE_ENABLED" | "NEWS" | "PARTNERED" | "PREVIEW_ENABLED" | "VANITY_URL" | "VERIFIED" | "VIP_REGIONS" | "WELCOME_SCREEN_ENABLED" | "TICKETED_EVENTS_ENABLED" | "MONETIZATION_ENABLED" | "MORE_STICKERS" | "THREE_DAY_THREAD_ARCHIVE" | "SEVEN_DAY_THREAD_ARCHIVE" | "PRIVATE_THREADS";
+export type GuildFeature = 'ANIMATED_ICON' | 'BANNER' | 'COMMERCE' | 'COMMUNITY' | 'DISCOVERABLE' | 'FEATURABLE' | 'INVITE_SPLASH' | 'MEMBER_VERIFICATION_GATE_ENABLED' | 'NEWS' | 'PARTNERED' | 'PREVIEW_ENABLED' | 'VANITY_URL' | 'VERIFIED' | 'VIP_REGIONS' | 'WELCOME_SCREEN_ENABLED' | 'TICKETED_EVENTS_ENABLED' | 'MONETIZATION_ENABLED' | 'MORE_STICKERS' | 'THREE_DAY_THREAD_ARCHIVE' | 'SEVEN_DAY_THREAD_ARCHIVE' | 'PRIVATE_THREADS';
 
 export type VoiceState = {
     guild_id?: Snowflake;
@@ -694,7 +694,7 @@ export interface CommandCreateData extends CommandBase {
     name: string;
     description: string;
 }
-export type CommandEditData = Omit<CommandBase, "type">;
+export type CommandEditData = Omit<CommandBase, 'type'>;
 
 export interface Command extends CommandCreateData {
     id: Snowflake;
@@ -759,7 +759,7 @@ export type Message = {
 }
 
 export type AllowedMentions = {
-    parse: Array<"roles" | "users" | "everyone">;
+    parse: Array<'roles' | 'users' | 'everyone'>;
     roles: Snowflake[];
     users: Snowflake[];
     replied_user?: boolean;
@@ -896,7 +896,7 @@ export type Bitfield = `${number | bigint}`;
 export type Flags = number;
 
 // URI encoded image
-export type ImageData = `data:image/${"jpeg" | "png" | "gif"};base64,${string}`;
+export type ImageData = `data:image/${'jpeg' | 'png' | 'gif'};base64,${string}`;
 
 // Any kind of URL
 export type URL = `${string}://${string}`;
@@ -904,7 +904,7 @@ export type URL = `${string}://${string}`;
 // Discord Snowflake, 18-20 digits
 export type Snowflake = `${number | bigint}`;
 
-export type SnowflakeOrMe = Snowflake | "@me";
+export type SnowflakeOrMe = Snowflake | '@me';
 
 // Unix timestamp (seconds since epoch)
 export type UnixTimestamp = number;
@@ -927,7 +927,7 @@ export type StringMap = Record<string, string>;
 // Used for objects with optional fields (namely users for redis cache.) This is just a workaround to get the compiler to play nice; shouldn't be used to manually set fields to undefined.
 export type DynamicStringMap = Partial<StringMap>;
 
-export type StringBool = "true" | "false";
+export type StringBool = 'true' | 'false';
 
 export type StringNum = `${number}`;
 
@@ -937,13 +937,13 @@ export type TimeoutList = {
 
 /*** event handler types ***/
 
-export type EventHandlerFunction = (event: any) => any; // wanted to use event: EventData here but ts is shit
+export type EventHandlerFunction<T extends EventData> = (event: T) => void; // wanted to use event: EventData here but ts is shit
 
-export class EventHandler {
+export class EventHandler<T extends EventData> {
     bot: Bot;
     name: EventName;
-    cacheHandler?: EventHandlerFunction;
-    handler!: EventHandlerFunction;
+    cacheHandler?: EventHandlerFunction<T>;
+    handler!: EventHandlerFunction<T>;
 
     constructor(eventName: LowercaseEventName, bot: Bot) {
         this.name = eventName.toUpperCase() as EventName;

@@ -1,6 +1,6 @@
-import { DISCORD_EPOCH } from "../data/constants";
-import { Snowflake, UnixTimestampMillis } from "../data/types";
-import * as os from "os";
+import { DISCORD_EPOCH } from '../data/constants';
+import { Snowflake, UnixTimestampMillis } from '../data/types';
+import * as os from 'os';
 
 export default class MiscUtils {
     static parseQueryString(data: Record<string, string | number>): string {

@@ -1,11 +1,11 @@
-import { EventHandler } from "../data/types";
-import { LowercaseEventName, ReadyData } from "../data/gatewayTypes";
-import { ACTIVITY_TYPES, CLIENT_STATE } from "../data/numberTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
-import { VERSION } from "../data/constants";
+import { EventHandler } from '../data/types';
+import { ReadyData, LowercaseEventName } from '../data/gatewayTypes';
+import { ACTIVITY_TYPES, CLIENT_STATE } from '../data/numberTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
+import { VERSION } from '../data/constants';
 
-export default class ReadyHandler extends EventHandler {
+export default class ReadyHandler extends EventHandler<ReadyData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -24,7 +24,7 @@ export default class ReadyHandler extends EventHandler {
         this.bot.application = eventData.application;
     }
 
-    handler = (eventData: ReadyData) => {
+    handler = (/*eventData: ReadyData*/) => {
         this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${this.bot.user.username}#${this.bot.user.discriminator} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
         // TODO: initialize database, other setup stuff

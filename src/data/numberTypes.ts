@@ -3,7 +3,7 @@ export const enum PREMIUM_TYPES {
     NONE,
     NITRO_CLASSIC,
     NITRO
-};
+}
 
 // https://discord.com/developers/docs/topics/gateway#activity-object-activity-types
 export const enum ACTIVITY_TYPES {
@@ -13,26 +13,26 @@ export const enum ACTIVITY_TYPES {
     WATCHING,
     CUSTOM,
     COMPETING
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level
 export const enum MESSAGE_NOTIFICATION_LEVELS {
     ALL_MESSAGES,
     ONLY_MENTIONS
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level
 export const enum EXPLICIT_FILTER_LEVELS {
     DISABLED,
     MEMBERS_WITHOUT_ROLES,
     ALL_MEMBERS
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-mfa-level
 export const enum MFA_LEVELS {
     NONE,
     ELEVATED
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-verification-level
 export const enum VERIFICATION_LEVELS {
@@ -41,7 +41,7 @@ export const enum VERIFICATION_LEVELS {
     MEDIUM,
     HIGH,
     VERY_HIGH
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-guild-nsfw-level
 export const enum NSFW_LEVELS {
@@ -49,7 +49,7 @@ export const enum NSFW_LEVELS {
     EXPLICIT,
     SAFE,
     AGE_RESTRICTED
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-premium-tier
 export const enum PREMIUM_TIERS {
@@ -58,20 +58,20 @@ export const enum PREMIUM_TIERS {
     MEDIUM,
     HIGH,
     VERY_HIGH
-};
+}
 
 // https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
 export const enum SYSTEM_CHANNEL_FLAGS {
     SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0,
     SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1,
     SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2
-};
+}
 
 // https://discord.com/developers/docs/resources/stage-instance#stage-instance-object-privacy-level
 export const enum STAGE_PRIVACY_LEVELS {
     PUBLIC = 1,
     GUILD_ONLY
-};
+}
 
 // https://discord.com/developers/docs/resources/channel#channel-object-channel-types
 export const enum CHANNEL_TYPES {
@@ -88,19 +88,19 @@ export const enum CHANNEL_TYPES {
     GUILD_STAGE_VOICE,
     GUILD_DIRECTORY,
     GUILD_FORUM
-};
+}
 
 // https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes
 export const enum VIDEO_QUALITY_MODES {
     AUTO = 1,
     FULL
-};
+}
 
 // https://discord.com/developers/docs/resources/channel#edit-channel-permissions-json-params
 export const enum PERMISSION_OVERWRITE_TYPES {
     ROLE,
     MEMBER
-};
+}
 
 // https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-types
 export const enum STICKER_TYPES {
@@ -127,7 +127,7 @@ export const enum INTERACTION_REQUEST_TYPES {
     APPLICATION_COMMAND,
     MESSAGE_COMPONENT,
     APPLICATION_COMMAND_AUTOCOMPLETE
-};
+}
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type
 export const enum INTERACTION_CALLBACK_TYPES {
@@ -137,12 +137,12 @@ export const enum INTERACTION_CALLBACK_TYPES {
     DEFERRED_UPDATE_MESSAGE,
     UPDATE_MESSAGE,
     APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
-};
+}
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
 export const enum INTERACTION_CALLBACK_FLAGS {
     EPHEMERAL = 1 << 6
-};
+}
 
 // https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types
 export const enum COMMAND_TYPES {

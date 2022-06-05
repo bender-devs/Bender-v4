@@ -1,5 +1,5 @@
-import { API_ERRORS } from "../data/numberTypes";
-import { ResponseError } from "../data/types";
+import { API_ERRORS } from '../data/numberTypes';
+import { ResponseError } from '../data/types';
 
 type BaseError = {
     code: string;

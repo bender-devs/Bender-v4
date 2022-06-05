@@ -26,11 +26,12 @@ export default class PingCommand extends CommandUtils implements ICommand {
     run(interaction: types.Interaction): types.CommandResponse {
         const args = interaction.data?.options;
         const roundtrip = args?.[0]?.value !== 'api';
-        let millis = 0, startTimestamp = Date.now();
+        let millis = 0;
         if (!roundtrip) {
             millis = this.bot.gateway.ping;
         }
-        const thenCallback = roundtrip ? this.roundtripCallback : () => null;
+        const thenCallback = roundtrip ? this.roundtripCallback : () => undefined;
+        const startTimestamp = Date.now();
         return this.bot.api.interaction.sendResponse(interaction, {
             type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {

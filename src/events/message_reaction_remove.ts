@@ -1,19 +1,15 @@
-import { EventHandler } from "../data/types";
-import { ReactionRemoveData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { ReactionRemoveData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class ReactionRemoveHandler extends EventHandler {
+export default class ReactionRemoveHandler extends EventHandler<ReactionRemoveData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: ReactionRemoveData) => {
-
-    }
-
-    handler = (eventData: ReactionRemoveData) => {
+    handler = (/*eventData: ReactionRemoveData*/) => {
         // TODO: handle role menus and giveaways if applicable
     }
 }

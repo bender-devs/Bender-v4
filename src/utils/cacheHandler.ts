@@ -11,12 +11,12 @@ localized cache:
 - channels
 - commands (could be global but that would add too much complexity)
 */
-import * as types from "../data/types";
-import Bot from "../structures/bot";
-import { promisify } from "util";
+import * as types from '../data/types';
+import Bot from '../structures/bot';
+import { promisify } from 'util';
 import * as redis from 'redis';
-import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from "../data/gatewayTypes";
-import { REDIS_HOST, REDIS_PORT, REDIS_USER } from "../data/constants";
+import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../data/gatewayTypes';
+import { REDIS_HOST, REDIS_PORT, REDIS_USER } from '../data/constants';
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
@@ -48,7 +48,7 @@ export interface CachedGuild extends GatewayGuildOmit {
 // doing these tricks because promisify() doesn't choose the correct overload
 type hsetType = (key: string, fields: types.StringMap, callback: redis.Callback<number>) => boolean;
 const hsetPromisify = (command: hsetType) => promisify(command);
-type hsetExpireType = (key: string, fields: types.StringMap, expire: types.UnixTimestampMillis) => (callback: redis.Callback<any[]>) => boolean;
+type hsetExpireType = (key: string, fields: types.StringMap, expire: types.UnixTimestampMillis) => (callback: redis.Callback<unknown[]>) => boolean;
 const hsetExpirePromisify = (command: hsetExpireType) => promisify(command);
 
 export default class CacheHandler {
@@ -78,7 +78,7 @@ export default class CacheHandler {
         this.redisClient = redis.createClient({
             url: `redis://${authString}${REDIS_HOST}:${REDIS_PORT}`
         });
-        this.redisClient.on("error", err => this.bot.emit("REDIS_ERROR", err));
+        this.redisClient.on('error', err => this.bot.emit('REDIS_ERROR', err));
 
         this.#get = promisify(this.redisClient.get).bind(this.redisClient);
 
@@ -485,7 +485,7 @@ export default class CacheHandler {
             return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
         set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
-            return this.set(user_id, this.users._serialize(user)).then(() => {});
+            return this.set(user_id, this.users._serialize(user)).then(() => undefined);
         },
         addChunk: async (user_list: UserMap): Promise<void> => {
             const obj: StringMapMap = {};
@@ -493,7 +493,7 @@ export default class CacheHandler {
             for (id in user_list) {
                 obj[id] = this.users._serialize(user_list[id]);
             }
-            return this.hsetMulti('users', obj).then(() => {});
+            return this.hsetMulti('users', obj).then(() => undefined);
         },
         // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
@@ -503,15 +503,33 @@ export default class CacheHandler {
                 discriminator: user.discriminator.toString() as types.StringNum,
                 avatar: user.avatar || 'null'
             }
-            if (user.bot) obj.bot = 'true';
-            if (user.system) obj.system = 'true';
-            if (user.mfa_enabled) obj.mfa_enabled = 'true';
-            if (user.verified) obj.verified = 'true';
-            if (user.locale) obj.locale = user.locale;
-            if (user.email) obj.email = user.email;
-            if (user.flags) obj.flags = user.flags.toString() as types.StringNum;
-            if (user.public_flags) obj.public_flags = user.public_flags.toString() as types.StringNum;
-            if (user.premium_type) obj.premium_type = user.premium_type.toString() as types.StringPremiumTypes;
+            if (user.bot) {
+                obj.bot = 'true';
+            }
+            if (user.system) {
+                obj.system = 'true';
+            }
+            if (user.mfa_enabled) {
+                obj.mfa_enabled = 'true';
+            }
+            if (user.verified) {
+                obj.verified = 'true';
+            }
+            if (user.locale) {
+                obj.locale = user.locale;
+            }
+            if (user.email) {
+                obj.email = user.email;
+            }
+            if (user.flags) {
+                obj.flags = user.flags.toString() as types.StringNum;
+            }
+            if (user.public_flags) {
+                obj.public_flags = user.public_flags.toString() as types.StringNum;
+            }
+            if (user.premium_type) {
+                obj.premium_type = user.premium_type.toString() as types.StringPremiumTypes;
+            }
             return obj as types.StringMap;
         },
         _deserialize: (user_hash: types.UserHash | null): types.User | null => {
@@ -530,14 +548,14 @@ export default class CacheHandler {
 
     dmChannels = {
         get: async (user_id: types.Snowflake): Promise<types.Snowflake | null> => {
-            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => null);
+            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => undefined);
             return cid === null ? null : cid as types.Snowflake;
         },
         set: async (user_id: types.Snowflake, dm_channel_id: types.Snowflake): Promise<void> => {
-            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => {});
+            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => undefined);
         },
         setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
-            return this.setMulti('dm_channels', dm_channel_ids).then(() => {});
+            return this.setMulti('dm_channels', dm_channel_ids).then(() => undefined);
         }
         // TODO: decache dm channel when associated user is decached?
     }
@@ -589,7 +607,7 @@ export default class CacheHandler {
     }
 
     gatewayInfo = {
-        get: async (): Promise<GatewayBotInfo | null> => {
+        get: async (): Promise<GatewayBotInfo | null | undefined> => {
             return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
                 if (Array.isArray(data) && data.length === 3) {
                     const obj: GatewayBotInfo = {
@@ -605,7 +623,7 @@ export default class CacheHandler {
                     return obj;
                 }
                 return null;
-            }).catch(() => null);
+            }).catch(() => undefined);
         },
         set: async (gateway_bot_info: GatewayBotInfo): Promise<void> => {
             const reset_at = Date.now() + gateway_bot_info.session_start_limit.reset_after;
@@ -619,7 +637,7 @@ export default class CacheHandler {
                     reset_at: reset_at+'',
                     max_concurrency: gateway_bot_info.session_start_limit.max_concurrency+''
                 }
-            }, reset_at).then(() => {}).catch(() => {});
+            }, reset_at).then(() => undefined).catch(() => undefined);
         }
     }
 }

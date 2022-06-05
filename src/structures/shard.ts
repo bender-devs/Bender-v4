@@ -1,6 +1,6 @@
-import { ShardConnectionData } from "../data/gatewayTypes";
-import ShardManager, { ShardMessage } from "../utils/shardManager";
-import Bot from "./bot";
+import { ShardConnectionData } from '../data/gatewayTypes';
+import ShardManager, { ShardMessage } from '../utils/shardManager';
+import Bot from './bot';
 
 export default class Shard {
     bot: Bot;

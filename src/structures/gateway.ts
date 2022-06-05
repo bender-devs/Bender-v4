@@ -19,19 +19,19 @@ export default class Gateway extends EventEmitter {
     version?: number;
     sessionID?: string;
     ws!: WebSocket;
-    ping: number = -1;
+    ping = -1;
 
-    #beginTimestamp: number = -1;
+    #beginTimestamp = -1;
     #promiseResolve: ((value: unknown) => void) | null = null;
     #promiseReject: ((value: unknown) => void) | null = null;
     #heartbeatInterval: NodeJS.Timeout | null = null;
     #heartbeatTimeout: NodeJS.Timeout | null = null;
-    #lastHeartbeat: number = -1;
+    #lastHeartbeat = -1;
     #lastSequenceNumber: number | null = null;
     #identifyData: gatewayTypes.IdentifyData | null = null;
 
     #inflator: zlib.Inflate;
-    #inflateResolve?: (chunk: any) => void;
+    #inflateResolve?: (chunk: Buffer) => void;
     #inflateReject?: (err: Error) => void;
     #inflate(data: Buffer) {
         return new Promise<Buffer>((resolve, reject) => {
@@ -86,7 +86,7 @@ export default class Gateway extends EventEmitter {
             this.bot.logger.handleError('GATEWAY ERROR', err);
         });
 
-        this.on('message', async (data: WebSocket.RawData, isBinary: boolean): Promise<boolean> => {
+        this.on('message', async (data: WebSocket.RawData): Promise<boolean> => {
             //this.bot.logger.debug('GATEWAY MESSAGE', data);
             let payloadText: string;
             if (typeof data === 'string') {
@@ -128,7 +128,7 @@ export default class Gateway extends EventEmitter {
             switch(parsedPayload.op) {
                 case GATEWAY_OPCODES.DISPATCH: {
                     const payload = parsedPayload as gatewayTypes.EventPayload;
-                    if (payload.t === 'READY' && 'session_id' in payload.d) {
+                    if (payload.t === 'READY' && payload.d && 'session_id' in payload.d) {
                         this.sessionID = payload.d.session_id;
                     }
                     this.#lastSequenceNumber = payload.s;
@@ -178,12 +178,13 @@ export default class Gateway extends EventEmitter {
                     process.exit(EXIT_CODE_NO_RESTART);
                 }
                 case CUSTOM_GATEWAY_ERRORS.INVALID_SESSION:
-                // @ts-ignore: Fallthrough case
-                case GATEWAY_ERRORS.SESSION_TIMED_OUT: {
-                    this.sessionID = undefined;
-                    this.#lastSequenceNumber = null;
-                }
+                case GATEWAY_ERRORS.SESSION_TIMED_OUT:
                 default: {
+                    if (code === GATEWAY_ERRORS.SESSION_TIMED_OUT || code === GATEWAY_ERRORS.SESSION_TIMED_OUT) {
+                        // session is invalid, make sure it won't attempt to resume
+                        this.sessionID = undefined;
+                        this.#lastSequenceNumber = null;
+                    }
                     if (this.sessionID && this.#lastSequenceNumber && this.#identifyData) {
                         return this.resume({
                             session_id: this.sessionID,
@@ -202,7 +203,7 @@ export default class Gateway extends EventEmitter {
     #setupHeartbeat(payload: gatewayTypes.HelloPayload) {
         this.#heartbeatInterval = setInterval(() => this.heartbeat(), payload.d.heartbeat_interval);
         return true;
-    };
+    }
 
     async sendData(data: unknown) {
         if (!this.ws) {
@@ -228,7 +229,7 @@ export default class Gateway extends EventEmitter {
         this.bot.logger.debug('GATEWAY CONNECT', wsURL);
         this.#beginTimestamp = Date.now();
         this.ws = new WebSocket(wsURL);
-        return new Promise((resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        return new Promise((resolve: (value: unknown) => void, reject: (reason?: unknown) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
             if (addListeners) {

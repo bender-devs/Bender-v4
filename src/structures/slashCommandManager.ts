@@ -21,4 +21,4 @@ export default class SlashCommandManager {
     updateCommandList() {
         this.bot.api.command.replaceAll(this.commands);
     }
-};
+}

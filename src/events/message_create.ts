@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { MessageCreateData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { MessageCreateData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class MessageCreateHandler extends EventHandler {
+export default class MessageCreateHandler extends EventHandler<MessageCreateData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -18,7 +18,7 @@ export default class MessageCreateHandler extends EventHandler {
         }
     }
 
-    handler = (eventData: MessageCreateData) => {
+    handler = (/*eventData: MessageCreateData*/) => {
         // TODO: handle text commands (?)
         // TODO: handle filter/automod
     }

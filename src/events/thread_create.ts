@@ -1,9 +1,9 @@
-import { EventHandler } from "../data/types";
-import { ThreadUpdateData, LowercaseEventName } from "../data/gatewayTypes";
-import Bot from "../structures/bot";
-import { basename } from "path";
+import { EventHandler } from '../data/types';
+import { ThreadUpdateData, LowercaseEventName } from '../data/gatewayTypes';
+import Bot from '../structures/bot';
+import { basename } from 'path';
 
-export default class ThreadCreateHandler extends EventHandler {
+export default class ThreadCreateHandler extends EventHandler<ThreadUpdateData> {
     constructor(bot: Bot) {
         const filename = basename(__filename, '.js');
         super(filename as LowercaseEventName, bot);
@@ -13,7 +13,7 @@ export default class ThreadCreateHandler extends EventHandler {
         this.bot.cache.threads.set(eventData);
     }
 
-    handler = (eventData: ThreadUpdateData) => {
+    handler = (/*eventData: ThreadUpdateData*/) => {
         // TODO: join thread if auto-join setting is enabled
     }
 }

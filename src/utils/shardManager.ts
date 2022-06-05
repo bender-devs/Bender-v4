@@ -1,8 +1,8 @@
-import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from "../data/types";
-import Logger from "../structures/logger";
-import { randomUUID } from "crypto";
-import * as child_process from "child_process";
-import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE } from "../data/constants";
+import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../data/types';
+import Logger from '../structures/logger';
+import { randomUUID } from 'crypto';
+import * as child_process from 'child_process';
+import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE } from '../data/constants';
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive
@@ -19,7 +19,7 @@ export const SHARD_OPERATION_LIST: CommandOptionChoice[] = [
 ]
 export type ShardDestination = number[] | 'ALL' | 'MANAGER';
 
-type FetchCallback = (message: ShardMessage) => any;
+type FetchCallback = (message: ShardMessage) => unknown;
 
 export type ShardMessage = {
     operation: ShardOperation;
@@ -202,7 +202,7 @@ export default class ShardManager {
             data: '' // TODO: put desired stats here
         };
 
-        let callback: FetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
+        const callback: FetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
