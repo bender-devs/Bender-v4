@@ -713,6 +713,10 @@ export type CommandOption = {
     required?: boolean;
     choices?: CommandOptionChoice[];
     options?: CommandOption[];
+    channel_types?: num.CHANNEL_TYPES[];
+    min_value?: number;
+    max_value?: number;
+    autocomplete?: boolean;
 }
 
 export type CommandOptionChoice = {

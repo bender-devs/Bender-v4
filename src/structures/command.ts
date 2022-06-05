@@ -6,5 +6,5 @@ export default interface Command extends types.CommandCreateData {
     dm_permission: boolean;
 
     run(interaction: types.Interaction): types.CommandResponse;
-    runText(msg: types.Message, argString: string): types.CommandResponse;
+    runText?(msg: types.Message, argString: string): types.CommandResponse;
 }

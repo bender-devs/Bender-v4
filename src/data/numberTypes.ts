@@ -85,7 +85,9 @@ export const enum CHANNEL_TYPES {
     GUILD_NEWS_THREAD = 10,
     GUILD_PUBLIC_THREAD,
     GUILD_PRIVATE_THREAD,
-    GUILD_STAGE_VOICE
+    GUILD_STAGE_VOICE,
+    GUILD_DIRECTORY,
+    GUILD_FORUM
 };
 
 // https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes
@@ -159,7 +161,9 @@ export const enum COMMAND_OPTION_TYPES {
     USER,
     CHANNEL,
     ROLE,
-    MENTIONABLE
+    MENTIONABLE,
+    NUMBER,
+    ATTACHMENT
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissiontype

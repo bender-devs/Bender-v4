@@ -3,7 +3,7 @@ import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
-import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
+import { COMMAND_OPTION_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
 import APIError from '../structures/apiError';
 
 export default class PingCommand implements Command {
@@ -13,7 +13,7 @@ export default class PingCommand implements Command {
     readonly dm_permission: boolean = true;
     readonly description = 'Test whether the bot is responsive.';
     readonly options: types.CommandOption[] = [{
-        type: 3,
+        type: COMMAND_OPTION_TYPES.STRING,
         name: 'type',
         description: 'Whether to measure roundtrip or API ping. Default roundtrip.',
         choices: [
