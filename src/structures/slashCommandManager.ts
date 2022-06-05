@@ -3,6 +3,7 @@ import Command from './command';
 
 
 import PingCommand from '../commands/ping';
+import DevCommand from '../commands/dev';
 
 
 export default class SlashCommandManager {
@@ -14,6 +15,7 @@ export default class SlashCommandManager {
         this.commands = [];
 
         this.commands.push(new PingCommand(this.bot));
+        this.commands.push(new DevCommand(this.bot));
     }
 
     updateCommandList() {

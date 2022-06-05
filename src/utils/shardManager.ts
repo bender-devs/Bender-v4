@@ -1,4 +1,4 @@
-import { Interaction, InteractionResponse, UnixTimestampMillis } from "../data/types";
+import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from "../data/types";
 import Logger from "../structures/logger";
 import { randomUUID } from "crypto";
 import * as child_process from "child_process";
@@ -10,14 +10,21 @@ const shardOperations = [
     'request_values', // request values from a shard
     'receive_values' // respond with requested values
 ] as const;
-type ShardOperation = typeof shardOperations[number];
+export type ShardOperation = typeof shardOperations[number];
+export const SHARD_OPERATION_LIST: CommandOptionChoice[] = [
+    { name: 'Ping', value: 'ping' }, // ping a shard to make sure it's responsive
+    { name: 'Pong', value: 'pong' }, // response to ping
+    { name: 'Request values', value: 'request_values' }, // request values from a shard
+    { name: 'Receive values', value: 'receive_values' } // respond with requested values
+]
+export type ShardDestination = number[] | 'ALL' | 'MANAGER';
 
 type FetchCallback = (message: ShardMessage) => any;
 
 export type ShardMessage = {
     operation: ShardOperation;
     fromShard: number | 'MANAGER';
-    toShards: number[] | 'ALL' | 'MANAGER';
+    toShards: ShardDestination;
     nonce: string;
     data?: string;
 }
@@ -52,7 +59,7 @@ export default class ShardManager {
                 SHARD_ID: shardID,
                 SHARD_COUNT: this.shardCount
             }),
-            stdio: 'inherit'
+            stdio: ['inherit', 'inherit', 'inherit', 'ipc']
         });
         shardProcess.on('error', (err: Error) => {
             this.logger.handleError(`UNHANDLED EXCEPTION [SHARD ${shardID}]`, err);
@@ -123,8 +130,13 @@ export default class ShardManager {
     }
 
     processMessage(message: ShardMessage) {
-        if (message.toShards !== 'MANAGER' || message.fromShard === 'MANAGER') {
-            return; // only process messages meant for the manager itself
+        if (message.fromShard === 'MANAGER') {
+            this.logger.debug('IGNORING SHARD MESSAGE', message, '(from self)');
+            return; // avoid infinite loops
+        }
+        if (message.toShards !== 'MANAGER') {
+            this.logger.debug('FORWARDING SHARD MESSAGE', message);
+            return this.sendMessage(message); // forward messages to other shards
         }
         switch (message.operation) {
             case 'ping': {
@@ -161,7 +173,7 @@ export default class ShardManager {
                 return null;
             }
             if (logger) {
-                logger.debug('PARSED SHARD MESSAGE', message);
+                logger.debug('PARSED SHARD MESSAGE', messageObject);
             }
             return {
                 operation: messageObject.operation,
@@ -173,6 +185,8 @@ export default class ShardManager {
         } catch(err) {
             if (logger) {
                 logger.handleError('PARSING SHARD MESSAGE FAILED', err, message);
+            } else {
+                console.error('PARSING SHARD MESSAGE FAILED', err, message);
             }
             return null;
         }

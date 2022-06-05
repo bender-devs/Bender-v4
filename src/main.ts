@@ -2,7 +2,6 @@ import "dotenv/config";
 import Bot from "./structures/bot";
 import { SHARDED, SHARD_COUNT, CONNECT_DATA, EXIT_CODE_NO_RESTART } from "./data/constants";
 import ShardManager from "./utils/shardManager";
-import Shard from "./structures/shard";
 import { IdentifyData } from "./data/gatewayTypes";
 
 console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
@@ -18,9 +17,7 @@ const connectionData: IdentifyData = Object.assign({}, CONNECT_DATA, { token: TO
 if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     const id = parseInt(process.env.SHARD_ID);
     const count = parseInt(process.env.SHARD_COUNT);
-    const bot = new Bot();
-    const shard = new Shard(bot, [id, count]);
-    bot.shard = shard;
+    const bot = new Bot([id, count]);
 
     bot.connect(connectionData);
 } else if (SHARDED) {

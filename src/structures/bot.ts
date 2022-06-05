@@ -53,6 +53,10 @@ export default class Bot extends EventEmitter {
         this.events.addAllListeners();
 
         this.on("REDIS_ERROR", err => this.logger.handleError('REDIS ERROR', err));
+
+        if (this.shard) {
+            process.on('message', this.shard.handleMessage.bind(this.shard));
+        }
     }
 
     async connect(identifyData: gatewayTypes.IdentifyData) {

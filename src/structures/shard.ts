@@ -4,7 +4,6 @@ import Bot from "./bot";
 
 export default class Shard {
     bot: Bot;
-    manager!: ShardManager;
     id!: number;
     total_shards!: number;
 
@@ -19,11 +18,26 @@ export default class Shard {
     }
 
     processMessage(message: ShardMessage) {
-        // TODO: copy and modify code from ShardManager
+        if (!this.bot.shard || !Array.isArray(message.toShards) || !message.toShards.includes(this.bot.shard.id)) {
+            return; // invalid message or not intended for this shard
+        }
+        switch (message.operation) {
+            case 'ping': {
+                return this.sendMessage({
+                    operation: 'pong',
+                    fromShard: this.bot.shard.id,
+                    toShards: message.fromShard === 'MANAGER' ? 'MANAGER' : [message.fromShard],
+                    nonce: message.nonce
+                });
+            }
+            case 'pong': {
+                break;
+            }
+            // TODO: for receive_values, check this.#callbacks, group values if necessary, and send response message
+        }
     }
 
     handleMessage(message: string) {
-        this.bot.logger.debug('SHARD MESSAGE', message);
         const parsedMessage = this.parseMessage(message);
         if (parsedMessage) {
             this.processMessage(parsedMessage);
@@ -31,8 +45,13 @@ export default class Shard {
     }
 
     sendMessage(message: ShardMessage) {
-        //const stringifiedMessage = JSON.stringify(message);
-        // TODO: copy and modify code from ShardManager
+        const stringifiedMessage = JSON.stringify(message);
+        if (!process.send) {
+            this.bot.logger.handleError('SHARD MESSAGE', 'Tried to send a shard message from an unsharded client.');
+            return;
+        }
+        // send to parent process, which is the shard manager, and it will be forwarded to other shards if necessary
+        process.send(stringifiedMessage);
     }
 
     parseMessage(message: string): ShardMessage | null {
