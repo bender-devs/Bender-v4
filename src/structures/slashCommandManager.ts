@@ -1,5 +1,5 @@
 import Bot from './bot';
-import Command from './command';
+import { ICommand } from './command';
 
 
 import PingCommand from '../commands/ping';
@@ -8,7 +8,7 @@ import DevCommand from '../commands/dev';
 
 export default class SlashCommandManager {
     bot: Bot;
-    commands: Command[];
+    commands: ICommand[];
     
     constructor(bot: Bot) {
         this.bot = bot;

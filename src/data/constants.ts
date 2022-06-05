@@ -2,6 +2,7 @@ import { GatewayParams, IdentifyData } from "./gatewayTypes";
 import { GATEWAY_VERSIONS } from "./numberTypes";
 import { ACTIVITY_TYPES, INTENT_FLAGS } from './numberTypes';
 import MiscUtils from "../utils/misc";
+import { Snowflake } from "./types";
 
 /***** bot options *****/
 
@@ -26,10 +27,10 @@ export const HEARTBEAT_TIMEOUT = 15000;
 export const VERSION = '4.0.0';
 
 export const DOMAIN = 'benderbot.co';
-
 export const WEBSITE = `https://${DOMAIN}`;
-
 export const DASHBOARD = `https://dashboard.${DOMAIN}`;
+
+export const OWNERS: Snowflake[] = ['246107833295175681'];
 
 export const PUBLIC_KEY = ''; // TODO: fill this in
 

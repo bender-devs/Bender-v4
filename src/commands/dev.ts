@@ -1,16 +1,17 @@
-import Command from '../structures/command';
+import { ICommand, CommandUtils } from '../structures/command';
 import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
-import APIError from '../structures/apiError';
+import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../utils/shardManager';
 import { randomUUID } from 'crypto';
+import PermissionUtils from '../utils/permissions';
 
-export default class DevCommand implements Command {
-    bot: Bot;
+export default class DevCommand extends CommandUtils implements ICommand {
+    constructor(bot: Bot) {
+        super(bot, path.parse(__filename).name);
+    }
     
-    readonly name: string = path.parse(__filename).name;
     readonly dm_permission: boolean = true;
     readonly description = 'Super secret developer stuff';
     readonly options: types.CommandOption[] = [{
@@ -39,17 +40,14 @@ export default class DevCommand implements Command {
         }]
     }];
 
-    constructor (bot: Bot) {
-        this.bot = bot;
-    }
-
     async run(interaction: types.Interaction): types.CommandResponse {
-        if ((interaction.member || interaction).user?.id !== '246107833295175681') {
-            return this.respond(interaction, 'fuck you, unauthorized');
+        const user = (interaction.member || interaction).user;
+        if (!PermissionUtils.isOwner(user)) {
+            return this.respond(interaction, '🔑 You aren\'t authorized to use this command.');
         }
         const args = interaction.data?.options;
         if (!args) {
-            this.bot.logger.handleError('COMMAND FAILED: /dev', 'no arguments supplied');
+            this.bot.logger.handleError('COMMAND FAILED: /dev', 'No arguments supplied [Should never happen...]');
             return null;
         }
         const command = args[0].name;
@@ -61,8 +59,8 @@ export default class DevCommand implements Command {
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
                 const operation = args[0].options?.[0]?.options?.[0]?.value;
                 if (!destination || !operation) {
-                    // should never happen
-                    return this.respond(interaction, 'Invalid args.');
+                    this.bot.logger.handleError('COMMAND FAILED: /dev', 'No subcommand or required argument supplied [Should never happen...]');
+                    return null;
                 }
                 const data = args[0].options?.[0]?.options?.[1]?.value;
                 const nonce = args[0].options?.[0]?.options?.[2]?.value;
@@ -73,25 +71,12 @@ export default class DevCommand implements Command {
                     nonce: nonce ? nonce as string : randomUUID(),
                     data: data ? data as string : undefined
                 });
-                return this.respond(interaction, 'Message sent.');
+                return this.respond(interaction, '📬 Message sent.');
             }
             default: {
-                // should never happen
-                return this.respond(interaction, 'Invalid subcommand.');
+                this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand [Should never happen...]');
+                return null;
             }
         }
-    }
-
-    async respond(interaction: types.Interaction, content: string) {
-        return this.bot.api.interaction.sendResponse(interaction, {
-            type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content,
-                flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
-            }
-        }).catch((err: APIError) => {
-            this.bot.logger.handleError('COMMAND FAILED: /dev', err);
-            return null;
-        });
     }
 }

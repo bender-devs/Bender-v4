@@ -1,5 +1,5 @@
 import Bot from './bot';
-import Command from './command';
+import { ICommand } from './command';
 import * as types from '../data/types';
 
 export default class SlashCommandHandler {
@@ -9,11 +9,11 @@ export default class SlashCommandHandler {
         this.bot = bot;
     }
 
-    runCommand(command: Command, interaction: types.Interaction) {
+    runCommand(command: ICommand, interaction: types.Interaction) {
         return command.run(interaction);
     }
 
-    handleCommand(interaction: types.Interaction, command: Command) {
+    handleCommand(interaction: types.Interaction, command: ICommand) {
         // TODO: complete this
         return this.runCommand(command, interaction);
     }

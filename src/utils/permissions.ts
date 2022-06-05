@@ -1,6 +1,6 @@
-import { ID_REGEX_EXACT } from "../data/constants";
+import { ID_REGEX_EXACT, OWNERS } from "../data/constants";
 import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from "../data/numberTypes";
-import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake } from "../data/types"; 
+import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from "../data/types"; 
 import { CachedGuild } from "./cacheHandler";
 
 type PermBitfield = Bitfield | Flags | bigint;
@@ -122,5 +122,13 @@ export default class PermissionUtils {
         }
         const bitfield = this.computeBitfieldForMember(member, guild, channel);
         return this.has(bitfield, discordPerm);
+    }
+
+    static isOwner(user?: User | Snowflake) {
+        if (!user) {
+            return false;
+        }
+        const id = typeof user === 'string' ? user : user.id;
+        return OWNERS.includes(id);
     }
 }

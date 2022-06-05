@@ -1,4 +1,4 @@
-import Command from '../structures/command';
+import { ICommand, CommandUtils } from '../structures/command';
 import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
@@ -6,10 +6,11 @@ import LanguageUtils from '../utils/language';
 import { COMMAND_OPTION_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
 import APIError from '../structures/apiError';
 
-export default class PingCommand implements Command {
-    bot: Bot;
+export default class PingCommand extends CommandUtils implements ICommand {
+    constructor(bot: Bot) {
+        super(bot, path.parse(__filename).name);
+    }
     
-    readonly name: string = path.parse(__filename).name;
     readonly dm_permission: boolean = true;
     readonly description = 'Test whether the bot is responsive.';
     readonly options: types.CommandOption[] = [{
@@ -21,10 +22,6 @@ export default class PingCommand implements Command {
             { name: 'Roundtrip', value: 'roundtrip' }
         ],
     }];
-
-    constructor (bot: Bot) {
-        this.bot = bot;
-    }
 
     run(interaction: types.Interaction): types.CommandResponse {
         const args = interaction.data?.options;
