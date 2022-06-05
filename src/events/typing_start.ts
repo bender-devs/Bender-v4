@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { TypingStartData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*TypingStartData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class TypingStartHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: TypingStartData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: TypingStartData) => {
 
     }
 
     handler = (eventData: TypingStartData) => {
 
-    }
+    }*/
 }

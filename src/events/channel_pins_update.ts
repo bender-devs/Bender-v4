@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { ChannelPinsUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*ChannelPinsUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class ChannelPinsUpdateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: ChannelPinsUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: ChannelPinsUpdateData) => {
 
     }
 
     handler = (eventData: ChannelPinsUpdateData) => {
 
-    }
+    }*/
 }

@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { ThreadMemberUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*ThreadMemberUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class ThreadMemberUpdateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: ThreadMemberUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: ThreadMemberUpdateData) => {
 
     }
 
     handler = (eventData: ThreadMemberUpdateData) => {
 
-    }
+    }*/
 }

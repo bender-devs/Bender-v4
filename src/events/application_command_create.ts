@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { CommandUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*CommandUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class CommandCreateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: CommandUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: CommandUpdateData) => {
 
     }
 
     handler = (eventData: CommandUpdateData) => {
 
-    }
+    }*/
 }

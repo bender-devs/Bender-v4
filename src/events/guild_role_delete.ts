@@ -14,6 +14,6 @@ export default class GuildRoleDeleteHandler extends EventHandler {
     }
 
     handler = (eventData: GuildRoleDeleteData) => {
-
+        // TODO: check if settings are invalid? (may not be needed if agreement/mutes aren't used)
     }
 }

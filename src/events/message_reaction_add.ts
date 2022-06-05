@@ -14,6 +14,6 @@ export default class ReactionAddHandler extends EventHandler {
     }
 
     handler = (eventData: ReactionAddData) => {
-
+        // TODO: code for role menus & giveaways (if those aren't replaced with interactions)
     }
 }

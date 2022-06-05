@@ -14,6 +14,6 @@ export default class ReactionRemoveHandler extends EventHandler {
     }
 
     handler = (eventData: ReactionRemoveData) => {
-
+        // TODO: handle role menus and giveaways if applicable
     }
 }

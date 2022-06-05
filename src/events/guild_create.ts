@@ -20,7 +20,7 @@ export default class GuildCreateHandler extends EventHandler {
 
     handler = (eventData: GuildCreateData) => {
         const joinedAt = TimeUtils.parseTimestampMillis(eventData.joined_at);
-        const minuteAgo = Date.now() + 60*1000;
+        const minuteAgo = Date.now() - 60*1000;
         if (joinedAt > minuteAgo) {
             this.bot.logger.debug('GUILD_CREATE', 'Skipped since this guild is just becoming available');
             return;

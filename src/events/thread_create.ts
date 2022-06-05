@@ -14,6 +14,6 @@ export default class ThreadCreateHandler extends EventHandler {
     }
 
     handler = (eventData: ThreadUpdateData) => {
-
+        // TODO: join thread if auto-join setting is enabled
     }
 }

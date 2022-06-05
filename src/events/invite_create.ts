@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { InviteCreateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*InviteCreateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class InviteCreateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: InviteCreateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: InviteCreateData) => {
 
     }
 
     handler = (eventData: InviteCreateData) => {
 
-    }
+    }*/
 }

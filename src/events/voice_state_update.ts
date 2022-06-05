@@ -10,7 +10,7 @@ export default class VoiceStateUpdateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: VoiceStateUpdateData) => {
-
+        // TODO: cache voice states (used for voice kick/move commands)
     }
 
     handler = (eventData: VoiceStateUpdateData) => {

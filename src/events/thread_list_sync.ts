@@ -10,7 +10,7 @@ export default class ThreadListSyncHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: ThreadSyncData) => {
-
+        this.bot.cache.threads.sync(eventData);
     }
 
     handler = (eventData: ThreadSyncData) => {

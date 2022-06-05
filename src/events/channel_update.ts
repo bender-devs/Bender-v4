@@ -14,6 +14,6 @@ export default class ChannelUpdateHandler extends EventHandler {
     }
 
     handler = (eventData: ChannelUpdateData) => {
-
+        // TODO: check for invalid permissions, especially in log channels
     }
 }

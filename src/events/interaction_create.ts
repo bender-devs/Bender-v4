@@ -11,7 +11,7 @@ export default class InteractionCreateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: InteractionCreateData) => {
-
+        // TODO: cache interactions?
     }
 
     handler = (eventData: InteractionCreateData) => {

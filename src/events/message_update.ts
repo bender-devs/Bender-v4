@@ -18,6 +18,6 @@ export default class MessageUpdateHandler extends EventHandler {
     }
 
     handler = (eventData: MessageUpdateData) => {
-
+        // TODO: if content changed and edit logging is enabled, post to log channel
     }
 }

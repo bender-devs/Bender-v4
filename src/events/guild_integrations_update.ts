@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { GuildIntegrationsUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*GuildIntegrationsUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class GuildIntegrationsUpdateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: GuildIntegrationsUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: GuildIntegrationsUpdateData) => {
 
     }
 
     handler = (eventData: GuildIntegrationsUpdateData) => {
 
-    }
+    }*/
 }

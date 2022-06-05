@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { ReactionRemoveEmojiData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*ReactionRemoveEmojiData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class ReactionRemoveEmojiHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: ReactionRemoveEmojiData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: ReactionRemoveEmojiData) => {
 
     }
 
     handler = (eventData: ReactionRemoveEmojiData) => {
 
-    }
+    }*/
 }

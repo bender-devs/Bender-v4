@@ -14,6 +14,6 @@ export default class GuildMemberUpdateHandler extends EventHandler {
     }
 
     handler = (eventData: GuildMemberUpdateData) => {
-
+        // TODO: if member is the bot user, check if essential permissions have been removed
     }
 }

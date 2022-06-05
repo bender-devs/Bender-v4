@@ -10,10 +10,10 @@ export default class PresenceUpdateHandler extends EventHandler {
     }
 
     cacheHandler = (eventData: PresenceUpdateData) => {
-
+        // TODO: cache presences for /userinfo & /playing
     }
 
     handler = (eventData: PresenceUpdateData) => {
-
+        // TODO: anti-advertising/gamefilter functions
     }
 }

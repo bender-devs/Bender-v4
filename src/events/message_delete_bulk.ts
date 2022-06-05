@@ -18,6 +18,6 @@ export default class MessageDeleteBulkHandler extends EventHandler {
     }
 
     handler = (eventData: MessageDeleteBulkData) => {
-
+        // TODO: if delete logging is enabled, post to log channel
     }
 }

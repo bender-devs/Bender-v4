@@ -14,6 +14,6 @@ export default class GuildRoleUpdateHandler extends EventHandler {
     }
 
     handler = (eventData: GuildRoleUpdateData) => {
-
+        // TODO: check if settings are invalid? (may not be needed if agreement/mutes aren't used)
     }
 }

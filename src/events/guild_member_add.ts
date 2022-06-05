@@ -14,6 +14,8 @@ export default class GuildMemberAddHandler extends EventHandler {
     }
 
     handler = (eventData: GuildMemberAddData) => {
-
+        // TODO: send join DM if configured
+        // TODO: send to member log if configured
+        // TODO: send to mod member log if configured
     }
 }

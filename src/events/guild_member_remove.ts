@@ -14,6 +14,7 @@ export default class GuildMemberRemoveHandler extends EventHandler {
     }
 
     handler = (eventData: GuildMemberRemoveData) => {
-
+        // TODO: send to member log if configured
+        // TODO: send to mod member log if configured
     }
 }

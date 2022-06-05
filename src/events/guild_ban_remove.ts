@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { GuildBanEventData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*GuildBanEventData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class GuildBanRemoveHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: GuildBanEventData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: GuildBanEventData) => {
 
     }
 
     handler = (eventData: GuildBanEventData) => {
 
-    }
+    }*/
 }

@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { IntegrationDeleteData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*IntegrationDeleteData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class IntegrationDeleteHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: IntegrationDeleteData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: IntegrationDeleteData) => {
 
     }
 
     handler = (eventData: IntegrationDeleteData) => {
 
-    }
+    }*/
 }

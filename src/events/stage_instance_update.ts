@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { StageInstanceUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*StageInstanceUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class StageInstanceUpdateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: StageInstanceUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: StageInstanceUpdateData) => {
 
     }
 
     handler = (eventData: StageInstanceUpdateData) => {
 
-    }
+    }*/
 }

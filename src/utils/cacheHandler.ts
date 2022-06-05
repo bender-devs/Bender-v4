@@ -15,7 +15,7 @@ import * as types from "../data/types";
 import Bot from "../structures/bot";
 import { promisify } from "util";
 import * as redis from 'redis';
-import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData } from "../data/gatewayTypes";
+import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from "../data/gatewayTypes";
 import { REDIS_HOST, REDIS_PORT, REDIS_USER } from "../data/constants";
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
@@ -229,6 +229,7 @@ export default class CacheHandler {
         },
         delete: (guild_id: types.Snowflake): void => {
             delete this.#guilds[guild_id];
+            // TODO: decache all members for guild
         }
     }
 
@@ -268,6 +269,7 @@ export default class CacheHandler {
             }
             Object.assign(this.#guilds[guild_id].members, memberMap);
         }
+        // TODO: decache members under certain circumstances?
     }
 
     roles = {
@@ -352,6 +354,7 @@ export default class CacheHandler {
                 return;
             }
             delete this.#guilds[guild_id].channels[channel_id];
+            delete this.#guilds[guild_id].message_cache[channel_id];
         },
         setAll: (guild_id: types.Snowflake, channel_map: ChannelMap): void => {
             if (!this.guilds.get(guild_id)) {
@@ -416,6 +419,7 @@ export default class CacheHandler {
             for (const messageID of message_ids) {
                 delete this.#guilds[guild_id].message_cache[channel_id][messageID];
             }
+            // TODO: if any of these messages are cached as command messages, delete them there too
         },
         addChunk: (guild_id: types.Snowflake, channel_id: types.Snowflake, message_map: MessageMap): void => {
             const guild = this.guilds.get(guild_id);
@@ -427,6 +431,7 @@ export default class CacheHandler {
             }
             Object.assign(this.#guilds[guild_id].message_cache[channel_id], message_map);
         }
+        // TODO: decache older messages
     }
 
     threads = {
@@ -448,12 +453,30 @@ export default class CacheHandler {
                 return;
             }
             delete this.#guilds[guild_id].threads[thread_id];
+            delete this.#guilds[guild_id].message_cache[thread_id];
         },
         setAll: (guild_id: types.Snowflake, thread_map: ThreadMap): void => {
             if (!this.guilds.get(guild_id)) {
                 return;
             }
             this.#guilds[guild_id].threads = thread_map;
+        },
+        sync: (thread_sync_data: ThreadSyncData): void => {
+            const guild_id = thread_sync_data.guild_id;
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            const oldThreadList = Object.keys(this.#guilds[guild_id].threads || {}) as types.Snowflake[];
+            this.#guilds[guild_id].threads = {};
+            for (const thread of thread_sync_data.threads) {
+                this.#guilds[guild_id].threads[thread.id] = thread;
+            }
+            // for deleted threads, delete message cache
+            for (const threadID of oldThreadList) {
+                if (!this.#guilds[guild_id].threads[threadID]) {
+                    delete this.#guilds[guild_id].message_cache[threadID];
+                }
+            }
         }
     }
 

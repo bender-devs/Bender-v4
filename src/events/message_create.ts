@@ -11,6 +11,7 @@ export default class MessageCreateHandler extends EventHandler {
 
     cacheHandler = (eventData: MessageCreateData) => {
         if (eventData.guild_id) {
+            // TODO: check if guild has text commands/moderation enabled
             this.bot.cache.messages.set(eventData);
         } else {
             this.bot.cache.dmMessages.set(eventData);
@@ -18,6 +19,7 @@ export default class MessageCreateHandler extends EventHandler {
     }
 
     handler = (eventData: MessageCreateData) => {
-
+        // TODO: handle text commands (?)
+        // TODO: handle filter/automod
     }
 }

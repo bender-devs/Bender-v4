@@ -1,5 +1,5 @@
 import { EventHandler } from "../data/types";
-import { VoiceServerUpdateData, LowercaseEventName } from "../data/gatewayTypes";
+import { /*VoiceServerUpdateData,*/ LowercaseEventName } from "../data/gatewayTypes";
 import Bot from "../structures/bot";
 import { basename } from "path";
 
@@ -9,11 +9,13 @@ export default class VoiceServerUpdateHandler extends EventHandler {
         super(filename as LowercaseEventName, bot);
     }
 
-    cacheHandler = (eventData: VoiceServerUpdateData) => {
+    handler = () => {} // event unused for now
+
+    /*cacheHandler = (eventData: VoiceServerUpdateData) => {
 
     }
 
     handler = (eventData: VoiceServerUpdateData) => {
 
-    }
+    }*/
 }
