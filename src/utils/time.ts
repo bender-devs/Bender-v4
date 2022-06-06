@@ -5,5 +5,9 @@ export default class TimeUtils {
         return Date.parse(timestamp);
     }
 
+    static getElapsedMillis(timestampMs: UnixTimestampMillis) {
+        return Date.now() - timestampMs;
+    }
+
     // TODO: add other time functions as needed
 }

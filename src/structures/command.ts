@@ -27,9 +27,11 @@ export class CommandUtils {
                 content,
                 flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
             }
-        }).catch((err: APIError) => {
-            this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, err);
-            return null;
-        });
+        }).catch(this.handleAPIError.bind(this));
+    }
+
+    async handleAPIError(err: APIError) {
+        this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, err);
+        return null;
     }
 }

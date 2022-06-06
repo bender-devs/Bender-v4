@@ -3,8 +3,8 @@ import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import LanguageUtils from '../utils/language';
-import { COMMAND_OPTION_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
-import APIError from '../structures/apiError';
+import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
+import TimeUtils from '../utils/time';
 
 export default class PingCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -30,22 +30,13 @@ export default class PingCommand extends CommandUtils implements ICommand {
         if (!roundtrip) {
             millis = this.bot.gateway.ping;
         }
-        const thenCallback = roundtrip ? this.roundtripCallback : () => undefined;
+        const thenCallback = roundtrip ? this.roundtripCallback : () => null;
         const startTimestamp = Date.now();
-        return this.bot.api.interaction.sendResponse(interaction, {
-            type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content: this.getPongMessage(roundtrip, millis),
-                flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
-            }
-        }).then(() => thenCallback.bind(this)(interaction, startTimestamp)).catch((err: APIError) => {
-            this.bot.logger.handleError('COMMAND FAILED: /ping', err);
-            return null;
-        });
+        return this.respond(interaction, this.getPongMessage(roundtrip, millis)).then(() => thenCallback.bind(this)(interaction, startTimestamp)).catch(this.handleAPIError.bind(this));
     }
 
     roundtripCallback(interaction: types.Interaction, startTimestamp: number) {
-        const millis = Date.now() - startTimestamp;
+        const millis = TimeUtils.getElapsedMillis(startTimestamp);
         return this.bot.api.interaction.editResponse(interaction, {
             content: this.getPongMessage(true, millis)
         });
