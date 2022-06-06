@@ -5,6 +5,7 @@ import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
 import * as zlib from 'zlib';
 import * as WebSocket from 'ws';
+import TimeUtils from '../utils/time';
 
 declare module 'ws' {
     // not sure why this wasn't exported from @types/ws
@@ -74,7 +75,7 @@ export default class Gateway extends EventEmitter {
                 this.#promiseResolve(true);
                 this.#promiseResolve = null;
             }
-            this.ping = Date.now() - this.#beginTimestamp;
+            this.ping = TimeUtils.getElapsedMillis(this.#beginTimestamp);
             this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
         });
 
@@ -151,7 +152,7 @@ export default class Gateway extends EventEmitter {
                     return false;
                 }
                 case GATEWAY_OPCODES.HEARTBEAT_ACK: {
-                    this.ping = Date.now() - this.#lastHeartbeat;
+                    this.ping = TimeUtils.getElapsedMillis(this.#lastHeartbeat);
                     this.#lastHeartbeat = -1;
                     if (this.#heartbeatTimeout) {
                         clearTimeout(this.#heartbeatTimeout);

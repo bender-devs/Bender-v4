@@ -2,22 +2,23 @@ import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMil
 import Logger from '../structures/logger';
 import { randomUUID } from 'crypto';
 import * as child_process from 'child_process';
-import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE } from '../data/constants';
+import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE, SHARD_MESSAGE_TIMEOUT } from '../data/constants';
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive
     'pong', // response to ping
     'request_values', // request values from a shard
-    'receive_values' // respond with requested values
+    'reply_with_values' // respond with requested values
 ] as const;
 export type ShardOperation = typeof shardOperations[number];
 export const SHARD_OPERATION_LIST: CommandOptionChoice[] = [
     { name: 'Ping', value: 'ping' }, // ping a shard to make sure it's responsive
     { name: 'Pong', value: 'pong' }, // response to ping
     { name: 'Request values', value: 'request_values' }, // request values from a shard
-    { name: 'Receive values', value: 'receive_values' } // respond with requested values
+    { name: 'Reply with values', value: 'reply_with_values' } // respond with requested values
 ]
 export type ShardDestination = number[] | 'ALL' | 'MANAGER';
+export const GENERAL_STATS = ['ping', 'uptime', 'lastActivity', 'totalGuilds', 'availableGuilds'];
 
 type FetchCallback = (message: ShardMessage) => unknown;
 
@@ -30,20 +31,25 @@ export type ShardMessage = {
 }
 
 export default class ShardManager {
-    shardCount: number;
-    #shardProcesses: (child_process.ChildProcess | null)[];
     logger: Logger;
-    #lastActivityTimestamps: UnixTimestampMillis[];
+    shardCount: number;
     #callbacks: Record<string, FetchCallback>;
+    #shardProcesses: (child_process.ChildProcess | null)[];
+    #lastActivityTimestamps: UnixTimestampMillis[];
+    #upSinceTimestamps: UnixTimestampMillis[];
 
     constructor(count: number) {
+        this.logger = new Logger();
         this.shardCount = count;
+        this.#callbacks = {};
+
         this.#shardProcesses = [];
         this.#shardProcesses.fill(null, 0, count-1);
-        this.logger = new Logger();
         this.#lastActivityTimestamps = [];
         this.#lastActivityTimestamps.fill(0, 0, count-1);
-        this.#callbacks = {};
+        this.#upSinceTimestamps = [];
+        this.#upSinceTimestamps.fill(0, 0, count-1);
+
         process.on('message', this.handleMessage);
     }
 
@@ -72,8 +78,9 @@ export default class ShardManager {
                 this.processMessage(message);
             }
         });
-        this.#lastActivityTimestamps[shardID] = Date.now();
         this.#shardProcesses[shardID] = shardProcess;
+        this.#lastActivityTimestamps[shardID] = Date.now();
+        this.#upSinceTimestamps[shardID] = Date.now();
         return shardProcess;
     }
 
@@ -147,10 +154,40 @@ export default class ShardManager {
                     nonce: message.nonce
                 });
             }
-            case 'pong': {
-                this.#lastActivityTimestamps[message.fromShard] = Date.now();
+            case 'request_values': {
+                const values = message.data?.split(',');
+                if (!values) {
+                    break;
+                }
+                if (!values.includes('pids') && !values.includes('lastActivity') && !values.includes('uptime')) {
+                    this.logger.debug('IGNORING SHARD MESSAGE', message, '(requesting shard manager values other than pids, lastActivity, or uptime)');
+                    break;
+                }
+                const responseMessage: ShardMessage = {
+                    operation: 'reply_with_values',
+                    fromShard: 'MANAGER',
+                    toShards: [message.fromShard],
+                    nonce: message.nonce
+                }
+                const data: { pids?: (number | null)[], lastActivity?: number[], uptime?: number[] } = {};
+                if (values.includes('pids')) {
+                    data.pids = this.#shardProcesses.map(proc => proc?.pid || null);
+                }
+                if (values.includes('lastActivity')) {
+                    data.lastActivity = this.#lastActivityTimestamps;
+                }
+                if (values.includes('uptime')) {
+                    data.uptime = this.#upSinceTimestamps;
+                }
+                responseMessage.data = JSON.stringify(data);
+                return this.sendMessage(responseMessage);
             }
-            // TODO: for receive_values, check this.#callbacks, group values if necessary, and send response message
+            case 'pong':
+            case 'reply_with_values':
+            default: {
+                this.#lastActivityTimestamps[message.fromShard] = Date.now();
+                break;
+            }
         }
     }
 
@@ -191,15 +228,22 @@ export default class ShardManager {
             return null;
         }
     }
+    
+    async getStats(shards: number[] | 'ALL' = 'ALL') {
+        return this.getValues(shards, GENERAL_STATS);
+    }
 
-    getStats(shards: number[] | 'ALL') {
+    async getValues(shards: number[] | 'ALL', values: string[]): Promise<ShardMessage | null> {
+        if (!values.length) {
+            return null;
+        }
         const nonce = randomUUID();
         const message: ShardMessage = {
             operation: 'request_values',
             fromShard: 'MANAGER',
             toShards: shards,
             nonce,
-            data: '' // TODO: put desired stats here
+            data: values.join(',')
         };
 
         const callback: FetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
@@ -212,7 +256,7 @@ export default class ShardManager {
                 this.logger.debug('getStats TIMED OUT', message);
                 delete this.#callbacks[nonce];
                 reject();
-            })
+            }, SHARD_MESSAGE_TIMEOUT);
         })
     }
 

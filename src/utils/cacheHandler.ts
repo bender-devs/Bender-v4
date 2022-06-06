@@ -606,7 +606,7 @@ export default class CacheHandler {
     }
 
     gatewayInfo = {
-        get: async (): Promise<GatewayBotInfo | null | undefined> => {
+        get: async (): Promise<GatewayBotInfo | null> => {
             return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
                 if (Array.isArray(data) && data.length === 3) {
                     const obj: GatewayBotInfo = {
@@ -622,7 +622,7 @@ export default class CacheHandler {
                     return obj;
                 }
                 return null;
-            }).catch(() => undefined);
+            }).catch(() => null);
         },
         set: async (gateway_bot_info: GatewayBotInfo): Promise<void> => {
             const reset_at = Date.now() + gateway_bot_info.session_start_limit.reset_after;
