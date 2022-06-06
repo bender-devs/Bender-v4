@@ -5,8 +5,7 @@ import { basename } from 'path';
 
 export default class ThreadCreateHandler extends EventHandler<ThreadUpdateData> {
     constructor(bot: Bot) {
-        const filename = basename(__filename, '.js');
-        super(filename as LowercaseEventName, bot);
+        super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
     cacheHandler = (eventData: ThreadUpdateData) => {

@@ -7,8 +7,7 @@ import { VERSION } from '../data/constants';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
     constructor(bot: Bot) {
-        const filename = basename(__filename, '.js');
-        super(filename as LowercaseEventName, bot);
+        super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
     cacheHandler = (eventData: ReadyData) => {

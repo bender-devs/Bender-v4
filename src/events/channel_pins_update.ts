@@ -5,8 +5,7 @@ import { basename } from 'path';
 
 export default class ChannelPinsUpdateHandler extends EventHandler<ChannelPinsUpdateData> {
     constructor(bot: Bot) {
-        const filename = basename(__filename, '.js');
-        super(filename as LowercaseEventName, bot);
+        super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
     handler = (/*eventData: ChannelPinsUpdateData*/) => {

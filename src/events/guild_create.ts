@@ -6,8 +6,7 @@ import TimeUtils from '../utils/time';
 
 export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
     constructor(bot: Bot) {
-        const filename = basename(__filename, '.js');
-        super(filename as LowercaseEventName, bot);
+        super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
     cacheHandler = (eventData: GuildCreateData) => {
