@@ -1,3 +1,21 @@
+// https://discord.com/developers/docs/resources/user#user-object-user-flags
+export const enum USER_FLAGS {
+    STAFF = 1 << 0,
+    PARTNER = 1 << 1,
+    HYPESQUAD = 1 << 2,
+    BUG_HUNTER_LEVEL_1 = 1 << 3,
+    HYPESQUAD_ONLINE_HOUSE_1 = 1 << 6,
+    HYPESQUAD_ONLINE_HOUSE_2 = 1 << 7,
+    HYPESQUAD_ONLINE_HOUSE_3 = 1 << 8,
+    PREMIUM_EARLY_SUPPORTER = 1 << 9,
+    TEAM_PSEUDO_USER = 1 << 10,
+    BUG_HUNTER_LEVEL_2 = 1 << 14,
+    VERIFIED_BOT = 1 << 16,
+    VERIFIED_DEVELOPER = 1 << 17,
+    CERTIFIED_MODERATOR = 1 << 18,
+    BOT_HTTP_INTERACTIONS = 1 << 19
+}
+
 // https://discord.com/developers/docs/resources/user#user-object-premium-types
 export const enum PREMIUM_TYPES {
     NONE,
@@ -58,6 +76,54 @@ export const enum PREMIUM_TIERS {
     MEDIUM,
     HIGH,
     VERY_HIGH
+}
+
+// https://discord.com/developers/docs/resources/channel#message-object-message-types
+export const enum MESSAGE_TYPES {
+    DEFAULT,
+    RECIPIENT_ADD,
+    RECIPIENT_REMOVE,
+    CALL,
+    CHANNEL_NAME_CHANGE,
+    CHANNEL_ICON_CHANGE,
+    CHANNEL_PINNED_MESSAGE,
+    GUILD_MEMBER_JOIN,
+    USER_PREMIUM_GUILD_SUBSCRIPTION,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3,
+    CHANNEL_FOLLOW_ADD,
+    GUILD_DISCOVERY_DISQUALIFIED,
+    GUILD_DISCOVERY_REQUALIFIED,
+    GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING,
+    GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING,
+    THREAD_CREATED,
+    REPLY,
+    CHAT_INPUT_COMMAND,
+    THREAD_STARTER_MESSAGE,
+    GUILD_INVITE_REMINDER,
+    CONTEXT_MENU_COMMAND
+}
+
+// https://discord.com/developers/docs/resources/channel#message-object-message-activity-types
+export const enum MESSAGE_ACTIVITY_TYPES {
+    JOIN = 1,
+    SPECTATE,
+    LISTEN,
+    JOIN_REQUEST = 5
+}
+
+// https://discord.com/developers/docs/resources/channel#message-object-message-flags
+export const enum MESSAGE_FLAGS {
+    CROSSPOSTED = 1 << 0,
+    IS_CROSSPOST = 1 << 1,
+    SUPPRESS_EMBEDS = 1 << 2,
+    SOURCE_MESSAGE_DELETED = 1 << 3,
+    URGENT = 1 << 4,
+    HAS_THREAD = 1 << 5,
+    EPHEMERAL = 1 << 6,
+    LOADING = 1 << 7,
+    FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = 1 << 8
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
@@ -126,7 +192,8 @@ export const enum INTERACTION_REQUEST_TYPES {
     PING = 1,
     APPLICATION_COMMAND,
     MESSAGE_COMPONENT,
-    APPLICATION_COMMAND_AUTOCOMPLETE
+    APPLICATION_COMMAND_AUTOCOMPLETE,
+    MODAL_SUBMIT
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type
@@ -136,11 +203,13 @@ export const enum INTERACTION_CALLBACK_TYPES {
     DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
     DEFERRED_UPDATE_MESSAGE,
     UPDATE_MESSAGE,
-    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+    MODAL
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
 export const enum INTERACTION_CALLBACK_FLAGS {
+    SUPPRESS_EMBEDS = 1 << 2,
     EPHEMERAL = 1 << 6
 }
 
@@ -187,6 +256,24 @@ export const enum BUTTON_STYLES {
     SUCCESS,
     DANGER,
     LINK
+}
+
+// https://discord.com/developers/docs/resources/application#application-object-application-flags
+export const enum APPLICATION_FLAGS {
+    GATEWAY_PRESENCE = 1 << 12,
+    GATEWAY_PRESENCE_LIMITED = 1 << 13,
+    GATEWAY_GUILD_MEMBERS = 1 << 14,
+    GATEWAY_GUILD_MEMBERS_LIMITED = 1 << 15,
+    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16,
+    EMBEDDED = 1 << 17,
+    GATEWAY_MESSAGE_CONTENT = 1 << 18,
+    GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19
+}
+
+// https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum
+export const enum TEAM_MEMBERSHIP_STATE {
+    INVITED = 1,
+    ACCEPTED
 }
 
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes

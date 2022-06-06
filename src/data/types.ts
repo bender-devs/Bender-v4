@@ -6,7 +6,7 @@ import * as num from './numberTypes';
 /************ request types ************/
 
 export type RequestOptions = {
-    data?: Record<string, unknown> | unknown[] | GuildData; // added this since GuildData is an interface and can't be indexed properly
+    data?: Record<string, unknown> | unknown[] | GuildData | MessageData; // added GuildData and MessageData since they are interfaces and can't be indexed properly
     headers?: RequestHeaders;
     query?: Record<string, unknown>;
     retries?: number;
@@ -24,30 +24,30 @@ export type RequestResponse<ResponseType> = Promise<TypedResponse<ResponseType>>
 
 export type ResponseError = superagent.ResponseError;
 
-/************ guild types ************/
+/************ user types ************/
 
 export type UserData = {
     username?: string;
     avatar?: ImageData | null;
 }
 
-export type UserBase = {
+export type PartialUser = {
     id: Snowflake;
     username: string;
     discriminator: number;
     avatar: string | null;
 }
 
-export interface User extends UserBase {
+export interface User extends PartialUser {
     bot?: boolean;
     system?: boolean;
     mfa_enabled?: boolean;
     locale?: string;
     verified?: boolean;
     email?: string;
-    flags?: Flags;
+    flags?: num.USER_FLAGS;
     premium_type?: num.PREMIUM_TYPES;
-    public_flags?: Flags;
+    public_flags?: num.USER_FLAGS;
 }
 
 export type StringPremiumTypes = `${num.PREMIUM_TYPES}`;
@@ -159,7 +159,7 @@ export type Guild = {
     mfa_level: num.MFA_LEVELS;
     application_id: Snowflake | null;
     system_channel_id: Snowflake | null;
-    system_channel_flags: Flags;
+    system_channel_flags: num.SYSTEM_CHANNEL_FLAGS;
     rules_channel_id: Snowflake | null;
     max_presences?: number | null;
     max_members?: number;
@@ -242,7 +242,13 @@ export type VoiceState = {
 export type Ban = {
     reason: string | null;
     user: User;
-};
+}
+
+export type Reaction = {
+    count: number;
+    me: boolean;
+    emoji: PartialEmoji;
+}
 
 export type ReactionFetchData = {
     limit: number;
@@ -269,8 +275,8 @@ export type PruneData = {
 /****** emoji types ******/
 
 export type Emoji = {
-    name: string | null;
-    id: Snowflake; // TODO: according to https://discord.com/developers/docs/resources/emoji#emoji-object this is nullable, but I don't see how
+    name: string;
+    id: Snowflake;
     animated?: boolean;
     roles?: Snowflake[];
     user?: User;
@@ -290,6 +296,11 @@ export type EmojiEditData = {
     roles?: string[];
 }
 
+export interface PartialEmoji extends Omit<Emoji, 'id' | 'name'> {
+    id: Snowflake | null;
+    name: string | null;
+}
+
 /****** sticker types ******/
 
 export type Sticker = {
@@ -305,6 +316,12 @@ export type Sticker = {
     guild_id?: Snowflake;
     user?: User;
     sort_value?: number;
+}
+
+export type StickerItem = {
+    id: Snowflake,
+    name: string,
+    format_type: num.STICKER_FORMAT_TYPES
 }
 
 /************ role types ************/
@@ -606,6 +623,7 @@ export type InteractionData = {
     component_type?: num.MESSAGE_COMPONENT_TYPES;
     values?: string[];
     target_id?: Snowflake;
+    components?: MessageComponent[];
 }
 
 export type InteractionDataResolved = {
@@ -613,6 +631,8 @@ export type InteractionDataResolved = {
     members?: Record<Snowflake, PartialMember>;
     roles?: Record<Snowflake, Role>;
     channels?: Record<Snowflake, PartialChannel>;
+    messages?: Record<Snowflake, PartialMessage>;
+    attachments?: Record<Snowflake, Attachment>;
 }
 
 export type InteractionDataOption = {
@@ -632,7 +652,7 @@ export type InteractionResponseData = {
     content?: string;
     embeds?: Embed[];
     allowed_mentions?: AllowedMentions;
-    flags?: Flags;
+    flags?: num.INTERACTION_CALLBACK_FLAGS;
     components?: MessageComponent[];
 }
 
@@ -750,12 +770,31 @@ export type Message = {
     edited_timestamp: Timestamp | null;
     tts: boolean;
     mention_everyone: boolean;
-    mentions?: User[];
-    file?: Buffer;
-    embeds?: Embed[];
-    allowed_mentions?: AllowedMentions;
+    mentions: UserMember[];
+    mention_roles?: Role[];
+    mention_channels?: ChannelMention[]; // only for crossposted messages and for "public" channels
+    attachments: Attachment[];
+    embeds: Embed[];
+    reactions?: Reaction[];
+    nonce?: number | string;
+    pinned: boolean;
+    webhook_id?: Snowflake;
+    type: num.MESSAGE_TYPES;
+    activity?: MessageActivity;
+    application?: Application;
+    application_id?: Snowflake;
     message_reference?: MessageReference;
+    flags?: num.MESSAGE_FLAGS;
+    referenced_message?: Message | null;
+    interaction?: MessageInteraction;
+    thread?: ThreadChannel;
     components?: MessageComponent[];
+    sticker_items?: StickerItem[];
+    stickers?: Sticker[];
+}
+
+interface UserMember extends User {
+    member: PartialMember
 }
 
 export type AllowedMentions = {
@@ -772,13 +811,18 @@ export type MessageReference = {
     fail_if_not_exists?: boolean;
 };
 
-export type MessageData = {
-    content?: string;
-    file?: Buffer;
-    embeds?: Embed[];
-    allowed_mentions?: AllowedMentions;
-    message_reference?: MessageReference;
-    components?: MessageComponent[];
+export interface PartialMessage extends Partial<Message> {
+    id: Snowflake
+}
+
+export interface MessageData extends Partial<Pick<Message, 'content' | 'tts' | 'embeds' | 'message_reference' | 'components' | 'attachments' | 'flags'>> {
+    allowed_mentions?: AllowedMentions,
+    sticker_ids?: Snowflake[]
+}
+
+export type MessageActivity = {
+    type: num.MESSAGE_ACTIVITY_TYPES,
+    party_id?: string
 }
 
 export type MessageFetchData = {
@@ -786,6 +830,27 @@ export type MessageFetchData = {
     around?: Snowflake;
     before?: Snowflake;
     after?: Snowflake;
+}
+
+// https://discord.com/developers/docs/resources/channel#attachment-object
+export type Attachment = {
+    id: Snowflake;
+    filename: string;
+    description?: string;
+    content_type?: string;
+    size: number;
+    url: string;
+    proxy_url: string;
+    height?: number | null;
+    width?: number | null;
+    ephemeral?: boolean;
+}
+
+export type ChannelMention = {
+    id: Snowflake;
+    guild_id: Snowflake;
+    type: num.CHANNEL_TYPES;
+    name: string;
 }
 
 /****** message component types ******/
@@ -804,7 +869,7 @@ export interface MessageComponentButton extends MessageComponent {
     disabled?: boolean;
     style?: num.BUTTON_STYLES;
     label?: string;
-    emoji?: Emoji;
+    emoji?: PartialEmoji;
     url?: URL;
 }
 export interface MessageComponentSelect extends MessageComponent {
@@ -820,7 +885,7 @@ export type MessageComponentSelectOption = {
     label: string,
     value: string,
     description?: string;
-    emoji?: Emoji;
+    emoji?: PartialEmoji;
     default?: boolean;
 }
 
@@ -869,6 +934,54 @@ export type EmbedField = {
     inline?: boolean;
 };
 
+/****** application types ******/
+
+export type Application = {
+    id: Snowflake;
+    name: string;
+    icon: string | null;
+    description: string;
+    rpc_origins?: string[];
+    bot_public: boolean;
+    bot_require_code_grant: boolean;
+    terms_of_service_url?: string;
+    privacy_policy_url?: string;
+    owner?: PartialUser;
+    summary?: string;
+    verify_key: string;
+    team: ApplicationTeam | null;
+    guild_id?: Snowflake;
+    primary_sku_id?: Snowflake;
+    slug?: string;
+    cover_image?: string;
+    flags?: num.APPLICATION_FLAGS;
+    tags?: string[];
+    install_params?: ApplicationInstallParams;
+    custom_install_url?:	string;
+}
+
+export type PartialApplication = Pick<Application, 'id' | 'flags'>
+
+export type ApplicationInstallParams = {
+    scopes: string[];
+    permissions: string;
+}
+
+export type ApplicationTeam = {
+    icon: string | null;
+    id: Snowflake;
+    members: ApplicationTeamMember[];
+    name: string;
+    owner_user_id: Snowflake;
+}
+
+export type ApplicationTeamMember = {
+    membership_state: num.TEAM_MEMBERSHIP_STATE;
+    permissions: ['*']
+    team_id: Snowflake;
+    user: PartialUser;
+}
+
 /************ misc types ************/
 
 export type LangMap = Record<string, Lang>;
@@ -916,11 +1029,6 @@ export type UnixTimestampMillis = number;
  * may add more types later.
  */
 export type CommandResponse = Promise<Message | null>;
-
-export type PartialApplication = {
-    id: Snowflake,
-    flags: Flags
-}
 
 export type StringMap = Record<string, string>;
 

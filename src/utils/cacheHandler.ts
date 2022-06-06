@@ -229,7 +229,6 @@ export default class CacheHandler {
         },
         delete: (guild_id: types.Snowflake): void => {
             delete this.#guilds[guild_id];
-            // TODO: decache all members for guild
         }
     }
 

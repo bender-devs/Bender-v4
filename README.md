@@ -11,4 +11,4 @@ At the moment we don't have much to translate, but as we add features we'll be l
 
 ## Note about premium features
 
-Code for most/all premium commands and features will not be open-source (at least for the time being.) We need to continue providing an incentive for users to support our work and cover server costs. We may be able to open-source these parts as well in the future, depending on the amount of support we receive.
+Code for most/all premium commands and features will not be open-source (at least for the time being.) We need to continue providing an incentive for users to support our work and cover server costs. We may be able to open-source these parts as well in the future, depending on the level of support we are fortunate enough to reach. :)
