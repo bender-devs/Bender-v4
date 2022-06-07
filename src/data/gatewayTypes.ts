@@ -44,7 +44,7 @@ export interface EventPayload extends GatewayPayload {
     s: number;
     t: EventName;
 }
-export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | InteractionCreateData | StageInstanceUpdateData;
+export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | CommandPermissionsUpdateData | InteractionCreateData | StageInstanceUpdateData;
 
 /****** ready ******/
 
@@ -258,6 +258,9 @@ export type GuildRoleDeleteData = {
     role_id: types.Snowflake;
 }
 
+export type GuildScheduledEventUpdateData = types.GuildScheduledEvent;
+export type GuildScheduledEventUserUpdateData = types.GuildScheduledEvent;
+
 /****** integrations ******/
 
 export interface IntegrationUpdatePayload extends EventPayload {
@@ -457,6 +460,8 @@ export interface CommandUpdatePayload extends EventPayload {
 }
 
 export type CommandUpdateData = types.Command;
+
+export type CommandPermissionsUpdateData = types.CommandPermissions;
 
 /****** interactions ******/
 

@@ -276,6 +276,26 @@ export const enum TEAM_MEMBERSHIP_STATE {
     ACCEPTED
 }
 
+// https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-privacy-level
+export const enum GUILD_SCHEDULED_EVENT_PRIVACY_LEVEL {
+    GUILD_ONLY = 2
+}
+
+// https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types
+export const enum GUILD_SCHEDULED_EVENT_ENTITY_TYPES {
+    STAGE_INSTANCE = 1,
+    VOICE,
+    EXTERNAL
+}
+
+// https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-status
+export const enum GUILD_SCHEDULED_EVENT_STATUS {
+    SCHEDULED = 1,
+    ACTIVE,
+    COMPLETED,
+    CANCELED
+}
+
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes
 // (S = Send, R = Receive)
 export const enum GATEWAY_OPCODES {
@@ -316,6 +336,7 @@ export const enum GATEWAY_VERSIONS {
     CURRENT = 9
 }
 
+// used internally to determine gateway connection state
 export const enum CLIENT_STATE {
     ALIVE,
     DEAD,

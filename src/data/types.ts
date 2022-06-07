@@ -255,6 +255,37 @@ export type ReactionFetchData = {
     after?: Snowflake;
 }
 
+/****** scheduled event types ******/
+
+export type GuildScheduledEvent = {
+    id: Snowflake;
+    guild_id: Snowflake;
+    channel_id: Snowflake | null;
+    creator_id: Snowflake | null;
+    name: string;
+    description?: string | null;
+    scheduled_start_time: Timestamp;
+    scheduled_end_time: Timestamp | null;
+    privacy_level: num.GUILD_SCHEDULED_EVENT_PRIVACY_LEVEL;
+    status: num.GUILD_SCHEDULED_EVENT_STATUS;
+    entity_type: num.GUILD_SCHEDULED_EVENT_ENTITY_TYPES;
+    entity_id: Snowflake | null;
+    entity_metadata: GuildScheduledEventEntityMetadata;
+    creator?: User;
+    user_count?: number;
+    image?: string | null;
+}
+
+export type GuildScheduledEventEntityMetadata = {
+    location?: string;
+}
+
+export type GuildScheduledEventUser = {
+    guild_scheduled_event_id: Snowflake;
+    user: User;
+    member?: Member;
+}
+
 /****** member prune types ******/
 
 export type PruneResult = {
