@@ -21,8 +21,8 @@
     },
     "scripts": {
         "preinstall": "npm i -g typescript@^4.6.2",
-        "start": "npm run copy-env && cd dist && node main.js",
-        "copy-env": "node scripts/copy-env.js"
+        "start": "(move src\\.env dist & npm run start-bot) || (mv src/.env dist 2>/dev/null && npm run start-bot)",
+        "start-bot": "cd dist && node main.js"
     },
     "devDependencies": {
         "@types/express": "4.17.13",
