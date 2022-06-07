@@ -22,7 +22,7 @@
     "scripts": {
         "preinstall": "npm i -g typescript@^4.6.2",
         "start": "npm run copy-env && cd dist && node main.js",
-        "copy-env": "mv src/.env dist"
+        "copy-env": "node scripts/copy-env.js"
     },
     "devDependencies": {
         "@types/express": "4.17.13",
