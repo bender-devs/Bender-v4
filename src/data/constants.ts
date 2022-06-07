@@ -31,6 +31,7 @@ export const WEBSITE = `https://${DOMAIN}`;
 export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
 export const OWNERS: Snowflake[] = ['246107833295175681'];
+export const DEV_SERVER: Snowflake = '548170772456275970';
 
 export const PUBLIC_KEY = ''; // TODO: fill this in
 
@@ -69,7 +70,7 @@ export const EXIT_CODE_NO_RESTART = 69;
 
 /***** discord constants *****/
 
-export const API_BASE = 'https://discord.com/api/v9';
+export const API_BASE = 'https://discord.com/api/v10';
 
 export const DISCORD_EPOCH = 1420070400000;
 

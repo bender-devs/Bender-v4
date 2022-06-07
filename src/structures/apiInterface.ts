@@ -126,15 +126,53 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         replaceAll: async (commands_data: types.CommandCreateData[]) => {
-            // make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord
-            const strippedCommands: types.CommandCreateData[] = [];
-            commands_data.forEach(command => {
-                const newCommand = Object.assign({}, command, { bot: undefined });
-                strippedCommands.push(newCommand);
-            })
-            this.bot.logger.debug('UPDATE COMMAND LIST', strippedCommands);
+            const strippedCommands = this.#stripCommands(commands_data);
+            this.bot.logger.debug('UPDATE GLOBAL COMMAND LIST', strippedCommands);
 
             return APIWrapper.globalCommand.replaceAll(this.bot.user.id, strippedCommands)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
+
+    // make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord
+    #stripCommands(commands: types.CommandCreateData[]) {
+        const strippedCommands: types.CommandCreateData[] = [];
+        commands.forEach(command => {
+            const newCommand = this.#stripCommand(command);
+            strippedCommands.push(newCommand);
+        });
+        return strippedCommands;
+    }
+    #stripCommand(command: types.CommandCreateData): types.CommandCreateData {
+        return Object.assign({}, command, { bot: undefined });
+    }
+
+    guildCommand = {
+        list: async (guild_id: types.Snowflake) => {
+            return APIWrapper.guildCommand.list(this.bot.user.id, guild_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        create: async (guild_id: types.Snowflake, command: types.CommandCreateData) => {
+            return APIWrapper.guildCommand.create(this.bot.user.id, guild_id, command)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        fetch: async (guild_id: types.Snowflake, command_id: types.Snowflake) => {
+            return APIWrapper.guildCommand.fetch(this.bot.user.id, guild_id, command_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        edit: async(guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) => {
+            return APIWrapper.guildCommand.edit(this.bot.user.id, guild_id, command_id, command_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        delete: async (guild_id: types.Snowflake, command_id: types.Snowflake) => {
+            return APIWrapper.guildCommand.delete(this.bot.user.id, guild_id, command_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        replaceAll: async (guild_id: types.Snowflake, commands_data: types.CommandCreateData[]) => {
+            const strippedCommands = this.#stripCommands(commands_data);
+            this.bot.logger.debug('UPDATE GUILD COMMAND LIST', guild_id, strippedCommands);
+
+            return APIWrapper.guildCommand.replaceAll(this.bot.user.id, guild_id, strippedCommands)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
     }

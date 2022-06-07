@@ -449,6 +449,11 @@ export default class APIWrapper {
                 data: command_data
             });
         },
+        async delete(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake) {
+            return APIWrapper.makeRequest<null>('DELETE', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}`, {
+                headers: AUTH_HEADER
+            });
+        },
         async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, commands_data: types.CommandCreateData[]) {
             return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands`, {
                 headers: AUTH_HEADER,

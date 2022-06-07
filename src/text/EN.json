@@ -1,5 +1,7 @@
 {
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
+    "COMMAND_UNAUTHORIZED": "🔑 You aren't authorized to use this command.",
+    
     "PONG": "🏓 Pong! `{{millis}}ms` (API)",
     "PONG_BLANK": "🏓 Pong!",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)"
