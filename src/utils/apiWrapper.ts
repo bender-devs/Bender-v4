@@ -88,7 +88,7 @@ export default class APIWrapper {
     }
 
     static guild = {
-        async fetch(guild_id: types.Snowflake, with_counts = true) {
+        async fetch(guild_id: types.Snowflake, with_counts: boolean) {
             return APIWrapper.makeRequest<types.Guild>('GET', `/guilds/${guild_id}`, { 
                 query: { with_counts },
                 headers: AUTH_HEADER
@@ -107,7 +107,7 @@ export default class APIWrapper {
             });
         },
         async prune(guild_id: types.Snowflake, prune_data: types.PruneData, reason?: string) {
-            return APIWrapper.makeRequest<types.PruneResult>('GET', `/guilds/${guild_id}/prune`, { 
+            return APIWrapper.makeRequest<types.PruneResult>('POST', `/guilds/${guild_id}/prune`, { 
                 query: prune_data,
                 headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
@@ -125,8 +125,9 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async list(guild_id: types.Snowflake) {
-            return APIWrapper.makeRequest<types.Ban[]>('GET', `/guilds/${guild_id}/bans`, { 
+        async list(guild_id: types.Snowflake, ban_fetch_data: types.BanFetchData) {
+            return APIWrapper.makeRequest<types.Ban[]>('GET', `/guilds/${guild_id}/bans`, {
+                query: ban_fetch_data,
                 headers: AUTH_HEADER
             });
         },
@@ -185,7 +186,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async list(guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake | undefined) {
+        async list(guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake) {
             return APIWrapper.makeRequest<types.Member[]>('GET', `/guilds/${guild_id}/members`, { 
                 query: { after, limit },
                 headers: AUTH_HEADER
@@ -263,7 +264,7 @@ export default class APIWrapper {
                 headers: AUTH_HEADER
             });
         },
-        async modifySelf(user_data: types.UserData) {
+        async editSelf(user_data: types.UserData) {
             return APIWrapper.makeRequest<types.User>('PATCH', `/users/@me`, { 
                 data: user_data,
                 headers: AUTH_HEADER
@@ -391,9 +392,10 @@ export default class APIWrapper {
     }
 
     static globalCommand = {
-        async list(application_id: types.Snowflake) {
+        async list(application_id: types.Snowflake, with_localizations: boolean) {
             return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/commands`, {
-                headers: AUTH_HEADER
+                headers: AUTH_HEADER,
+                query: { with_localizations }
             });
         },
         async create(application_id: types.Snowflake, command: types.CommandCreateData) {
@@ -427,9 +429,10 @@ export default class APIWrapper {
     }
 
     static guildCommand = {
-        async list(application_id: types.Snowflake, guild_id: types.Snowflake) {
+        async list(application_id: types.Snowflake, guild_id: types.Snowflake, with_localizations: boolean) {
             return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/guilds/${guild_id}/commands`, {
-                headers: AUTH_HEADER
+                headers: AUTH_HEADER,
+                query: { with_localizations }
             });
         },
         async create(application_id: types.Snowflake, guild_id: types.Snowflake, command_data: types.CommandCreateData) {
@@ -475,12 +478,6 @@ export default class APIWrapper {
         },
         async edit(application_id: types.Snowflake, guild_id: types.Snowflake, command_id: types.Snowflake, permissions_data: types.CommandPermissionsData) {
             return APIWrapper.makeRequest<types.Command>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands/${command_id}/permissions`, {
-                headers: AUTH_HEADER,
-                data: permissions_data
-            });
-        },
-        async replaceAll(application_id: types.Snowflake, guild_id: types.Snowflake, permissions_data: types.CommandPermissionsData[]) {
-            return APIWrapper.makeRequest<types.Command[]>('PUT', `/applications/${application_id}/guilds/${guild_id}/commands/permissions`, {
                 headers: AUTH_HEADER,
                 data: permissions_data
             });

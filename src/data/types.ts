@@ -244,6 +244,12 @@ export type Ban = {
     user: User;
 }
 
+export type BanFetchData = {
+    limit?: number;
+    before?: Snowflake;
+    after?: Snowflake;
+}
+
 export type Reaction = {
     count: number;
     me: boolean;
@@ -414,6 +420,7 @@ export interface Member extends PartialMember {
     user: User;
     deaf: boolean;
     mute: boolean;
+    communication_disabled_until?: Timestamp | null;
 }
 
 /************ channel types ************/
