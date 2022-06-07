@@ -20,7 +20,18 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
                 // this should never happen
                 return null;
             }
-            // TODO: guild (custom) commands
+            if (eventData.guild_id) {
+                const devCmd = this.bot.commandManager.developer_commands.find(command => command.name === name);
+                if (devCmd) {
+                    this.bot.logger.debug('INTERACTION', 'Received developer command: /' + name);
+                    if (eventData.data?.options) {
+                        this.bot.logger.debug('INTERACTION', 'Command options: ', eventData.data.options);
+                    }
+                    return this.bot.commandHandler.handleCommand(eventData, devCmd);
+                }
+                // TODO: check db for guild (custom) commands
+                this.bot.logger.debug('INTERACTION', `Guild command not found: /${name} [Guild ID: ${eventData.guild_id}]`);
+            }
             const cmd = this.bot.commandManager.commands.find(command => command.name === name);
             if (cmd) {
                 this.bot.logger.debug('INTERACTION', 'Received command: /' + name);

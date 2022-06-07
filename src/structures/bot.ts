@@ -59,7 +59,7 @@ export default class Bot extends EventEmitter {
         }
     }
 
-    async connect(identifyData: gatewayTypes.IdentifyData) {
+    async connect(identifyData: gatewayTypes.IdentifyData, reconnect = false) {
         this.logger.debug('BOT CONNECT', 'Connect method called...');
         this.timeouts.gatewayError = [];
         let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
@@ -77,7 +77,7 @@ export default class Bot extends EventEmitter {
         if (!gatewayInfo) {
             if (GATEWAY_ERROR_RECONNECT) {
                 this.logger.debug('GET GATEWAY', `Retrying in ${GATEWAY_ERROR_RECONNECT_TIMEOUT}ms...`);
-                this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData), GATEWAY_ERROR_RECONNECT_TIMEOUT));
+                this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData, reconnect), GATEWAY_ERROR_RECONNECT_TIMEOUT));
                 return null; // TODO: better way to indicate a retry will happen?
             } else {
                 this.logger.handleError('GET GATEWAY', 'Failed to get gateway, and retrying is not enabled.');
@@ -87,8 +87,6 @@ export default class Bot extends EventEmitter {
         this.cache.gatewayInfo.set(gatewayInfo);
         this.logger.debug('BOT CONNECT', gatewayInfo);
         const wsURL = gatewayInfo.url + MiscUtils.parseQueryString(GATEWAY_PARAMS);
-        return this.gateway.connect(wsURL).then(() => {
-            return this.gateway.identify(identifyData);
-        });
+        return this.gateway.connectAndIdentify(wsURL, identifyData);
     }
 }

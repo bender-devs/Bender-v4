@@ -1,6 +1,6 @@
 import * as gatewayTypes from '../data/gatewayTypes';
 import Bot from './bot';
-import { CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../data/numberTypes';
+import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../data/numberTypes';
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
 import * as zlib from 'zlib';
@@ -31,10 +31,11 @@ export default class Gateway extends EventEmitter {
     #lastSequenceNumber: number | null = null;
     #identifyData: gatewayTypes.IdentifyData | null = null;
 
-    #inflator: zlib.Inflate;
+    #inflator!: zlib.Inflate;
     #inflateResolve?: (chunk: Buffer) => void;
     #inflateReject?: (err: Error) => void;
-    #inflate(data: Buffer) {
+    async #inflate(data: Buffer) {
+        this.bot.logger.debug('ZLIB DATA', 'Wrote timestamp: ' + Date.now());
         return new Promise<Buffer>((resolve, reject) => {
             this.#inflateResolve = resolve;
             this.#inflateReject = reject;
@@ -49,11 +50,21 @@ export default class Gateway extends EventEmitter {
         this.bot = bot;
 
         this.decoder = new TextDecoder();
+        this.#createInflator();
+
+        this.on('connect', this.#handleConnectEvent);
+        this.on('error', this.#handleErrorEvent);
+        this.on('message', this.#handleMessageEvent);
+        this.on('disconnect', this.#handleDisconnectEvent);
+    }
+
+    #createInflator() {
         this.#inflator = zlib.createInflate({
             chunkSize: 65535,
             flush: zlib.constants.Z_SYNC_FLUSH
         });
         this.#inflator.on('data', inflatedData => {
+            this.bot.logger.debug('ZLIB DATA', 'Received timestamp: ' + Date.now());
             if (this.#inflateResolve) {
                 this.#inflateResolve(inflatedData);
                 this.#inflateResolve = undefined;
@@ -69,136 +80,138 @@ export default class Gateway extends EventEmitter {
                 this.bot.logger.handleError('UNHANDLED ZLIB ERROR', err);
             }
         });
+    }
 
-        this.on('connect', () => {
-            if (this.#promiseResolve) {
-                this.#promiseResolve(true);
-                this.#promiseResolve = null;
-            }
-            this.ping = TimeUtils.getElapsedMillis(this.#beginTimestamp);
-            this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
-        });
+    async #handleConnectEvent() {
+        if (this.#promiseResolve) {
+            this.#promiseResolve(true);
+            this.#promiseResolve = null;
+        }
+        this.ping = TimeUtils.getElapsedMillis(this.#beginTimestamp);
+        this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
+    }
 
-        this.on('error', (err: Error) => {
-            if (this.#promiseReject) {
-                this.#promiseReject(err);
-                this.#promiseReject = null;
-            }
-            this.bot.logger.handleError('GATEWAY ERROR', err);
-        });
+    async #handleErrorEvent(err: Error) {
+        if (this.#promiseReject) {
+            this.#promiseReject(err);
+            this.#promiseReject = null;
+        }
+        this.bot.logger.handleError('GATEWAY ERROR', err);
+    }
 
-        this.on('message', async (data: WebSocket.RawData): Promise<boolean> => {
-            //this.bot.logger.debug('GATEWAY MESSAGE', data);
-            let payloadText: string;
-            if (typeof data === 'string') {
-                payloadText = data;
-            } else if (data instanceof Buffer) {
-                let suffixed = true;
-                const suffix = data.slice(-4);
-                for (let i = 0; i < suffix.length; i++) {
-                    if (suffix[i] !== ZLIB_SUFFIX[i]) {
-                        suffixed = false;
-                        break;
-                    }
+    async #handleMessageEvent(data: WebSocket.RawData | string): Promise<boolean> {
+        //this.bot.logger.debug('GATEWAY MESSAGE', data);
+        let payloadText: string;
+        if (typeof data === 'string') {
+            payloadText = data;
+        } else if (data instanceof Buffer) {
+            let suffixed = true;
+            const suffix = data.slice(-4);
+            for (let i = 0; i < suffix.length; i++) {
+                if (suffix[i] !== ZLIB_SUFFIX[i]) {
+                    suffixed = false;
+                    break;
                 }
-                if (GATEWAY_PARAMS.compress && suffixed) {
-                    let err: Error | null = null;
-                    payloadText = await this.#inflate(data).then(data => data.toString('utf8')).catch(error => {
-                        err = error;
-                        return '';
-                    });
-                    if (err || !payloadText) {
-                        this.bot.logger.handleError('GATEWAY MESSAGE ERROR', err);
-                        return false;
-                    }
-                } else {
-                    payloadText = this.decoder.decode(data);
+            }
+            if (GATEWAY_PARAMS.compress && suffixed) {
+                let err: Error | null = null;
+                payloadText = await this.#inflate(data).then(data => data.toString('utf8')).catch(error => {
+                    err = error;
+                    return '';
+                });
+                if (err || !payloadText) {
+                    this.bot.logger.handleError('GATEWAY MESSAGE ERROR', err);
+                    return false;
                 }
             } else {
-                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', data);
-                return false;
+                payloadText = this.decoder.decode(data);
             }
-            let parsedPayload: gatewayTypes.GatewayPayload;
-            try {
-                parsedPayload = JSON.parse(payloadText);
-            } catch(err) {
-                this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, data);
-                return false;
-            }
-            this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
-            switch(parsedPayload.op) {
-                case GATEWAY_OPCODES.DISPATCH: {
-                    const payload = parsedPayload as gatewayTypes.EventPayload;
-                    if (payload.t === 'READY' && payload.d && 'session_id' in payload.d) {
-                        this.sessionID = payload.d.session_id;
-                    }
-                    this.#lastSequenceNumber = payload.s;
-                    return this.bot.emit(payload.t, payload.d);
-                }
-                case GATEWAY_OPCODES.HELLO: {
-                    const payload = parsedPayload as gatewayTypes.HelloPayload;
-                    return this.#setupHeartbeat(payload);
-                }
-                case GATEWAY_OPCODES.HEARTBEAT: {
-                    this.heartbeat();
-                    return true;
-                }
-                case GATEWAY_OPCODES.RECONNECT: {
-                   this.ws.close(CUSTOM_GATEWAY_ERRORS.RECONNECT_REQUESTED);
-                    return false;
-                }
-                case GATEWAY_OPCODES.INVALID_SESSION: {
-                    this.ws.close(CUSTOM_GATEWAY_ERRORS.INVALID_SESSION);
-                    return false;
-                }
-                case GATEWAY_OPCODES.HEARTBEAT_ACK: {
-                    this.ping = TimeUtils.getElapsedMillis(this.#lastHeartbeat);
-                    this.#lastHeartbeat = -1;
-                    if (this.#heartbeatTimeout) {
-                        clearTimeout(this.#heartbeatTimeout);
-                    }
-                    return false;
-                }
-            }
+        } else {
+            this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', data);
             return false;
-        });
+        }
+        let parsedPayload: gatewayTypes.GatewayPayload;
+        try {
+            parsedPayload = JSON.parse(payloadText);
+        } catch(err) {
+            this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, data);
+            return false;
+        }
+        this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
+        switch(parsedPayload.op) {
+            case GATEWAY_OPCODES.DISPATCH: {
+                const payload = parsedPayload as gatewayTypes.EventPayload;
+                if (payload.t === 'READY' && payload.d && 'session_id' in payload.d) {
+                    this.sessionID = payload.d.session_id;
+                }
+                this.#lastSequenceNumber = payload.s;
+                return this.bot.emit(payload.t, payload.d);
+            }
+            case GATEWAY_OPCODES.HELLO: {
+                const payload = parsedPayload as gatewayTypes.HelloPayload;
+                return this.#setupHeartbeat(payload);
+            }
+            case GATEWAY_OPCODES.HEARTBEAT: {
+                this.heartbeat();
+                return true;
+            }
+            case GATEWAY_OPCODES.RECONNECT: {
+                this.ws.close(CUSTOM_GATEWAY_ERRORS.RECONNECT_REQUESTED, 'RECONNECT_REQUESTED');
+                return false;
+            }
+            case GATEWAY_OPCODES.INVALID_SESSION: {
+                this.ws.close(CUSTOM_GATEWAY_ERRORS.INVALID_SESSION, 'INVALID_SESSION');
+                return false;
+            }
+            case GATEWAY_OPCODES.HEARTBEAT_ACK: {
+                this.ping = TimeUtils.getElapsedMillis(this.#lastHeartbeat);
+                this.#lastHeartbeat = -1;
+                if (this.#heartbeatTimeout) {
+                    clearTimeout(this.#heartbeatTimeout);
+                }
+                return false;
+            }
+        }
+        return false;
+    }
 
-        this.on('disconnect', (code: number, reason: Buffer) => {
-            if (this.#heartbeatInterval) {
-                clearInterval(this.#heartbeatInterval);
+    async #handleDisconnectEvent(code: number, reason: Buffer) {
+        if (this.#heartbeatInterval) {
+            clearInterval(this.#heartbeatInterval);
+        }
+        this.bot.logger.handleError('WEBSOCKET DISCONNECT', { code, reason });
+        switch (code) {
+            case GATEWAY_ERRORS.AUTHENTICATION_FAILED:
+            case GATEWAY_ERRORS.INVALID_SHARD:
+            case GATEWAY_ERRORS.SHARDING_REQUIRED:
+            case GATEWAY_ERRORS.INVALID_VERSION:
+            case GATEWAY_ERRORS.INVALID_INTENTS:
+            case GATEWAY_ERRORS.DISALLOWED_INTENTS: {
+                this.bot.logger.moduleLog('FATAL WS CODE', 'Not reconnecting this client.');
+                process.exit(EXIT_CODE_NO_RESTART);
             }
-            this.bot.logger.handleError('WEBSOCKET DISCONNECT', { code, reason });
-            switch (code) {
-                case GATEWAY_ERRORS.AUTHENTICATION_FAILED:
-                case GATEWAY_ERRORS.INVALID_SHARD:
-                case GATEWAY_ERRORS.SHARDING_REQUIRED:
-                case GATEWAY_ERRORS.INVALID_VERSION:
-                case GATEWAY_ERRORS.INVALID_INTENTS:
-                case GATEWAY_ERRORS.DISALLOWED_INTENTS: {
-                    this.bot.logger.moduleLog('FATAL WS CODE', 'Not reconnecting this client.');
-                    process.exit(EXIT_CODE_NO_RESTART);
+            case CUSTOM_GATEWAY_ERRORS.INVALID_SESSION:
+            case GATEWAY_ERRORS.SESSION_TIMED_OUT:
+            default: {
+                if (code === CUSTOM_GATEWAY_ERRORS.INVALID_SESSION || code === GATEWAY_ERRORS.SESSION_TIMED_OUT) {
+                    // session is invalid, make sure it won't attempt to resume
+                    this.sessionID = undefined;
+                    this.#lastSequenceNumber = null;
                 }
-                case CUSTOM_GATEWAY_ERRORS.INVALID_SESSION:
-                case GATEWAY_ERRORS.SESSION_TIMED_OUT:
-                default: {
-                    if (code === GATEWAY_ERRORS.SESSION_TIMED_OUT || code === GATEWAY_ERRORS.SESSION_TIMED_OUT) {
-                        // session is invalid, make sure it won't attempt to resume
-                        this.sessionID = undefined;
-                        this.#lastSequenceNumber = null;
-                    }
-                    if (this.sessionID && this.#lastSequenceNumber && this.#identifyData) {
-                        return this.resume({
-                            session_id: this.sessionID,
-                            seq: this.#lastSequenceNumber,
-                            token: this.#identifyData.token
-                        });
-                    } else if (this.#identifyData) {
-                        return this.bot.connect(this.#identifyData);
-                    }
-                    process.exit(EXIT_CODE_RESTART);
+                if (this.sessionID && this.#lastSequenceNumber && this.#identifyData) {
+                    return this.resume({
+                        session_id: this.sessionID,
+                        seq: this.#lastSequenceNumber,
+                        token: this.#identifyData.token
+                    });
+                } else if (this.#identifyData) {
+                    this.bot.logger.debug('WEBSOCKET DISCONNECTED', 'Invalid session, reconnecting...');
+                    return this.connectAndIdentify(this.ws.url, this.#identifyData, true);
                 }
+                this.bot.logger.debug('WEBSOCKET DISCONNECTED', 'Invalid session and no identify data cached, restarting...');
+                process.exit(EXIT_CODE_RESTART);
             }
-        })
+        }
     }
 
     #setupHeartbeat(payload: gatewayTypes.HelloPayload) {
@@ -206,7 +219,7 @@ export default class Gateway extends EventEmitter {
         return true;
     }
 
-    async sendData(data: unknown) {
+    async sendData(data: gatewayTypes.NonEventPayload) {
         if (!this.ws) {
             return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS);
         }
@@ -226,19 +239,29 @@ export default class Gateway extends EventEmitter {
         return this.ws.send(stringifiedData);
     }
 
-    async connect(wsURL: string, addListeners = true) {
+    async connectAndIdentify(wsURL: string, identifyData: gatewayTypes.IdentifyData, reconnect = false) {
+        return this.connect(wsURL, reconnect).then(() => {
+            return this.identify(identifyData);
+        });
+    }
+
+    async connect(wsURL: string, reconnect = false) {
         this.bot.logger.debug('GATEWAY CONNECT', wsURL);
         this.#beginTimestamp = Date.now();
+        if (reconnect) {
+            this.#createInflator();
+            this.bot.state = CLIENT_STATE.RECONNECTING;
+        } else {
+            this.bot.state = CLIENT_STATE.CONNECTING;
+        }
         this.ws = new WebSocket(wsURL);
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: unknown) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;
-            if (addListeners) {
-                this.ws.on('open', () => this.emit('connect'));
-                this.ws.on('error', (err: Error) => this.emit('error', err));
-                this.ws.on('message', (data: Buffer, isBinary: boolean) => this.emit('message', data, isBinary));
-                this.ws.on('close', (code: number, reason: Buffer) => this.emit('disconnect', code, reason));
-            }
+            this.ws.on('open', () => this.emit('connect'));
+            this.ws.on('error', (err: Error) => this.emit('error', err));
+            this.ws.on('message', (data: Buffer, isBinary: boolean) => this.emit('message', data, isBinary));
+            this.ws.on('close', (code: number, reason: Buffer) => this.emit('disconnect', code, reason));
         });
     }
 
@@ -263,7 +286,7 @@ export default class Gateway extends EventEmitter {
         }
         this.bot.logger.debug('SEND GATEWAY HEARTBEAT', payload);
         this.#heartbeatTimeout = setTimeout(() => {
-            this.ws.close(CUSTOM_GATEWAY_ERRORS.HEARTBEAT_TIMEOUT);
+            this.ws.close(CUSTOM_GATEWAY_ERRORS.HEARTBEAT_TIMEOUT, 'HEARTBEAT_TIMEOUT');
         }, HEARTBEAT_TIMEOUT);
         this.#lastHeartbeat = Date.now();
         return this.sendData(payload);
@@ -292,15 +315,18 @@ export default class Gateway extends EventEmitter {
     }
 
     async resume(resumeData: gatewayTypes.ResumeData) {
-        await this.connect(this.ws.url, false);
-        const payload: gatewayTypes.ResumePayload = {
-            op: GATEWAY_OPCODES.RESUME,
-            d: resumeData,
-            s: null,
-            t: null
-        }
-        this.bot.logger.debug('GATEWAY RESUME', payload);
-        return this.sendData(payload);
+        this.bot.logger.debug('GATEWAY RESUME', 'Reconnecting...');
+        this.bot.state = CLIENT_STATE.RECONNECTING;
+        return this.connect(this.ws.url, true).then(() => {
+            const payload: gatewayTypes.ResumePayload = {
+                op: GATEWAY_OPCODES.RESUME,
+                d: resumeData,
+                s: null,
+                t: null
+            }
+            this.bot.logger.debug('GATEWAY RESUME', payload);
+            return this.sendData(payload);
+        })
     }
     
     async requestGuildMembers(requestGuildMembersData: gatewayTypes.RequestMembersData) {

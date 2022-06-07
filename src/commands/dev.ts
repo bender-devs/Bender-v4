@@ -2,10 +2,12 @@ import { ICommand, CommandUtils } from '../structures/command';
 import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
+import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../data/numberTypes';
 import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../utils/shardManager';
 import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions';
+import LanguageUtils from '../utils/language';
+import { GatewayData, GatewayPayload } from '../data/gatewayTypes';
 
 export default class DevCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -38,12 +40,82 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 description: 'A nonce to establish relationships to other messages. Default is a random UUID.'
             }]
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+        name: 'gateway',
+        description: 'Simulate/send events on the gateway.',
+        options: [{
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            name: 'send',
+            description: 'Send an event to the gateway.',
+            options: [{
+                type: COMMAND_OPTION_TYPES.INTEGER,
+                name: 'opcode',
+                description: 'The operation to perform.',
+                required: true,
+                choices: [{
+                    name: 'Heartbeat',
+                    value: GATEWAY_OPCODES.HEARTBEAT
+                }, {
+                    name: 'Identify',
+                    value: GATEWAY_OPCODES.IDENTIFY
+                }, {
+                    name: 'Presence Update',
+                    value: GATEWAY_OPCODES.PRESENCE_UPDATE
+                }, {
+                    name: 'Voice State Update',
+                    value: GATEWAY_OPCODES.VOICE_STATE_UPDATE
+                }, {
+                    name: 'Resume',
+                    value: GATEWAY_OPCODES.RESUME
+                }, {
+                    name: 'Request Guild Members',
+                    value: GATEWAY_OPCODES.REQUEST_GUILD_MEMBERS
+                }]
+            }, {
+                type: COMMAND_OPTION_TYPES.STRING,
+                name: 'data',
+                description: 'The JSON data to send.',
+                required: true
+            }]
+        }, {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            name: 'receive',
+            description: 'Simulate a non-event payload from the gateway.',
+            options: [{
+                type: COMMAND_OPTION_TYPES.INTEGER,
+                name: 'opcode',
+                description: 'The operation to receive.',
+                required: true,
+                choices: [{
+                    name: 'Heartbeat',
+                    value: GATEWAY_OPCODES.HEARTBEAT
+                }, {
+                    name: 'Reconnect',
+                    value: GATEWAY_OPCODES.RECONNECT
+                }, {
+                    name: 'Invalid Session',
+                    value: GATEWAY_OPCODES.INVALID_SESSION
+                }, {
+                    name: 'Hello',
+                    value: GATEWAY_OPCODES.HELLO
+                }, {
+                    name: 'Heartbeat ACK',
+                    value: GATEWAY_OPCODES.HEARTBEAT_ACK
+                }]
+            }, {
+                type: COMMAND_OPTION_TYPES.STRING,
+                name: 'data',
+                description: 'The JSON data to send.'
+            }]
+        }]
     }];
 
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            return this.respond(interaction, '🔑 You aren\'t authorized to use this command.');
+            const permMsg = LanguageUtils.get('COMMAND_UNAUTHORIZED');
+            return this.respond(interaction, permMsg);
         }
         const args = interaction.data?.options;
         if (!args) {
@@ -73,8 +145,55 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 });
                 return this.respond(interaction, '📬 Message sent.');
             }
+            case 'gateway': {
+                const rawOpcode = args[0].options?.[0]?.options?.[0]?.value;
+                const opcode = typeof rawOpcode === 'number' ? rawOpcode : null;
+                const rawData = args[0].options?.[0]?.options?.[1]?.value;
+                let data: string | null = null;
+                if (typeof rawData === 'string') {
+                    data = rawData || null;
+                } else {
+                    data = null;
+                }
+                if (!opcode || isNaN(opcode)) {
+                    this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid gateway opcode [Should never happen...]');
+                    return null;
+                }
+                switch (args[0].options?.[0]?.name) {
+                    case 'send': {
+                        this.bot.gateway.sendData({
+                            op: opcode,
+                            d: data as GatewayData,
+                            s: null,
+                            t: null
+                        })
+                        return this.respond(interaction, '📤 Gateway event sent.');
+                    }
+                    case 'receive': {
+                        const payload: GatewayPayload = {
+                            op: opcode,
+                            d: data as GatewayData,
+                            s: null,
+                            t: null
+                        };
+                        let payloadString = '';
+                        try {
+                            payloadString = JSON.stringify(payload);
+                        } catch (err) {
+                            this.bot.logger.handleError('COMMAND FAILED: /dev', err);
+                            return this.respond(interaction, '❌ Error stringifying payload.');
+                        }
+                        this.bot.gateway.emit('message', payloadString);
+                        return this.respond(interaction, '📥 Simulated gateway event.');
+                    }     
+                    default: {
+                        this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand [Should never happen...]');
+                        return null;
+                    }
+                }
+            }
             default: {
-                this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand [Should never happen...]');
+                this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand group [Should never happen...]');
                 return null;
             }
         }
