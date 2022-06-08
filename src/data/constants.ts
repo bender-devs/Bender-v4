@@ -82,6 +82,10 @@ export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only whe
 
 /***** redis constants *****/
 
+// switch the following 2 lines if you cannot connect to
+// redis if it's running on your local machine as a service.
+// (and maybe) if you set the bind_ip setting for redis to  localhost
+// export const REDIS_HOST = 'localhost';
 export const REDIS_HOST = '10.10.20.2';
 
 export const REDIS_PORT = 6379;
