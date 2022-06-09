@@ -80,19 +80,6 @@ export const CDN_BASE = 'https://cdn.discordapp.com/';
 
 export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only when wait time is at or below this number
 
-/***** redis constants *****/
-
-// Uncomment one of the following 2 lines if you cannot connect to redis if it's running on your local machine as a service.
-// (This might also be neccessary if you set the "bind_ip" setting for redis to "localhost")
-// export const REDIS_HOST = 'localhost';
-export const REDIS_HOST = '10.10.20.2';
-
-export const REDIS_PORT = 6379;
-
-export const REDIS_USER = 'default';
-
-// REDIS_PASS defined in .env file
-
 /***** webserver constants *****/
 
 export const WEBSERVER_PORT = 9001;

@@ -16,7 +16,6 @@ import Bot from '../structures/bot';
 import { promisify } from 'util';
 import * as redis from 'redis';
 import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../data/gatewayTypes';
-import { REDIS_HOST, REDIS_PORT, REDIS_USER } from '../data/constants';
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
@@ -72,11 +71,11 @@ export default class CacheHandler {
     constructor(bot: Bot) {
         this.bot = bot;
         let authString = '';
-        if (REDIS_USER && process.env.REDIS_PASS) {
-           authString = `${REDIS_USER}:${encodeURIComponent(process.env.REDIS_PASS)}@`;
+        if (process.env.REDIS_USER && process.env.REDIS_PASS) {
+           authString = `${process.env.REDIS_USER}:${encodeURIComponent(process.env.REDIS_PASS)}@`;
         }
         this.redisClient = redis.createClient({
-            url: `redis://${authString}${REDIS_HOST}:${REDIS_PORT}`
+            url: `redis://${authString}${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
         });
         this.redisClient.on('error', err => this.bot.emit('REDIS_ERROR', err));
 
