@@ -21,7 +21,7 @@
     },
     "scripts": {
         "preinstall": "npm i -g typescript@^4.6.2",
-        "prestart": "tsc && (Copy-Item src/.env -Destination dist) || (cp src/.env dist)",
+        "prestart": "(copy src\\.env dist & tsc) || (cp src/.env dist 2>/dev/null && tsc)",
         "start": "cd dist && node main.js"
     },
     "devDependencies": {
