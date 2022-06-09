@@ -17,7 +17,8 @@
         "redis": "^3.1.2",
         "superagent": "^6.1.0",
         "tweetnacl": "^1.0.3",
-        "ws": "^8.7.0"
+        "ws": "^8.7.0",
+        "zlib-sync": "^0.1.7"
     },
     "scripts": {
         "preinstall": "npm i -g typescript@^4.6.2",

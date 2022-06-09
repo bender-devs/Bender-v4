@@ -3,7 +3,7 @@ import Bot from './bot';
 import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../data/numberTypes';
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
-import * as zlib from 'zlib';
+import * as zlib from 'zlib-sync';
 import * as WebSocket from 'ws';
 import TimeUtils from '../utils/time';
 
@@ -32,16 +32,13 @@ export default class Gateway extends EventEmitter {
     #identifyData: gatewayTypes.IdentifyData | null = null;
 
     #inflator!: zlib.Inflate;
-    #inflateResolve?: (chunk: Buffer) => void;
-    #inflateReject?: (err: Error) => void;
-    async #inflate(data: Buffer) {
-        this.bot.logger.debug('ZLIB DATA', 'Wrote timestamp: ' + Date.now());
-        return new Promise<Buffer>((resolve, reject) => {
-            this.#inflateResolve = resolve;
-            this.#inflateReject = reject;
-            // TODO: apparently there's a race condition here? unhandled zlib data happens on connect occasionally
-            this.#inflator.write(data);
-        })
+    #inflate(data: Buffer) {
+        this.#inflator.push(data, zlib.Z_SYNC_FLUSH);
+        if(this.#inflator.err < 0) {
+            this.bot.logger.handleError('ZLIB ERROR', this.#inflator.msg);
+            return null;
+        }
+        return this.#inflator.result?.toString('utf8') || null;
     }
 
     constructor(bot: Bot) {
@@ -59,27 +56,7 @@ export default class Gateway extends EventEmitter {
     }
 
     #createInflator() {
-        this.#inflator = zlib.createInflate({
-            chunkSize: 65535,
-            flush: zlib.constants.Z_SYNC_FLUSH
-        });
-        this.#inflator.on('data', inflatedData => {
-            this.bot.logger.debug('ZLIB DATA', 'Received timestamp: ' + Date.now());
-            if (this.#inflateResolve) {
-                this.#inflateResolve(inflatedData);
-                this.#inflateResolve = undefined;
-            } else {
-                this.bot.logger.handleError('UNHANDLED ZLIB DATA', inflatedData);
-            }
-        });
-        this.#inflator.on('error', err => {
-            if (this.#inflateReject) {
-                this.#inflateReject(err);
-                this.#inflateReject = undefined;
-            } else {
-                this.bot.logger.handleError('UNHANDLED ZLIB ERROR', err);
-            }
-        });
+        this.#inflator = new zlib.Inflate({ chunkSize: 65535 });
     }
 
     async #handleConnectEvent() {
@@ -100,7 +77,6 @@ export default class Gateway extends EventEmitter {
     }
 
     async #handleMessageEvent(data: WebSocket.RawData | string): Promise<boolean> {
-        //this.bot.logger.debug('GATEWAY MESSAGE', data);
         let payloadText: string;
         if (typeof data === 'string') {
             payloadText = data;
@@ -114,13 +90,8 @@ export default class Gateway extends EventEmitter {
                 }
             }
             if (GATEWAY_PARAMS.compress && suffixed) {
-                let err: Error | null = null;
-                payloadText = await this.#inflate(data).then(data => data.toString('utf8')).catch(error => {
-                    err = error;
-                    return '';
-                });
-                if (err || !payloadText) {
-                    this.bot.logger.handleError('GATEWAY MESSAGE ERROR', err);
+                payloadText = this.#inflate(data) || '';
+                if (!payloadText) {
                     return false;
                 }
             } else {
@@ -137,7 +108,9 @@ export default class Gateway extends EventEmitter {
             this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, data);
             return false;
         }
-        this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
+        if (parsedPayload.op !== GATEWAY_OPCODES.DISPATCH) {
+            this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
+        }
         switch(parsedPayload.op) {
             case GATEWAY_OPCODES.DISPATCH: {
                 const payload = parsedPayload as gatewayTypes.EventPayload;
@@ -175,9 +148,12 @@ export default class Gateway extends EventEmitter {
         return false;
     }
 
-    async #handleDisconnectEvent(code: number, reason: Buffer) {
+    async #handleDisconnectEvent(code: number, reason: Buffer | string) {
         if (this.#heartbeatInterval) {
             clearInterval(this.#heartbeatInterval);
+        }
+        if (reason instanceof Buffer) {
+            reason = reason.toString();
         }
         this.bot.logger.handleError('WEBSOCKET DISCONNECT', { code, reason });
         switch (code) {
