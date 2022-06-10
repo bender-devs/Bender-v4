@@ -8,7 +8,6 @@ export interface ICommand extends types.CommandCreateData {
     dm_permission: boolean;
 
     run(interaction: types.Interaction): types.CommandResponse;
-    runText?(msg: types.Message, argString: string): types.CommandResponse;
 }
 
 export class CommandUtils {

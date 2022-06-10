@@ -1065,7 +1065,7 @@ export type UnixTimestamp = number;
 // Unix timestamp (millis since epoch)
 export type UnixTimestampMillis = number;
 
-/* what the run() or runText() functions in commands can return.
+/* what the run() function in commands can return.
  * may add more types later.
  */
 export type CommandResponse = Promise<Message | null>;

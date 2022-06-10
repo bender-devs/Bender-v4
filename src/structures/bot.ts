@@ -9,8 +9,7 @@ import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAM
 import { CLIENT_STATE } from '../data/numberTypes';
 import EventManager from './eventManager';
 import Shard from './shard';
-import SlashCommandManager from './slashCommandManager';
-import SlashCommandHandler from './slashCommandHandler';
+import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
 
 export default class Bot extends EventEmitter {
@@ -19,8 +18,7 @@ export default class Bot extends EventEmitter {
     gateway: Gateway;
     logger: Logger;
     events: EventManager;
-    commandManager: SlashCommandManager;
-    commandHandler: SlashCommandHandler;
+    commandManager: CommandManager;
 
     shard?: Shard;
     user!: types.User;
@@ -43,8 +41,7 @@ export default class Bot extends EventEmitter {
         this.cache = new CacheHandler(this);
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
-        this.commandManager = new SlashCommandManager(this);
-        this.commandHandler = new SlashCommandHandler(this);
+        this.commandManager = new CommandManager(this);
 
         if (shard_data) {
             this.shard = new Shard(this, shard_data);
