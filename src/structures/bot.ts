@@ -32,10 +32,16 @@ export default class Bot extends EventEmitter {
 
     constructor(shard_data?: gatewayTypes.ShardConnectionData) {
         super();
+        this.logger = new Logger(this);
+
+        process.removeAllListeners('unhandledRejection');
+        process.on('unhandledRejection', error => {
+            this.logger.handleError('UNHANDLED REJECTION', error);
+        })
+
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
         this.gateway = new Gateway(this);
-        this.logger = new Logger(this);
         this.events = new EventManager(this);
         this.commandManager = new SlashCommandManager(this);
         this.commandHandler = new SlashCommandHandler(this);

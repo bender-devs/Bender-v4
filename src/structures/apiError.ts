@@ -1,5 +1,5 @@
 import { API_ERRORS } from '../data/numberTypes';
-import { ResponseError } from '../data/types';
+import { HTTPMethod, ResponseError } from '../data/types';
 
 type BaseError = {
     code: string;
@@ -11,31 +11,35 @@ export interface APISubError extends BaseError {
 type WrappedErrors = {
     _errors: BaseError[]
 }
-type ObjectErrors = Record<string, WrappedErrors>;
-type ArrayErrors = Record<`${number}`, ObjectErrors>;
-type ErrorMap = Record<string, ArrayErrors | WrappedErrors>;
+type NestedError = { [key: string]: NestedError } | WrappedErrors;
 
-export default class APIError {
+export default class APIError extends Error {
     code: API_ERRORS;
     message: string;
     errors: APISubError[];
     status: number;
+    method: HTTPMethod;
+    path: string;
 
-    constructor(code: API_ERRORS, message: string, status: number) {
+    constructor(code: API_ERRORS, message: string, status: number, method: HTTPMethod, path: string) {
+        super(message);
         this.code = code;
         this.message = message;
         this.errors = [];
         this.status = status;
+        this.method = method;
+        this.path = path;
     }
 
     static parseError(responseError: ResponseError): APIError | null {
         const body = responseError.response?.body;
         const status = responseError.status;
-        if (!status || status < 400) {
+        const httpError = responseError.response?.error;
+        if (!httpError || !status || status < 400) {
             return null;
         }
         if (typeof body === 'object' && body.code && body.message) {
-            const apiError = new APIError(body.code, body.message, status);
+            const apiError = new APIError(body.code, body.message, status, httpError.method as HTTPMethod, httpError.path);
             if (body.errors) {
                 apiError.errors = this.parseSubErrors(body.errors);
             }
@@ -44,32 +48,26 @@ export default class APIError {
         return null;
     }
 
-    static parseSubErrors(errors: ErrorMap): APISubError[] {
-        const subErrors: APISubError[] = [];
-        for (const key in errors) {
-            const errorsLevel1 = errors[key];
-            if ('_errors' in errorsLevel1) {
-                for (const error of errorsLevel1._errors) {
-                    subErrors.push({
-                        code: error.code,
-                        message: error.message,
-                        key
-                    });
-                }
-            } else {
-                let indexKey: `${number}`;
-                for (indexKey in errorsLevel1) {
-                    for (const subkey in errorsLevel1[indexKey]) {
-                        const errorsLevel2 = errorsLevel1[indexKey][subkey];
-                        for (const error of errorsLevel2._errors) {
-                            subErrors.push({
-                                code: error.code,
-                                message: error.message,
-                                key: `${key}.${indexKey}.${subkey}`
-                            });
-                        }
-                    }
-                }
+    static parseSubErrors(errorObj: NestedError, currentKey?: string): APISubError[] {
+        if (typeof errorObj !== 'object') {
+            return [];
+        }
+        let subErrors: APISubError[] = [];
+        if ('_errors' in errorObj) {
+            const errors = errorObj._errors as BaseError[];
+            for (const error of errors) {
+                subErrors.push({
+                    code: error.code,
+                    message: error.message,
+                    key: currentKey || ''
+                });
+            }
+            return subErrors;
+        } else {
+            for (const key in errorObj) {
+                const nextKey = currentKey ? `${currentKey}.${key}` : key;
+                const moreErrors = APIError.parseSubErrors(errorObj[key], nextKey);
+                subErrors = subErrors.concat(moreErrors);
             }
         }
         return subErrors;

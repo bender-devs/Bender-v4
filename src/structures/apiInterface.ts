@@ -13,11 +13,11 @@ export default class APIInterface {
         this.cacheEnabled = cache;
     }
 
-    handleError(error: types.ResponseError): null {
-        const apiError = APIError.parseError(error.response?.body);
+    handleError(error: APIError | types.ResponseError): null {
+        const apiError = error instanceof APIError ? error : null;
         if (apiError) {
-            this.bot.logger.debug('API ERROR', apiError);
-            throw APIError;
+            //this.bot.logger.debug('API ERROR', apiError);
+            throw apiError;
         }
         this.bot.logger.handleError('API INTERFACE', error);
         return null;

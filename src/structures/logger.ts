@@ -17,8 +17,11 @@ export default class Logger {
     }
 
     handleError(moduleName: string | null, error: unknown, ...debugInfo: unknown[]): void {
-        this.debug(moduleName || 'ERROR', ...debugInfo);
-        console.error(error);
+        const color = this.#getColor(moduleName || 'ERROR');
+        const moduleMarkup = chalk[color].bold(`[${moduleName}]`);
+        const shardMarkup = this.#getShardMarkup();
+        console.error(shardMarkup + moduleMarkup, error, ...debugInfo);
+
         if (!this.bot) {
             return;
         }

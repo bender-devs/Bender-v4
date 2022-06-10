@@ -26,7 +26,9 @@ export default class SlashCommandManager {
 
     updateCommandList() {
         // TODO: use db to determine what commands need updating so that permissions aren't reset every time
-        this.bot.api.command.replaceAll(this.commands);
-        this.bot.api.guildCommand.replaceAll(DEV_SERVER, this.developer_commands);
+        this.bot.api.command.replaceAll(this.commands)
+            .catch(error => this.bot.logger.handleError('UPDATE COMMAND LIST', error));
+        this.bot.api.guildCommand.replaceAll(DEV_SERVER, this.developer_commands)
+            .catch(error => this.bot.logger.handleError('UPDATE COMMAND LIST', error));
     }
 }

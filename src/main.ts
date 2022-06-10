@@ -4,6 +4,10 @@ import { SHARDED, SHARD_COUNT, CONNECT_DATA, EXIT_CODE_NO_RESTART } from './data
 import ShardManager from './utils/shardManager';
 import { IdentifyData } from './data/gatewayTypes';
 
+process.on('unhandledRejection', error => {
+    console.error('Unhandled rejection before bot was spawned:', error);
+});
+
 console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
 const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
 
