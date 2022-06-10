@@ -19,28 +19,12 @@ const replaceRegex = {
     subscript: /[a-z()\-+=\d]/gi,
     superscript: /[a-z()\-+=\d]/gi
 };
-const textOpt: types.CommandOption[] = [{
+const textOpt: types.CommandOption = {
     type: COMMAND_OPTION_TYPES.STRING,
     name: 'text',
     description: 'The text to which to apply the effect.',
     required: true
-}];
-
-/*
-{ name: 'big', value: '🇧\u200B🇮\u200B🇬' },
-            { name: 'box-outline', value: '🄱🄾🅇' },
-            { name: 'box', value: '🅱🅾🆇' },
-            { name: 'bubble', value: '🅑🅤🅑🅑🅛🅔' },
-            { name: 'bubble-outline', value: 'ⓑⓘⓖ-ⓑⓤⓑⓑⓛⓔ' },
-            { name: 'fancy', value: '𝒻𝒶𝓃𝒸𝓎' },
-            { name: 'flip', value: 'dᴉlⅎ' },
-            { name: 'fullwidth', value: 'ｆｕｌｌｗｉｄｔｈ' },
-            { name: 'gothic', value: '𝔤𝔬𝔱𝔥𝔦𝔠' },
-            { name: 'reverse', value: '🔀 reverse' },
-            { name: 'smallcaps', value: 'sᴍᴀʟʟᴄᴀᴘs' },
-            { name: 'subscript', value: 'ₛᵤᵦₛcᵣᵢₚₜ' },
-            { name: 'superscript', value: 'ˢᵘᵖᵉʳˢᶜʳⁱᵖᵗ' }
-            */
+};
 
 export default class TextCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -51,69 +35,87 @@ export default class TextCommand extends CommandUtils implements ICommand {
     readonly description = 'Apply effects to text.';
     readonly options: types.CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+        name: 'case',
+        description: 'Change the case of text.',
+        options: [{
+            type: COMMAND_OPTION_TYPES.STRING,
+            name: 'mode',
+            description: 'How to change the text case.',
+            choices: [
+                { name: 'lowercase', value: 'lower' },
+                { name: 'UPPERCASE', value: 'upper' },
+                { name: 'AlTeRnAtInG', value: 'alt' },
+                { name: 'rANdom', value: 'random' },
+                { name: 'Title Case', value: 'title' },
+                { name: 'inVERt => INverT', value: 'switch' }
+            ],
+            required: true
+        }, textOpt]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'big',
         description: 'Converts text to 🇪\u200B🇲\u200B🇴\u200B🇯\u200B🇮\u200B🇸.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'box',
         description: 'Converts text to 🅱🅾🆇🅴🅳 letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'box-outline',
         description: 'Converts text to 🄱🄾🅇🄴🄳 letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'bubble',
         description: 'Converts text to 🅑🅤🅑🅑🅛🅔 letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'bubble-outline',
         description: 'Converts text to ⓑⓤⓑⓑⓛⓔ letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'fancy',
         description: 'Converts text to 𝒻𝒶𝓃𝒸𝓎 letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'flip',
         description: 'Flips text (ノಠ _ ಠ)ノ︵ uʍop ǝpᴉsdn',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'fullwidth',
         description: 'Converts text to ｆｕｌｌｗｉｄｔｈ characters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'gothic',
         description: 'Converts text to 𝔤𝔬𝔱𝔥𝔦𝔠 letters.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'reverse',
         description: 'Reverses text 🔀 txet sesreveR',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'smallcaps',
         description: 'Converts text to sᴍᴀʟʟᴄᴀᴘs.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'subscript',
         description: 'Converts text to ₛᵤᵦₛcᵣᵢₚₜ.',
-        options: textOpt
+        options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'superscript',
         description: 'Converts text to ˢᵘᵖᵉʳˢᶜʳⁱᵖᵗ.',
-        options: textOpt
+        options: [textOpt]
     }];
 
     async run(interaction: types.Interaction): types.CommandResponse {
@@ -122,6 +124,9 @@ export default class TextCommand extends CommandUtils implements ICommand {
         if (!effect || !text || typeof text !== 'string') {
             this.bot.logger.handleError('COMMAND FAILED: /text', 'No arguments supplied [Should never happen...]');
             return null;
+        }
+        if (effect === 'case') {
+            return this.#doTextCase(interaction, text);
         }
         if (effect === 'flip' || effect === 'reverse') {
             text = Array.from(text).reverse().join('');
@@ -149,6 +154,71 @@ export default class TextCommand extends CommandUtils implements ICommand {
         }
         if (Array.from(newText).length > 2000) {
             return this.respond(interaction, '⚠ Text is too long!');
+        }
+        return this.respond(interaction, newText);
+    }
+
+    async #doTextCase(interaction: types.Interaction, mode: string) {
+        const text = interaction.data?.options?.[0]?.options?.[1]?.value;
+        if (!text || typeof text !== 'string') {
+            this.bot.logger.handleError('COMMAND FAILED: /text', 'No arguments supplied [Should never happen...]');
+            return null;
+        }
+        let newText = '';
+        switch (mode) {
+            case 'lower': {
+                newText = text.toLowerCase();
+                break;
+            }
+            case 'upper': {
+                newText = text.toUpperCase();
+                break;
+            }
+            case 'alt': {
+                let c = -1;
+                newText = text.replace(/[a-z]/gi, char => {
+                    c++;
+                    if (c % 2 === 0) {
+                        return char.toUpperCase();
+                    } else {
+                        return char.toLowerCase();
+                    }
+                });
+                break;
+            }
+            case 'random': {
+                newText = text.replace(/[a-z]/gi, char => {
+                    const randomBool = Math.random() > 0.5;
+                    if (randomBool) {
+                        return char.toUpperCase();
+                    } else {
+                        return char.toLowerCase();
+                    }
+                });
+                break;
+            }
+            case 'title': {
+                newText = text.replace(/\w\S*/g, function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+                });
+                break;
+            }
+            case 'switch': {
+                for(const char of text) {
+                    if (/[a-z]/.test(char)) {
+                        newText += char.toUpperCase();
+                    } else if (/[A-Z]/.test(char)) {
+                        newText += char.toLowerCase();
+                    } else {
+                        newText += char;
+                    }
+                }
+                break;
+            }
+        }
+        if (!newText) {
+            this.bot.logger.handleError('COMMAND FAILED: /text', 'No text supplied [Should never happen...]');
+            return null;
         }
         return this.respond(interaction, newText);
     }

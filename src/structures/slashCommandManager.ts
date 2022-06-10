@@ -4,6 +4,7 @@ import { DEV_SERVER } from '../data/constants';
 
 import PingCommand from '../commands/ping';
 import TextCommand from '../commands/text';
+import ConvertTextCommand from '../commands/convert-text';
 
 import DevCommand from '../commands/dev';
 
@@ -19,6 +20,7 @@ export default class SlashCommandManager {
         this.commands = [];
         this.commands.push(new PingCommand(this.bot));
         this.commands.push(new TextCommand(this.bot));
+        this.commands.push(new ConvertTextCommand(this.bot));
         
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
