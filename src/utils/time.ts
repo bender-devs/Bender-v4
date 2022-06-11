@@ -56,7 +56,7 @@ export default class TimeUtils {
         const number = Math.floor(duration / unit);
         const plural = number !== 1;
 
-        const langKey: LangKey = `DURATION_${unitName}${plural ? '' : 'S'}${includeAgo ? '_AGO' : ''}`;
+        const langKey: LangKey = `DURATION_${unitName}${plural ? 'S' : ''}${includeAgo ? '_AGO' : ''}`;
         if (!plural) {
             return LanguageUtils.get(langKey, locale);
         }

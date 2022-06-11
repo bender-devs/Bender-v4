@@ -416,14 +416,14 @@ export interface PartialMember {
     premium_since?: Timestamp | null;
     pending?: boolean; // member screening, only included in GUILD_* events
     permissions?: Bitfield; // only provided in Interaction objects; includes overwrites
+    communication_disabled_until?: Timestamp | null;
+    avatar?: string | null;
 }
 
 export interface Member extends PartialMember {
     user: User;
     deaf: boolean;
     mute: boolean;
-    communication_disabled_until?: Timestamp | null;
-    avatar?: string | null;
 }
 
 /************ channel types ************/
@@ -681,6 +681,7 @@ export type InteractionDataOption = {
     type: num.COMMAND_OPTION_TYPES;
     value?: CommandOptionValue;
     options?: InteractionDataOption[];
+    focused?: boolean; // for autocomplete
 }
 
 export type InteractionResponse = {
@@ -765,7 +766,7 @@ export interface Command extends CommandCreateData {
     type: num.COMMAND_TYPES;
 }
 
-export type CommandOptionValue = CommandOption | string | number | boolean | User | Channel | Role;
+export type CommandOptionValue = CommandOption | string | number | boolean;
 
 export type CommandOption = {
     type: num.COMMAND_OPTION_TYPES;

@@ -1,19 +1,28 @@
-import { Member, Role } from '../data/types';
+import { Member, PartialMember, Role } from '../data/types';
 
 export default class DiscordTypeUtils {
     static member = {
-        getHighestRole: (member: Member, guildRoles: Role[]) => {
+        getHighestRole: (member: Member | PartialMember, guildRoles: Role[]) => {
             let highest: Role | null = null;
             for (const role of guildRoles) {
-                if (!highest || role.position > highest.position && member.roles.includes(role.id)) {
+                if (!highest || (role.position > highest.position && member.roles.includes(role.id))) {
                     highest = role;
                 }
             }
             return highest;
         },
-        getColor: (member: Member, guildRoles: Role[]) => {
-            const highestRole = DiscordTypeUtils.member.getHighestRole(member, guildRoles);
-            return highestRole?.color || null;
+        getSortedRoles: (member: Member | PartialMember, guildRoles: Role[]) => {
+            const sortedGuildRoles = DiscordTypeUtils.roles.sort(guildRoles);
+            return sortedGuildRoles.filter(role => member.roles.includes(role.id));
+        },
+        getColor: (member: Member | PartialMember, guildRoles: Role[]) => {
+            let highestWithColor: Role | null = null;
+            for (const role of guildRoles) {
+                if (role.color && (!highestWithColor || (role.position > highestWithColor.position && member.roles.includes(role.id)))) {
+                    highestWithColor = role;
+                }
+            }
+            return highestWithColor?.color || null;
         }
     }
 
@@ -28,8 +37,19 @@ export default class DiscordTypeUtils {
             return highest;
         },
         getColor: (guildRoles: Role[]) => {
-            const highestRole = DiscordTypeUtils.guild.getHighestRole(guildRoles);
-            return highestRole?.color || null;
+            let highestWithColor: Role | null = null;
+            for (const role of guildRoles) {
+                if (role.color && (!highestWithColor || role.position > highestWithColor.position)) {
+                    highestWithColor = role;
+                }
+            }
+            return highestWithColor?.color || null;
+        }
+    }
+
+    static roles = {
+        sort: (roles: Role[]) => {
+            return roles.sort((a, b) => b.position - a.position);
         }
     }
 }

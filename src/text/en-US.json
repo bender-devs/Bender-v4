@@ -5,6 +5,7 @@
     "ARGS_MISSING": "No required arguments supplied.",
     "ARGS_INCOMPLETE": "Not all required arguments supplied.",
     "ARGS_INVALID_TYPE": "Some arguments had an invalid type.",
+    "ARGS_UNRESOLVED": "Some required arguments weren't resolved.",
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Not all subcommands or required arguments supplied.",
     "INVALID_SUBCOMMAND": "Invalid subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
@@ -29,6 +30,8 @@
     "JOINED_AT": "Joined at",
     "CREATED_AT": "Created at",
     "BANNER": "Banner",
+    "NO_ROLES": "Member has no roles.",
+    "UNKNOWN_STATUS": "Unknown status",
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
@@ -64,5 +67,6 @@
     "DURATION_YEARS_AGO": "{{number}} years ago",
 
     "SINCE_DATE": "since {{date}}",
-    "SINCE_DATE_AGO": "since {{date}} ({{ago}})"
+    "SINCE_DATE_AGO": "since {{date}} ({{ago}})",
+    "DATE_AGO": "{{date}} ({{ago}})"
 }

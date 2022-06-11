@@ -5,6 +5,7 @@ import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/
 import LanguageUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
+import { inspect } from 'util';
 
 export interface ICommand extends types.CommandCreateData {
     bot: Bot;
@@ -54,7 +55,7 @@ export class CommandUtils {
             invite: SUPPORT_SERVER
         })
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
-        this.bot.logger.debug(`Arguments passed to /${this.name}:`, args);
+        this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69));
         return this.respond(interaction, `❌ ${message}\n${supportNotice}`)
     }
 }
