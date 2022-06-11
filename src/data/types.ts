@@ -48,6 +48,8 @@ export interface User extends PartialUser {
     flags?: num.USER_FLAGS;
     premium_type?: num.PREMIUM_TYPES;
     public_flags?: num.USER_FLAGS;
+    banner?: string | null;
+    accent_color?: number;
 }
 
 export type StringPremiumTypes = `${num.PREMIUM_TYPES}`;
@@ -421,6 +423,7 @@ export interface Member extends PartialMember {
     deaf: boolean;
     mute: boolean;
     communication_disabled_until?: Timestamp | null;
+    avatar?: string | null;
 }
 
 /************ channel types ************/

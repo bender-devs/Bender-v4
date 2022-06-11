@@ -33,4 +33,9 @@ export default class MiscUtils {
     static timestampToSnowflake(timestamp: UnixTimestampMillis) {
         return (timestamp - DISCORD_EPOCH) << 22;
     }
+
+    static truncate(text = '', length = 2000, strict = false) {
+		const len = strict ? text.length : Array.from(text).length;
+		return len > length ? `${text.substring(0, length - 4)} ...` : text;
+	}
 }

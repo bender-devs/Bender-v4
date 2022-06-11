@@ -32,6 +32,16 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
+    async respondEmbed(interaction: types.Interaction, embed: types.Embed) {
+        return this.bot.api.interaction.sendResponse(interaction, {
+            type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+                embeds: [embed],
+                flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
+            }
+        }).catch(this.handleAPIError.bind(this));
+    }
+
     async handleAPIError(err: APIError) {
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, err);
         return null;
