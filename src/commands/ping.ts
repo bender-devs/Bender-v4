@@ -43,7 +43,7 @@ export default class PingCommand extends CommandUtils implements ICommand {
         });
     }
 
-    getPongMessage(roundtrip: boolean, locale?: string, millis?: number) {
+    getPongMessage(roundtrip: boolean, locale?: types.Locale, millis?: number) {
         if (roundtrip && millis) {
             return LanguageUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() }, locale);
         } else if (roundtrip || !millis) {
