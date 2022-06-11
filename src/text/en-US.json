@@ -26,6 +26,9 @@
     "USER_INFO_HUMAN": "👤 Human",
     "USER_INFO_OWNER": "👑 Server Owner",
     "USER_INFO_MEMBER": "👤 Member",
+    "JOINED_AT": "Joined at",
+    "CREATED_AT": "Created at",
+    "BANNER": "Banner",
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
