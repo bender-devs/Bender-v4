@@ -37,7 +37,7 @@ export default class PingCommand extends CommandUtils implements ICommand {
     }
 
     roundtripCallback(interaction: types.Interaction, startTimestamp: number) {
-        const millis = TimeUtils.getElapsedMillis(startTimestamp);
+        const millis = TimeUtils.sinceMillis(startTimestamp);
         return this.bot.api.interaction.editResponse(interaction, {
             content: this.getPongMessage(true, interaction.locale, millis)
         });

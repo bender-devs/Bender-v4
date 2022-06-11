@@ -1,4 +1,4 @@
-import { Emoji, Snowflake, UnixTimestamp } from '../data/types';
+import { Emoji, Role, Snowflake, UnixTimestamp } from '../data/types';
 
 function getRegex(chars: string, exact: boolean, timestamp = false) {
     return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1-16' : '17-19'}})${timestamp ? '(:[tTdDfFR])?' : ''}${exact ? '$' : ''}>`);
@@ -77,6 +77,18 @@ export default class DiscordFormatUtils {
         },
         parse: (timestamp: UnixTimestamp, format?: TimestampFormat): string => {
             return `<t:${timestamp}${format ? `:${format}` : ''}>`;
+        }
+    }
+
+    static members = {
+        getHighestRole: (guildRoles: Role[], memberRoles: Snowflake[]) => {
+            let highest: Role | null = null;
+            for (const role of guildRoles) {
+                if (!highest || role.position > highest.position && memberRoles.includes(role.id)) {
+                    highest = role;
+                }
+            }
+            return highest;
         }
     }
 }

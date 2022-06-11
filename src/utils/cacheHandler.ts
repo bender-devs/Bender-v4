@@ -278,6 +278,18 @@ export default class CacheHandler {
             }
             return guild.roles[role_id] || null;
         },
+        getAll: (guild_id: types.Snowflake): types.Role[] | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            const roles: types.Role[] = [];
+            let roleID: types.Snowflake;
+            for (roleID in guild.roles) {
+                roles.push(guild.roles[roleID]);
+            }
+            return roles.length ? roles : null;
+        },
         set: (guild_id: types.Snowflake, role: types.Role): void => {
             if (!this.guilds.get(guild_id)) {
                 return;

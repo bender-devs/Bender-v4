@@ -1,17 +1,17 @@
 import { LOCALE_LIST, Locale } from '../data/types';
-import languages from '../text/languageList';
+import languages, { LangKey } from '../text/languageList';
 import * as types from '../data/types';
 
 export default class LanguageUtils {
 
-    static get(id: string, langID: Locale = 'en-US'): string {
+    static get(id: LangKey, langID: Locale = 'en-US'): string {
         if (!this.isSupportedLangID(langID)) {
             langID = 'en-US';
         }
         return this.getLanguage(langID)?.[id] || '';
     }
 
-    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID: Locale = 'en-US'): string {
+    static getAndReplace(id: LangKey, replaceMap: types.ReplaceMap = {}, langID: Locale = 'en-US'): string {
         let text = LanguageUtils.get(id, langID);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');

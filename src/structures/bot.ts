@@ -11,6 +11,7 @@ import EventManager from './eventManager';
 import Shard from './shard';
 import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
+import Fetcher from '../utils/fetcher';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -19,6 +20,7 @@ export default class Bot extends EventEmitter {
     logger: Logger;
     events: EventManager;
     commandManager: CommandManager;
+    fetch: Fetcher;
 
     shard?: Shard;
     user!: types.User;
@@ -39,6 +41,7 @@ export default class Bot extends EventEmitter {
 
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
+        this.fetch = new Fetcher(this);
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);

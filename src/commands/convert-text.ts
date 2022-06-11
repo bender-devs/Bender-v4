@@ -70,7 +70,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         const modeOrAlgorithm = args?.[0]?.options?.[0]?.value;
         const textOrKey = args?.[0]?.options?.[1]?.value;
         if (!subcommand || !modeOrAlgorithm || typeof modeOrAlgorithm !== 'string' || !textOrKey || typeof textOrKey !== 'string') {
-            return this.handleUnexpectedError(interaction, 'Not all arguments supplied.');
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         switch (subcommand) {
             case 'base64':
@@ -81,7 +81,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
                 return this.#hash(interaction, modeOrAlgorithm, textOrKey);
         }
 
-        return this.handleUnexpectedError(interaction, 'Invalid subcommand.');
+        return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
 
     #base64(interaction: types.Interaction, mode: string, text: string) {

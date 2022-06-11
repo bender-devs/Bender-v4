@@ -4,6 +4,7 @@ import APIError from './apiError';
 import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
 import LanguageUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
+import { LangKey } from '../text/languageList';
 
 export interface ICommand extends types.CommandCreateData {
     bot: Bot;
@@ -36,7 +37,7 @@ export class CommandUtils {
         return null;
     }
 
-    async handleUnexpectedError(interaction: types.Interaction, messageLangKey: string) {
+    async handleUnexpectedError(interaction: types.Interaction, messageLangKey: LangKey) {
         const args = interaction.data?.options;
         const message = LanguageUtils.get(messageLangKey, interaction.locale);
         const supportNotice = LanguageUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {

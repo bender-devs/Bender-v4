@@ -64,7 +64,7 @@ export default class Gateway extends EventEmitter {
             this.#promiseResolve(true);
             this.#promiseResolve = null;
         }
-        this.ping = TimeUtils.getElapsedMillis(this.#beginTimestamp);
+        this.ping = TimeUtils.sinceMillis(this.#beginTimestamp);
         this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
     }
 
@@ -137,7 +137,7 @@ export default class Gateway extends EventEmitter {
                 return false;
             }
             case GATEWAY_OPCODES.HEARTBEAT_ACK: {
-                this.ping = TimeUtils.getElapsedMillis(this.#lastHeartbeat);
+                this.ping = TimeUtils.sinceMillis(this.#lastHeartbeat);
                 this.#lastHeartbeat = -1;
                 if (this.#heartbeatTimeout) {
                     clearTimeout(this.#heartbeatTimeout);
