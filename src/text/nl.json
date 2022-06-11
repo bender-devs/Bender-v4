@@ -5,6 +5,7 @@
     "ARGS_MISSING": "Geen vereiste argumenten opgegeven.",
     "ARGS_INCOMPLETE": "Niet alle vereiste argumenten opgegeven.",
     "ARGS_INVALID_TYPE": "Sommige argumenten hadden een ongeldig type.",
+    "ARGS_UNRESOLVED": "Sommige argumenten konden niet worden verwerkt.",
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Niet alle subcommando's of vereiste argumenten opgegeven.",
     "INVALID_SUBCOMMAND": "Ongeldig subcommando.",
     "INVALID_SUBCOMMAND_GROUP": "Ongeldige subcommando groep.",
@@ -29,6 +30,8 @@
     "JOINED_AT": "Lid geworden op",
     "CREATED_AT": "Gecreeërd op",
     "BANNER": "Banner",
+    "NO_ROLES": "Lid heeft geen rollen.",
+    "UNKNOWN_STATUS": "Onbekende status",
 
     "DURATION_MILLISECOND": "1 milliseconde",
     "DURATION_MILLISECONDS": "{{number}} milliseconden",
@@ -59,10 +62,11 @@
     "DURATION_MONTH_AGO": "1 maand geleden",
     "DURATION_MONTHS_AGO": "{{number}} maanden geleden",
     "DURATION_YEAR": "1 jaar",
-    "DURATION_YEARS": "{{number}} jaren",
+    "DURATION_YEARS": "{{number}} jaar",
     "DURATION_YEAR_AGO": "1 jaar geleden",
-    "DURATION_YEARS_AGO": "{{number}} jaren geleden",
+    "DURATION_YEARS_AGO": "{{number}} jaar geleden",
 
     "SINCE_DATE": "sinds {{date}}",
-    "SINCE_DATE_AGO": "sinds {{date}} ({{geleden}})"
+    "SINCE_DATE_AGO": "sinds {{date}} ({{ago}})",
+    "DATE_AGO": "{{date}} ({{ago}})"
 }
