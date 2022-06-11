@@ -1,4 +1,7 @@
-import * as en from './EN.json';
+import * as en_US from './en-US.json';
 import * as types from '../data/types';
 
-export const languages: types.LangMap = { en };
+const languages: types.LangMap = {
+    'en-US': en_US
+};
+export default languages;

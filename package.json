@@ -11,7 +11,6 @@
         "express": "^4.17.2",
         "geo-tz": "^6.0.1",
         "gm": "^1.23.1",
-        "iso-lang-codes": "^2.1.1",
         "jimp": "^0.16.1",
         "mongodb": "^4.1.1",
         "redis": "^3.1.2",
@@ -21,8 +20,8 @@
         "zlib-sync": "^0.1.7"
     },
     "scripts": {
-        "preinstall": "npm i -g typescript@^4.6.2",
-        "prestart": "(copy src\\.env dist & tsc) || (cp src/.env dist 2>/dev/null && tsc)",
+        "preinstall": "npm i --location=global typescript@^4.6.2",
+        "prestart": "tsc && (cmd /c \"copy src\\.env dist 2>nul\" || bash -c \"cp src/.env dist 2>/dev/null\")",
         "start": "cd dist && node main.js"
     },
     "devDependencies": {

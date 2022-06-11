@@ -30,6 +30,8 @@ export const DOMAIN = 'benderbot.co';
 export const WEBSITE = `https://${DOMAIN}`;
 export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
+export const SUPPORT_SERVER = 'https://discord.gg/99xaeGn';
+
 export const OWNERS: Snowflake[] = ['246107833295175681', '391743942070370304', '735199620803854428'];
 export const DEV_SERVER: Snowflake = '548170772456275970';
 

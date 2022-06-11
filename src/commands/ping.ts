@@ -32,22 +32,23 @@ export default class PingCommand extends CommandUtils implements ICommand {
         }
         const thenCallback = roundtrip ? this.roundtripCallback : () => null;
         const startTimestamp = Date.now();
-        return this.respond(interaction, this.getPongMessage(roundtrip, millis)).then(() => thenCallback.bind(this)(interaction, startTimestamp)).catch(this.handleAPIError.bind(this));
+        const pongMessage = this.getPongMessage(roundtrip, interaction.locale, millis);
+        return this.respond(interaction, pongMessage).then(() => thenCallback.bind(this)(interaction, startTimestamp)).catch(this.handleAPIError.bind(this));
     }
 
     roundtripCallback(interaction: types.Interaction, startTimestamp: number) {
         const millis = TimeUtils.getElapsedMillis(startTimestamp);
         return this.bot.api.interaction.editResponse(interaction, {
-            content: this.getPongMessage(true, millis)
+            content: this.getPongMessage(true, interaction.locale, millis)
         });
     }
 
-    getPongMessage(roundtrip: boolean, millis?: number) {
+    getPongMessage(roundtrip: boolean, locale?: string, millis?: number) {
         if (roundtrip && millis) {
-            return LanguageUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() });
+            return LanguageUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() }, locale);
         } else if (roundtrip || !millis) {
-            return LanguageUtils.get('PONG_BLANK');
+            return LanguageUtils.get('PONG_BLANK', locale);
         }
-        return LanguageUtils.getAndReplace('PONG', { millis: millis.toString() });
+        return LanguageUtils.getAndReplace('PONG', { millis: millis.toString() }, locale);
     }
 }

@@ -114,13 +114,12 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            const permMsg = LanguageUtils.get('COMMAND_UNAUTHORIZED');
+            const permMsg = LanguageUtils.get('COMMAND_UNAUTHORIZED', interaction.locale);
             return this.respond(interaction, permMsg);
         }
         const args = interaction.data?.options;
         if (!args) {
-            this.bot.logger.handleError('COMMAND FAILED: /dev', 'No arguments supplied [Should never happen...]');
-            return null;
+            return this.handleUnexpectedError(interaction, 'ARGS_MISSING');
         }
         const command = args[0].name;
         switch (command) {
@@ -131,8 +130,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
                 const operation = args[0].options?.[0]?.options?.[0]?.value;
                 if (!destination || !operation) {
-                    this.bot.logger.handleError('COMMAND FAILED: /dev', 'No subcommand or required argument supplied [Should never happen...]');
-                    return null;
+                    return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
                 }
                 const data = args[0].options?.[0]?.options?.[1]?.value;
                 const nonce = args[0].options?.[0]?.options?.[2]?.value;
@@ -156,8 +154,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     data = null;
                 }
                 if (!opcode || isNaN(opcode)) {
-                    this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid gateway opcode [Should never happen...]');
-                    return null;
+                    return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
                 }
                 switch (args[0].options?.[0]?.name) {
                     case 'send': {
@@ -180,22 +177,15 @@ export default class DevCommand extends CommandUtils implements ICommand {
                         try {
                             payloadString = JSON.stringify(payload);
                         } catch (err) {
-                            this.bot.logger.handleError('COMMAND FAILED: /dev', err);
-                            return this.respond(interaction, '❌ Error stringifying payload.');
+                            return this.handleUnexpectedError(interaction, 'STRINGIFYING_FAILED');
                         }
                         this.bot.gateway.emit('message', payloadString);
                         return this.respond(interaction, '📥 Simulated gateway event.');
-                    }     
-                    default: {
-                        this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand [Should never happen...]');
-                        return null;
                     }
                 }
-            }
-            default: {
-                this.bot.logger.handleError('COMMAND FAILED: /dev', 'Invalid subcommand group [Should never happen...]');
-                return null;
-            }
+                return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
+            } 
         }
+        return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');
     }
 }

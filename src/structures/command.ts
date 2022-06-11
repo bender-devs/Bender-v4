@@ -2,6 +2,8 @@ import Bot from './bot';
 import * as types from '../data/types';
 import APIError from './apiError';
 import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
+import LanguageUtils from '../utils/language';
+import { SUPPORT_SERVER } from '../data/constants';
 
 export interface ICommand extends types.CommandCreateData {
     bot: Bot;
@@ -32,5 +34,16 @@ export class CommandUtils {
     async handleAPIError(err: APIError) {
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, err);
         return null;
+    }
+
+    async handleUnexpectedError(interaction: types.Interaction, messageLangKey: string) {
+        const args = interaction.data?.options;
+        const message = LanguageUtils.get(messageLangKey, interaction.locale);
+        const supportNotice = LanguageUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {
+            invite: SUPPORT_SERVER
+        })
+        this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
+        this.bot.logger.debug(`Arguments passed to /${this.name}:`, args);
+        return this.respond(interaction, `❌ ${message}\n${supportNotice}`)
     }
 }

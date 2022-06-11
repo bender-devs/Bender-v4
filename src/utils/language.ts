@@ -1,18 +1,17 @@
-import * as langUtils from 'iso-lang-codes';
-import { languages } from '../text/languageList';
+import { LOCALE_LIST, Locale } from '../data/types';
+import languages from '../text/languageList';
 import * as types from '../data/types';
 
 export default class LanguageUtils {
 
-    static get(id: string, langID = 'en'): string {
-        langID = langID.toLowerCase();
+    static get(id: string, langID: Locale = 'en-US'): string {
         if (!this.isSupportedLangID(langID)) {
-            langID = 'en';
+            langID = 'en-US';
         }
-        return languages[langID][id] || '';
+        return this.getLanguage(langID)?.[id] || '';
     }
 
-    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID = 'en'): string {
+    static getAndReplace(id: string, replaceMap: types.ReplaceMap = {}, langID: Locale = 'en-US'): string {
         let text = LanguageUtils.get(id, langID);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
@@ -21,15 +20,11 @@ export default class LanguageUtils {
         return text;
     }
 
-    static isValidLangID(langID: string): boolean {
-        return langUtils.validateLanguageCode(langID.toLowerCase());
+    static isSupportedLangID(langID: Locale): boolean {
+        return LOCALE_LIST.includes(langID);
     }
 
-    static isSupportedLangID(langID: string): boolean {
-        return langID.toLowerCase() in languages;
-    }
-
-    static getLanguage(langID: string): types.Lang {
+    static getLanguage(langID: Locale): types.Lang | undefined {
         return languages[langID];
     }
 

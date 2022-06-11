@@ -1,0 +1,21 @@
+{
+    "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
+    "COMMAND_UNAUTHORIZED": "🔑 You aren't authorized to use this command.",
+    "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
+    "ARGS_MISSING": "No required arguments supplied.",
+    "ARGS_INCOMPLETE": "Not all required arguments supplied.",
+    "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Not all subcommands or required arguments supplied.",
+    "INVALID_SUBCOMMAND": "Invalid subcommand.",
+    "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
+    "STRINGIFYING_FAILED": "Error stringifying payload,",
+
+    "TEXT_TOO_LONG": "⚠ Text is too long!",
+    
+    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
+    "PONG_BLANK": "🏓 Pong!",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)",
+
+    "ENCODED_BINARY": "Encoded binary",
+    "DECODED_BINARY": "Decoded binary",
+    "COMPUTED_HASH": "Computed hash"
+}

@@ -4,6 +4,7 @@ import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import * as crypto from 'crypto';
+import LanguageUtils from '../utils/language';
 
 const encodeDecodeMode: types.CommandOption[] = [{
     type: COMMAND_OPTION_TYPES.STRING,
@@ -64,12 +65,12 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     }];
 
     async run(interaction: types.Interaction): types.CommandResponse {
-        const subcommand = interaction.data?.options?.[0]?.name;
-        const modeOrAlgorithm = interaction.data?.options?.[0]?.options?.[0]?.value;
-        const textOrKey = interaction.data?.options?.[0]?.options?.[1]?.value;
+        const args = interaction.data?.options;
+        const subcommand = args?.[0]?.name;
+        const modeOrAlgorithm = args?.[0]?.options?.[0]?.value;
+        const textOrKey = args?.[0]?.options?.[1]?.value;
         if (!subcommand || !modeOrAlgorithm || typeof modeOrAlgorithm !== 'string' || !textOrKey || typeof textOrKey !== 'string') {
-            this.bot.logger.handleError('COMMAND FAILED: /convert-text', 'Not all arguments supplied [Should never happen...]');
-            return null;
+            return this.handleUnexpectedError(interaction, 'Not all arguments supplied.');
         }
         switch (subcommand) {
             case 'base64':
@@ -80,30 +81,26 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
                 return this.#hash(interaction, modeOrAlgorithm, textOrKey);
         }
 
-        this.bot.logger.handleError('COMMAND FAILED: /convert-text', 'Invalid subcommand [Should never happen...]');
-            return null;
+        return this.handleUnexpectedError(interaction, 'Invalid subcommand.');
     }
 
     #base64(interaction: types.Interaction, mode: string, text: string) {
-        let result = '', op = '';
+        let result = '';
         if (mode === 'decode') {
             result = Buffer.from(text, 'base64').toString('utf8');
-            op = 'De';
-        } else if (mode === 'encode') {
-            result = Buffer.from(text).toString('base64');
-            op = 'En';
         } else {
-            this.bot.logger.handleError('COMMAND FAILED: /convert-text', 'Invalid base64 mode [Should never happen...]');
-            return null;
+            result = Buffer.from(text).toString('base64');
         }
-        if (Array.from(result).length > 1975) {
-            return this.respond(interaction, `⚠ Text is too long!`);
+        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
+            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            return this.respond(interaction, lengthMsg);
         }
-        return this.respond(interaction, `📃 ${op}coded base64:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
     }
 
     #binary(interaction: types.Interaction, mode: string, text: string) {
-        let result = '', op = '';
+        let result = '';
         if (mode === 'decode') {
             let binaryPieces = text.split(' '), validPieceLength = true;
             for (const piece of binaryPieces) {
@@ -118,8 +115,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
                 binaryPieces = text.match(/.{1,8}/g) as Array<string>;
             }
             result = binaryPieces.map(item => String.fromCodePoint(parseInt(item, 2))).join('');
-            op = 'De';
-        } else if (mode === 'encode') {
+        } else {
             const resArr = Array.from(text).map(item => item.codePointAt(0)?.toString(2));
             for (const block of resArr) {
                 if (!block) {
@@ -128,21 +124,20 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
                 result += block.padStart(block.length > 8 ? 16 : 8, '0') + ' ';
             }
             result = result.trim();
-            op = 'En';
-        } else {
-            this.bot.logger.handleError('COMMAND FAILED: /convert-text', 'Invalid binary mode [Should never happen...]');
-            return null;
         }
-        if (Array.from(result).length > 1975) {
-            return this.respond(interaction, `⚠ Text is too long!`);
+        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
+            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            return this.respond(interaction, lengthMsg);
         }
-        return this.respond(interaction, `📃 ${op}coded binary:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
     }
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
         const hasher = crypto.createHash(algorithm);
         hasher.update(text);
         const result = hasher.digest('hex');
-        return this.respond(interaction, `🗒 Computed hash: \`${result}\``);
+        const computedMsg = LanguageUtils.get('COMPUTED_HASH', interaction.locale);
+        return this.respond(interaction, `🗒 ${computedMsg}: \`${result}\``);
     }
 }

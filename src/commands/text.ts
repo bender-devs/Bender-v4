@@ -4,6 +4,7 @@ import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import * as textMap from '../data/text.json';
+import LanguageUtils from '../utils/language';
 
 const replaceRegex = {
     big: /[A-Z 0-9!?+#*-]/gi,
@@ -122,8 +123,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
         const effect = interaction.data?.options?.[0]?.name;
         let text = interaction.data?.options?.[0]?.options?.[0]?.value;
         if (!effect || !text || typeof text !== 'string') {
-            this.bot.logger.handleError('COMMAND FAILED: /text', 'No arguments supplied [Should never happen...]');
-            return null;
+            return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
         }
         if (effect === 'case') {
             return this.#doTextCase(interaction, text);
@@ -131,6 +131,10 @@ export default class TextCommand extends CommandUtils implements ICommand {
         if (effect === 'flip' || effect === 'reverse') {
             text = Array.from(text).reverse().join('');
             if (effect === 'reverse') {
+                if (Array.from(text).length > 1998) {
+                    const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+                    return this.respond(interaction, lengthMsg);
+                }
                 return this.respond(interaction, `🔀 ${text}`);
             }
         }
@@ -153,7 +157,8 @@ export default class TextCommand extends CommandUtils implements ICommand {
             newText = `(ノಠ _ ಠ)ノ︵ ${newText}`;
         }
         if (Array.from(newText).length > 2000) {
-            return this.respond(interaction, '⚠ Text is too long!');
+            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, newText);
     }
@@ -161,8 +166,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     async #doTextCase(interaction: types.Interaction, mode: string) {
         const text = interaction.data?.options?.[0]?.options?.[1]?.value;
         if (!text || typeof text !== 'string') {
-            this.bot.logger.handleError('COMMAND FAILED: /text', 'No arguments supplied [Should never happen...]');
-            return null;
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
         }
         let newText = '';
         switch (mode) {
@@ -217,8 +221,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             }
         }
         if (!newText) {
-            this.bot.logger.handleError('COMMAND FAILED: /text', 'No text supplied [Should never happen...]');
-            return null;
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
         }
         return this.respond(interaction, newText);
     }

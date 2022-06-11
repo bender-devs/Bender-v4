@@ -42,7 +42,7 @@ export interface User extends PartialUser {
     bot?: boolean;
     system?: boolean;
     mfa_enabled?: boolean;
-    locale?: string;
+    locale?: Locale;
     verified?: boolean;
     email?: string;
     flags?: num.USER_FLAGS;
@@ -168,7 +168,7 @@ export type Guild = {
     banner: string | null;
     premium_tier: num.PREMIUM_TIERS;
     premium_subscription_count?: number;
-    preferred_locale: string;
+    preferred_locale: Locale;
     public_updates_channel_id: Snowflake | null;
     max_video_channel_users?: number;
     approximate_member_count?: number;
@@ -648,8 +648,8 @@ export type Interaction = {
     token: string;
     version: 1;
     message?: Message;
-    locale?: string;
-    guild_locale?: string;
+    locale?: Locale;
+    guild_locale?: Locale;
 }
 
 export type InteractionData = {
@@ -703,7 +703,7 @@ export type MessageInteraction = {
 
 /****** application command types ******/
 
-const localeList = [
+export const LOCALE_LIST = [
     'da',    // Danish          Dansk
     'de',    // German          Deutsch
     'en-GB', // English, UK
@@ -735,7 +735,7 @@ const localeList = [
     'zh-TW', // Chinese, Taiwan	繁體中文
     'ko',	 // Korean	        한국어
 ] as const;
-export type Locale = typeof localeList[number];
+export type Locale = typeof LOCALE_LIST[number];
 export type LocaleDict = Record<Locale, string>;
 
 export type CommandBase = {
@@ -1024,7 +1024,7 @@ export type ApplicationTeamMember = {
 
 export type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 
-export type LangMap = Record<string, Lang>;
+export type LangMap = Partial<Record<Locale, Lang>>;
 
 export type Lang = Record<string, string>;
 
