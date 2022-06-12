@@ -628,10 +628,20 @@ export type GatewayInfo = {
 
 export interface GatewayBotInfo extends GatewayInfo {
     shards: number;
-    session_start_limit: {
-        total: number;
-        remaining: number;
-        reset_after: number;
-        max_concurrency: number
-    };
+    session_start_limit: GatewaySessionLimit;
+}
+
+export type GatewaySessionLimit = {
+    total: number;
+    remaining: number;
+    reset_after: number;
+    max_concurrency: number
+}
+
+// used in cache
+export type GatewaySessionLimitHash = {
+    total: string;
+    remaining: string;
+    reset_at: string;
+    max_concurrency: string
 }

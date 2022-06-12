@@ -1,39 +1,38 @@
 {
     "name": "bender",
-    "main": "main.ts",
+    "main": "./dist/main.js",
     "author": "bender-devs",
     "license": "GNU AGPLv3",
     "private": true,
     "repository": "https://github.com/bender-devs/Bender-v4",
     "dependencies": {
-        "chalk": "^4.1.2",
-        "dotenv": "^10.0.0",
-        "express": "^4.17.2",
-        "geo-tz": "^6.0.1",
+        "chalk": "4.1.2",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1",
+        "geo-tz": "^7.0.2",
         "gm": "^1.23.1",
         "jimp": "^0.16.1",
-        "mongodb": "^4.1.1",
-        "redis": "^3.1.2",
-        "superagent": "^6.1.0",
+        "mongodb": "^4.7.0",
+        "redis": "^4.1.0",
+        "superagent": "^7.1.6",
         "tweetnacl": "^1.0.3",
-        "ws": "^8.7.0",
+        "ws": "^8.8.0",
         "zlib-sync": "^0.1.7"
     },
     "scripts": {
-        "preinstall": "npm i --location=global typescript@^4.6.2",
+        "preinstall": "npm i -g typescript@^4.7.3",
         "prestart": "tsc && (cmd /c \"copy src\\.env dist 2>nul\" || bash -c \"cp src/.env dist 2>/dev/null\")",
         "start": "cd dist && node main.js"
     },
     "devDependencies": {
-        "@types/express": "4.17.13",
-        "@types/node": "^16.7.10",
-        "@types/redis": "^2.8.31",
-        "@types/superagent": "^4.1.12",
-        "@types/ws": "^7.4.7",
-        "@typescript-eslint/eslint-plugin": "^5.27.0",
-        "@typescript-eslint/parser": "^5.27.0",
+        "@types/express": "^4.17.13",
+        "@types/node": "^17.0.42",
+        "@types/superagent": "^4.1.15",
+        "@types/ws": "^8.5.3",
+        "@typescript-eslint/eslint-plugin": "^5.27.1",
+        "@typescript-eslint/parser": "^5.27.1",
         "eslint": "^8.17.0",
-        "typescript": "^4.6.2"
+        "typescript": "^4.7.3"
     },
     "packageManager": "yarn@3.2.1"
 }

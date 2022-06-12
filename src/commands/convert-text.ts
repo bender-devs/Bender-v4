@@ -3,7 +3,7 @@ import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
-import * as crypto from 'crypto';
+import { createHash } from 'crypto';
 import LanguageUtils from '../utils/language';
 
 const encodeDecodeMode: types.CommandOption[] = [{
@@ -134,10 +134,8 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     }
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
-        const hasher = crypto.createHash(algorithm);
-        hasher.update(text);
-        const result = hasher.digest('hex');
+        const hash = createHash(algorithm).update(text).digest('hex');
         const computedMsg = LanguageUtils.getAndReplace('COMPUTED_HASH', {}, interaction.locale);
-        return this.respond(interaction, `🗒 ${computedMsg}: \`${result}\``);
+        return this.respond(interaction, `🗒 ${computedMsg}: \`${hash}\``);
     }
 }

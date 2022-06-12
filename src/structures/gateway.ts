@@ -7,11 +7,6 @@ import * as zlib from 'zlib-sync';
 import * as WebSocket from 'ws';
 import TimeUtils from '../utils/time';
 
-declare module 'ws' {
-    // not sure why this wasn't exported from @types/ws
-    type RawData = Buffer | ArrayBuffer | Buffer[];
-}
-
 const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
 
 export default class Gateway extends EventEmitter {
