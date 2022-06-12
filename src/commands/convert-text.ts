@@ -4,7 +4,7 @@ import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import { createHash } from 'crypto';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 
 const encodeDecodeMode: types.CommandOption[] = [{
     type: COMMAND_OPTION_TYPES.STRING,
@@ -91,9 +91,9 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         } else {
             result = Buffer.from(text).toString('base64');
         }
-        const modeMessage = LanguageUtils.getAndReplace(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', {}, interaction.locale);
+        const modeMessage = LangUtils.get(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
+            const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
@@ -125,9 +125,9 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             }
             result = result.trim();
         }
-        const modeMessage = LanguageUtils.getAndReplace(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', {}, interaction.locale);
+        const modeMessage = LangUtils.get(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
+            const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
@@ -135,7 +135,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
         const hash = createHash(algorithm).update(text).digest('hex');
-        const computedMsg = LanguageUtils.getAndReplace('COMPUTED_HASH', {}, interaction.locale);
+        const computedMsg = LangUtils.get('COMPUTED_HASH', interaction.locale);
         return this.respond(interaction, `🗒 ${computedMsg}: \`${hash}\``);
     }
 }

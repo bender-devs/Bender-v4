@@ -2,7 +2,7 @@ import { ICommand, CommandUtils } from '../structures/command';
 import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import TimeUtils from '../utils/time';
 
@@ -45,10 +45,10 @@ export default class PingCommand extends CommandUtils implements ICommand {
 
     getPongMessage(roundtrip: boolean, locale?: types.Locale, millis?: number) {
         if (roundtrip && millis) {
-            return LanguageUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() }, locale);
+            return LangUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() }, locale);
         } else if (roundtrip || !millis) {
-            return LanguageUtils.getAndReplace('PONG_BLANK', {}, locale);
+            return LangUtils.get('PONG_BLANK', locale);
         }
-        return LanguageUtils.getAndReplace('PONG', { millis: millis.toString() }, locale);
+        return LangUtils.getAndReplace('PONG', { millis: millis.toString() }, locale);
     }
 }

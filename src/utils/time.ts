@@ -1,6 +1,6 @@
 import { Locale, Timestamp, UnixTimestampMillis } from '../data/types';
 import { LangKey } from '../text/languageList';
-import LanguageUtils from './language';
+import LangUtils from './language';
 
 const unitMap = {
     MILLISECOND: 1,
@@ -58,9 +58,9 @@ export default class TimeUtils {
 
         const langKey: LangKey = `DURATION_${unitName}${plural ? 'S' : ''}${includeAgo ? '_AGO' : ''}`;
         if (!plural) {
-            return LanguageUtils.get(langKey, locale);
+            return LangUtils.get(langKey, locale);
         }
-		return LanguageUtils.getAndReplace(langKey, { number: number + '' }, locale);
+		return LangUtils.getAndReplace(langKey, { number: number + '' }, locale);
 	}
 
     static formatDate(date: Date | Timestamp | UnixTimestampMillis, locale: Locale = 'en-US') {

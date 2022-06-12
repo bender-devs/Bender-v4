@@ -740,7 +740,7 @@ export const LOCALE_LIST = [
     'ko',	 // Korean	        한국어
 ] as const;
 export type Locale = typeof LOCALE_LIST[number];
-export type LocaleDict = Record<Locale, string>;
+export type LocaleDict = Partial<Record<Locale, string>>;
 
 export type CommandBase = {
     name?: string;

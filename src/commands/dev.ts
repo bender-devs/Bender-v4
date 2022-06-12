@@ -6,7 +6,7 @@ import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../data/numberTypes';
 import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../utils/shardManager';
 import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 import { GatewayData, GatewayPayload } from '../data/gatewayTypes';
 
 export default class DevCommand extends CommandUtils implements ICommand {
@@ -114,7 +114,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            const permMsg = LanguageUtils.getAndReplace('COMMAND_UNAUTHORIZED', {}, interaction.locale);
+            const permMsg = LangUtils.get('COMMAND_UNAUTHORIZED', interaction.locale);
             return this.respond(interaction, permMsg);
         }
         const args = interaction.data?.options;

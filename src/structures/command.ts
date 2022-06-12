@@ -2,7 +2,7 @@ import Bot from './bot';
 import * as types from '../data/types';
 import APIError from './apiError';
 import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../data/numberTypes';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
 import { inspect } from 'util';
@@ -50,8 +50,8 @@ export class CommandUtils {
 
     async handleUnexpectedError(interaction: types.Interaction, messageLangKey: LangKey) {
         const args = interaction.data?.options;
-        const message = LanguageUtils.getAndReplace(messageLangKey, {}, interaction.locale);
-        const supportNotice = LanguageUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {
+        const message = LangUtils.get(messageLangKey, interaction.locale);
+        const supportNotice = LangUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {
             invite: SUPPORT_SERVER
         });
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
