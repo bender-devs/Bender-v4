@@ -67,6 +67,6 @@
     "DURATION_YEARS_AGO": "{{number}} år sedan",
 
     "SINCE_DATE": "sedan {{date}}",
-    "SINCE_DATE_AGO": "sedan {{date}} ({{ago}})",
-    "DATE_AGO": "{{date}} ({{ago}})"
+    "SINCE_DATE_AGO": "sedan {{date}} ({{ago}} sedan)",
+    "DATE_AGO": "{{date}} ({{ago}} sedan)"
 }
