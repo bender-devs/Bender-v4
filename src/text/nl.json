@@ -67,6 +67,6 @@
     "DURATION_YEARS_AGO": "{{number}} jaar geleden",
 
     "SINCE_DATE": "sinds {{date}}",
-    "SINCE_DATE_AGO": "sinds {{date}} ({{ago}})",
-    "DATE_AGO": "{{date}} ({{ago}})"
+    "SINCE_DATE_AGO": "sinds {{date}} ({{ago}} geleden)",
+    "DATE_AGO": "{{date}} ({{ago}} geleden)"
 }
