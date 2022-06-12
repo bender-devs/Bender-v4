@@ -10,7 +10,7 @@ export default class PingCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
         super(bot, path.parse(__filename).name);
     }
-    
+
     readonly dm_permission: boolean = true;
     readonly description = 'Test whether the bot is responsive.';
     readonly options: types.CommandOption[] = [{
@@ -47,7 +47,7 @@ export default class PingCommand extends CommandUtils implements ICommand {
         if (roundtrip && millis) {
             return LanguageUtils.getAndReplace('PONG_ROUNDTRIP', { millis: millis.toString() }, locale);
         } else if (roundtrip || !millis) {
-            return LanguageUtils.get('PONG_BLANK', locale);
+            return LanguageUtils.getAndReplace('PONG_BLANK', {}, locale);
         }
         return LanguageUtils.getAndReplace('PONG', { millis: millis.toString() }, locale);
     }

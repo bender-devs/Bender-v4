@@ -31,7 +31,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
         super(bot, path.parse(__filename).name);
     }
-    
+
     readonly dm_permission: boolean = true;
     readonly description = 'Apply effects to text.';
     readonly options: types.CommandOption[] = [{
@@ -132,7 +132,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             text = Array.from(text).reverse().join('');
             if (effect === 'reverse') {
                 if (Array.from(text).length > 1998) {
-                    const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+                    const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
                     return this.respond(interaction, lengthMsg);
                 }
                 return this.respond(interaction, `🔀 ${text}`);
@@ -157,7 +157,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             newText = `(ノಠ _ ಠ)ノ︵ ${newText}`;
         }
         if (Array.from(newText).length > 2000) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, newText);
@@ -166,7 +166,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     async #doTextCase(interaction: types.Interaction, mode: string) {
         const text = interaction.data?.options?.[0]?.options?.[1]?.value;
         if (!text || typeof text !== 'string') {
-            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         let newText = '';
         switch (mode) {
@@ -202,13 +202,13 @@ export default class TextCommand extends CommandUtils implements ICommand {
                 break;
             }
             case 'title': {
-                newText = text.replace(/\w\S*/g, function(txt) {
+                newText = text.replace(/\w\S*/g, function (txt) {
                     return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
                 });
                 break;
             }
             case 'switch': {
-                for(const char of text) {
+                for (const char of text) {
                     if (/[a-z]/.test(char)) {
                         newText += char.toUpperCase();
                     } else if (/[A-Z]/.test(char)) {
@@ -221,7 +221,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             }
         }
         if (!newText) {
-            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         return this.respond(interaction, newText);
     }

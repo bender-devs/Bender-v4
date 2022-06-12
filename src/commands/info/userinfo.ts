@@ -9,7 +9,7 @@ import MiscUtils from '../../utils/misc';
 import TimeUtils from '../../utils/time';
 import InfoCommand from '../info';
 
-export default async function(this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
+export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
     if (!userID || typeof userID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
@@ -35,19 +35,19 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
         color: user.accent_color || DEFAULT_COLOR,
         footer: { text: `ID: ${user.id}` }
     };
-    let userRank = LanguageUtils.get(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, interaction.locale);
+    let userRank = LanguageUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {}, interaction.locale);
     let boostStatus = '', joinDate = '', roles = '', nickInfo = '';
     let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
     if (guild) {
         const isOwner = user.id === guild.owner_id;
         if (isOwner) {
-            userRank = LanguageUtils.get('USER_INFO_OWNER', interaction.locale);
+            userRank = LanguageUtils.getAndReplace('USER_INFO_OWNER', {}, interaction.locale);
         }
         if (member) {
-            
-            const noRolesText = LanguageUtils.get('NO_ROLES', interaction.locale);
+
+            const noRolesText = LanguageUtils.getAndReplace('NO_ROLES', {}, interaction.locale);
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
-            const joinedAtText = LanguageUtils.get('JOINED_AT', interaction.locale);
+            const joinedAtText = LanguageUtils.getAndReplace('JOINED_AT', {}, interaction.locale);
             const joinDuration = TimeUtils.sinceTimestamp(member.joined_at);
             const joinedDate = TimeUtils.formatDate(member.joined_at, interaction.locale);
             const joinedAgo = TimeUtils.formatDuration(joinDuration, true, interaction.locale);
@@ -75,7 +75,7 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
                     roles = '\n\n' + sortedRoles.map(role => `<@&${role.id}>`).join(', ');
                 }
             } else if (!isOwner) {
-                userRank = LanguageUtils.get('USER_INFO_MEMBER', interaction.locale);
+                userRank = LanguageUtils.getAndReplace('USER_INFO_MEMBER', {}, interaction.locale);
             }
             if (roleList && !user.accent_color) {
                 let color = DiscordTypeUtils.member.getColor(member, roleList);
@@ -103,16 +103,16 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
             }
         }
     }
-    const createdAtText = LanguageUtils.get('CREATED_AT', interaction.locale);
+    const createdAtText = LanguageUtils.getAndReplace('CREATED_AT', {}, interaction.locale);
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
     const createdDuration = TimeUtils.sinceMillis(createdAt);
     const createdDate = TimeUtils.formatDate(createdAt, interaction.locale);
-    const createdAgo = TimeUtils.formatDuration(createdDuration, true, interaction.locale); 
+    const createdAgo = TimeUtils.formatDuration(createdDuration, true, interaction.locale);
     const creationInfo = `**${createdAtText}:** ${createdDate} (${createdAgo})`;
 
-    const bannerNote = user.banner ? `\n\n**${LanguageUtils.get('BANNER', interaction.locale)}:**` : '';
+    const bannerNote = user.banner ? `\n\n**${LanguageUtils.getAndReplace('BANNER', {}, interaction.locale)}:**` : '';
 
-    const unknownStatus = LanguageUtils.get('UNKNOWN_STATUS', interaction.locale);
+    const unknownStatus = LanguageUtils.getAndReplace('UNKNOWN_STATUS', {}, interaction.locale);
     const userStatus = `*${unknownStatus}*`; // TODO: get user presence when possible
 
     const description = MiscUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');

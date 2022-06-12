@@ -13,7 +13,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
         super(bot, path.parse(__filename).name);
     }
-    
+
     readonly dm_permission: boolean = true;
     readonly description = 'Super secret developer stuff';
     readonly options: types.CommandOption[] = [{
@@ -114,7 +114,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            const permMsg = LanguageUtils.get('COMMAND_UNAUTHORIZED', interaction.locale);
+            const permMsg = LanguageUtils.getAndReplace('COMMAND_UNAUTHORIZED', {}, interaction.locale);
             return this.respond(interaction, permMsg);
         }
         const args = interaction.data?.options;
@@ -163,7 +163,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                             d: data as GatewayData,
                             s: null,
                             t: null
-                        })
+                        });
                         return this.respond(interaction, '📤 Gateway event sent.');
                     }
                     case 'receive': {
@@ -184,7 +184,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     }
                 }
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
-            } 
+            }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');
     }

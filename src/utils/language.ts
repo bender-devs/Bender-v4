@@ -12,10 +12,10 @@ export default class LanguageUtils {
     }
 
     static getAndReplace(id: LangKey, replaceMap: types.ReplaceMap = {}, langID: Locale = 'en-US'): string {
-        let text = LanguageUtils.get(id, langID);
+        let text = LanguageUtils.get(id, langID) || LanguageUtils.get(id, 'en-US');
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
-            text = text.replace(replaceRegex, replaceMap[key])
+            text = text.replace(replaceRegex, replaceMap[key]);
         }
         return text;
     }

@@ -18,7 +18,7 @@ export class CommandUtils {
     bot: Bot;
     name: string;
 
-    constructor (bot: Bot, name: string) {
+    constructor(bot: Bot, name: string) {
         this.bot = bot;
         this.name = name;
     }
@@ -50,12 +50,12 @@ export class CommandUtils {
 
     async handleUnexpectedError(interaction: types.Interaction, messageLangKey: LangKey) {
         const args = interaction.data?.options;
-        const message = LanguageUtils.get(messageLangKey, interaction.locale);
+        const message = LanguageUtils.getAndReplace(messageLangKey, {}, interaction.locale);
         const supportNotice = LanguageUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {
             invite: SUPPORT_SERVER
-        })
+        });
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
         this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69));
-        return this.respond(interaction, `❌ ${message}\n${supportNotice}`)
+        return this.respond(interaction, `❌ ${message}\n${supportNotice}`);
     }
 }

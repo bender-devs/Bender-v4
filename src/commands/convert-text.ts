@@ -26,7 +26,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     constructor(bot: Bot) {
         super(bot, path.parse(__filename).name);
     }
-    
+
     readonly dm_permission: boolean = true;
     readonly description = 'Convert text between formats.';
     readonly options: types.CommandOption[] = [{
@@ -91,9 +91,9 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         } else {
             result = Buffer.from(text).toString('base64');
         }
-        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', interaction.locale);
+        const modeMessage = LanguageUtils.getAndReplace(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', {}, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
@@ -125,9 +125,9 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             }
             result = result.trim();
         }
-        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', interaction.locale);
+        const modeMessage = LanguageUtils.getAndReplace(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', {}, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
+            const lengthMsg = LanguageUtils.getAndReplace('TEXT_TOO_LONG', {}, interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
         return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
@@ -137,7 +137,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         const hasher = crypto.createHash(algorithm);
         hasher.update(text);
         const result = hasher.digest('hex');
-        const computedMsg = LanguageUtils.get('COMPUTED_HASH', interaction.locale);
+        const computedMsg = LanguageUtils.getAndReplace('COMPUTED_HASH', {}, interaction.locale);
         return this.respond(interaction, `🗒 ${computedMsg}: \`${result}\``);
     }
 }
