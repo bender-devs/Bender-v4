@@ -13,26 +13,36 @@
 
     "TEXT_TOO_LONG": "⚠ Tekst is te lang!",
     
-    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
-    "PONG_BLANK": "🏓 Pong!",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)",
+    "PONG_API": "🏓 Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
-    "ENCODED_BINARY": "Gecodeerde binary",
-    "DECODED_BINARY": "Ongecodeerde binary",
-    "ENCODED_BASE64": "Gecodeerde base64",
-    "DECODED_BASE64": "Ongecodeerde base64",
-    "COMPUTED_HASH": "Berekende hash",
+
+    
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binary",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Gecodeerde binary:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Ongecodeerde binary:",
+
+    "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Gecodeerde base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Ongecodeerde base64:",
+
+    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berekende hash:",
+
+
 
     "USER_INFO_BOT": "🤖 Robot",
     "USER_INFO_HUMAN": "👤 Mens",
     "USER_INFO_OWNER": "👑 Server Eigenaar",
     "USER_INFO_MEMBER": "👤 Lid",
-    "JOINED_AT": "Lid geworden op",
-    "CREATED_AT": "Gecreeërd op",
-    "BANNER": "Banner",
-    "NO_ROLES": "Lid heeft geen rollen.",
-    "UNKNOWN_STATUS": "Onbekende status",
+    "USER_INFO_UNKNOWN_STATUS": "*Onbekende status*",
+    "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{date}} ({{ago}} geleden)",
+    "USER_INFO_JOINED_AT": "**Lid geworden op:** {{date}} ({{ago}} geleden)",
+    "USER_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} geleden)",
+    "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
+    "USER_INFO_BANNER": "**Banner:**",
 
+
+    
     "DURATION_MILLISECOND": "1 milliseconde",
     "DURATION_MILLISECONDS": "{{number}} milliseconden",
     "DURATION_MILLISECOND_AGO": "1 milliseconde geleden",
@@ -64,9 +74,5 @@
     "DURATION_YEAR": "1 jaar",
     "DURATION_YEARS": "{{number}} jaar",
     "DURATION_YEAR_AGO": "1 jaar geleden",
-    "DURATION_YEARS_AGO": "{{number}} jaar geleden",
-
-    "SINCE_DATE": "sinds {{date}}",
-    "SINCE_DATE_AGO": "sinds {{date}} ({{ago}} geleden)",
-    "DATE_AGO": "{{date}} ({{ago}} geleden)"
+    "DURATION_YEARS_AGO": "{{number}} jaar geleden"
 }

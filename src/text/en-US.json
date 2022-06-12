@@ -9,29 +9,33 @@
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Not all subcommands or required arguments supplied.",
     "INVALID_SUBCOMMAND": "Invalid subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
-    "STRINGIFYING_FAILED": "Error stringifying payload,",
+    "STRINGIFYING_FAILED": "Error stringifying payload.",
 
     "TEXT_TOO_LONG": "⚠ Text is too long!",
     
-    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
-    "PONG_BLANK": "🏓 Pong!",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)",
+    "PONG_API": "🏓 Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
-    "ENCODED_BINARY": "Encoded binary",
-    "DECODED_BINARY": "Decoded binary",
-    "ENCODED_BASE64": "Encoded base64",
-    "DECODED_BASE64": "Decoded base64",
-    "COMPUTED_HASH": "Computed hash",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binary",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Encoded binary:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Decoded binary:",
+
+    "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Encoded base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Decoded base64:",
+
+    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Computed hash:",
 
     "USER_INFO_BOT": "🤖 Bot",
     "USER_INFO_HUMAN": "👤 Human",
     "USER_INFO_OWNER": "👑 Server Owner",
     "USER_INFO_MEMBER": "👤 Member",
-    "JOINED_AT": "Joined at",
-    "CREATED_AT": "Created at",
-    "BANNER": "Banner",
-    "NO_ROLES": "Member has no roles.",
-    "UNKNOWN_STATUS": "Unknown status",
+    "USER_INFO_UNKNOWN_STATUS": "*Unknown status*",
+    "USER_INFO_BOOST_INFO": "**Server Booster** since {{date}} ({{ago}} ago)",
+    "USER_INFO_JOINED_AT": "**Joined at:** {{date}} ({{ago}} ago)",
+    "USER_INFO_CREATED_AT": "**Created at:** {{date}} ({{ago}} ago)",
+    "USER_INFO_NO_ROLES": "*Member has no roles.*",
+    "USER_INFO_BANNER": "**Banner:**",
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
@@ -64,9 +68,5 @@
     "DURATION_YEAR": "1 year",
     "DURATION_YEARS": "{{number}} years",
     "DURATION_YEAR_AGO": "1 year ago",
-    "DURATION_YEARS_AGO": "{{number}} years ago",
-
-    "SINCE_DATE": "since {{date}}",
-    "SINCE_DATE_AGO": "since {{date}} ({{ago}} ago)",
-    "DATE_AGO": "{{date}} ({{ago}} ago)"
+    "DURATION_YEARS_AGO": "{{number}} years ago"
 }

@@ -91,12 +91,12 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         } else {
             result = Buffer.from(text).toString('base64');
         }
-        const modeMessage = LangUtils.get(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', interaction.locale);
-        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
+        const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BASE64`, interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
             const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
-        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
     }
 
     #binary(interaction: types.Interaction, mode: string, text: string) {
@@ -125,17 +125,17 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             }
             result = result.trim();
         }
-        const modeMessage = LangUtils.get(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', interaction.locale);
-        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
+        const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BINARY`, interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
             const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
             return this.respond(interaction, lengthMsg);
         }
-        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
     }
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
         const hash = createHash(algorithm).update(text).digest('hex');
-        const computedMsg = LangUtils.get('COMPUTED_HASH', interaction.locale);
-        return this.respond(interaction, `🗒 ${computedMsg}: \`${hash}\``);
+        const computedMsg = LangUtils.get('CONVERT_TEXT_COMPUTED_HASH', interaction.locale);
+        return this.respond(interaction, `${computedMsg} \`${hash}\``);
     }
 }

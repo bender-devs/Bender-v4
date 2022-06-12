@@ -44,14 +44,15 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             userRank = LangUtils.get('USER_INFO_OWNER', interaction.locale);
         }
         if (member) {
-
-            const noRolesText = LangUtils.get('NO_ROLES', interaction.locale);
+            const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
-            const joinedAtText = LangUtils.get('JOINED_AT', interaction.locale);
             const joinDuration = TimeUtils.sinceTimestamp(member.joined_at);
             const joinedDate = TimeUtils.formatDate(member.joined_at, interaction.locale);
             const joinedAgo = TimeUtils.formatDuration(joinDuration, true, interaction.locale);
-            joinDate = `\n**${joinedAtText}:** ${joinedDate} (${joinedAgo})`;
+            joinDate = '\n' + LangUtils.getAndReplace('USER_INFO_JOINED_AT', {
+                date: joinedDate,
+                ago: joinedAgo
+            }, interaction.locale)
 
             const roleList = await this.bot.fetch.guildRoles(guild.id);
             if (roleList && member.roles.length) {
@@ -91,7 +92,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                 const duration = TimeUtils.sinceTimestamp(member.premium_since);
                 const date = TimeUtils.formatDate(member.premium_since, interaction.locale);
                 const ago = TimeUtils.formatDuration(duration, true, interaction.locale);
-                boostStatus = '\n\n' + LangUtils.getAndReplace('SINCE_DATE_AGO', { date, ago }, interaction.locale);
+                boostStatus = '\n\n' + LangUtils.getAndReplace('USER_INFO_BOOST_INFO', { date, ago }, interaction.locale);
             }
 
             if (member.nick) {
@@ -103,17 +104,19 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
         }
     }
-    const createdAtText = LangUtils.get('CREATED_AT', interaction.locale);
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
     const createdDuration = TimeUtils.sinceMillis(createdAt);
     const createdDate = TimeUtils.formatDate(createdAt, interaction.locale);
     const createdAgo = TimeUtils.formatDuration(createdDuration, true, interaction.locale);
-    const creationInfo = `**${createdAtText}:** ${createdDate} (${createdAgo})`;
+    const creationInfo = LangUtils.getAndReplace('USER_INFO_CREATED_AT', {
+        date: createdDate,
+        ago: createdAgo
+    }, interaction.locale);
 
-    const bannerNote = user.banner ? `\n\n**${LangUtils.get('BANNER', interaction.locale)}:**` : '';
+    const bannerNote = user.banner ? `\n\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}` : '';
 
-    const unknownStatus = LangUtils.get('UNKNOWN_STATUS', interaction.locale);
-    const userStatus = `*${unknownStatus}*`; // TODO: get user presence when possible
+    const unknownStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
+    const userStatus = unknownStatus; // TODO: get user presence when possible
 
     const description = MiscUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = description + bannerNote;
