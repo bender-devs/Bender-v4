@@ -771,7 +771,9 @@ export type CommandOptionValue = CommandOption | string | number | boolean;
 export type CommandOption = {
     type: num.COMMAND_OPTION_TYPES;
     name: string;
+    name_localizations?: LocaleDict;
     description: string;
+    description_localizations?: LocaleDict;
     required?: boolean;
     choices?: CommandOptionChoice[];
     options?: CommandOption[];
@@ -783,6 +785,7 @@ export type CommandOption = {
 
 export type CommandOptionChoice = {
     name: string;
+    name_localizations?: LocaleDict;
     value: string | number;
 }
 

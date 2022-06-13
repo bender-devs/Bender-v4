@@ -1,5 +1,4 @@
 import { ICommand, CommandUtils } from '../structures/command';
-import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
@@ -27,13 +26,19 @@ const textOpt: types.CommandOption = {
     required: true
 };
 
+// this command not localized as it only supports English characters
+
 export default class TextCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
-        super(bot, path.parse(__filename).name);
+        super(bot, LangUtils.get('TEXT_NAME'));
     }
+    readonly name_localizations = LangUtils.getLocalizationMap('TEXT_NAME');
+
+    readonly description = LangUtils.get('TEXT_DESCRIPTION');
+    readonly description_localizations = LangUtils.getLocalizationMap('TEXT_DESCRIPTION');
 
     readonly dm_permission: boolean = true;
-    readonly description = 'Apply effects to text.';
+
     readonly options: types.CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'case',

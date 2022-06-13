@@ -1,5 +1,4 @@
 import { ICommand, CommandUtils } from '../structures/command';
-import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import LangUtils from '../utils/language';
@@ -7,11 +6,14 @@ import TimeUtils from '../utils/time';
 
 export default class PingCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
-        super(bot, path.parse(__filename).name);
+        super(bot, LangUtils.get('PING_NAME'));
     }
+    readonly name_localizations = LangUtils.getLocalizationMap('PING_NAME');
+
+    readonly description = LangUtils.get('PING_DESCRIPTION');
+    readonly description_localizations = LangUtils.getLocalizationMap('PING_DESCRIPTION');
 
     readonly dm_permission: boolean = true;
-    readonly description = 'Test whether the bot is responsive.';
 
     run(interaction: types.Interaction): types.CommandResponse {
         const pongMessage = this.getPongMessage(interaction.locale);
