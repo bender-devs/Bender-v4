@@ -1,7 +1,7 @@
 import { Emoji, Snowflake, UnixTimestamp } from '../data/types';
 
 function getRegex(chars: string, exact: boolean, timestamp = false) {
-    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1-16' : '17-19'}})${timestamp ? '(:[tTdDfFR])?' : ''}${exact ? '$' : ''}>`);
+    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`);
 }
 
 export type TimestampFormat = 't' | 'T' | 'd' | 'D' | 'f' | 'F' | 'R';
@@ -64,8 +64,8 @@ export default class TextFormatUtils {
                 animated: !!matches[1]
             }
         },
-        parse: (emoji: Emoji): string => {
-            return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>`;
+        parse: (emoji: Emoji, addZeroWidth = false): string => {
+            return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}${addZeroWidth ? '\u200B' : ''}>`;
         }
     }
 

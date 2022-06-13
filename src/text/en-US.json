@@ -12,6 +12,7 @@
     "STRINGIFYING_FAILED": "Error stringifying payload.",
 
     "TEXT_TOO_LONG": "⚠ Text is too long!",
+    "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
     
 
 
@@ -85,6 +86,18 @@
     "USER_INFO_NO_ROLES": "*Member has no roles.*",
     "USER_INFO_BANNER": "**Banner:**",
 
+    "EMOJI_INFO_SUBCOMMAND": "emoji",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Show information about an emoji.",
+    "EMOJI_INFO_OPTION": "emoji",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "The emoji to show info about.",
+
+    "EMOJI_INFO_TITLE": "Emoji info - :{{emojiName}}:",
+    "EMOJI_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
+    "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`\n^ *can be used to put emojis where there's no autocomplete, such as channel topics*",
+    "EMOJI_INFO_MANAGED": "\\ℹ *This emoji is managed by an external service (such as Twitch.)*",
+    "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
+    "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
+    "EMOJI_INFO_LINK": "🔗 View emoji in browser",
 
 
     "DURATION_MILLISECOND": "1 millisecond",

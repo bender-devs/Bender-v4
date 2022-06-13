@@ -327,6 +327,15 @@ export default class CacheHandler {
                 return;
             }
             delete this.#guilds[guild_id].emojis[emoji_id];
+        },
+        find: (emoji_id: types.Snowflake): types.Emoji | null => {
+            let guildID: types.Snowflake;
+            for (guildID in this.#guilds) {
+                if (this.#guilds[guildID].emojis?.[emoji_id]) {
+                    return this.#guilds[guildID].emojis[emoji_id];
+                }
+            }
+            return null;
         }
     }
 
