@@ -1031,7 +1031,7 @@ export type ApplicationTeamMember = {
 
 export type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 
-export type LangMap = Partial<Record<Locale, Lang>>;
+export type LangMap = { [key: string]: Lang };
 
 export type Lang = Record<string, string>;
 

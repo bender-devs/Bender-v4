@@ -40,6 +40,21 @@ export default class Logger {
         console.log(shardMarkup + moduleMarkup, ...args);
     }
 
+    warn(...args: unknown[]): void {
+        const shardMarkup = this.#getShardMarkup();
+        if (shardMarkup) {
+            return console.warn(shardMarkup, ...args);
+        }
+        console.warn(...args);
+    }
+
+    moduleWarn(moduleName: string, ...args: unknown[]): void {
+        const color = this.#getColor(moduleName);
+        const moduleMarkup = chalk.hex(color).bold(`[${moduleName}]`);
+        const shardMarkup = this.#getShardMarkup();
+        console.warn(shardMarkup + moduleMarkup, ...args);
+    }
+
     debug(moduleName: string, ...args: unknown[]): void {
         if (!CONSTANTS.DEBUG) {
             return;
