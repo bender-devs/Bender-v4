@@ -28,7 +28,7 @@ export default class TimeUtils {
         return Date.now() - timestampMs;
     }
 
-    static formatDuration(duration: number, includeAgo: boolean, locale?: Locale) {
+    static formatDuration(duration: number, locale?: Locale) {
 		let unit = 1, unitName: UnitName = 'MILLISECOND';
         if (duration >= unitMap.YEAR) {
             unit = unitMap.YEAR;
@@ -56,7 +56,7 @@ export default class TimeUtils {
         const number = Math.floor(duration / unit);
         const plural = number !== 1;
 
-        const langKey: LangKey = `DURATION_${unitName}${plural ? 'S' : ''}${includeAgo ? '_AGO' : ''}`;
+        const langKey: LangKey = `DURATION_${unitName}${plural ? 'S' : ''}`;
         if (!plural) {
             return LangUtils.get(langKey, locale);
         }

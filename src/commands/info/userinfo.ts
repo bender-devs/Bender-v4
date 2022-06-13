@@ -48,7 +48,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
             const joinDuration = TimeUtils.sinceTimestamp(member.joined_at);
             const joinedDate = TimeUtils.formatDate(member.joined_at, interaction.locale);
-            const joinedAgo = TimeUtils.formatDuration(joinDuration, true, interaction.locale);
+            const joinedAgo = TimeUtils.formatDuration(joinDuration, interaction.locale);
             joinDate = '\n' + LangUtils.getAndReplace('USER_INFO_JOINED_AT', {
                 date: joinedDate,
                 ago: joinedAgo
@@ -91,7 +91,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             if (member.premium_since) {
                 const duration = TimeUtils.sinceTimestamp(member.premium_since);
                 const date = TimeUtils.formatDate(member.premium_since, interaction.locale);
-                const ago = TimeUtils.formatDuration(duration, true, interaction.locale);
+                const ago = TimeUtils.formatDuration(duration, interaction.locale);
                 boostStatus = '\n\n' + LangUtils.getAndReplace('USER_INFO_BOOST_INFO', { date, ago }, interaction.locale);
             }
 
@@ -107,7 +107,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
     const createdDuration = TimeUtils.sinceMillis(createdAt);
     const createdDate = TimeUtils.formatDate(createdAt, interaction.locale);
-    const createdAgo = TimeUtils.formatDuration(createdDuration, true, interaction.locale);
+    const createdAgo = TimeUtils.formatDuration(createdDuration, interaction.locale);
     const creationInfo = LangUtils.getAndReplace('USER_INFO_CREATED_AT', {
         date: createdDate,
         ago: createdAgo
