@@ -6,7 +6,6 @@ import CDNUtils from '../../utils/cdn';
 import DiscordTypeUtils from '../../utils/discordTypes';
 import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';
-import TimeUtils from '../../utils/time';
 import InfoCommand from '../info';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
@@ -46,13 +45,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         if (member) {
             const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
-            const joinDuration = TimeUtils.sinceTimestamp(member.joined_at);
-            const joinedDate = TimeUtils.formatDate(member.joined_at, interaction.locale);
-            const joinedAgo = TimeUtils.formatDuration(joinDuration, interaction.locale);
-            joinDate = '\n' + LangUtils.getAndReplace('USER_INFO_JOINED_AT', {
-                date: joinedDate,
-                ago: joinedAgo
-            }, interaction.locale)
+            joinDate = '\n' + LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale);
 
             const roleList = await this.bot.fetch.guildRoles(guild.id);
             if (roleList && member.roles.length) {
@@ -89,10 +82,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
 
             if (member.premium_since) {
-                const duration = TimeUtils.sinceTimestamp(member.premium_since);
-                const date = TimeUtils.formatDate(member.premium_since, interaction.locale);
-                const ago = TimeUtils.formatDuration(duration, interaction.locale);
-                boostStatus = '\n\n' + LangUtils.getAndReplace('USER_INFO_BOOST_INFO', { date, ago }, interaction.locale);
+                boostStatus = '\n\n' + LangUtils.formatDateAgo('USER_INFO_BOOST_INFO', member.premium_since, interaction.locale);
             }
 
             if (member.nick) {
@@ -105,13 +95,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
     }
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
-    const createdDuration = TimeUtils.sinceMillis(createdAt);
-    const createdDate = TimeUtils.formatDate(createdAt, interaction.locale);
-    const createdAgo = TimeUtils.formatDuration(createdDuration, interaction.locale);
-    const creationInfo = LangUtils.getAndReplace('USER_INFO_CREATED_AT', {
-        date: createdDate,
-        ago: createdAgo
-    }, interaction.locale);
+    const creationInfo = LangUtils.formatDateAgo('USER_INFO_CREATED_AT', createdAt, interaction.locale);
 
     const bannerNote = user.banner ? `\n\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}` : '';
 

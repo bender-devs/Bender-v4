@@ -3,6 +3,7 @@ import languages, { LangKey } from '../text/languageList';
 import * as types from '../data/types';
 import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
+import TimeUtils from './time';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -27,6 +28,19 @@ export default class LanguageUtils {
             text = text.replace(replaceRegex, replaceMap[key]);
         }
         return text;
+    }
+
+    static formatDateAgo(key: LangKey, timestamp: types.Timestamp | types.UnixTimestampMillis, locale?: Locale) {
+        if (typeof timestamp === 'string') {
+            timestamp = TimeUtils.parseTimestampMillis(timestamp);
+        }
+        const duration = TimeUtils.sinceMillis(timestamp);
+        const formattedDate = TimeUtils.formatDate(timestamp, locale);
+        const formattedDuration = TimeUtils.formatDuration(duration, locale);
+        return LanguageUtils.getAndReplace(key, {
+            date: formattedDate,
+            ago: formattedDuration
+        }, locale);
     }
 
     static discordSupportsLocale(locale: Locale): boolean {
