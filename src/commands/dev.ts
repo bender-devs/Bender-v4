@@ -119,8 +119,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            const permMsg = LangUtils.get('COMMAND_UNAUTHORIZED', interaction.locale);
-            return this.respond(interaction, permMsg);
+            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED');
         }
         const args = interaction.data?.options;
         if (!args) {

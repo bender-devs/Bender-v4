@@ -47,6 +47,6 @@ export default class InfoCommand extends CommandUtils implements ICommand {
             case 'user':
                 return userInfoSubcommand.bind(this)(interaction, target);
         }
-        return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
+        return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
 }

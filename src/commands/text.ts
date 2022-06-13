@@ -137,8 +137,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             text = Array.from(text).reverse().join('');
             if (effect === 'reverse') {
                 if (Array.from(text).length > 1998) {
-                    const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
-                    return this.respond(interaction, lengthMsg);
+                    return this.respondKey(interaction, 'TEXT_TOO_LONG');
                 }
                 return this.respond(interaction, `🔀 ${text}`);
             }
@@ -162,8 +161,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             newText = `(ノಠ _ ಠ)ノ︵ ${newText}`;
         }
         if (Array.from(newText).length > 2000) {
-            const lengthMsg = LangUtils.get('TEXT_TOO_LONG', interaction.locale);
-            return this.respond(interaction, lengthMsg);
+            return this.respondKey(interaction, 'TEXT_TOO_LONG');
         }
         return this.respond(interaction, newText);
     }

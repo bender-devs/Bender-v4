@@ -33,6 +33,11 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
+    async respondKey(interaction: types.Interaction, messageLangKey: LangKey) {
+        const content = LangUtils.get(messageLangKey, interaction.locale);
+        return this.respond(interaction, content);
+    }
+
     async respondEmbed(interaction: types.Interaction, embed: types.Embed) {
         return this.bot.api.interaction.sendResponse(interaction, {
             type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
