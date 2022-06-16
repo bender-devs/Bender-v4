@@ -2,7 +2,7 @@ import Bot from './bot';
 import * as gatewayTypes from '../data/gatewayTypes';
 import { CLIENT_STATE } from '../data/numberTypes';
 import events from '../data/eventTypes';
-import { EventHandler, NON_WAITING_EVENTS } from '../data/types';
+import { EventHandler } from '../data/types';
 
 import dummy_event from '../events/_dummy';
 import channel_create from '../events/channel_create';
@@ -165,8 +165,8 @@ export default class EventManager {
         this.webhooks_update = new dummy_event(this.bot, 'webhooks_update');
     }
 
-    handleEvent(eventHandler: EventHandler<gatewayTypes.EventData>, eventData: gatewayTypes.EventData, requireReadyState = true) {
-        if (requireReadyState && this.bot.state !== CLIENT_STATE.ALIVE) {
+    handleEvent(eventHandler: EventHandler<gatewayTypes.EventData>, eventData: gatewayTypes.EventData) {
+        if (eventHandler.requiresReady && this.bot.state !== CLIENT_STATE.ALIVE) {
             this.bot.logger.debug(eventHandler.name, 'skipped due to client not ready');
             return null;
         }
@@ -180,8 +180,9 @@ export default class EventManager {
     addAllListeners() {
         for (const eventName of events) { // add all events
             const lowercaseEventName = eventName.toLowerCase() as gatewayTypes.LowercaseEventName;
-            const requireReadyState = !NON_WAITING_EVENTS.includes(eventName);
-            this.bot.on(eventName, (eventData: gatewayTypes.EventData) => this.handleEvent(this[lowercaseEventName] as EventHandler<gatewayTypes.EventData>, eventData, requireReadyState))
+            this.bot.on(eventName, (eventData: gatewayTypes.EventData) =>
+                this.handleEvent(this[lowercaseEventName] as EventHandler<gatewayTypes.EventData>, eventData)
+            );
         }
     }
 }

@@ -1092,11 +1092,13 @@ export type TimeoutList = {
 
 /*** event handler types ***/
 
-export type EventHandlerFunction<T extends EventData> = (event: T) => void; // wanted to use event: EventData here but ts is shit
+export type EventHandlerFunction<T extends EventData> = (event: T) => void;
 
 export class EventHandler<T extends EventData> {
     bot: Bot;
     name: EventName;
+    requiresReady = false; // TODO: for production use, default should be true
+
     cacheHandler?: EventHandlerFunction<T>;
     handler!: EventHandlerFunction<T>;
 
@@ -1105,8 +1107,6 @@ export class EventHandler<T extends EventData> {
         this.bot = bot;
     }
 }
-
-export const NON_WAITING_EVENTS: EventName[] = ['READY', 'RESUMED'];
 
 /*** permission types ***/
 
