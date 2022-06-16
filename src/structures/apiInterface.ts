@@ -418,4 +418,27 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
+
+    autoMod = {
+        list: async (guild_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.list(guild_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        fetch: async (guild_id: types.Snowflake, rule_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.fetch(guild_id, rule_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        create: async (guild_id: types.Snowflake, rule_data: types.AutoModRuleData) => {
+            return APIWrapper.autoModRule.create(guild_id, rule_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        edit: async (guild_id: types.Snowflake, rule_id: types.Snowflake, rule_data: types.AutoModRuleEditData) => {
+            return APIWrapper.autoModRule.edit(guild_id, rule_id, rule_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        delete: async (guild_id: types.Snowflake, rule_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.delete(guild_id, rule_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
 }

@@ -44,7 +44,7 @@ export interface EventPayload extends GatewayPayload {
     s: number;
     t: EventName;
 }
-export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | CommandPermissionsUpdateData | InteractionCreateData | StageInstanceUpdateData;
+export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | CommandPermissionsUpdateData | InteractionCreateData | StageInstanceUpdateData | AutoModUpdateData | AutoModExecuteData;
 
 /****** ready ******/
 
@@ -480,6 +480,34 @@ export interface StageInstanceUpdatePayload extends EventPayload {
 }
 
 export type StageInstanceUpdateData = types.StageInstance;
+
+/****** automod ******/
+
+export interface AutoModUpdatePayload extends EventPayload {
+    t: 'AUTO_MODERATION_RULE_CREATE' | 'AUTO_MODERATION_RULE_UPDATE' | 'AUTO_MODERATION_RULE_DELETE';
+    d: AutoModUpdateData;
+}
+
+export type AutoModUpdateData = types.AutoModRule;
+
+export interface AutoModExecutePayload extends EventPayload {
+    t: 'AUTO_MODERATION_RULE_EXECUTION';
+    d: AutoModExecuteData;
+}
+
+export type AutoModExecuteData = {
+    guild_id: types.Snowflake;
+    action: types.AutoModAction;
+    rule_id: types.Snowflake;
+    rule_trigger_type: num.AUTOMOD_TRIGGER_TYPES;
+    user_id: types.Snowflake;
+    channel_id?: types.Snowflake;
+    message_id?: types.Snowflake;
+    alert_system_message_id?: types.Snowflake;
+    content: string;
+    matched_keyword: string | null;
+    matched_content: string | null;
+}
 
 
 

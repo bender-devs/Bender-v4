@@ -529,6 +529,36 @@ export default class APIWrapper {
         },
     }
 
+    static autoModRule = {
+        async list(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.AutoModRule[]>('GET', `/guilds/${guild_id}/auto-moderation/rules`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async fetch(guild_id: types.Snowflake, rule_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.AutoModRule>('GET', `/guilds/${guild_id}/auto-moderation/rules/${rule_id}`, {
+                headers: AUTH_HEADER
+            });
+        },
+        async create(guild_id: types.Snowflake, rule_data: types.AutoModRuleData) {
+            return APIWrapper.makeRequest<types.AutoModRule>('POST', `/guilds/${guild_id}/auto-moderation/rules`, {
+                headers: AUTH_HEADER,
+                data: rule_data
+            });
+        },
+        async edit(guild_id: types.Snowflake, rule_id: types.Snowflake, rule_data: types.AutoModRuleEditData) {
+            return APIWrapper.makeRequest<types.AutoModRule>('PATCH', `/guilds/${guild_id}/auto-moderation/rules/${rule_id}`, {
+                headers: AUTH_HEADER,
+                data: rule_data
+            });
+        },
+        async delete(guild_id: types.Snowflake, rule_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.AutoModRule>('DELETE', `/guilds/${guild_id}/auto-moderation/rules/${rule_id}`, {
+                headers: AUTH_HEADER
+            });
+        }
+    }
+
     static gateway = {
         async fetchURL() {
             return APIWrapper.makeRequest<gatewayTypes.GatewayInfo>('GET', `/gateway`, {

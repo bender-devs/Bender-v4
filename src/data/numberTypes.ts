@@ -296,6 +296,33 @@ export const enum GUILD_SCHEDULED_EVENT_STATUS {
     CANCELED
 }
 
+// https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types
+export const enum AUTOMOD_TRIGGER_TYPES {
+    KEYWORD = 1,
+    HARMFUL_LINK,
+    SPAM,
+    KEYWORD_PRESET
+}
+
+// https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types
+export const enum AUTOMOD_KEYWORD_PRESET_TYPES {
+    PROFANITY = 1,
+    SEXUAL_CONTENT,
+    SLURS
+}
+
+// https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types
+export const enum AUTOMOD_EVENT_TYPES {
+    MESSAGE_SEND = 1
+}
+
+// https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-action-object-action-types
+export const enum AUTOMOD_ACTION_TYPES {
+    BLOCK_MESSAGE = 1,
+    SEND_ALERT_MESSAGE,
+    TIMEOUT
+}
+
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes
 // (S = Send, R = Receive)
 export const enum GATEWAY_OPCODES {
@@ -383,10 +410,14 @@ export enum PERMISSIONS {
     MANAGE_EMOJIS_AND_STICKERS = 1 << 30,
     USE_APPLICATION_COMMANDS = 1 << 31,
     REQUEST_TO_SPEAK = 1 << 32,
+    MANAGE_EVENTS = 1 << 33,
     MANAGE_THREADS = 1 << 34,
-    USE_PUBLIC_THREADS = 1 << 35,
-    USE_PRIVATE_THREADS = 1 << 36,
-    USE_EXTERNAL_STICKERS = 1 << 37
+    CREATE_PUBLIC_THREADS = 1 << 35,
+    CREATE_PRIVATE_THREADS = 1 << 36,
+    USE_EXTERNAL_STICKERS = 1 << 37,
+    SEND_MESSAGES_IN_THREADS = 1 << 38,
+    USE_EMBEDDED_ACTIVITIES = 1 << 39,
+    MODERATE_MEMBERS = 1 << 40
 }
 
 export const ALL_PERMISSIONS = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 15 | 1 << 16 | 1 << 17 | 1 << 18 | 1 << 19 | 1 << 20 | 1 << 21 | 1 << 22 | 1 << 23 | 1 << 24 | 1 << 25 | 1 << 26 | 1 << 27 | 1 << 28 | 1 << 29 | 1 << 30 | 1 << 31 | 1 << 32 | 1 << 33 | 1 << 34 | 1 << 35 | 1 << 36 | 1 << 37;

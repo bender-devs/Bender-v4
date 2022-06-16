@@ -5,6 +5,7 @@ import events from '../data/eventTypes';
 import { EventHandler } from '../data/types';
 
 import dummy_event from '../events/_dummy';
+import auto_moderation_rule_execution from '../events/auto_moderation_rule_execution';
 import channel_create from '../events/channel_create';
 import channel_delete from '../events/channel_delete';
 import channel_update from '../events/channel_update';
@@ -46,6 +47,10 @@ export default class EventManager {
     application_command_delete: dummy_event<gatewayTypes.CommandUpdateData>;
     application_command_permissions_update: dummy_event<gatewayTypes.CommandPermissionsUpdateData>;
     application_command_update: dummy_event<gatewayTypes.CommandUpdateData>;
+    auto_moderation_rule_create: dummy_event<gatewayTypes.AutoModUpdateData>;
+    auto_moderation_rule_delete: dummy_event<gatewayTypes.AutoModUpdateData>;
+    auto_moderation_rule_execution: auto_moderation_rule_execution;
+    auto_moderation_rule_update: dummy_event<gatewayTypes.AutoModUpdateData>;
     channel_create: channel_create;
     channel_delete: channel_delete;
     channel_pins_update: dummy_event<gatewayTypes.ChannelPinsUpdateData>;
@@ -108,6 +113,10 @@ export default class EventManager {
         this.application_command_delete = new dummy_event(this.bot, 'application_command_delete');
         this.application_command_permissions_update = new dummy_event(this.bot, 'application_command_permissions_update');
         this.application_command_update = new dummy_event(this.bot, 'application_command_update');
+        this.auto_moderation_rule_create = new dummy_event(this.bot, 'auto_moderation_rule_create');
+        this.auto_moderation_rule_delete = new dummy_event(this.bot, 'auto_moderation_rule_delete');
+        this.auto_moderation_rule_execution = new auto_moderation_rule_execution(this.bot);
+        this.auto_moderation_rule_update = new dummy_event(this.bot, 'auto_moderation_rule_update');
         this.channel_create = new channel_create(this.bot);
         this.channel_delete = new channel_delete(this.bot);
         this.channel_pins_update = new dummy_event(this.bot, 'channel_pins_update');

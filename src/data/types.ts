@@ -979,7 +979,7 @@ export type EmbedField = {
     inline?: boolean;
 };
 
-/****** application types ******/
+/************ application types ************/
 
 export type Application = {
     id: Snowflake;
@@ -1025,6 +1025,46 @@ export type ApplicationTeamMember = {
     permissions: ['*']
     team_id: Snowflake;
     user: PartialUser;
+}
+
+/************ automod types ************/
+
+export type AutoModRuleData = {
+    name: string;
+    event_type: num.AUTOMOD_EVENT_TYPES;
+    trigger_type: num.AUTOMOD_TRIGGER_TYPES;
+    trigger_metadata?: AutoModTriggerMetadata;
+    actions: AutoModAction[];
+    enabled?: boolean;
+    exempt_roles?: Snowflake[];
+    exempt_channels?: Snowflake[];
+}
+
+export type AutoModRuleEditData = Partial<AutoModRuleData>;
+
+export interface AutoModRule extends AutoModRuleData {
+    id: Snowflake;
+    guild_id: Snowflake;
+    creator_id: Snowflake;
+    trigger_metadata: AutoModTriggerMetadata;
+    enabled: boolean;
+    exempt_roles: Snowflake[];
+    exempt_channels: Snowflake[];
+}
+
+type AutoModTriggerMetadata = {
+    keyword_filter: string[];
+    presets: num.AUTOMOD_KEYWORD_PRESET_TYPES;
+}
+
+export type AutoModAction = {
+    type: num.AUTOMOD_ACTION_TYPES;
+    metadata: AutoModActionMetadata;
+}
+
+type AutoModActionMetadata = {
+    channel_id?: Snowflake;
+    duration_seconds?: number;
 }
 
 /************ misc types ************/
