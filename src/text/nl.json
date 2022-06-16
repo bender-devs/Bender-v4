@@ -29,7 +29,7 @@
     "CONVERT_TEXT_DESCRIPTION": "Tekst omzetten tussen formaten.",
 
     "CONVERT_TEXT_OPTION_MODE": "mode",
-    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Kies tussen encode of decode modus.",
+    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Kies tussen encoderen of decoderen.",
     "CONVERT_TEXT_OPTION_MODE_ENCODE": "Encoderen",
     "CONVERT_TEXT_OPTION_MODE_DECODE": "Decoderen",
 
