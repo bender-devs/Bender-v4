@@ -10,45 +10,60 @@
     "INVALID_SUBCOMMAND": "Invalider Subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalide Sub command Gruppe.",
     "STRINGIFYING_FAILED": "Error stringifying payload.",
+
     "TEXT_TOO_LONG": "⚠ Text ist zu lang!",
     "EMOJI_NOT_FOUND": "⚠ Konnte das Emoji nicht finden.",
+
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "teste die erreichbarkeit des Bottes",
     "PONG_API": "🏓 Pong! `{{millis}}ms`",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+
     "DEV_NAME": "dev",
     "DEV_DESCRIPTION": "Super mega geheime Developer dinge.",
+
     "TEXT_NAME": "text",
     "TEXT_DESCRIPTION": "Füge einene Effect zu einem Text hinzu. Es werden nur Englishe Zeichen (ASCII) werden unterstützt.",
+
     "CONVERT_TEXT_NAME": "convert-text",
     "CONVERT_TEXT_DESCRIPTION": "Konvertiere Texte zwischen Formatierungen",
+
     "CONVERT_TEXT_OPTION_MODE": "modus",
     "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Wähle einen Modus zum encodieren oder decodieren.",
     "CONVERT_TEXT_OPTION_MODE_ENCODE": "encode",
     "CONVERT_TEXT_OPTION_MODE_DECODE": "decode",
+
     "CONVERT_TEXT_OPTION_TEXT": "text",
     "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "Der Text zum encoden oder decoden.",
+
     "CONVERT_TEXT_SUBCOMMAND_BINARY": "binär",
     "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Enkode- oder dekodierte Text in Binär",
     "CONVERT_TEXT_ENCODED_BINARY": "📃 Encodierter Binärtext:",
     "CONVERT_TEXT_DECODED_BINARY": "📃 Decodierter Binärtext:",
+
     "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
     "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encode- oder dekodiert Text in base64.",
     "CONVERT_TEXT_ENCODED_BASE64": "📃 Enkodierter base64:",
     "CONVERT_TEXT_DECODED_BASE64": "📃 Dekodierter base64:",
+
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Lässt Text durch einen Hash-Algorithmus laufen",
     "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berechneter Hash:",
+    
     "CONVERT_TEXT_OPTION_ALGORITHM": "algorithmus",
     "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der hash Algorithmus, der benutzt werden soll.",
+
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "Der Text zum erstellen des Hashes",
+
     "INFO_NAME": "info",
     "INFO_DESCRIPTION": "Zeige informations about eine(n) user, Rolle, Kanal, Invite, Emoji, Banner oder aktueller Server",
+
     "USER_INFO_SUBCOMMAND": "user",
     "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über einen Servermember oder User",
     "USER_INFO_OPTION": "user",
     "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen",
+
     "USER_INFO_BOT": "🤖 Bot",
     "USER_INFO_HUMAN": "👤 Mensch",
     "USER_INFO_OWNER": "👑 Besitzer",
@@ -59,10 +74,12 @@
     "USER_INFO_CREATED_AT": "**Erstellt am:** {{date}} (vor {{ago}})",
     "USER_INFO_NO_ROLES": "*Member hat keine Rollen.*",
     "USER_INFO_BANNER": "**Banner:**",
+
     "EMOJI_INFO_SUBCOMMAND": "emoji",
     "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über ein Emoji.",
     "EMOJI_INFO_OPTION": "emoji",
     "EMOJI_INFO_OPTION_DESCRIPTION": "Das Emoji zum Informationen anzeigen",
+
     "EMOJI_INFO_TITLE": "Emoji Info - :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{date}} (vor {{ago}})",
     "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`\n^ *Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt, z.B. Kanal Themas*",
@@ -70,6 +87,7 @@
     "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",
     "EMOJI_INFO_ANIMATED": "💎 *Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro*",
     "EMOJI_INFO_LINK": "🔗 Zeige das Emoji im Browser an",
+
     "DURATION_MILLISECOND": "1 Millisekunde",
     "DURATION_MILLISECONDS": "{{number}} Millisekunden",
     "DURATION_SECOND": "1 Sekunde",

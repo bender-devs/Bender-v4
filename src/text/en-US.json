@@ -13,26 +13,17 @@
 
     "TEXT_TOO_LONG": "⚠ Text is too long!",
     "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
-    
-
 
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "Test the bot's responsiveness.",
-
     "PONG_API": "🏓 Pong! `{{millis}}ms`",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
-
-
 
     "DEV_NAME": "dev",
     "DEV_DESCRIPTION": "Super secret developer stuff.",
 
-
-
     "TEXT_NAME": "text",
     "TEXT_DESCRIPTION": "Apply effects to text. Only supports English (ASCII) characters.",
-
-
 
     "CONVERT_TEXT_NAME": "convert-text",
     "CONVERT_TEXT_DESCRIPTION": "Convert text between formats.",
@@ -65,8 +56,6 @@
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "The text to create a hash for.",
 
-
-
     "INFO_NAME": "info",
     "INFO_DESCRIPTION": "Show information about a user, role, channel, invite, emoji, banner, or the current server.",
 
@@ -98,7 +87,6 @@
     "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
     "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
     "EMOJI_INFO_LINK": "🔗 View emoji in browser",
-
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
