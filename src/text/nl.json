@@ -1,4 +1,6 @@
 {
+    "----------- Generic command errors -----------": "",
+
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` kan alleen in een server worden gebruikt, niet in DMs.",
     "COMMAND_UNAUTHORIZED": "🔑 Je hebt geen rechten om dit commando te gebruiken.",
     "INTERACTION_ERROR_NOTICE": "*Foutmeldingen zoals deze zouden niet mogen voorkomen; Als dit blijft gebeuren, meld dit dan alsjeblieft in onze server:* {{invite}}",
@@ -13,17 +15,33 @@
 
     "TEXT_TOO_LONG": "⚠ Tekst is te lang!",
     "EMOJI_NOT_FOUND": "⚠ Kan de emoji niet vinden!.",
+
+
+
+    "----------- /ping -----------": "",
     
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "Test de reactiesnelheid van de bot.",
     "PONG_API": "🏓 Pong! `{{millis}}ms`",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
+
+
+    "----------- /dev -----------": "",
+
     "DEV_NAME": "dev",
     "DEV_DESCRIPTION": "Zeer geheime developer dingen.",
 
+
+
+    "----------- /text -----------": "",
+
     "TEXT_NAME": "text",
     "TEXT_DESCRIPTION": "Pas effecten toe op tekst. Ondersteunt alleen Engelse (ASCII) tekens.",
+
+
+
+    "----------- /convert-text -----------": "",
 
     "CONVERT_TEXT_NAME": "convert-text",
     "CONVERT_TEXT_DESCRIPTION": "Tekst omzetten tussen formaten.",
@@ -55,8 +73,14 @@
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "De tekst om een hash voor te maken.",
 
+
+
+    "----------- /info -----------": "",
+
     "INFO_NAME": "info",
     "INFO_DESCRIPTION": "Toon informatie over een gebruiker, rol, kanaal, uitnodiging, emoji, banner, of de huidige server.",
+
+    "------- /info user -------": "",
 
     "USER_INFO_SUBCOMMAND": "user",
     "USER_INFO_SUBCOMMAND_DESCRIPTION": "Toont informatie over een server lid of gebruiker.",
@@ -74,6 +98,8 @@
     "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
     "USER_INFO_BANNER": "**Banner:**",
 
+    "------- /info emoji -------": "",
+
     "EMOJI_INFO_SUBCOMMAND": "emoji",
     "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Toon informatie over een emoji.",
     "EMOJI_INFO_OPTION": "emoji",
@@ -86,6 +112,10 @@
     "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",
     "EMOJI_INFO_ANIMATED": "💎 *Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.*",
     "EMOJI_INFO_LINK": "🔗 Bekijk de emoji in de browser",
+
+
+
+    "----------- Date/time formatting -----------": "",
 
     "DURATION_MILLISECOND": "1 milliseconde",
     "DURATION_MILLISECONDS": "{{number}} milliseconden",

@@ -1,4 +1,6 @@
 {
+    "----------- Generic command errors -----------": "",
+
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
     "COMMAND_UNAUTHORIZED": "🔑 You aren't authorized to use this command.",
     "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
@@ -14,16 +16,32 @@
     "TEXT_TOO_LONG": "⚠ Text is too long!",
     "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
 
+
+    
+    "----------- /ping -----------": "",
+
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "Test the bot's responsiveness.",
     "PONG_API": "🏓 Pong! `{{millis}}ms`",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
+
+
+    "----------- /dev -----------": "",
+
     "DEV_NAME": "dev",
     "DEV_DESCRIPTION": "Super secret developer stuff.",
 
+
+
+    "----------- /text -----------": "",
+
     "TEXT_NAME": "text",
     "TEXT_DESCRIPTION": "Apply effects to text. Only supports English (ASCII) characters.",
+
+
+
+    "----------- /convert-text -----------": "",
 
     "CONVERT_TEXT_NAME": "convert-text",
     "CONVERT_TEXT_DESCRIPTION": "Convert text between formats.",
@@ -56,8 +74,14 @@
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "The text to create a hash for.",
 
+
+
+    "----------- /info -----------": "",
+
     "INFO_NAME": "info",
     "INFO_DESCRIPTION": "Show information about a user, role, channel, invite, emoji, banner, or the current server.",
+
+    "------- /info user -------": "",
 
     "USER_INFO_SUBCOMMAND": "user",
     "USER_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a server member or user.",
@@ -75,6 +99,8 @@
     "USER_INFO_NO_ROLES": "*Member has no roles.*",
     "USER_INFO_BANNER": "**Banner:**",
 
+    "------- /info emoji -------": "",
+
     "EMOJI_INFO_SUBCOMMAND": "emoji",
     "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Show information about an emoji.",
     "EMOJI_INFO_OPTION": "emoji",
@@ -87,6 +113,10 @@
     "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
     "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
     "EMOJI_INFO_LINK": "🔗 View emoji in browser",
+
+
+
+    "----------- Date/time formatting -----------": "",
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
