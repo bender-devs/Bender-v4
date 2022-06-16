@@ -12,23 +12,56 @@
     "STRINGIFYING_FAILED": "Foutmelding met het omzetten van de payload naar tekst.",
 
     "TEXT_TOO_LONG": "⚠ Tekst is te lang!",
+    "EMOJI_NOT_FOUND": "⚠ Kan de emoji niet vinden!.",
     
+    "PING_NAME": "ping",
+    "PING_DESCRIPTION": "Test de reactiesnelheid van de bot.",
     "PONG_API": "🏓 Pong! `{{millis}}ms`",
     "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
+    "DEV_NAME": "dev",
+    "DEV_DESCRIPTION": "Zeer geheime developer dingen.",
 
+    "TEXT_NAME": "text",
+    "TEXT_DESCRIPTION": "Pas effecten toe op tekst. Ondersteunt alleen Engelse (ASCII) tekens.",
+
+    "CONVERT_TEXT_NAME": "convert-text",
+    "CONVERT_TEXT_DESCRIPTION": "Tekst omzetten tussen formaten.",
+
+    "CONVERT_TEXT_OPTION_MODE": "mode",
+    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Kies tussen encode of decode modus.",
+    "CONVERT_TEXT_OPTION_MODE_ENCODE": "Encoderen",
+    "CONVERT_TEXT_OPTION_MODE_DECODE": "Decoderen",
+
+    "CONVERT_TEXT_OPTION_TEXT": "text",
+    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "De tekst die gecodeerd of gedocdeerd moet worden.",
     
-    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binary",
-    "CONVERT_TEXT_ENCODED_BINARY": "📃 Gecodeerde binary:",
-    "CONVERT_TEXT_DECODED_BINARY": "📃 Ongecodeerde binary:",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binair",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Encodeert of decodeert tekst in binaire vorm",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Gecodeerde binaire tekst:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Ongecodeerde binaire tekst:",
 
     "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
     "CONVERT_TEXT_ENCODED_BASE64": "📃 Gecodeerde base64:",
     "CONVERT_TEXT_DECODED_BASE64": "📃 Ongecodeerde base64:",
 
+    "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
+    "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Haalt tekst door een hashing algoritme.",
     "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berekende hash:",
 
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithm",
+    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Het te gebruiken hash-algoritme.",
 
+    "CONVERT_TEXT_OPTION_HASHTEXT": "text",
+    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "De tekst om een hash voor te maken.",
+
+    "INFO_NAME": "info",
+    "INFO_DESCRIPTION": "Toon informatie over een gebruiker, rol, kanaal, uitnodiging, emoji, banner, of de huidige server.",
+
+    "USER_INFO_SUBCOMMAND": "user",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Toont informatie over een server lid of gebruiker.",
+    "USER_INFO_OPTION": "user",
+    "USER_INFO_OPTION_DESCRIPTION": "De gebruiker of server lid om informatie over te tonen.",
 
     "USER_INFO_BOT": "🤖 Robot",
     "USER_INFO_HUMAN": "👤 Mens",
@@ -41,8 +74,19 @@
     "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
     "USER_INFO_BANNER": "**Banner:**",
 
+    "EMOJI_INFO_SUBCOMMAND": "emoji",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Toon informatie over een emoji.",
+    "EMOJI_INFO_OPTION": "emoji",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "De emoji om informatie over te tonen.",
 
-    
+    "EMOJI_INFO_TITLE": "Emoji informatie- :{{emojiName}}:",
+    "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} ago)",
+    "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`\n^ *kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is, zoals kanaal onderwerpen*",
+    "EMOJI_INFO_MANAGED": "\\ℹ *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
+    "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",
+    "EMOJI_INFO_ANIMATED": "💎 *Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.*",
+    "EMOJI_INFO_LINK": "🔗 Bekijk de emoji in de browser",
+
     "DURATION_MILLISECOND": "1 milliseconde",
     "DURATION_MILLISECONDS": "{{number}} milliseconden",
     "DURATION_SECOND": "1 seconde",
