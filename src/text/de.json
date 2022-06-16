@@ -39,7 +39,7 @@
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Lässt Text durch einen Hash-Algorithmus laufen",
     "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berechneter Hash:",
-    "CONVERT_TEXT_OPTION_ALGORITHM": "Algorithmus",
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithmus",
     "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der hash Algorithmus, der benutzt werden soll.",
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "Der Text zum erstellen des Hashes",
