@@ -26,9 +26,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     let guild: types.Guild | CachedGuild | null = null;
     if (interaction.guild_id) {
         if (!member) {
-            member = await this.bot.fetch.member(interaction.guild_id, user.id);
+            member = await this.bot.api.member.fetch(interaction.guild_id, user.id);
         }
-        guild = await this.bot.fetch.guild(interaction.guild_id);
+        guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     const embed: types.Embed = {
         color: user.accent_color || DEFAULT_COLOR,
@@ -47,7 +47,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
             joinDate = '\n' + LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale);
 
-            const roleList = await this.bot.fetch.guildRoles(guild.id);
+            const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
                 const highestRole = DiscordTypeUtils.member.getHighestRole(member, roleList);
                 if (highestRole) {
