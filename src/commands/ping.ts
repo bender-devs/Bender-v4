@@ -17,8 +17,9 @@ export default class PingCommand extends CommandUtils implements ICommand {
 
     run(interaction: types.Interaction): types.CommandResponse {
         const pongMessage = this.getPongMessage(interaction.locale);
+        const startTimestamp = Date.now();
         return this.respond(interaction, pongMessage).then(() => {
-            return this.roundtripCallback.bind(this)(interaction, Date.now());
+            return this.roundtripCallback.bind(this)(interaction, startTimestamp);
         }).catch(this.handleAPIError.bind(this));
     }
 
