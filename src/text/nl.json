@@ -30,7 +30,7 @@
     "----------- /dev -----------": "",
 
     "DEV_NAME": "dev",
-    "DEV_DESCRIPTION": "Zeer geheime developer dingen.",
+    "DEV_DESCRIPTION": "Zeer geheime ontwikkelaar dingen.",
 
 
 
@@ -60,8 +60,9 @@
     "CONVERT_TEXT_DECODED_BINARY": "📃 Ongecodeerde binaire tekst:",
 
     "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
-    "CONVERT_TEXT_ENCODED_BASE64": "📃 Gecodeerde base64:",
-    "CONVERT_TEXT_DECODED_BASE64": "📃 Ongecodeerde base64:",
+    "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encodeert of decodeert tekst in base64.",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Gecodeerde base64 tekst:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Ongecodeerde base64 tekst:",
 
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Haalt tekst door een hashing algoritme.",
