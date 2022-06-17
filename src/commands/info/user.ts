@@ -12,13 +12,18 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (!userID || typeof userID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
-    let user: types.User | null = null;
+    let partialUser: types.PartialUser | null = null;
     if (interaction.data?.resolved?.users && userID in interaction.data.resolved.users) {
-        user = interaction.data.resolved.users[userID as types.Snowflake];
+        partialUser = interaction.data.resolved.users[userID as types.Snowflake];
     }
-    if (!user) {
+    if (!partialUser) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
     }
+    const user = await this.bot.api.user.fetch(partialUser.id);
+    if (!user) {
+        return this.respondKey(interaction, 'USER_FETCH_FAILED');
+    }
+
     let member: types.Member | types.PartialMember | null = null;
     if (interaction.data?.resolved?.members && userID in interaction.data.resolved.members) {
         member = interaction.data.resolved.members[userID as types.Snowflake];
@@ -34,7 +39,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         color: user.accent_color || DEFAULT_COLOR,
         footer: { text: `ID: ${user.id}` }
     };
-    let userRank = LangUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {}, interaction.locale);
+    let userRank = LangUtils.get(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, interaction.locale);
     let boostStatus = '', joinDate = '', roles = '', nickInfo = '';
     let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
     if (guild) {
@@ -44,7 +49,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         if (member) {
             const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
-            roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
+            roles = '\n\n' + (member.roles.length ? LangUtils.getAndReplace('USER_INFO_ROLES', {
+                roles: member.roles.map(id => `<@&${id}>`).join(', ')
+            }, interaction.locale) : noRolesText);
             joinDate = '\n' + LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale);
 
             const roleList = await this.bot.api.role.list(guild.id);
@@ -66,7 +73,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                 }
                 const sortedRoles = DiscordTypeUtils.member.getSortedRoles(member, roleList);
                 if (sortedRoles.length) {
-                    roles = '\n\n' + sortedRoles.map(role => `<@&${role.id}>`).join(', ');
+                    roles = '\n\n' + LangUtils.getAndReplace('USER_INFO_ROLES', {
+                        roles: sortedRoles.map(role => `<@&${role.id}>`).join(', ')
+                    }, interaction.locale);
                 }
             } else if (!isOwner) {
                 userRank = LangUtils.get('USER_INFO_MEMBER', interaction.locale);
@@ -97,7 +106,13 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
     const creationInfo = LangUtils.formatDateAgo('USER_INFO_CREATED_AT', createdAt, interaction.locale);
 
-    const bannerNote = user.banner ? `\n\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}` : '';
+    let bannerNote = '';
+    if (user.banner) {
+        bannerNote = `\n\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}`;
+        embed.image = {
+            url: CDNUtils.userBanner(user.id, user.banner, undefined, 256)
+        };
+    }
 
     const unknownStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
     const userStatus = unknownStatus; // TODO: get user presence when possible

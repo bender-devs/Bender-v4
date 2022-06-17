@@ -649,7 +649,7 @@ export type Interaction = {
     guild_id?: Snowflake;
     channel_id?: Snowflake;
     member?: Member;
-    user?: User;
+    user?: PartialUser;
     token: string;
     version: 1;
     message?: Message;

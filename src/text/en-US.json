@@ -16,7 +16,9 @@
     "TEXT_TOO_LONG": "⚠ Text is too long!",
     "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
     "CHANNEL_NOT_FOUND": "⚠ Couldn't find channel.",
+    "USER_OR_GUILD_NOT_FOUND": "⚠ Couldn't find user or server.",
     "CHANNEL_FETCH_FAILED": "⚠ Failed to get channel info.",
+    "USER_FETCH_FAILED": "⚠ Failed to get user info.",
 
     "MISSING_PERMISSIONS": "⚠ I'm missing the following permissions for {{context}}: {{permissions}}",
     "MISSING_GUILD_PERMISSIONS": "⚠ I'm missing the following permissions in this server: {{permissions}}",
@@ -104,6 +106,7 @@
     "USER_INFO_JOINED_AT": "**Joined at:** {{date}} ({{ago}} ago)",
     "USER_INFO_CREATED_AT": "**Created at:** {{date}} ({{ago}} ago)",
     "USER_INFO_NO_ROLES": "*Member has no roles.*",
+    "USER_INFO_ROLES": "**Roles:** {{roles}}",
     "USER_INFO_BANNER": "**Banner:**",
 
     "------- /info emoji -------": "",
@@ -144,6 +147,18 @@
     "CHANNEL_INFO_CATEGORY_CHANNELS": "**Channels:** {{channelList}}",
     "CHANNEL_INFO_CATEGORY_EMPTY": "**Channels:** *(none)*",
     "CHANNEL_INFO_TRUNCATED": "*and {{count}} more...*",
+
+    "------- /info banner -------": "",
+
+    "BANNER_INFO_SUBCOMMAND": "banner",
+    "BANNER_INFO_SUBCOMMAND_DESCRIPTION": "Show a user's banner or the server's banner.",
+    "BANNER_INFO_OPTION": "user",
+    "BANNER_INFO_OPTION_DESCRIPTION": "The user to show the banner for. If not specified, the server's banner will be shown.",
+
+    "BANNER_INFO_MISSING_USER": "⚠ In a DM, you need to provide a user for this command.",
+    "BANNER_INFO_USER_NO_BANNER": "ℹ **{{name}}** doesn't have a banner.",
+    "BANNER_INFO_GUILD_NO_BANNER": "ℹ This server doesn't have a banner.",
+    "BANNER_INFO_TITLE": "🏔 Banner for **{{name}}** [[link]]({{bannerLink}})",
 
 
 

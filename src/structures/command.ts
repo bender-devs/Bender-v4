@@ -38,11 +38,15 @@ export class CommandUtils {
         return this.respond(interaction, content);
     }
 
+    async respondKeyReplace(interaction: types.Interaction, messageLangKey: LangKey, replaceMap: types.ReplaceMap) {
+        const content = LangUtils.getAndReplace(messageLangKey, replaceMap, interaction.locale);
+        return this.respond(interaction, content);
+    }
+
     async respondMissingPermissions(interaction: types.Interaction, context: string, perms: PERMISSIONS[], forUser = false) {
         const permNames = perms.map(perm => LangUtils.getFriendlyPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
-        const content = LangUtils.getAndReplace(key, { context, permissions: permNames.join(', ') }, interaction.locale);
-        return this.respond(interaction, content);
+        return this.respondKeyReplace(interaction, key, { context, permissions: permNames.join(', ') });
     }
 
     async respondEmbed(interaction: types.Interaction, embed: types.Embed) {
