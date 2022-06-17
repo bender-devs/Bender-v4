@@ -1,8 +1,8 @@
 import Bot from './bot';
-import * as gatewayTypes from '../data/gatewayTypes';
-import { CLIENT_STATE } from '../data/numberTypes';
-import events from '../data/eventTypes';
-import { EventHandler } from '../data/types';
+import * as gatewayTypes from '../types/gatewayTypes';
+import { CLIENT_STATE } from '../types/numberTypes';
+import events from '../types/eventTypes';
+import { EventHandler } from '../types/types';
 
 import dummy_event from '../events/_dummy';
 import auto_moderation_rule_execution from '../events/auto_moderation_rule_execution';

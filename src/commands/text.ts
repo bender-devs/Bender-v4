@@ -1,8 +1,8 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
-import * as textMap from '../data/text.json';
+import * as types from '../types/types';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
+import * as textMap from '../types/text.json';
 import LangUtils from '../utils/language';
 
 const replaceRegex = {

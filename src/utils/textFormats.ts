@@ -1,4 +1,4 @@
-import { Emoji, Snowflake, UnixTimestamp } from '../data/types';
+import { Emoji, Snowflake, UnixTimestamp } from '../types/types';
 
 function getRegex(chars: string, exact: boolean, timestamp = false) {
     return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`);

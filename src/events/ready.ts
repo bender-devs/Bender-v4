@@ -1,6 +1,6 @@
-import { EventHandler } from '../data/types';
-import { ReadyData, LowercaseEventName } from '../data/gatewayTypes';
-import { ACTIVITY_TYPES, CLIENT_STATE } from '../data/numberTypes';
+import { EventHandler } from '../types/types';
+import { ReadyData, LowercaseEventName } from '../types/gatewayTypes';
+import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 import { VERSION } from '../data/constants';

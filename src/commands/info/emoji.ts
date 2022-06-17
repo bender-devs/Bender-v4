@@ -1,5 +1,5 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
-import * as types from '../../data/types';
+import * as types from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';

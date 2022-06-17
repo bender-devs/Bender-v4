@@ -1,7 +1,7 @@
 import { ID_REGEX_EXACT, OWNERS } from '../data/constants';
-import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../data/numberTypes';
-import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../data/types'; 
-import CacheHandler, { CachedGuild } from './cacheHandler';
+import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes';
+import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types'; 
+import CacheHandler, { CachedGuild } from '../structures/cacheHandler';
 
 type PermBitfield = Bitfield | Flags | bigint;
 type SimplifiedOverwrites = {

@@ -1,12 +1,12 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../data/numberTypes';
-import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../utils/shardManager';
+import * as types from '../types/types';
+import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes';
+import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../structures/shardManager';
 import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions';
 import LangUtils from '../utils/language';
-import { GatewayData, GatewayPayload } from '../data/gatewayTypes';
+import { GatewayData, GatewayPayload } from '../types/gatewayTypes';
 
 // this command not localized as it's only developer-only
 

@@ -2,8 +2,8 @@
 import APIWrapper from '../utils/apiWrapper';
 import APIError from './apiError';
 import Bot from './bot';
-import * as types from '../data/types';
-import { CachedGuild } from '../utils/cacheHandler';
+import * as types from '../types/types';
+import { CachedGuild } from './cacheHandler';
 
 export default class APIInterface {
     bot: Bot;

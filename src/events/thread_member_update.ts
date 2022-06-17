@@ -1,5 +1,5 @@
-import { EventHandler } from '../data/types';
-import { ThreadMemberUpdateData, LowercaseEventName } from '../data/gatewayTypes';
+import { EventHandler } from '../types/types';
+import { ThreadMemberUpdateData, LowercaseEventName } from '../types/gatewayTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 

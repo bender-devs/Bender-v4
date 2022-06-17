@@ -1,6 +1,6 @@
-import * as gatewayTypes from '../data/gatewayTypes';
+import * as gatewayTypes from '../types/gatewayTypes';
 import Bot from './bot';
-import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../data/numberTypes';
+import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes';
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
 import * as zlib from 'zlib-sync';

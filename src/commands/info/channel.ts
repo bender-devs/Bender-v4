@@ -1,8 +1,8 @@
 import { DEFAULT_COLOR } from '../../data/constants';
-import { API_ERRORS } from '../../data/numberTypes';
+import { API_ERRORS } from '../../types/numberTypes';
 import IMAGES from '../../data/images';
-import { CHANNEL_TYPES, PERMISSIONS } from '../../data/numberTypes';
-import * as types from '../../data/types';
+import { CHANNEL_TYPES, PERMISSIONS } from '../../types/numberTypes';
+import * as types from '../../types/types';
 import APIError from '../../structures/apiError';
 import DiscordTypeUtils from '../../utils/discordTypes';
 import LangUtils from '../../utils/language';

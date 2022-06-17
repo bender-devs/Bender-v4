@@ -1,4 +1,4 @@
-import { Channel, Member, PartialMember, Role } from '../data/types';
+import { Channel, Member, PartialMember, Role } from '../types/types';
 
 export default class DiscordTypeUtils {
     static member = {

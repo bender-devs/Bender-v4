@@ -1,5 +1,5 @@
-import { ShardConnectionData } from '../data/gatewayTypes';
-import ShardManager, { GENERAL_STATS, ShardDestination, ShardMessage } from '../utils/shardManager';
+import { ShardConnectionData } from '../types/gatewayTypes';
+import ShardManager, { GENERAL_STATS, ShardDestination, ShardMessage } from './shardManager';
 import Bot from './bot';
 import { randomUUID } from 'crypto';
 

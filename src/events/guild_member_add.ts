@@ -1,5 +1,5 @@
-import { EventHandler } from '../data/types';
-import { GuildMemberAddData, LowercaseEventName } from '../data/gatewayTypes';
+import { EventHandler } from '../types/types';
+import { GuildMemberAddData, LowercaseEventName } from '../types/gatewayTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 

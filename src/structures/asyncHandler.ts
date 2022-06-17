@@ -1,5 +1,5 @@
 //import { UnixTimestampMillis } from '../data/types';
-import Bot from '../structures/bot';
+import Bot from './bot';
 
 export default class AsyncHandler {
     bot: Bot;

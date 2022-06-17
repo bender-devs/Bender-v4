@@ -11,11 +11,11 @@ local cache:
 - channels
 - commands (could be global but that would add too much complexity)
 */
-import * as types from '../data/types';
-import Bot from '../structures/bot';
+import * as types from '../types/types';
+import Bot from './bot';
 import * as redis from 'redis';
-import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../data/gatewayTypes';
-import TimeUtils from './time';
+import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../types/gatewayTypes';
+import TimeUtils from '../utils/time';
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;

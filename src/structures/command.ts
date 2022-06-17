@@ -1,7 +1,7 @@
 import Bot from './bot';
-import * as types from '../data/types';
+import * as types from '../types/types';
 import APIError from './apiError';
-import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../data/numberTypes';
+import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';

@@ -1,4 +1,4 @@
-import { Locale, Timestamp, UnixTimestampMillis } from '../data/types';
+import { Locale, Timestamp, UnixTimestampMillis } from '../types/types';
 import { LangKey } from '../text/languageList';
 import LangUtils from './language';
 

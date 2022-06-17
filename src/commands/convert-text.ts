@@ -1,7 +1,7 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
+import * as types from '../types/types';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import { createHash } from 'crypto';
 import LangUtils from '../utils/language';
 

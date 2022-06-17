@@ -1,10 +1,10 @@
-import { LOCALE_LIST, Locale } from '../data/types';
+import { LOCALE_LIST, Locale } from '../types/types';
 import languages, { LangKey } from '../text/languageList';
-import * as types from '../data/types';
+import * as types from '../types/types';
 import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
-import { PERMISSIONS } from '../data/numberTypes';
+import { PERMISSIONS } from '../types/numberTypes';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);

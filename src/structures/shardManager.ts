@@ -1,5 +1,5 @@
-import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../data/types';
-import Logger from '../structures/logger';
+import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types';
+import Logger from './logger';
 import { randomUUID } from 'crypto';
 import * as child_process from 'child_process';
 import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE, SHARD_MESSAGE_TIMEOUT } from '../data/constants';

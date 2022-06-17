@@ -1,4 +1,4 @@
-import { Snowflake, URL } from '../data/types';
+import { Snowflake, URL } from '../types/types';
 import { CDN_BASE } from '../data/constants';
 
 export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';

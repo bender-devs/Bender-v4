@@ -1,8 +1,8 @@
-import { EventHandler } from '../data/types';
-import { InteractionCreateData, LowercaseEventName } from '../data/gatewayTypes';
+import { EventHandler } from '../types/types';
+import { InteractionCreateData, LowercaseEventName } from '../types/gatewayTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
-import { INTERACTION_REQUEST_TYPES } from '../data/numberTypes';
+import { INTERACTION_REQUEST_TYPES } from '../types/numberTypes';
 import { inspect } from 'util';
 
 export default class InteractionCreateHandler extends EventHandler<InteractionCreateData> {

@@ -1,12 +1,12 @@
 import { EventEmitter } from 'stream';
-import * as types from '../data/types';
-import * as gatewayTypes from '../data/gatewayTypes';
+import * as types from '../types/types';
+import * as gatewayTypes from '../types/gatewayTypes';
 import APIInterface from './apiInterface';
-import CacheHandler from '../utils/cacheHandler';
+import CacheHandler from './cacheHandler';
 import Gateway from './gateway';
 import Logger from './logger';
 import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, EXIT_CODE_NO_RESTART, USE_CACHE } from '../data/constants';
-import { CLIENT_STATE } from '../data/numberTypes';
+import { CLIENT_STATE } from '../types/numberTypes';
 import EventManager from './eventManager';
 import Shard from './shard';
 import CommandManager from './commandManager';

@@ -1,5 +1,5 @@
 import { DISCORD_EPOCH } from '../data/constants';
-import { Snowflake, UnixTimestampMillis } from '../data/types';
+import { Snowflake, UnixTimestampMillis } from '../types/types';
 import * as os from 'os';
 
 export default class MiscUtils {

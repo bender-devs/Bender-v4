@@ -1,7 +1,7 @@
 import * as CONSTANTS from '../data/constants';
 import * as superagent from 'superagent';
-import * as types from '../data/types';
-import * as gatewayTypes from '../data/gatewayTypes';
+import * as types from '../types/types';
+import * as gatewayTypes from '../types/gatewayTypes';
 import APIError from '../structures/apiError';
 
 const USER_AGENT_HEADER: types.RequestHeaders = {

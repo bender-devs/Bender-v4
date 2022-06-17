@@ -1,6 +1,6 @@
-import { EventHandler } from '../data/types';
-import { ResumedData, LowercaseEventName } from '../data/gatewayTypes';
-import { CLIENT_STATE } from '../data/numberTypes';
+import { EventHandler } from '../types/types';
+import { ResumedData, LowercaseEventName } from '../types/gatewayTypes';
+import { CLIENT_STATE } from '../types/numberTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 

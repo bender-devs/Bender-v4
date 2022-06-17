@@ -1,12 +1,12 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../data/types';
-import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
+import * as types from '../types/types';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 
-import userInfoSubcommand from './info/userinfo';
-import emojiInfoSubcommand from './info/emojiinfo';
-import channelInfoSubcommand from './info/channelinfo';
+import userInfo from './info/user';
+import emojiInfo from './info/emoji';
+import channelInfo from './info/channel';
 
 export default class InfoCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -87,11 +87,11 @@ export default class InfoCommand extends CommandUtils implements ICommand {
         const target = args?.[0]?.options?.[0]?.value;
         switch (subcommand) {
             case 'user':
-                return userInfoSubcommand.bind(this)(interaction, target);
+                return userInfo.bind(this)(interaction, target);
             case 'emoji':
-                return emojiInfoSubcommand.bind(this)(interaction, target);
+                return emojiInfo.bind(this)(interaction, target);
             case 'channel':
-                return channelInfoSubcommand.bind(this)(interaction, target);
+                return channelInfo.bind(this)(interaction, target);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

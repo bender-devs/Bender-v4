@@ -1,4 +1,4 @@
-import ShardManager from '../utils/shardManager';
+import ShardManager from './shardManager';
 import * as express from 'express';
 import Logger from './logger';
 import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants';

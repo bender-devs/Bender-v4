@@ -1,7 +1,7 @@
 import { DEFAULT_COLOR } from '../../data/constants';
-import { PERMISSIONS } from '../../data/numberTypes';
-import * as types from '../../data/types';
-import { CachedGuild } from '../../utils/cacheHandler';
+import { PERMISSIONS } from '../../types/numberTypes';
+import * as types from '../../types/types';
+import { CachedGuild } from '../../structures/cacheHandler';
 import CDNUtils from '../../utils/cdn';
 import DiscordTypeUtils from '../../utils/discordTypes';
 import LangUtils from '../../utils/language';

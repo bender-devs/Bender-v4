@@ -1,6 +1,6 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../data/types';
+import * as types from '../types/types';
 import LangUtils from '../utils/language';
 import TimeUtils from '../utils/time';
 
