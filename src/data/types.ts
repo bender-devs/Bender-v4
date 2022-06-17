@@ -442,14 +442,15 @@ export type PartialChannel = {
     id: Snowflake;
     type: num.CHANNEL_TYPES;
     name?: string;
-    permission_overwrites?: PermissionOverwrites[];
+    permissions: Bitfield;
 }
 
-export interface Channel extends PartialChannel {
+export interface Channel extends Omit<PartialChannel, 'permissions'> {
     // guild fields
     guild_id?: Snowflake;
     position?: number;
     parent_id?: Snowflake | null;
+    permission_overwrites?: PermissionOverwrites[];
 
     // dm fields
     recipients?: User[];
@@ -482,14 +483,15 @@ export interface Channel extends PartialChannel {
 
 export interface GuildChannel extends Channel {
     guild_id: Snowflake;
+    name: string;
     position: number;
-    recipients: undefined;
+    recipients: never;
 }
 
 export interface DMBasedChannel extends Channel {
     type: num.CHANNEL_TYPES.DM | num.CHANNEL_TYPES.GROUP_DM;
     recipients: User[];
-    guild_id: undefined;
+    guild_id: never;
 }
 
 export interface TextBasedChannel extends GuildChannel {
@@ -740,7 +742,7 @@ export const LOCALE_LIST = [
     'ko',	 // Korean	        한국어
 ] as const;
 export type Locale = typeof LOCALE_LIST[number];
-export type LocaleDict = Record<Locale, string>;
+export type LocaleDict = Partial<Record<Locale, string>>;
 
 export type CommandBase = {
     name?: string;
@@ -771,7 +773,9 @@ export type CommandOptionValue = CommandOption | string | number | boolean;
 export type CommandOption = {
     type: num.COMMAND_OPTION_TYPES;
     name: string;
+    name_localizations?: LocaleDict;
     description: string;
+    description_localizations?: LocaleDict;
     required?: boolean;
     choices?: CommandOptionChoice[];
     options?: CommandOption[];
@@ -783,6 +787,7 @@ export type CommandOption = {
 
 export type CommandOptionChoice = {
     name: string;
+    name_localizations?: LocaleDict;
     value: string | number;
 }
 
@@ -955,7 +960,7 @@ export type EmbedFooter = {
     proxy_icon_url?: URL;
 };
 export type EmbedMedia = {
-    url: string;
+    url: URL;
     proxy_url?: URL;
     height?: number;
     width?: number;
@@ -976,7 +981,7 @@ export type EmbedField = {
     inline?: boolean;
 };
 
-/****** application types ******/
+/************ application types ************/
 
 export type Application = {
     id: Snowflake;
@@ -1024,11 +1029,51 @@ export type ApplicationTeamMember = {
     user: PartialUser;
 }
 
+/************ automod types ************/
+
+export type AutoModRuleData = {
+    name: string;
+    event_type: num.AUTOMOD_EVENT_TYPES;
+    trigger_type: num.AUTOMOD_TRIGGER_TYPES;
+    trigger_metadata?: AutoModTriggerMetadata;
+    actions: AutoModAction[];
+    enabled?: boolean;
+    exempt_roles?: Snowflake[];
+    exempt_channels?: Snowflake[];
+}
+
+export type AutoModRuleEditData = Partial<AutoModRuleData>;
+
+export interface AutoModRule extends AutoModRuleData {
+    id: Snowflake;
+    guild_id: Snowflake;
+    creator_id: Snowflake;
+    trigger_metadata: AutoModTriggerMetadata;
+    enabled: boolean;
+    exempt_roles: Snowflake[];
+    exempt_channels: Snowflake[];
+}
+
+type AutoModTriggerMetadata = {
+    keyword_filter: string[];
+    presets: num.AUTOMOD_KEYWORD_PRESET_TYPES;
+}
+
+export type AutoModAction = {
+    type: num.AUTOMOD_ACTION_TYPES;
+    metadata: AutoModActionMetadata;
+}
+
+type AutoModActionMetadata = {
+    channel_id?: Snowflake;
+    duration_seconds?: number;
+}
+
 /************ misc types ************/
 
 export type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH';
 
-export type LangMap = Partial<Record<Locale, Lang>>;
+export type LangMap = { [key: string]: Lang };
 
 export type Lang = Record<string, string>;
 
@@ -1089,11 +1134,13 @@ export type TimeoutList = {
 
 /*** event handler types ***/
 
-export type EventHandlerFunction<T extends EventData> = (event: T) => void; // wanted to use event: EventData here but ts is shit
+export type EventHandlerFunction<T extends EventData> = (event: T) => void;
 
 export class EventHandler<T extends EventData> {
     bot: Bot;
     name: EventName;
+    requiresReady = false; // TODO: for production use, default should be true
+
     cacheHandler?: EventHandlerFunction<T>;
     handler!: EventHandlerFunction<T>;
 
@@ -1102,8 +1149,6 @@ export class EventHandler<T extends EventData> {
         this.bot = bot;
     }
 }
-
-export const NON_WAITING_EVENTS: EventName[] = ['READY', 'RESUMED'];
 
 /*** permission types ***/
 

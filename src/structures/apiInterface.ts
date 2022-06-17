@@ -3,6 +3,7 @@ import APIWrapper from '../utils/apiWrapper';
 import APIError from './apiError';
 import Bot from './bot';
 import * as types from '../data/types';
+import { CachedGuild } from '../utils/cacheHandler';
 
 export default class APIInterface {
     bot: Bot;
@@ -38,8 +39,15 @@ export default class APIInterface {
 
     guild = {
         fetch: async (guild_id: types.Snowflake, with_counts = true) => {
-            return APIWrapper.guild.fetch(guild_id, with_counts)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let guild: CachedGuild | types.Guild | null = null;
+            if (this.cacheEnabled) {
+                guild = this.bot.cache.guilds.get(guild_id);
+            }
+            if (!guild) {
+                guild = await APIWrapper.guild.fetch(guild_id, with_counts)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+            }
+            return guild;
         },
         edit: async (guild_id: types.Snowflake, guild_data: types.GuildData, reason?: string) => {
             return APIWrapper.guild.edit(guild_id, guild_data, reason)
@@ -80,8 +88,15 @@ export default class APIInterface {
 
     role = {
         list: async (guild_id: types.Snowflake) => {
-            return APIWrapper.role.list(guild_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let roles: types.Role[] | null = null;
+            if (this.cacheEnabled) {
+                roles = this.bot.cache.roles.getAll(guild_id);
+            }
+            if (!roles) {
+                roles = await APIWrapper.role.list(guild_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+            }
+            return roles;
         },
         fetch: async (guild_id: types.Snowflake, role_id: types.Snowflake) => {
             return APIWrapper.role.fetch(guild_id, role_id)
@@ -107,8 +122,15 @@ export default class APIInterface {
 
     member = {
         fetch: async (guild_id: types.Snowflake, user_id: types.Snowflake) => {
-            return APIWrapper.member.fetch(guild_id, user_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let member: types.Member | null = null;
+            if (this.cacheEnabled) {
+                member = this.bot.cache.members.get(guild_id, user_id);
+            }
+            if (!member) {
+                member = await APIWrapper.member.fetch(guild_id, user_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+            }
+            return member;
         },
         list: async (guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake) => {
             return APIWrapper.member.list(guild_id, limit, after)
@@ -415,6 +437,29 @@ export default class APIInterface {
         },
         deleteAll: async (message: types.Message, reason?: string) => {
             return APIWrapper.reaction.deleteAll(message.channel_id, message.id, reason)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
+
+    autoMod = {
+        list: async (guild_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.list(guild_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        fetch: async (guild_id: types.Snowflake, rule_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.fetch(guild_id, rule_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        create: async (guild_id: types.Snowflake, rule_data: types.AutoModRuleData) => {
+            return APIWrapper.autoModRule.create(guild_id, rule_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        edit: async (guild_id: types.Snowflake, rule_id: types.Snowflake, rule_data: types.AutoModRuleEditData) => {
+            return APIWrapper.autoModRule.edit(guild_id, rule_id, rule_data)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        delete: async (guild_id: types.Snowflake, rule_id: types.Snowflake) => {
+            return APIWrapper.autoModRule.delete(guild_id, rule_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
     }

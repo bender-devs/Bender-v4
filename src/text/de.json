@@ -1,0 +1,183 @@
+{
+    "----------- Generic command errors -----------": "",
+
+    "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` ",
+    "COMMAND_UNAUTHORIZED": "🔑 du bist nicht berechtigt um diesen Kommand zu benutzen",
+    "INTERACTION_ERROR_NOTICE": "*Fehler wie dieser sollten nicht passieren, sollte er bestehen bleiben, melde Ihn bitte in dem Support Server:* {{invite}}",
+    "ARGS_MISSING": "Keine der erforderlichen Argumente angegeben.",
+    "ARGS_INCOMPLETE": "Nicht alle erforderlichen Argumente wurden angegeben.",
+    "ARGS_INVALID_TYPE": "mansche der Argumente wurden falsch angegeben.",
+    "ARGS_UNRESOLVED": "Einige der Argumente konnten nicht verarbeitet verden.",
+    "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Nicht alle Subcommands oder Argumente wurden angegeben.",
+    "INVALID_SUBCOMMAND": "Invalider Subcommand.",
+    "INVALID_SUBCOMMAND_GROUP": "Invalide Sub command Gruppe.",
+    "STRINGIFYING_FAILED": "Error stringifying payload.",
+
+    "TEXT_TOO_LONG": "⚠ Text ist zu lang!",
+    "EMOJI_NOT_FOUND": "⚠ Konnte das Emoji nicht finden.",
+
+
+
+    "----------- /ping -----------": "",
+
+    "PING_NAME": "ping",
+    "PING_DESCRIPTION": "teste die erreichbarkeit des Bottes",
+    "PONG_API": "🏓 Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+
+
+
+    "----------- /dev -----------": "",
+
+    "DEV_NAME": "dev",
+    "DEV_DESCRIPTION": "Super mega geheime Developer dinge.",
+
+
+
+    "----------- /text -----------": "",
+
+    "TEXT_NAME": "text",
+    "TEXT_DESCRIPTION": "Füge einene Effect zu einem Text hinzu. Es werden nur Englishe Zeichen (ASCII) werden unterstützt.",
+
+
+
+    "----------- /convert-text -----------": "",
+
+    "CONVERT_TEXT_NAME": "convert-text",
+    "CONVERT_TEXT_DESCRIPTION": "Konvertiere Texte zwischen Formatierungen",
+
+    "CONVERT_TEXT_OPTION_MODE": "modus",
+    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Wähle einen Modus zum encodieren oder decodieren.",
+    "CONVERT_TEXT_OPTION_MODE_ENCODE": "encode",
+    "CONVERT_TEXT_OPTION_MODE_DECODE": "decode",
+
+    "CONVERT_TEXT_OPTION_TEXT": "text",
+    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "Der Text zum encoden oder decoden.",
+
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binär",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Enkode- oder dekodierte Text in Binär",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Encodierter Binärtext:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Decodierter Binärtext:",
+
+    "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
+    "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encode- oder dekodiert Text in base64.",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Enkodierter base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Dekodierter base64:",
+
+    "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
+    "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Lässt Text durch einen Hash-Algorithmus laufen",
+    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berechneter Hash:",
+    
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithmus",
+    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der hash Algorithmus, der benutzt werden soll.",
+
+    "CONVERT_TEXT_OPTION_HASHTEXT": "text",
+    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "Der Text zum erstellen des Hashes",
+
+
+
+    "----------- /info -----------": "",
+
+    "INFO_NAME": "info",
+    "INFO_DESCRIPTION": "Zeige informations about eine(n) user, Rolle, Kanal, Invite, Emoji, Banner oder aktueller Server",
+
+    "------- /info user -------": "",
+
+    "USER_INFO_SUBCOMMAND": "user",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über einen Servermember oder User",
+    "USER_INFO_OPTION": "user",
+    "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen",
+
+    "USER_INFO_BOT": "🤖 Bot",
+    "USER_INFO_HUMAN": "👤 Mensch",
+    "USER_INFO_OWNER": "👑 Besitzer",
+    "USER_INFO_MEMBER": "👤 Member",
+    "USER_INFO_UNKNOWN_STATUS": "*unbekannter Status*",
+    "USER_INFO_BOOST_INFO": "**Server Booster** seit {{date}} (vor {{ago}})",
+    "USER_INFO_JOINED_AT": "**Beigetreten am:** {{date}} (vor {{ago}})",
+    "USER_INFO_CREATED_AT": "**Erstellt am:** {{date}} (vor {{ago}})",
+    "USER_INFO_NO_ROLES": "*Member hat keine Rollen.*",
+    "USER_INFO_BANNER": "**Banner:**",
+
+    "------- /info emoji -------": "",
+
+    "EMOJI_INFO_SUBCOMMAND": "emoji",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über ein Emoji.",
+    "EMOJI_INFO_OPTION": "emoji",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "Das Emoji zum Informationen anzeigen",
+
+    "EMOJI_INFO_TITLE": "Emoji Info - :{{emojiName}}:",
+    "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{date}} (vor {{ago}})",
+    "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`\n^ *Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt, z.B. Kanal Themas*",
+    "EMOJI_INFO_MANAGED": "\\ℹ *Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)*",
+    "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",
+    "EMOJI_INFO_ANIMATED": "💎 *Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro*",
+    "EMOJI_INFO_LINK": "🔗 Zeige das Emoji im Browser an",
+
+
+
+    "----------- Date/time formatting -----------": "",
+    
+    "DURATION_MILLISECOND": "1 Millisekunde",
+    "DURATION_MILLISECONDS": "{{number}} Millisekunden",
+    "DURATION_SECOND": "1 Sekunde",
+    "DURATION_SECONDS": "{{number}} Sekunden",
+    "DURATION_MINUTE": "1 Minute",
+    "DURATION_MINUTES": "{{number}} Minuten",
+    "DURATION_HOUR": "1 Stunde",
+    "DURATION_HOURS": "{{number}} Stunden",
+    "DURATION_DAY": "1 Tag",
+    "DURATION_DAYS": "{{number}} Tage(n)",
+    "DURATION_WEEK": "1 Woche",
+    "DURATION_WEEKS": "{{number}} Wochen",
+    "DURATION_MONTH": "1 Monat",
+    "DURATION_MONTHS": "{{number}} Monate(n)",
+    "DURATION_YEAR": "1 Jahr",
+    "DURATION_YEARS": "{{number}} Jahre(n)",
+
+
+
+    "----------- Discord permissions -----------": "",
+
+    "PERMISSION_CREATE_INSTANT_INVITE": "Einladung erstellen",
+    "PERMISSION_KICK_MEMBERS": "Mitglieder kicken",
+    "PERMISSION_BAN_MEMBERS": "Mitglieder bannen",
+    "PERMISSION_ADMINISTRATOR": "Administrator",
+    "PERMISSION_MANAGE_CHANNELS": "Kanäle verwalten",
+    "PERMISSION_MANAGE_GUILD": "Server verwalten",
+    "PERMISSION_ADD_REACTIONS": "Reaktionen hinzufügen",
+    "PERMISSION_VIEW_AUDIT_LOG": "Audit-Log einsehen",
+    "PERMISSION_PRIORITY_SPEAKER": "Very Important Speaker",
+    "PERMISSION_STREAM": "Video",
+    "PERMISSION_VIEW_CHANNEL": "Kanäle ansehen",
+    "PERMISSION_SEND_MESSAGES": "Nachrichten senden",
+    "PERMISSION_SEND_TTS_MESSAGES": "Text-zu-Sprache-Nachrichten senden",
+    "PERMISSION_MANAGE_MESSAGES": "Nachrichten verwalten",
+    "PERMISSION_EMBED_LINKS": "Links einbetten",
+    "PERMISSION_ATTACH_FILES": "Dateien anhängen",
+    "PERMISSION_READ_MESSAGE_HISTORY": "Nachrichtenverlauf anzeigen",
+    "PERMISSION_MENTION_EVERYONE": "Erwähne @everyone, @here und „Alle Rollen“",
+    "PERMISSION_USE_EXTERNAL_EMOJIS": "Externe Emojis verwenden",
+    "PERMISSION_VIEW_GUILD_INSIGHTS": "Server-Einblicke anzeigen",
+    "PERMISSION_CONNECT": "Verbinden",
+    "PERMISSION_SPEAK": "Sprechen",
+    "PERMISSION_MUTE_MEMBERS": "Mitglieder stummschalten",
+    "PERMISSION_DEAFEN_MEMBERS": "Ein- und Ausgabe von Mitgliedern deaktivieren",
+    "PERMISSION_MOVE_MEMBERS": "Mitglieder verschieben",
+    "PERMISSION_USE_VAD": "Sprachaktivierung verwenden",
+    "PERMISSION_CHANGE_NICKNAME": "Nickname ändern",
+    "PERMISSION_MANAGE_NICKNAMES": "Nicknames verwalten",
+    "PERMISSION_MANAGE_ROLES": "Rollen verwalten",
+    "PERMISSION_MANAGE_WEBHOOKS": "WebHooks verwalten",
+    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Emojis und Sticker verwalten",
+    "PERMISSION_USE_APPLICATION_COMMANDS": "Anwendungsbefehle verwenden",
+    "PERMISSION_REQUEST_TO_SPEAK": "Redeanfrage",
+    "PERMISSION_MANAGE_EVENTS": "Events verwalten",
+    "PERMISSION_MANAGE_THREADS": "Threads verwalten",
+    "PERMISSION_CREATE_PUBLIC_THREADS": "Öffentliche Threads erstellen",
+    "PERMISSION_CREATE_PRIVATE_THREADS": "Private Threads erstellen",
+    "PERMISSION_USE_EXTERNAL_STICKERS": "Externe Sticker verwenden",
+    "PERMISSION_SEND_MESSAGES_IN_THREADS": "Nachrichten in Threads senden",
+    "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Aktivitäten nutzen",
+    "PERMISSION_MODERATE_MEMBERS": "Mitglieder im Timeout"
+}

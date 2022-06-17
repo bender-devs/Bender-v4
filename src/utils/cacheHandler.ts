@@ -4,7 +4,7 @@ redis = global cache (used for all shards/bot versions)
 - user dm channel ids
 - shard information (?)
 
-localized cache:
+local cache:
 - guilds
 - members
 - roles
@@ -13,9 +13,9 @@ localized cache:
 */
 import * as types from '../data/types';
 import Bot from '../structures/bot';
-import { promisify } from 'util';
 import * as redis from 'redis';
-import { GatewayBotInfo, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../data/gatewayTypes';
+import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../data/gatewayTypes';
+import TimeUtils from './time';
 
 type ChannelMap = Record<types.Snowflake, types.Channel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
@@ -44,139 +44,127 @@ export interface CachedGuild extends GatewayGuildOmit {
     message_cache: MessageMapMap;
 }
 
-// doing these tricks because promisify() doesn't choose the correct overload
-type hsetType = (key: string, fields: types.StringMap, callback: redis.Callback<number>) => boolean;
-const hsetPromisify = (command: hsetType) => promisify(command);
-type hsetExpireType = (key: string, fields: types.StringMap, expire: types.UnixTimestampMillis) => (callback: redis.Callback<unknown[]>) => boolean;
-const hsetExpirePromisify = (command: hsetExpireType) => promisify(command);
-
 export default class CacheHandler {
     bot: Bot;
-    redisClient: redis.RedisClient;
+    redisClient!: redis.RedisClientType;
     gateway: types.URL | null = null;
     unavailableGuilds: types.Snowflake[];
+    initialized = false;
     #guilds: CachedGuildMap;
     #dmMessages: MessageMapMap;
-
-    #get: (key: string) => Promise<string | null>;
-    #getMultiMixed: (string_keys: string[], hash_keys: string[]) => Promise<unknown>;
-    #hget: (key: string, field: string) => Promise<string | null>;
-    #hgetall: (key: string) => Promise<types.StringMap | null>;
-    #set: (key: string, value: string) => Promise<unknown>;
-    #setExpire: (key: string, value: string, expire: types.UnixTimestampMillis) => Promise<unknown>;
-    #setMultiMixed: (key: string, top_level_values: types.StringMap | null, values: StringMapMap | null, expire?: types.UnixTimestampMillis) => Promise<unknown>;
-    #hset: (key: string, fields: types.StringMap) => Promise<unknown>;
-    #hsetExpire: (key: string, value: types.StringMap, expire: types.UnixTimestampMillis) => Promise<unknown>;
+    #connected = false;
+    #startTimestamp: number;
 
     constructor(bot: Bot) {
         this.bot = bot;
-        let authString = '';
-        if (process.env.REDIS_USER && process.env.REDIS_PASS) {
-           authString = `${process.env.REDIS_USER}:${encodeURIComponent(process.env.REDIS_PASS)}@`;
-        }
-        this.redisClient = redis.createClient({
-            url: `redis://${authString}${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
-        });
-        this.redisClient.on('error', err => this.bot.emit('REDIS_ERROR', err));
-
-        this.#get = promisify(this.redisClient.get).bind(this.redisClient);
-
-        const getMultiMixed = async (string_keys: string[], hash_keys: string[]) => {
-            const multi = this.redisClient.multi();
-            for (const key of string_keys) {
-                multi.get(key);
-            }
-            for (const hkey of hash_keys) {
-                multi.hgetall(hkey);
-            }
-            return new Promise((resolve, reject) => {
-                multi.exec((err, data) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
-                })
-            });
-        }
-        this.#getMultiMixed = getMultiMixed.bind(this.redisClient);
-
-        this.#hget = promisify(this.redisClient.hget).bind(this.redisClient);
-        this.#hgetall = promisify(this.redisClient.hgetall).bind(this.redisClient);
-        this.#set = promisify(this.redisClient.set).bind(this.redisClient);
-
-        const setMultiMixed = (key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestampMillis) => {
-            const multi = this.redisClient.multi();
-            for (const subkey in string_values) {
-                const elemKey = `${key}.${subkey}`;
-                multi.set(elemKey, string_values[subkey]);
-                if (expire) {
-                    multi.expireat(elemKey, expire);
-                }
-            }
-            for (const subkey in hash_values) {
-                const elemKey = `${key}.${subkey}`;
-                multi.hset(elemKey, hash_values[subkey]);
-                if (expire) {
-                    multi.expireat(elemKey, expire);
-                }
-            }
-            return multi.exec;
-        }
-        this.#setMultiMixed = promisify(setMultiMixed).bind(this.redisClient);
-
-        const setExpire = (key: string, value: string, expire: types.UnixTimestampMillis) => {
-            return this.redisClient.multi().set(key, value).expireat(key, expire / 1000).exec;
-        }    
-        this.#setExpire = promisify(setExpire).bind(this.redisClient);
-        
-        this.#hset = hsetPromisify(this.redisClient.hset).bind(this.redisClient);
-
-        const hsetExpire = (key: string, value: types.StringMap, expire: types.UnixTimestampMillis) => {
-            return this.redisClient.multi().hset(key, value).expireat(key, expire / 1000).exec;
-        }
-        this.#hsetExpire = hsetExpirePromisify(hsetExpire).bind(this.redisClient);
-
         this.unavailableGuilds = [];
         this.#guilds = {};
         this.#dmMessages = {};
+        this.#startTimestamp = Date.now();
     }
 
-    get(key: string, subkey?: string | true) {
+    async init() {
+        this.redisClient = redis.createClient({
+            socket: {
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : undefined
+            },
+            username: process.env.REDIS_USER,
+            password: process.env.REDIS_PASS
+        });
+        this.initialized = true;
+        
+        this.redisClient.on('ready', () => {
+            this.#connected = true;
+            const latency = TimeUtils.sinceMillis(this.#startTimestamp);
+            this.bot.logger.debug('REDIS', `CONNECTED, took ${latency}ms`);
+        });
+        this.redisClient.on('error', err => this.bot.logger.handleError('REDIS ERROR', err));  
+        this.redisClient.on('end', () => {
+            this.#connected = false;
+            this.bot.logger.debug('REDIS', 'DISCONNECTED!');
+        });
+        this.redisClient.on('reconnecting', () => {
+            this.#connected = false;
+            this.bot.logger.debug('REDIS', 'RECONNECTING...');
+        });
+
+        return this.redisClient.connect();
+    }
+
+    async getMultiMixed (string_keys: string[], hash_keys: string[])/*: Promise<(string | types.StringMap>*/ {
+        const multi = this.redisClient.multi();
+        for (const key of string_keys) {
+            multi.get(key);
+        }
+        for (const hkey of hash_keys) {
+            multi.hGetAll(hkey);
+        }
+        return multi.exec();
+    }
+
+    async setMultiMixed(key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestamp) {
+        const multi = this.redisClient.multi();
+        for (const subkey in string_values) {
+            const elemKey = `${key}.${subkey}`;
+            multi.set(elemKey, string_values[subkey]);
+            if (expire) {
+                multi.expireAt(elemKey, expire);
+            }
+        }
+        for (const subkey in hash_values) {
+            const elemKey = `${key}.${subkey}`;
+            multi.hSet(elemKey, hash_values[subkey]);
+            if (expire) {
+                multi.expireAt(elemKey, expire);
+            }
+        }
+        return multi.exec();
+    }
+
+    async setExpire(key: string, value: string, expire: types.UnixTimestamp) {
+        return this.redisClient.multi().set(key, value).expireAt(key, expire).exec();
+    }
+
+    async hsetExpire(key: string, value: types.StringMap, expire: types.UnixTimestamp) {
+        return this.redisClient.multi().hSet(key, value).expireAt(key, expire).exec();
+    }
+
+    async get(key: string, subkey?: string | true) {
         if (subkey === true) {
-            return this.#hgetall(key);
+            return this.redisClient.hGetAll(key);
         }
         if (subkey) {
-            return this.#hget(key, subkey);
+            return this.redisClient.hGet(key, subkey);
         }
-        return this.#get(key);
+        return this.redisClient.get(key);
     }
 
-    set(key: string, value: string | types.StringMap, expire?: types.UnixTimestampMillis) {
+    set(key: string, value: string | types.StringMap, expire?: types.UnixTimestamp) {
         if (typeof value === 'string') {
             if (expire) {
-                return this.#setExpire(key, value, expire);
+                return this.setExpire(key, value, expire);
             }
-            return this.#set(key, value);
+            return this.redisClient.set(key, value);
         }
         else if (expire) {
-            return this.#hsetExpire(key, value, expire);
+            return this.hsetExpire(key, value, expire);
         }
-        return this.#hset(key, value);
+        return this.redisClient.hSet(key, value);
     }
 
-    hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestampMillis) {
+    hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.#setMultiMixed(key, null, value, expire);
+            return this.setMultiMixed(key, null, value, expire);
         }
-        return this.#setMultiMixed(key, null, value);
+        return this.setMultiMixed(key, null, value);
     }
 
-    setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestampMillis) {
+    setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.#setMultiMixed(key, value, null, expire);
+            return this.setMultiMixed(key, value, null, expire);
         }
-        return this.#setMultiMixed(key, value, null);
+        return this.setMultiMixed(key, value, null);
     }
 
     
@@ -339,6 +327,15 @@ export default class CacheHandler {
                 return;
             }
             delete this.#guilds[guild_id].emojis[emoji_id];
+        },
+        find: (emoji_id: types.Snowflake): types.Emoji | null => {
+            let guildID: types.Snowflake;
+            for (guildID in this.#guilds) {
+                if (this.#guilds[guildID].emojis?.[emoji_id]) {
+                    return this.#guilds[guildID].emojis[emoji_id];
+                }
+            }
+            return null;
         }
     }
 
@@ -371,6 +368,25 @@ export default class CacheHandler {
                 return;
             }
             this.#guilds[guild_id].channels = channel_map;
+        },
+        getCount: (guild_id: types.Snowflake): number => {
+            if (!this.guilds.get(guild_id)) {
+                return 0;
+            }
+            return Object.keys(this.#guilds[guild_id].channels).length;
+        },
+        listCategory: (guild_id: types.Snowflake, category_id: types.Snowflake): types.Channel[] | null => {
+            if (!this.guilds.get(guild_id)) {
+                return null;
+            }
+            const chans: types.Channel[] = [];
+            for (const chanID in this.#guilds[guild_id].channels) {
+                const chan = this.#guilds[guild_id].channels[chanID as types.Snowflake]; 
+                if (chan.parent_id === category_id) {
+                    chans.push(chan);
+                }
+            }
+            return chans;
         }
     }
 
@@ -492,12 +508,24 @@ export default class CacheHandler {
 
     users = {
         get: async (user_id: types.Snowflake): Promise<types.User | null> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call users.get() while disconnected');
+                return null;
+            }
             return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
         set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call users.set() while disconnected');
+                return;
+            }
             return this.set(user_id, this.users._serialize(user)).then(() => undefined);
         },
         addChunk: async (user_list: UserMap): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call users.addChunk() while disconnected');
+                return;
+            }
             const obj: StringMapMap = {};
             let id: types.Snowflake;
             for (id in user_list) {
@@ -558,13 +586,25 @@ export default class CacheHandler {
 
     dmChannels = {
         get: async (user_id: types.Snowflake): Promise<types.Snowflake | null> => {
-            const cid = await this.#get(`dm_channels.${user_id}`).catch(() => undefined);
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call dmChannels.get() while disconnected');
+                return null;
+            }
+            const cid = await this.redisClient.get(`dm_channels.${user_id}`).catch(() => undefined);
             return cid === null ? null : cid as types.Snowflake;
         },
         set: async (user_id: types.Snowflake, dm_channel_id: types.Snowflake): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call dmChannels.set() while disconnected');
+                return;
+            }
             return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => undefined);
         },
         setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call dmChannels.setAll() while disconnected');
+                return;
+            }
             return this.setMulti('dm_channels', dm_channel_ids).then(() => undefined);
         }
         // TODO: decache dm channel when associated user is decached?
@@ -618,26 +658,44 @@ export default class CacheHandler {
 
     gatewayInfo = {
         get: async (): Promise<GatewayBotInfo | null> => {
-            return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
-                if (Array.isArray(data) && data.length === 3) {
-                    const obj: GatewayBotInfo = {
-                        url: data[0],
-                        shards: data[1],
-                        session_start_limit: {
-                            total: parseInt(data[2].total),
-                            remaining: parseInt(data[2].remaining),
-                            reset_after: parseInt(data[2].reset_at) - Date.now(),
-                            max_concurrency: parseInt(data[2].max_concurrency)
-                        }
-                    }
-                    return obj;
-                }
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call gatewayInfo.get() while disconnected');
                 return null;
+            }
+            return this.getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
+                if (!Array.isArray(data) || data.length !== 3 || typeof data[0] !== 'string' && typeof data[1] !== 'string') {
+                    return null;
+                }
+                let sessionLimitData: GatewaySessionLimitHash | null = null;
+                if (data[2] && typeof data[2] === 'object' && 'max_concurrency' in data[2]) {
+                    sessionLimitData = data[2] as GatewaySessionLimitHash;
+                }
+                if (!sessionLimitData) {
+                    return null;
+                }
+                const obj: GatewayBotInfo = {
+                    url: data[0] as types.URL,
+                    shards: parseInt(data[1] as string),
+                    session_start_limit: {
+                        total: parseInt(sessionLimitData.total),
+                        remaining: parseInt(sessionLimitData.remaining),
+                        reset_after: parseInt(sessionLimitData.reset_at) - Date.now(),
+                        max_concurrency: parseInt(sessionLimitData.max_concurrency)
+                    }
+                }
+                if (obj.session_start_limit.reset_after <= 0) {
+                    return null;
+                }
+                return obj;
             }).catch(() => null);
         },
         set: async (gateway_bot_info: GatewayBotInfo): Promise<void> => {
-            const reset_at = Date.now() + gateway_bot_info.session_start_limit.reset_after;
-            return this.#setMultiMixed('gateway', {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call gatewayInfo.set() while disconnected');
+                return;
+            }
+            const reset_at = Math.floor((Date.now() + gateway_bot_info.session_start_limit.reset_after) / 1000);
+            return this.setMultiMixed('gateway', {
                 url: gateway_bot_info.url,
                 shards: gateway_bot_info.shards+''
             }, {

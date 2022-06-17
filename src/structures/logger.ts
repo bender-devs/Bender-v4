@@ -1,15 +1,11 @@
 import Bot from './bot';
 import * as CONSTANTS from '../data/constants';
 import * as chalk from 'chalk';
-
-// omitting black because dark mode
-const chalkColors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'] as const;
-type ChalkColor = typeof chalkColors[number];
-
+import { createHash } from 'crypto';
 
 export default class Logger {
     bot?: Bot;
-    #moduleColors: Record<string, ChalkColor>;
+    #moduleColors: Record<string, string>;
 
     constructor(bot?: Bot) {
         this.bot = bot;
@@ -18,7 +14,7 @@ export default class Logger {
 
     handleError(moduleName: string | null, error: unknown, ...debugInfo: unknown[]): void {
         const color = this.#getColor(moduleName || 'ERROR');
-        const moduleMarkup = chalk[color].bold(`[${moduleName}]`);
+        const moduleMarkup = chalk.hex(color).bold(`[${moduleName}]`);
         const shardMarkup = this.#getShardMarkup();
         console.error(shardMarkup + moduleMarkup, error, ...debugInfo);
 
@@ -39,9 +35,24 @@ export default class Logger {
 
     moduleLog(moduleName: string, ...args: unknown[]): void {
         const color = this.#getColor(moduleName);
-        const moduleMarkup = chalk[color].bold(`[${moduleName}]`);
+        const moduleMarkup = chalk.hex(color).bold(`[${moduleName}]`);
         const shardMarkup = this.#getShardMarkup();
         console.log(shardMarkup + moduleMarkup, ...args);
+    }
+
+    warn(...args: unknown[]): void {
+        const shardMarkup = this.#getShardMarkup();
+        if (shardMarkup) {
+            return console.warn(shardMarkup, ...args);
+        }
+        console.warn(...args);
+    }
+
+    moduleWarn(moduleName: string, ...args: unknown[]): void {
+        const color = this.#getColor(moduleName);
+        const moduleMarkup = chalk.hex(color).bold(`[${moduleName}]`);
+        const shardMarkup = this.#getShardMarkup();
+        console.warn(shardMarkup + moduleMarkup, ...args);
     }
 
     debug(moduleName: string, ...args: unknown[]): void {
@@ -51,13 +62,11 @@ export default class Logger {
         return this.moduleLog(moduleName, ...args);
     }
 
-    #getColor(moduleName: string): ChalkColor {
+    #getColor(moduleName: string): string {
         if (this.#moduleColors[moduleName]) {
             return this.#moduleColors[moduleName];
         }
-        const len = Object.keys(this.#moduleColors).length;
-        const colorIndex = len % (chalkColors.length - 1);
-        const newColor = chalkColors[colorIndex];
+        const newColor = Logger.getHashHexColor(moduleName);
         this.#moduleColors[moduleName] = newColor;
         return newColor;
     }
@@ -68,6 +77,21 @@ export default class Logger {
         }
         const shardText = `Shard ${this.bot.shard.id}`;
         const shardColor = this.#getColor(shardText);
-        return chalk[shardColor].bold(`[${shardText}]`) + ' ';
+        return chalk.hex(shardColor).bold(`[${shardText}]`) + ' ';
     }
+
+    static getHashHexColor(moduleName: string): string {
+        const hash = createHash('sha256').update(moduleName).digest('hex');
+        let red = parseInt(hash.substring(0, 2), 16);
+        let green = parseInt(hash.substring(2, 4), 16);
+        let blue = parseInt(hash.substring(4, 6), 16);
+        if (red + green + blue < 150) {
+            red += 50;
+            green += 50;
+            blue += 50;
+        }
+        return `${this.#toHexByte(red)}${this.#toHexByte(green)}${this.#toHexByte(blue)}`;
+    }
+
+    static #toHexByte = (num: number) => num.toString(16).padStart(2, '0')
 }

@@ -3,6 +3,7 @@ import { InteractionCreateData, LowercaseEventName } from '../data/gatewayTypes'
 import Bot from '../structures/bot';
 import { basename } from 'path';
 import { INTERACTION_REQUEST_TYPES } from '../data/numberTypes';
+import { inspect } from 'util';
 
 export default class InteractionCreateHandler extends EventHandler<InteractionCreateData> {
     constructor(bot: Bot) {
@@ -25,7 +26,7 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
                 if (devCmd) {
                     this.bot.logger.debug('INTERACTION', 'Received developer command: /' + name);
                     if (eventData.data?.options) {
-                        this.bot.logger.debug('INTERACTION', 'Command options: ', eventData.data.options);
+                        this.bot.logger.debug('INTERACTION', 'Command options: ', inspect(eventData.data.options, false, 69));
                     }
                     return devCmd.run(eventData);
                 }
@@ -36,7 +37,7 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
             if (cmd) {
                 this.bot.logger.debug('INTERACTION', 'Received command: /' + name);
                 if (eventData.data?.options) {
-                    this.bot.logger.debug('INTERACTION', 'Command options: ', eventData.data.options);
+                    this.bot.logger.debug('INTERACTION', 'Command options: ', inspect(eventData.data.options, false, 69));
                 }
                 return cmd.run(eventData);
             } else {

@@ -6,6 +6,8 @@ import { basename } from 'path';
 import { VERSION } from '../data/constants';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
+    requiresReady = false;
+
     constructor(bot: Bot) {
         super(basename(__filename, '.js') as LowercaseEventName, bot);
     }

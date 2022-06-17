@@ -1,21 +1,26 @@
 import { ICommand, CommandUtils } from '../structures/command';
-import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../data/numberTypes';
 import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../utils/shardManager';
 import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 import { GatewayData, GatewayPayload } from '../data/gatewayTypes';
+
+// this command not localized as it's only developer-only
 
 export default class DevCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
-        super(bot, path.parse(__filename).name);
+        super(bot, LangUtils.get('DEV_NAME'));
     }
-    
+    readonly name_localizations = LangUtils.getLocalizationMap('DEV_NAME');
+
+    readonly description = LangUtils.get('DEV_DESCRIPTION');
+    readonly description_localizations = LangUtils.getLocalizationMap('DEV_DESCRIPTION');
+
     readonly dm_permission: boolean = true;
-    readonly description = 'Super secret developer stuff';
+
     readonly options: types.CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
         name: 'msg',
@@ -114,8 +119,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            const permMsg = LanguageUtils.get('COMMAND_UNAUTHORIZED', interaction.locale);
-            return this.respond(interaction, permMsg);
+            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED');
         }
         const args = interaction.data?.options;
         if (!args) {
@@ -163,7 +167,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                             d: data as GatewayData,
                             s: null,
                             t: null
-                        })
+                        });
                         return this.respond(interaction, '📤 Gateway event sent.');
                     }
                     case 'receive': {
@@ -184,7 +188,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     }
                 }
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
-            } 
+            }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');
     }

@@ -1,53 +1,91 @@
 import { ICommand, CommandUtils } from '../structures/command';
-import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
-import * as crypto from 'crypto';
-import LanguageUtils from '../utils/language';
+import { createHash } from 'crypto';
+import LangUtils from '../utils/language';
 
 const encodeDecodeMode: types.CommandOption[] = [{
     type: COMMAND_OPTION_TYPES.STRING,
-    name: 'mode',
-    description: 'Choose encode or decode mode.',
-    choices: [
-        { name: 'Encode', value: 'encode' },
-        { name: 'Decode', value: 'decode' }
-    ],
+
+    name: LangUtils.get('CONVERT_TEXT_OPTION_MODE'),
+    name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_MODE'),
+
+    description: LangUtils.get('CONVERT_TEXT_OPTION_MODE_DESCRIPTION'),
+    description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_MODE_DESCRIPTION'),
+
+    choices: [{
+        name: LangUtils.get('CONVERT_TEXT_OPTION_MODE_ENCODE'),
+        name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_MODE_ENCODE'),
+        value: 'encode'
+    }, {
+        name: LangUtils.get('CONVERT_TEXT_OPTION_MODE_DECODE'),
+        name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_MODE_DECODE'),
+        value: 'decode'
+    }],
     required: true
 }, {
     type: COMMAND_OPTION_TYPES.STRING,
-    name: 'text',
-    description: 'The text to encode or decode.',
+
+    name: LangUtils.get('CONVERT_TEXT_OPTION_TEXT'),
+    name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_TEXT'),
+
+    description: LangUtils.get('CONVERT_TEXT_OPTION_TEXT_DESCRIPTION'),
+    description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_TEXT_DESCRIPTION'),
+
     required: true
 }];
 
 export default class ConvertTextCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
-        super(bot, path.parse(__filename).name);
+        super(bot, LangUtils.get('CONVERT_TEXT_NAME'));
     }
-    
+    readonly name_localizations = LangUtils.getLocalizationMap('CONVERT_TEXT_NAME');
+
+    readonly description = LangUtils.get('CONVERT_TEXT_DESCRIPTION');
+    readonly description_localizations = LangUtils.getLocalizationMap('CONVERT_TEXT_DESCRIPTION');
+
     readonly dm_permission: boolean = true;
-    readonly description = 'Convert text between formats.';
+
     readonly options: types.CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
         name: 'base64',
-        description: 'Encodes or decodes text in base64.',
+        name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BASE64'),
+
+        description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION'),
+
         options: encodeDecodeMode
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
         name: 'binary',
-        description: 'Encodes or decodes text in binary.',
+        name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BINARY'),
+
+        description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION'),
+
         options: encodeDecodeMode
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
         name: 'hash',
-        description: 'Runs text through a hashing algorithm.',
+        name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_HASH'),
+
+        description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION'),
+
         options: [{
             type: COMMAND_OPTION_TYPES.STRING,
+
             name: 'algorithm',
-            description: 'The hashing algorithm to use.',
-            choices: [
+            name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_ALGORITHM'),
+
+            description: LangUtils.get('CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION'),
+
+            choices: [ // doesn't need translating
                 { name: 'MD5', value: 'md5' },
                 { name: 'SHA-1', value: 'sha1' },
                 { name: 'SHA-256', value: 'sha256' },
@@ -58,8 +96,13 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             required: true
         }, {
             type: COMMAND_OPTION_TYPES.STRING,
+            
             name: 'text',
-            description: 'The text to hash.',
+            name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_HASHTEXT'),
+
+            description: LangUtils.get('CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION'),
+
             required: true
         }]
     }];
@@ -68,17 +111,17 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         const args = interaction.data?.options;
         const subcommand = args?.[0]?.name;
         const modeOrAlgorithm = args?.[0]?.options?.[0]?.value;
-        const textOrKey = args?.[0]?.options?.[1]?.value;
-        if (!subcommand || !modeOrAlgorithm || typeof modeOrAlgorithm !== 'string' || !textOrKey || typeof textOrKey !== 'string') {
+        const text = args?.[0]?.options?.[1]?.value;
+        if (!subcommand || !modeOrAlgorithm || typeof modeOrAlgorithm !== 'string' || !text || typeof text !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         switch (subcommand) {
             case 'base64':
-                return this.#base64(interaction, modeOrAlgorithm, textOrKey);
+                return this.#base64(interaction, modeOrAlgorithm, text);
             case 'binary':
-                return this.#binary(interaction, modeOrAlgorithm, textOrKey);
+                return this.#binary(interaction, modeOrAlgorithm, text);
             case 'hash':
-                return this.#hash(interaction, modeOrAlgorithm, textOrKey);
+                return this.#hash(interaction, modeOrAlgorithm, text);
         }
 
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
@@ -91,12 +134,11 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         } else {
             result = Buffer.from(text).toString('base64');
         }
-        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BASE64' : 'ENCODED_BASE64', interaction.locale);
-        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
-            return this.respond(interaction, lengthMsg);
+        const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BASE64`, interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
+            return this.respondKey(interaction, 'TEXT_TOO_LONG');
         }
-        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
     }
 
     #binary(interaction: types.Interaction, mode: string, text: string) {
@@ -125,19 +167,16 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             }
             result = result.trim();
         }
-        const modeMessage = LanguageUtils.get(mode === 'decode' ? 'DECODED_BINARY' : 'ENCODED_BINARY', interaction.locale);
-        if (Array.from(result).length + Array.from(modeMessage).length > 1989) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
-            return this.respond(interaction, lengthMsg);
+        const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BINARY`, interaction.locale);
+        if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
+            return this.respondKey(interaction, 'TEXT_TOO_LONG');
         }
-        return this.respond(interaction, `📃 ${modeMessage}:\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
     }
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
-        const hasher = crypto.createHash(algorithm);
-        hasher.update(text);
-        const result = hasher.digest('hex');
-        const computedMsg = LanguageUtils.get('COMPUTED_HASH', interaction.locale);
-        return this.respond(interaction, `🗒 ${computedMsg}: \`${result}\``);
+        const hash = createHash(algorithm).update(text).digest('hex');
+        const computedMsg = LangUtils.get('CONVERT_TEXT_COMPUTED_HASH', interaction.locale);
+        return this.respond(interaction, `${computedMsg} \`${hash}\``);
     }
 }

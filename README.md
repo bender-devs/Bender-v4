@@ -7,7 +7,17 @@ This rewrite is ambitious: A full rewrite using a new language and a custom libr
 
 ## Translations
 
-At the moment we don't have much to translate, but as we add features we'll be looking for people to help translate the bot so it can be used in multiple languages! If you're interested, please monitor this repo and join our [support server](https://discord.gg/99xaeGn) to let us know!
+As we add features and get closer to completion, we're looking for people to help translate the bot so it can be used in multiple languages! If you're interested, please monitor this repo and join our [support server](https://discord.gg/99xaeGn) to let us know! You can also just create a PR directly, though we'd prefer if you joined as well, in case there's anything to discuss with other people that are translating or reviewing translations.
+
+#### A couple things to keep in mind:
+
+- If you're not familiar with JSON formatting, all you need to know for the scope of this project are that the keys, i.e. `"GUILD_ONLY"`, should be left as-is, and the values after them should be translated.
+
+- The keys with a bunch of dashes (i.e. `"----------- Generic command errors -----------": ""`) are considered comments. You can translate them if you want, but it's just for organization.
+
+- The double bracket format (`{{variable}}`) is used to replace parts of the text with other values; for example, `{{invite}}` would be replaced with `https://discord.gg/99xaeGn`. The variables should be moved around to fit the context, but shouldn't be translated or edited.
+
+To see examples, compare [en_US.json](/src/text/en_US.json) to one of the `.json` files for another language.
 
 ## Note about premium features
 

@@ -4,12 +4,11 @@ import * as types from '../../data/types';
 import { CachedGuild } from '../../utils/cacheHandler';
 import CDNUtils from '../../utils/cdn';
 import DiscordTypeUtils from '../../utils/discordTypes';
-import LanguageUtils from '../../utils/language';
+import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';
-import TimeUtils from '../../utils/time';
 import InfoCommand from '../info';
 
-export default async function(this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
+export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
     if (!userID || typeof userID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
@@ -27,33 +26,28 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
     let guild: types.Guild | CachedGuild | null = null;
     if (interaction.guild_id) {
         if (!member) {
-            member = await this.bot.fetch.member(interaction.guild_id, user.id);
+            member = await this.bot.api.member.fetch(interaction.guild_id, user.id);
         }
-        guild = await this.bot.fetch.guild(interaction.guild_id);
+        guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     const embed: types.Embed = {
         color: user.accent_color || DEFAULT_COLOR,
         footer: { text: `ID: ${user.id}` }
     };
-    let userRank = LanguageUtils.get(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, interaction.locale);
+    let userRank = LangUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {}, interaction.locale);
     let boostStatus = '', joinDate = '', roles = '', nickInfo = '';
     let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
     if (guild) {
         const isOwner = user.id === guild.owner_id;
         if (isOwner) {
-            userRank = LanguageUtils.get('USER_INFO_OWNER', interaction.locale);
+            userRank = LangUtils.get('USER_INFO_OWNER', interaction.locale);
         }
         if (member) {
-            
-            const noRolesText = LanguageUtils.get('NO_ROLES', interaction.locale);
+            const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
             roles = '\n\n' + (member.roles.map(id => `<@&${id}>`).join(', ') || noRolesText);
-            const joinedAtText = LanguageUtils.get('JOINED_AT', interaction.locale);
-            const joinDuration = TimeUtils.sinceTimestamp(member.joined_at);
-            const joinedDate = TimeUtils.formatDate(member.joined_at, interaction.locale);
-            const joinedAgo = TimeUtils.formatDuration(joinDuration, true, interaction.locale);
-            joinDate = `\n**${joinedAtText}:** ${joinedDate} (${joinedAgo})`;
+            joinDate = '\n' + LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale);
 
-            const roleList = await this.bot.fetch.guildRoles(guild.id);
+            const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
                 const highestRole = DiscordTypeUtils.member.getHighestRole(member, roleList);
                 if (highestRole) {
@@ -75,7 +69,7 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
                     roles = '\n\n' + sortedRoles.map(role => `<@&${role.id}>`).join(', ');
                 }
             } else if (!isOwner) {
-                userRank = LanguageUtils.get('USER_INFO_MEMBER', interaction.locale);
+                userRank = LangUtils.get('USER_INFO_MEMBER', interaction.locale);
             }
             if (roleList && !user.accent_color) {
                 let color = DiscordTypeUtils.member.getColor(member, roleList);
@@ -88,10 +82,7 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
             }
 
             if (member.premium_since) {
-                const duration = TimeUtils.sinceTimestamp(member.premium_since);
-                const date = TimeUtils.formatDate(member.premium_since, interaction.locale);
-                const ago = TimeUtils.formatDuration(duration, true, interaction.locale);
-                boostStatus = '\n\n' + LanguageUtils.getAndReplace('SINCE_DATE_AGO', { date, ago }, interaction.locale);
+                boostStatus = '\n\n' + LangUtils.formatDateAgo('USER_INFO_BOOST_INFO', member.premium_since, interaction.locale);
             }
 
             if (member.nick) {
@@ -103,17 +94,13 @@ export default async function(this: InfoCommand, interaction: types.Interaction,
             }
         }
     }
-    const createdAtText = LanguageUtils.get('CREATED_AT', interaction.locale);
     const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
-    const createdDuration = TimeUtils.sinceMillis(createdAt);
-    const createdDate = TimeUtils.formatDate(createdAt, interaction.locale);
-    const createdAgo = TimeUtils.formatDuration(createdDuration, true, interaction.locale); 
-    const creationInfo = `**${createdAtText}:** ${createdDate} (${createdAgo})`;
+    const creationInfo = LangUtils.formatDateAgo('USER_INFO_CREATED_AT', createdAt, interaction.locale);
 
-    const bannerNote = user.banner ? `\n\n**${LanguageUtils.get('BANNER', interaction.locale)}:**` : '';
+    const bannerNote = user.banner ? `\n\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}` : '';
 
-    const unknownStatus = LanguageUtils.get('UNKNOWN_STATUS', interaction.locale);
-    const userStatus = `*${unknownStatus}*`; // TODO: get user presence when possible
+    const unknownStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
+    const userStatus = unknownStatus; // TODO: get user presence when possible
 
     const description = MiscUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = description + bannerNote;

@@ -11,7 +11,6 @@ import EventManager from './eventManager';
 import Shard from './shard';
 import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
-import Fetcher from '../utils/fetcher';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -20,7 +19,6 @@ export default class Bot extends EventEmitter {
     logger: Logger;
     events: EventManager;
     commandManager: CommandManager;
-    fetch: Fetcher;
 
     shard?: Shard;
     user!: types.User;
@@ -41,7 +39,6 @@ export default class Bot extends EventEmitter {
 
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
-        this.fetch = new Fetcher(this);
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);
@@ -58,8 +55,6 @@ export default class Bot extends EventEmitter {
 
         this.events.addAllListeners();
 
-        this.on('REDIS_ERROR', err => this.logger.handleError('REDIS ERROR', err));
-
         if (this.shard) {
             process.on('message', this.shard.handleMessage.bind(this.shard));
         }
@@ -67,6 +62,9 @@ export default class Bot extends EventEmitter {
 
     async connect(identifyData: gatewayTypes.IdentifyData, reconnect = false) {
         this.logger.debug('BOT CONNECT', 'Connect method called...');
+        if (!this.cache.initialized) {
+            await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
+        }
         this.timeouts.gatewayError = [];
         let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
         if (this.useCache) {

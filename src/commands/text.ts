@@ -1,10 +1,9 @@
 import { ICommand, CommandUtils } from '../structures/command';
-import * as path from 'path';
 import Bot from '../structures/bot';
 import * as types from '../data/types';
 import { COMMAND_OPTION_TYPES } from '../data/numberTypes';
 import * as textMap from '../data/text.json';
-import LanguageUtils from '../utils/language';
+import LangUtils from '../utils/language';
 
 const replaceRegex = {
     big: /[A-Z 0-9!?+#*-]/gi,
@@ -27,13 +26,19 @@ const textOpt: types.CommandOption = {
     required: true
 };
 
+// this command not localized as it only supports English characters
+
 export default class TextCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
-        super(bot, path.parse(__filename).name);
+        super(bot, LangUtils.get('TEXT_NAME'));
     }
-    
+    readonly name_localizations = LangUtils.getLocalizationMap('TEXT_NAME');
+
+    readonly description = LangUtils.get('TEXT_DESCRIPTION');
+    readonly description_localizations = LangUtils.getLocalizationMap('TEXT_DESCRIPTION');
+
     readonly dm_permission: boolean = true;
-    readonly description = 'Apply effects to text.';
+
     readonly options: types.CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'case',
@@ -132,8 +137,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             text = Array.from(text).reverse().join('');
             if (effect === 'reverse') {
                 if (Array.from(text).length > 1998) {
-                    const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
-                    return this.respond(interaction, lengthMsg);
+                    return this.respondKey(interaction, 'TEXT_TOO_LONG');
                 }
                 return this.respond(interaction, `🔀 ${text}`);
             }
@@ -157,8 +161,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             newText = `(ノಠ _ ಠ)ノ︵ ${newText}`;
         }
         if (Array.from(newText).length > 2000) {
-            const lengthMsg = LanguageUtils.get('TEXT_TOO_LONG', interaction.locale);
-            return this.respond(interaction, lengthMsg);
+            return this.respondKey(interaction, 'TEXT_TOO_LONG');
         }
         return this.respond(interaction, newText);
     }
@@ -166,7 +169,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     async #doTextCase(interaction: types.Interaction, mode: string) {
         const text = interaction.data?.options?.[0]?.options?.[1]?.value;
         if (!text || typeof text !== 'string') {
-            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         let newText = '';
         switch (mode) {
@@ -202,13 +205,13 @@ export default class TextCommand extends CommandUtils implements ICommand {
                 break;
             }
             case 'title': {
-                newText = text.replace(/\w\S*/g, function(txt) {
+                newText = text.replace(/\w\S*/g, function (txt) {
                     return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
                 });
                 break;
             }
             case 'switch': {
-                for(const char of text) {
+                for (const char of text) {
                     if (/[a-z]/.test(char)) {
                         newText += char.toUpperCase();
                     } else if (/[A-Z]/.test(char)) {
@@ -221,7 +224,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
             }
         }
         if (!newText) {
-            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE')
+            return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         return this.respond(interaction, newText);
     }

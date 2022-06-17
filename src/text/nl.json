@@ -1,4 +1,6 @@
 {
+    "----------- Generic command errors -----------": "",
+
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` kan alleen in een server worden gebruikt, niet in DMs.",
     "COMMAND_UNAUTHORIZED": "🔑 Je hebt geen rechten om dit commando te gebruiken.",
     "INTERACTION_ERROR_NOTICE": "*Foutmeldingen zoals deze zouden niet mogen voorkomen; Als dit blijft gebeuren, meld dit dan alsjeblieft in onze server:* {{invite}}",
@@ -12,61 +14,170 @@
     "STRINGIFYING_FAILED": "Foutmelding met het omzetten van de payload naar tekst.",
 
     "TEXT_TOO_LONG": "⚠ Tekst is te lang!",
-    
-    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
-    "PONG_BLANK": "🏓 Pong!",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)",
+    "EMOJI_NOT_FOUND": "⚠ Kan de emoji niet vinden!.",
 
-    "ENCODED_BINARY": "Gecodeerde binary",
-    "DECODED_BINARY": "Ongecodeerde binary",
-    "ENCODED_BASE64": "Gecodeerde base64",
-    "DECODED_BASE64": "Ongecodeerde base64",
-    "COMPUTED_HASH": "Berekende hash",
+
+
+    "----------- /ping -----------": "",
+    
+    "PING_NAME": "ping",
+    "PING_DESCRIPTION": "Test de reactiesnelheid van de bot.",
+    "PONG_API": "🏓 Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+
+
+
+    "----------- /dev -----------": "",
+
+    "DEV_NAME": "dev",
+    "DEV_DESCRIPTION": "Zeer geheime ontwikkelaar dingen.",
+
+
+
+    "----------- /text -----------": "",
+
+    "TEXT_NAME": "text",
+    "TEXT_DESCRIPTION": "Pas effecten toe op tekst. Ondersteunt alleen Engelse (ASCII) tekens.",
+
+
+
+    "----------- /convert-text -----------": "",
+
+    "CONVERT_TEXT_NAME": "convert-text",
+    "CONVERT_TEXT_DESCRIPTION": "Tekst omzetten tussen formaten.",
+
+    "CONVERT_TEXT_OPTION_MODE": "mode",
+    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Kies tussen encoderen of decoderen.",
+    "CONVERT_TEXT_OPTION_MODE_ENCODE": "Encoderen",
+    "CONVERT_TEXT_OPTION_MODE_DECODE": "Decoderen",
+
+    "CONVERT_TEXT_OPTION_TEXT": "text",
+    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "De tekst die gecodeerd of gedocdeerd moet worden.",
+    
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binair",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Encodeert of decodeert tekst in binaire vorm",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Gecodeerde binaire tekst:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Ongecodeerde binaire tekst:",
+
+    "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
+    "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encodeert of decodeert tekst in base64.",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Gecodeerde base64 tekst:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Ongecodeerde base64 tekst:",
+
+    "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
+    "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Haalt tekst door een hashing algoritme.",
+    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berekende hash:",
+
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithm",
+    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Het te gebruiken hash-algoritme.",
+
+    "CONVERT_TEXT_OPTION_HASHTEXT": "text",
+    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "De tekst om een hash voor te maken.",
+
+
+
+    "----------- /info -----------": "",
+
+    "INFO_NAME": "info",
+    "INFO_DESCRIPTION": "Toon informatie over een gebruiker, rol, kanaal, uitnodiging, emoji, banner, of de huidige server.",
+
+    "------- /info user -------": "",
+
+    "USER_INFO_SUBCOMMAND": "user",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Toont informatie over een server lid of gebruiker.",
+    "USER_INFO_OPTION": "user",
+    "USER_INFO_OPTION_DESCRIPTION": "De gebruiker of server lid om informatie over te tonen.",
 
     "USER_INFO_BOT": "🤖 Robot",
     "USER_INFO_HUMAN": "👤 Mens",
     "USER_INFO_OWNER": "👑 Server Eigenaar",
     "USER_INFO_MEMBER": "👤 Lid",
-    "JOINED_AT": "Lid geworden op",
-    "CREATED_AT": "Gecreeërd op",
-    "BANNER": "Banner",
-    "NO_ROLES": "Lid heeft geen rollen.",
-    "UNKNOWN_STATUS": "Onbekende status",
+    "USER_INFO_UNKNOWN_STATUS": "*Onbekende status*",
+    "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{date}} ({{ago}} geleden)",
+    "USER_INFO_JOINED_AT": "**Lid geworden op:** {{date}} ({{ago}} geleden)",
+    "USER_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} geleden)",
+    "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
+    "USER_INFO_BANNER": "**Banner:**",
+
+    "------- /info emoji -------": "",
+
+    "EMOJI_INFO_SUBCOMMAND": "emoji",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Toon informatie over een emoji.",
+    "EMOJI_INFO_OPTION": "emoji",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "De emoji om informatie over te tonen.",
+
+    "EMOJI_INFO_TITLE": "Emoji informatie- :{{emojiName}}:",
+    "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} ago)",
+    "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`\n^ *kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is, zoals kanaal onderwerpen*",
+    "EMOJI_INFO_MANAGED": "\\ℹ *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
+    "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",
+    "EMOJI_INFO_ANIMATED": "💎 *Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.*",
+    "EMOJI_INFO_LINK": "🔗 Bekijk de emoji in de browser",
+
+
+
+    "----------- Date/time formatting -----------": "",
 
     "DURATION_MILLISECOND": "1 milliseconde",
     "DURATION_MILLISECONDS": "{{number}} milliseconden",
-    "DURATION_MILLISECOND_AGO": "1 milliseconde geleden",
-    "DURATION_MILLISECONDS_AGO": "{{number}} milliseconden geleden",
     "DURATION_SECOND": "1 seconde",
     "DURATION_SECONDS": "{{number}} seconden",
-    "DURATION_SECOND_AGO": "1 seconde geleden",
-    "DURATION_SECONDS_AGO": "{{number}} seconden geleden",
     "DURATION_MINUTE": "1 minute",
     "DURATION_MINUTES": "{{number}} minuut",
-    "DURATION_MINUTE_AGO": "1 minuut geleden",
-    "DURATION_MINUTES_AGO": "{{number}} minuten geleden",
     "DURATION_HOUR": "1 uur",
     "DURATION_HOURS": "{{number}} uren",
-    "DURATION_HOUR_AGO": "1 uur geleden",
-    "DURATION_HOURS_AGO": "{{number}} uren geleden",
     "DURATION_DAY": "1 dag",
     "DURATION_DAYS": "{{number}} dagen",
-    "DURATION_DAY_AGO": "1 dag geleden",
-    "DURATION_DAYS_AGO": "{{number}} dagen geleden",
     "DURATION_WEEK": "1 week",
     "DURATION_WEEKS": "{{number}} weken",
-    "DURATION_WEEK_AGO": "1 week geleden",
-    "DURATION_WEEKS_AGO": "{{number}} weken geleden",
     "DURATION_MONTH": "1 maand",
     "DURATION_MONTHS": "{{number}} maanden",
-    "DURATION_MONTH_AGO": "1 maand geleden",
-    "DURATION_MONTHS_AGO": "{{number}} maanden geleden",
     "DURATION_YEAR": "1 jaar",
     "DURATION_YEARS": "{{number}} jaar",
-    "DURATION_YEAR_AGO": "1 jaar geleden",
-    "DURATION_YEARS_AGO": "{{number}} jaar geleden",
 
-    "SINCE_DATE": "sinds {{date}}",
-    "SINCE_DATE_AGO": "sinds {{date}} ({{ago}})",
-    "DATE_AGO": "{{date}} ({{ago}})"
+
+
+    "----------- Discord permissions -----------": "",
+
+    "PERMISSION_CREATE_INSTANT_INVITE": "Uitnodiging creëren",
+    "PERMISSION_KICK_MEMBERS": "Leden verwijderen",
+    "PERMISSION_BAN_MEMBERS": "Leden verbannen",
+    "PERMISSION_ADMINISTRATOR": "Beheerder",
+    "PERMISSION_MANAGE_CHANNELS": "Kanalen beheren",
+    "PERMISSION_MANAGE_GUILD": "Server beheren",
+    "PERMISSION_ADD_REACTIONS": "Reacties toevoegen",
+    "PERMISSION_VIEW_AUDIT_LOG": "Audit-logboek weergeven",
+    "PERMISSION_PRIORITY_SPEAKER": "Prioriteitsspreker",
+    "PERMISSION_STREAM": "Video",
+    "PERMISSION_VIEW_CHANNEL": "Kanalen bekijken",
+    "PERMISSION_SEND_MESSAGES": "Berichten verzenden",
+    "PERMISSION_SEND_TTS_MESSAGES": "Tekst-naar-spraakberichten verzenden",
+    "PERMISSION_MANAGE_MESSAGES": "Berichten beheren",
+    "PERMISSION_EMBED_LINKS": "Ingesloten links",
+    "PERMISSION_ATTACH_FILES": "Bestanden bijvoegen",
+    "PERMISSION_READ_MESSAGE_HISTORY": "Berichtgeschiedenis lezen",
+    "PERMISSION_MENTION_EVERYONE": "Vermeld @everyone, @here en alle rollen",
+    "PERMISSION_USE_EXTERNAL_EMOJIS": "Externe emoji gebruiken",
+    "PERMISSION_VIEW_GUILD_INSIGHTS": "Serverinzichten bekijken",
+    "PERMISSION_CONNECT": "Verbinden",
+    "PERMISSION_SPEAK": "Spreken",
+    "PERMISSION_MUTE_MEMBERS": "Microfoon van leden dempen",
+    "PERMISSION_DEAFEN_MEMBERS": "Geluid van leden onhoorbaar maken",
+    "PERMISSION_MOVE_MEMBERS": "Leden verplaatsen",
+    "PERMISSION_USE_VAD": "Spraakactivatie gebruiken",
+    "PERMISSION_CHANGE_NICKNAME": "Verander gebruikersnaam",
+    "PERMISSION_MANAGE_NICKNAMES": "Gebruikersnamen beheren",
+    "PERMISSION_MANAGE_ROLES": "Rollen beheren",
+    "PERMISSION_MANAGE_WEBHOOKS": "Webhooks beheren",
+    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Emoji's en stickers beheren",
+    "PERMISSION_USE_APPLICATION_COMMANDS": "Applicatieopdrachten gebruiken",
+    "PERMISSION_REQUEST_TO_SPEAK": "Verzoek om te spreken",
+    "PERMISSION_MANAGE_EVENTS": "Evenementen beheren",
+    "PERMISSION_MANAGE_THREADS": "Threads beheren",
+    "PERMISSION_CREATE_PUBLIC_THREADS": "Openbare threads creëren",
+    "PERMISSION_CREATE_PRIVATE_THREADS": "Privéthreads creëren",
+    "PERMISSION_USE_EXTERNAL_STICKERS": "Externe stickers gebruiken",
+    "PERMISSION_SEND_MESSAGES_IN_THREADS": "Berichten sturen in threads",
+    "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Activiteiten gebruiken",
+    "PERMISSION_MODERATE_MEMBERS": "Leden time-out geven"
 }

@@ -1,4 +1,6 @@
 {
+    "----------- Generic command errors -----------": "",
+
     "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
     "COMMAND_UNAUTHORIZED": "🔑 You aren't authorized to use this command.",
     "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
@@ -9,64 +11,204 @@
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Not all subcommands or required arguments supplied.",
     "INVALID_SUBCOMMAND": "Invalid subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
-    "STRINGIFYING_FAILED": "Error stringifying payload,",
+    "STRINGIFYING_FAILED": "Error stringifying payload.",
 
     "TEXT_TOO_LONG": "⚠ Text is too long!",
-    
-    "PONG": "🏓 Pong! `{{millis}}ms` (API)",
-    "PONG_BLANK": "🏓 Pong!",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip)",
+    "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
+    "CHANNEL_NOT_FOUND": "⚠ Couldn't find channel.",
+    "CHANNEL_FETCH_FAILED": "⚠ Failed to get channel info.",
 
-    "ENCODED_BINARY": "Encoded binary",
-    "DECODED_BINARY": "Decoded binary",
-    "ENCODED_BASE64": "Encoded base64",
-    "DECODED_BASE64": "Decoded base64",
-    "COMPUTED_HASH": "Computed hash",
+    "MISSING_PERMISSIONS": "⚠ I'm missing the following permissions for {{context}}: {{permissions}}",
+    "MISSING_GUILD_PERMISSIONS": "⚠ I'm missing the following permissions in this server: {{permissions}}",
+    "USER_MISSING_PERMISSIONS": "⚠ You're missing the following permissions for {{context}}: {{permissions}}",
+    "USER_MISSING_GUILD_PERMISSIONS": "⚠ You're missing the following permissions in this server: {{permissions}}",
+
+
+
+    "----------- /ping -----------": "",
+
+    "PING_NAME": "ping",
+    "PING_DESCRIPTION": "Test the bot's responsiveness.",
+    "PONG_API": "🏓 Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+
+
+
+    "----------- /dev -----------": "",
+
+    "DEV_NAME": "dev",
+    "DEV_DESCRIPTION": "Super secret developer stuff.",
+
+
+
+    "----------- /text -----------": "",
+
+    "TEXT_NAME": "text",
+    "TEXT_DESCRIPTION": "Apply effects to text. Only supports English (ASCII) characters.",
+
+
+
+    "----------- /convert-text -----------": "",
+
+    "CONVERT_TEXT_NAME": "convert-text",
+    "CONVERT_TEXT_DESCRIPTION": "Convert text between formats.",
+
+    "CONVERT_TEXT_OPTION_MODE": "mode",
+    "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Choose encode or decode mode.",
+    "CONVERT_TEXT_OPTION_MODE_ENCODE": "Encode",
+    "CONVERT_TEXT_OPTION_MODE_DECODE": "Decode",
+
+    "CONVERT_TEXT_OPTION_TEXT": "text",
+    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "The text to encode or decode.",
+
+    "CONVERT_TEXT_SUBCOMMAND_BINARY": "binary",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Encodes or decodes text in binary.",
+    "CONVERT_TEXT_ENCODED_BINARY": "📃 Encoded binary:",
+    "CONVERT_TEXT_DECODED_BINARY": "📃 Decoded binary:",
+
+    "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
+    "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encodes or decodes text in base64.",
+    "CONVERT_TEXT_ENCODED_BASE64": "📃 Encoded base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "📃 Decoded base64:",
+
+    "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
+    "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Runs text through a hashing algorithm.",
+    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Computed hash:",
+
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithm",
+    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "The hash algorithm to use.",
+
+    "CONVERT_TEXT_OPTION_HASHTEXT": "text",
+    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "The text to create a hash for.",
+
+
+
+    "----------- /info -----------": "",
+
+    "INFO_NAME": "info",
+    "INFO_DESCRIPTION": "Show information about a user, role, channel, invite, emoji, banner, or the current server.",
+
+    "------- /info user -------": "",
+
+    "USER_INFO_SUBCOMMAND": "user",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a server member or user.",
+    "USER_INFO_OPTION": "user",
+    "USER_INFO_OPTION_DESCRIPTION": "The user or member to show info about.",
 
     "USER_INFO_BOT": "🤖 Bot",
     "USER_INFO_HUMAN": "👤 Human",
     "USER_INFO_OWNER": "👑 Server Owner",
     "USER_INFO_MEMBER": "👤 Member",
-    "JOINED_AT": "Joined at",
-    "CREATED_AT": "Created at",
-    "BANNER": "Banner",
-    "NO_ROLES": "Member has no roles.",
-    "UNKNOWN_STATUS": "Unknown status",
+    "USER_INFO_UNKNOWN_STATUS": "*Unknown status*",
+    "USER_INFO_BOOST_INFO": "**Server Booster** since {{date}} ({{ago}} ago)",
+    "USER_INFO_JOINED_AT": "**Joined at:** {{date}} ({{ago}} ago)",
+    "USER_INFO_CREATED_AT": "**Created at:** {{date}} ({{ago}} ago)",
+    "USER_INFO_NO_ROLES": "*Member has no roles.*",
+    "USER_INFO_BANNER": "**Banner:**",
+
+    "------- /info emoji -------": "",
+
+    "EMOJI_INFO_SUBCOMMAND": "emoji",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Show information about an emoji.",
+    "EMOJI_INFO_OPTION": "emoji",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "The emoji to show info about.",
+
+    "EMOJI_INFO_TITLE": "Emoji info - :{{emojiName}}:",
+    "EMOJI_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
+    "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`\n^ *can be used to put emojis where there's no autocomplete, such as channel topics*",
+    "EMOJI_INFO_MANAGED": "\\ℹ *This emoji is managed by an external service (such as Twitch.)*",
+    "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
+    "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
+    "EMOJI_INFO_LINK": "🔗 View emoji in browser",
+
+    "------- /info channel -------": "",
+
+    "CHANNEL_INFO_SUBCOMMAND": "channel",
+    "CHANNEL_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a channel.",
+    "CHANNEL_INFO_OPTION": "channel",
+    "CHANNEL_INFO_OPTION_DESCRIPTION": "The channel to show info about.",
+
+    "CHANNEL_INFO_TITLE": "Channel: #{{channelName}}",
+    "CHANNEL_INFO_TITLE_NSFW": "Channel: #{{channelName}} [NSFW]",
+    "CHANNEL_INFO_TITLE_VOICE": "Voice Channel: {{channelName}}",
+    "CHANNEL_INFO_TITLE_CATEGORY": "Category: {{channelName}}",
+
+    "CHANNEL_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
+    "CHANNEL_INFO_LINK_TITLE": "🔗 Go to channel",
+    "CHANNEL_INFO_TOPIC": "**Topic:** {{topic}}",
+    "CHANNEL_INFO_NO_TOPIC": "**Topic:** *(none)*",
+    "CHANNEL_INFO_LAST_ACTIVITY": "**Last activity:** {{ago}} ago",
+    "CHANNEL_INFO_LAST_ACTIVITY_UNKNOWN": "**Last activity:** *unknown*",
+    "CHANNEL_INFO_CATEGORY": "**Category:** {{categoryName}}",
+    "CHANNEL_INFO_NO_CATEGORY": "**Category:** *(none)*",
+    "CHANNEL_INFO_CATEGORY_CHANNELS": "**Channels:** {{channelList}}",
+    "CHANNEL_INFO_CATEGORY_EMPTY": "**Channels:** *(none)*",
+    "CHANNEL_INFO_TRUNCATED": "*and {{count}} more...*",
+
+
+
+    "----------- Date/time formatting -----------": "",
 
     "DURATION_MILLISECOND": "1 millisecond",
     "DURATION_MILLISECONDS": "{{number}} milliseconds",
-    "DURATION_MILLISECOND_AGO": "1 millisecond ago",
-    "DURATION_MILLISECONDS_AGO": "{{number}} milliseconds ago",
     "DURATION_SECOND": "1 second",
     "DURATION_SECONDS": "{{number}} seconds",
-    "DURATION_SECOND_AGO": "1 second ago",
-    "DURATION_SECONDS_AGO": "{{number}} seconds ago",
     "DURATION_MINUTE": "1 minute",
     "DURATION_MINUTES": "{{number}} minutes",
-    "DURATION_MINUTE_AGO": "1 minute ago",
-    "DURATION_MINUTES_AGO": "{{number}} minutes ago",
     "DURATION_HOUR": "1 hour",
     "DURATION_HOURS": "{{number}} hours",
-    "DURATION_HOUR_AGO": "1 hour ago",
-    "DURATION_HOURS_AGO": "{{number}} hours ago",
     "DURATION_DAY": "1 day",
     "DURATION_DAYS": "{{number}} days",
-    "DURATION_DAY_AGO": "1 day ago",
-    "DURATION_DAYS_AGO": "{{number}} days ago",
     "DURATION_WEEK": "1 week",
     "DURATION_WEEKS": "{{number}} weeks",
-    "DURATION_WEEK_AGO": "1 week ago",
-    "DURATION_WEEKS_AGO": "{{number}} weeks ago",
     "DURATION_MONTH": "1 month",
     "DURATION_MONTHS": "{{number}} months",
-    "DURATION_MONTH_AGO": "1 month ago",
-    "DURATION_MONTHS_AGO": "{{number}} months ago",
     "DURATION_YEAR": "1 year",
     "DURATION_YEARS": "{{number}} years",
-    "DURATION_YEAR_AGO": "1 year ago",
-    "DURATION_YEARS_AGO": "{{number}} years ago",
 
-    "SINCE_DATE": "since {{date}}",
-    "SINCE_DATE_AGO": "since {{date}} ({{ago}})",
-    "DATE_AGO": "{{date}} ({{ago}})"
+
+
+    "----------- Discord permissions -----------": "",
+
+    "PERMISSION_CREATE_INSTANT_INVITE": "Create Invite",
+    "PERMISSION_KICK_MEMBERS": "Kick Members",
+    "PERMISSION_BAN_MEMBERS": "Ban Members",
+    "PERMISSION_ADMINISTRATOR": "Administrator",
+    "PERMISSION_MANAGE_CHANNELS": "Manage Channels",
+    "PERMISSION_MANAGE_GUILD": "Manage Server",
+    "PERMISSION_ADD_REACTIONS": "Add Reactions",
+    "PERMISSION_VIEW_AUDIT_LOG": "View Audit Log",
+    "PERMISSION_PRIORITY_SPEAKER": "Priority Speaker",
+    "PERMISSION_STREAM": "Video",
+    "PERMISSION_VIEW_CHANNEL": "View Channels",
+    "PERMISSION_SEND_MESSAGES": "Send Messages",
+    "PERMISSION_SEND_TTS_MESSAGES": "Send Text-to-Speech Messages",
+    "PERMISSION_MANAGE_MESSAGES": "Manage Messages",
+    "PERMISSION_EMBED_LINKS": "Embed Links",
+    "PERMISSION_ATTACH_FILES": "Attach Files",
+    "PERMISSION_READ_MESSAGE_HISTORY": "Read Message History",
+    "PERMISSION_MENTION_EVERYONE": "Mention @everyone, @here, and All Roles",
+    "PERMISSION_USE_EXTERNAL_EMOJIS": "Use External Emoji",
+    "PERMISSION_VIEW_GUILD_INSIGHTS": "View Server Insights",
+    "PERMISSION_CONNECT": "Connect",
+    "PERMISSION_SPEAK": "Speak",
+    "PERMISSION_MUTE_MEMBERS": "Mute Members",
+    "PERMISSION_DEAFEN_MEMBERS": "Deafen Members",
+    "PERMISSION_MOVE_MEMBERS": "Move Members",
+    "PERMISSION_USE_VAD": "Use Voice Activity",
+    "PERMISSION_CHANGE_NICKNAME": "Change Nickname",
+    "PERMISSION_MANAGE_NICKNAMES": "Manage Nicknames",
+    "PERMISSION_MANAGE_ROLES": "Manage Roles",
+    "PERMISSION_MANAGE_WEBHOOKS": "Manage Webhooks",
+    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers",
+    "PERMISSION_USE_APPLICATION_COMMANDS": "Use Application Commands",
+    "PERMISSION_REQUEST_TO_SPEAK": "Request to Speak",
+    "PERMISSION_MANAGE_EVENTS": "Manage Events",
+    "PERMISSION_MANAGE_THREADS": "Manage Threads",
+    "PERMISSION_CREATE_PUBLIC_THREADS": "Create Public Threads",
+    "PERMISSION_CREATE_PRIVATE_THREADS": "Create Private Threads",
+    "PERMISSION_USE_EXTERNAL_STICKERS": "Use External Stickers",
+    "PERMISSION_SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+    "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Use Activities",
+    "PERMISSION_MODERATE_MEMBERS": "Timeout Members"
 }

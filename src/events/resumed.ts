@@ -5,6 +5,8 @@ import Bot from '../structures/bot';
 import { basename } from 'path';
 
 export default class ResumedHandler extends EventHandler<ResumedData> {
+    requiresReady = false;
+    
     constructor(bot: Bot) {
         super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
