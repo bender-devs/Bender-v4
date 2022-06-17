@@ -442,14 +442,15 @@ export type PartialChannel = {
     id: Snowflake;
     type: num.CHANNEL_TYPES;
     name?: string;
-    permission_overwrites?: PermissionOverwrites[];
+    permissions: Bitfield;
 }
 
-export interface Channel extends PartialChannel {
+export interface Channel extends Omit<PartialChannel, 'permissions'> {
     // guild fields
     guild_id?: Snowflake;
     position?: number;
     parent_id?: Snowflake | null;
+    permission_overwrites?: PermissionOverwrites[];
 
     // dm fields
     recipients?: User[];
@@ -482,14 +483,15 @@ export interface Channel extends PartialChannel {
 
 export interface GuildChannel extends Channel {
     guild_id: Snowflake;
+    name: string;
     position: number;
-    recipients: undefined;
+    recipients: never;
 }
 
 export interface DMBasedChannel extends Channel {
     type: num.CHANNEL_TYPES.DM | num.CHANNEL_TYPES.GROUP_DM;
     recipients: User[];
-    guild_id: undefined;
+    guild_id: never;
 }
 
 export interface TextBasedChannel extends GuildChannel {
@@ -958,7 +960,7 @@ export type EmbedFooter = {
     proxy_icon_url?: URL;
 };
 export type EmbedMedia = {
-    url: string;
+    url: URL;
     proxy_url?: URL;
     height?: number;
     width?: number;

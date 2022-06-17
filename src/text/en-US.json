@@ -15,9 +15,16 @@
 
     "TEXT_TOO_LONG": "⚠ Text is too long!",
     "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
+    "CHANNEL_NOT_FOUND": "⚠ Couldn't find channel.",
+    "CHANNEL_FETCH_FAILED": "⚠ Failed to get channel info.",
+
+    "MISSING_PERMISSIONS": "⚠ I'm missing the following permissions for {{context}}: {{permissions}}",
+    "MISSING_GUILD_PERMISSIONS": "⚠ I'm missing the following permissions in this server: {{permissions}}",
+    "USER_MISSING_PERMISSIONS": "⚠ You're missing the following permissions for {{context}}: {{permissions}}",
+    "USER_MISSING_GUILD_PERMISSIONS": "⚠ You're missing the following permissions in this server: {{permissions}}",
 
 
-    
+
     "----------- /ping -----------": "",
 
     "PING_NAME": "ping",
@@ -114,6 +121,30 @@
     "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
     "EMOJI_INFO_LINK": "🔗 View emoji in browser",
 
+    "------- /info channel -------": "",
+
+    "CHANNEL_INFO_SUBCOMMAND": "channel",
+    "CHANNEL_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a channel.",
+    "CHANNEL_INFO_OPTION": "channel",
+    "CHANNEL_INFO_OPTION_DESCRIPTION": "The channel to show info about.",
+
+    "CHANNEL_INFO_TITLE": "Channel: #{{channelName}}",
+    "CHANNEL_INFO_TITLE_NSFW": "Channel: #{{channelName}} [NSFW]",
+    "CHANNEL_INFO_TITLE_VOICE": "Voice Channel: {{channelName}}",
+    "CHANNEL_INFO_TITLE_CATEGORY": "Category: {{channelName}}",
+
+    "CHANNEL_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
+    "CHANNEL_INFO_LINK_TITLE": "🔗 Go to channel",
+    "CHANNEL_INFO_TOPIC": "**Topic:** {{topic}}",
+    "CHANNEL_INFO_NO_TOPIC": "**Topic:** *(none)*",
+    "CHANNEL_INFO_LAST_ACTIVITY": "**Last activity:** {{ago}} ago",
+    "CHANNEL_INFO_LAST_ACTIVITY_UNKNOWN": "**Last activity:** *unknown*",
+    "CHANNEL_INFO_CATEGORY": "**Category:** {{categoryName}}",
+    "CHANNEL_INFO_NO_CATEGORY": "**Category:** *(none)*",
+    "CHANNEL_INFO_CATEGORY_CHANNELS": "**Channels:** {{channelList}}",
+    "CHANNEL_INFO_CATEGORY_EMPTY": "**Channels:** *(none)*",
+    "CHANNEL_INFO_TRUNCATED": "*and {{count}} more...*",
+
 
 
     "----------- Date/time formatting -----------": "",
@@ -133,5 +164,51 @@
     "DURATION_MONTH": "1 month",
     "DURATION_MONTHS": "{{number}} months",
     "DURATION_YEAR": "1 year",
-    "DURATION_YEARS": "{{number}} years"
+    "DURATION_YEARS": "{{number}} years",
+
+
+
+    "----------- Discord permissions -----------": "",
+
+    "PERMISSION_CREATE_INSTANT_INVITE": "Create Invites",
+    "PERMISSION_KICK_MEMBERS": "Kick Members",
+    "PERMISSION_BAN_MEMBERS": "Ban Members",
+    "PERMISSION_ADMINISTRATOR": "Administrator",
+    "PERMISSION_MANAGE_CHANNELS": "Manage Channels",
+    "PERMISSION_MANAGE_GUILD": "Manage Server",
+    "PERMISSION_ADD_REACTIONS": "Add Reactions",
+    "PERMISSION_VIEW_AUDIT_LOG": "View Audit Log",
+    "PERMISSION_PRIORITY_SPEAKER": "Priority Speaker",
+    "PERMISSION_STREAM": "Stream",
+    "PERMISSION_VIEW_CHANNEL": "View Channel",
+    "PERMISSION_SEND_MESSAGES": "Send Messages",
+    "PERMISSION_SEND_TTS_MESSAGES": "Send TTS Messages",
+    "PERMISSION_MANAGE_MESSAGES": "Manage Messages",
+    "PERMISSION_EMBED_LINKS": "Embed Links",
+    "PERMISSION_ATTACH_FILES": "Attach Files",
+    "PERMISSION_READ_MESSAGE_HISTORY": "Read Message History",
+    "PERMISSION_MENTION_EVERYONE": "Mention Everyone",
+    "PERMISSION_USE_EXTERNAL_EMOJIS": "Use External Emojis",
+    "PERMISSION_VIEW_GUILD_INSIGHTS": "View Guild Insights",
+    "PERMISSION_CONNECT": "Connect",
+    "PERMISSION_SPEAK": "Speak",
+    "PERMISSION_MUTE_MEMBERS": "Mute Members",
+    "PERMISSION_DEAFEN_MEMBERS": "Deafen Members",
+    "PERMISSION_MOVE_MEMBERS": "Move Members",
+    "PERMISSION_USE_VAD": "Use VAD",
+    "PERMISSION_CHANGE_NICKNAME": "Change Nickname",
+    "PERMISSION_MANAGE_NICKNAMES": "Manage Nicknames",
+    "PERMISSION_MANAGE_ROLES": "Manage Roles",
+    "PERMISSION_MANAGE_WEBHOOKS": "Manage Webhooks",
+    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers",
+    "PERMISSION_USE_APPLICATION_COMMANDS": "Use Application Commands",
+    "PERMISSION_REQUEST_TO_SPEAK": "Request to Speak",
+    "PERMISSION_MANAGE_EVENTS": "Manage Events",
+    "PERMISSION_MANAGE_THREADS": "Manage Threads",
+    "PERMISSION_CREATE_PUBLIC_THREADS": "Create Public Threads",
+    "PERMISSION_CREATE_PRIVATE_THREADS": "Create Private Threads",
+    "PERMISSION_USE_EXTERNAL_STICKERS": "Use External Stickers",
+    "PERMISSION_SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+    "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Use Embedded Activities",
+    "PERMISSION_MODERATE_MEMBERS": "Moderate Members"
 }

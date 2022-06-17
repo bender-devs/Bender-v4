@@ -368,6 +368,25 @@ export default class CacheHandler {
                 return;
             }
             this.#guilds[guild_id].channels = channel_map;
+        },
+        getCount: (guild_id: types.Snowflake): number => {
+            if (!this.guilds.get(guild_id)) {
+                return 0;
+            }
+            return Object.keys(this.#guilds[guild_id].channels).length;
+        },
+        listCategory: (guild_id: types.Snowflake, category_id: types.Snowflake): types.Channel[] | null => {
+            if (!this.guilds.get(guild_id)) {
+                return null;
+            }
+            const chans: types.Channel[] = [];
+            for (const chanID in this.#guilds[guild_id].channels) {
+                const chan = this.#guilds[guild_id].channels[chanID as types.Snowflake]; 
+                if (chan.parent_id === category_id) {
+                    chans.push(chan);
+                }
+            }
+            return chans;
         }
     }
 

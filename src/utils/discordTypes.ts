@@ -1,4 +1,4 @@
-import { Member, PartialMember, Role } from '../data/types';
+import { Channel, Member, PartialMember, Role } from '../data/types';
 
 export default class DiscordTypeUtils {
     static member = {
@@ -50,6 +50,15 @@ export default class DiscordTypeUtils {
     static roles = {
         sort: (roles: Role[]) => {
             return roles.sort((a, b) => b.position - a.position);
+        }
+    }
+
+    static channel = {
+        getEveryonePerms: (channel: Channel) => {
+            if (!channel.permission_overwrites || !channel.guild_id) {
+                return null;
+            }
+            return channel.permission_overwrites.find(perm => perm.id === channel.guild_id) || null;
         }
     }
 }

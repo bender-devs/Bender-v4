@@ -4,6 +4,7 @@ import * as types from '../data/types';
 import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
+import { PERMISSIONS } from '../data/numberTypes';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -11,6 +12,10 @@ if (!languages[DEFAULT_LANGUAGE]) {
 }
 
 export default class LanguageUtils {
+
+    static discordSupportsLocale(locale: Locale): boolean {
+        return LOCALE_LIST.includes(locale);
+    }
 
     static get(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string {
         if (!this.discordSupportsLocale(locale)) {
@@ -21,7 +26,7 @@ export default class LanguageUtils {
         return languages[locale]?.[key] || languages[DEFAULT_LANGUAGE]?.[key] || '';
     }
 
-    static getAndReplace(key: LangKey, replaceMap: types.ReplaceMap = {}, locale: Locale = DEFAULT_LANGUAGE): string {
+    static getAndReplace(key: LangKey, replaceMap: types.ReplaceMap, locale: Locale = DEFAULT_LANGUAGE): string {
         let text = LanguageUtils.get(key, locale);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
@@ -43,10 +48,6 @@ export default class LanguageUtils {
         }, locale);
     }
 
-    static discordSupportsLocale(locale: Locale): boolean {
-        return LOCALE_LIST.includes(locale);
-    }
-
     static getLocalizationMap(key: LangKey) {
         const dict: types.LocaleDict = {
             [DEFAULT_LANGUAGE]: LanguageUtils.get(key)
@@ -58,6 +59,11 @@ export default class LanguageUtils {
             }
         }
         return dict;
+    }
+
+    static getFriendlyPermissionName(perm: PERMISSIONS, locale?: Locale) {
+        const permKey: types.PermissionName = typeof perm === 'number' ? PERMISSIONS[perm] as types.PermissionName : perm;
+        return LanguageUtils.get(`PERMISSION_${permKey}`, locale);
     }
 
     static logLocalizationSupport(logger: Logger) {
