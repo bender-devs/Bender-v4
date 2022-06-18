@@ -547,9 +547,9 @@ export type IdentifyData = {
 }
 
 export type ConnectionProperties = {
-    $os: string;
-    $browser: string;
-    $device: string;
+    os: string;
+    browser: string;
+    device: string;
 }
 
 export type ShardConnectionData = [shard_id: number, num_shards: number];

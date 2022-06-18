@@ -61,9 +61,9 @@ export const INTENTS = INTENT_FLAGS.GUILDS | INTENT_FLAGS.GUILD_MEMBERS | INTENT
 export const CONNECT_DATA: IdentifyData = {
     token: '', // assigned later
     properties: {
-        $os: MiscUtils.getOSType(),
-        $browser: 'Custom (https://benderbot.co)',
-        $device: 'Custom (https://benderbot.co)'
+        os: MiscUtils.getOSType(),
+        browser: 'Custom (https://benderbot.co)',
+        device: 'Custom (https://benderbot.co)'
     },
     presence: {
         since: null,
