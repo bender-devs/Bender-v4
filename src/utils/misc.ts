@@ -34,8 +34,9 @@ export default class MiscUtils {
         return (timestamp - DISCORD_EPOCH) << 22;
     }
 
-    static truncate(text = '', length = 2000, strict = false) {
+    static truncate(text = '', length = 2000, suffix?: string, strict = false) {
 		const len = strict ? text.length : Array.from(text).length;
-		return len > length ? `${text.substring(0, length - 4)} ...` : text;
+        const suffixLength = (suffix?.length || 0) + 4;
+		return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
 	}
 }

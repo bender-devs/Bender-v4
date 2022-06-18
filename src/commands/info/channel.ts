@@ -131,7 +131,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     const linkTitle = LangUtils.get('CHANNEL_INFO_LINK_TITLE', interaction.locale);
     description += `\n\n[${linkTitle}](https://discord.com/channels/${channel.guild_id}/${channel.id})`;
 
-    return this.respondEmbed(interaction, {
+    return this.respond(interaction, {
         description,
         author: {
             name: title,

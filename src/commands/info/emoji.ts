@@ -51,7 +51,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     description += `\n\n[${linkTitle}](${url})`;
 
-    return this.respondEmbed(interaction, {
+    return this.respond(interaction, {
         color: DEFAULT_COLOR,
         author: { name: title, icon_url: url },
         thumbnail: { url },

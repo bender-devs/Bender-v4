@@ -42,7 +42,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         const bannerLink = CDNUtils.userBanner(user.id, user.banner, undefined, 512);
         const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', { name, bannerLink }, interaction.locale);
-        return this.respondEmbed(interaction, {
+        return this.respond(interaction, {
             description: title,
             color: user.accent_color || DEFAULT_COLOR,
             image: {
@@ -64,7 +64,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
     const bannerLink = CDNUtils.guildBanner(guild.id, guild.banner, undefined, 512);
     const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', { name: guild.name, bannerLink }, interaction.locale);
-    return this.respondEmbed(interaction, {
+    return this.respond(interaction, {
         description: title,
         color: DEFAULT_COLOR,
         image: {
