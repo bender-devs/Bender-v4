@@ -7,6 +7,33 @@ import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions';
 import LangUtils from '../utils/language';
 import { GatewayData, GatewayPayload } from '../types/gatewayTypes';
+import { VERSION } from '../data/constants';
+import * as EMOTES from '../data/emotes.json';
+import { inspect, promisify } from 'util';
+import { exec } from 'child_process';
+import MiscUtils from '../utils/misc';
+const execAsync = promisify(exec);
+
+const tokenRegexes: RegExp[] = [];
+if (process.env.TOKEN_ALPHA) {
+    tokenRegexes.push(new RegExp(process.env.TOKEN_ALPHA.replace(/\./g, '\\.')));
+}
+if (process.env.TOKEN_BETA) {
+    tokenRegexes.push(new RegExp(process.env.TOKEN_BETA.replace(/\./g, '\\.')));
+}
+if (process.env.TOKEN_PRODUCTION) {
+    tokenRegexes.push(new RegExp(process.env.TOKEN_PRODUCTION.replace(/\./g, '\\.')));
+}
+if (process.env.TOKEN_PREMIUM) {
+    tokenRegexes.push(new RegExp(process.env.TOKEN_PREMIUM.replace(/\./g, '\\.')));
+}
+
+function replaceTokens(text: string) {
+    for (const regex of tokenRegexes) {
+        text = text.replace(regex, '"mfa.QmS7GF8--YoU--r90er.V0x--fUcKiNg--ioy.eBEB4--SuCk--b605hyI.vjd098"');
+    }
+    return text;
+}
 
 // this command not localized as it's only developer-only
 
@@ -114,6 +141,29 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 description: 'The JSON data to send.'
             }]
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+        name: 'run',
+        description: 'Run code in the context of the bot or on its server.',
+        options: [{
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            name: 'eval',
+            description: 'Run code in the context of the bot.',
+            options: [{
+                type: COMMAND_OPTION_TYPES.STRING,
+                name: 'code',
+                description: 'The code to run.'
+            }]
+        }, {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            name: 'exec',
+            description: 'Run code on the bot\'s server.',
+            options: [{
+                type: COMMAND_OPTION_TYPES.STRING,
+                name: 'code',
+                description: 'The code to run.'
+            }]
+        }]
     }];
 
     async run(interaction: types.Interaction): types.CommandResponse {
@@ -188,6 +238,62 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     }
                 }
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
+            }
+            case 'run': {
+                const subcommand = args[0].options?.[0]?.name;
+                const code = args[0].options?.[0]?.options?.[0]?.value;
+                if (!subcommand || typeof subcommand !== 'string' || !code || typeof code !== 'string') {
+                    return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
+                }
+                await this.ack(interaction);
+
+                const start = Date.now();
+                let stop = 0;
+
+                let footer = '', maxLength = 1950;
+                try {
+                    let evaled = '';
+                    if (subcommand === 'eval') {
+                        const result = await eval(code);
+                        const typeofResult = typeof result;
+                        evaled = inspect(result, { depth: 0 });
+                        footer = `\n${EMOTES.b} Bender v${VERSION} | ${EMOTES.node} Node ${process.version} | ${EMOTES.info} Typeof output: \`${typeofResult}\``;
+                    } else {
+                        const result = await execAsync(code);
+                        if (result.stderr) {
+                            throw new Error(result.stderr);
+                        }
+                        evaled = result.stdout || '<no output>';
+                    }
+                    maxLength -= footer.length;
+
+                    evaled = replaceTokens(evaled.replace('`', '\\`'));
+
+                    const truncated = evaled.length >= maxLength;
+                    if (truncated) {
+                        this.bot.logger.moduleLog(subcommand.toUpperCase(), evaled);
+                        evaled = MiscUtils.truncate(evaled, maxLength - 50);
+                    }
+                    
+                    stop = Date.now();
+
+                    const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+                    return this.editResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+
+                } catch(err) {
+                    maxLength -= footer.length;
+
+                    stop = Date.now();
+
+                    let errString = err + '';
+                    const truncated = errString.length >= maxLength;
+                    if (truncated) {
+                        this.bot.logger.moduleLog(subcommand.toUpperCase(), errString);
+                        errString = MiscUtils.truncate(errString, maxLength - 50);
+                    }
+                    const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+                    return this.editResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+                }
             }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');
