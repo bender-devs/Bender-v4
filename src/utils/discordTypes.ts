@@ -1,4 +1,4 @@
-import { Channel, Member, PartialMember, Role } from '../types/types';
+import { Channel, Member, PartialMember, Role, User } from '../types/types';
 
 export default class DiscordTypeUtils {
     static member = {
@@ -60,5 +60,9 @@ export default class DiscordTypeUtils {
             }
             return channel.permission_overwrites.find(perm => perm.id === channel.guild_id) || null;
         }
+    }
+
+    static user = {
+        getTag: (user: User) => `${user.username}#${user.discriminator}`
     }
 }

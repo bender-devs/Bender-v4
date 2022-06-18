@@ -1079,6 +1079,7 @@ type AutoModActionMetadata = {
 export type Invite = {
     code: string;
     guild?: PartialGuild;
+    channel: PartialChannel | null;
     inviter?: User;
     target_type?: number;
     target_user?: User;

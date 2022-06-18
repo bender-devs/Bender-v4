@@ -1,7 +1,8 @@
 import { ID_REGEX_EXACT, OWNERS } from '../data/constants';
 import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes';
 import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types'; 
-import CacheHandler, { CachedGuild } from '../structures/cacheHandler';
+import { CachedGuild } from '../structures/cacheHandler';
+import Bot from '../structures/bot';
 
 type PermBitfield = Bitfield | Flags | bigint;
 type SimplifiedOverwrites = {
@@ -11,6 +12,12 @@ type SimplifiedOverwrites = {
 const allPermissions = Object.keys(PERMISSIONS) as PermissionName[];
 
 export default class PermissionUtils {
+    bot: Bot;
+
+    constructor(bot: Bot) {
+        this.bot = bot;
+    }
+
     static has(bitfield: PermBitfield, permission: PermissionName) {
         const numberBitfield = BigInt(bitfield);
         const permissionFlag = BigInt(PERMISSIONS[permission]);
@@ -128,13 +135,13 @@ export default class PermissionUtils {
         return this.has(bitfield, discordPerm);
     }
 
-    static matchesMemberCache(cache: CacheHandler, userID: Snowflake, perm: BenderPermission, guildID: Snowflake, channelID?: Snowflake) {
-        const guild = cache.guilds.get(guildID);
-        const member = cache.members.get(guildID, userID);
+    matchesMemberCache(userID: Snowflake, perm: BenderPermission, guildID: Snowflake, channelID?: Snowflake) {
+        const guild = this.bot.cache.guilds.get(guildID);
+        const member = this.bot.cache.members.get(guildID, userID);
         if (!guild || !member) {
             return null;
         }
-        const channel = channelID ? cache.channels.get(guildID, channelID) || undefined : undefined;
+        const channel = channelID ? this.bot.cache.channels.get(guildID, channelID) || undefined : undefined;
         return PermissionUtils.matchesMember(member, perm, guild, channel);
     }
 

@@ -17,6 +17,8 @@ export default class MessageUpdateHandler extends EventHandler<MessageUpdateData
     }
 
     handler = (/*eventData: MessageUpdateData*/) => {
+        // TODO: check ephemeral flag before anything else
+        
         // TODO: handle filter/automod
 
         // TODO: deal with agreement, if that feature isn't replaced by member screening

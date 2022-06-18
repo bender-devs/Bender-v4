@@ -31,11 +31,11 @@ export default class PingCommand extends CommandUtils implements ICommand {
     }
 
     getPongMessage(locale?: types.Locale, roundtripMillis?: number) {
-        const millis = this.bot.gateway.ping.toLocaleString(locale);
+        const millis = LangUtils.formatNumber(this.bot.gateway.ping, locale);
         if (roundtripMillis) {
             return LangUtils.getAndReplace('PONG_ROUNDTRIP', {
                 millis, 
-                roundtrip: roundtripMillis.toLocaleString(locale)
+                roundtrip: LangUtils.formatNumber(roundtripMillis, locale)
             }, locale);
         }
         return LangUtils.getAndReplace('PONG_API', { millis }, locale);

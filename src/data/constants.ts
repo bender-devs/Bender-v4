@@ -25,7 +25,7 @@ export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
 export const SUPPORT_SERVER = 'https://discord.gg/99xaeGn';
 
-export const DEFAULT_COLOR = 0xFFFFFF;
+export const DEFAULT_COLOR = 0xCC1616;
 
 export const PUBLIC_KEY = ''; // TODO: fill this in
 
@@ -97,5 +97,10 @@ export const WEBSERVER_PORT = 9001;
 /***** miscellaneous constants *****/
 
 export const ID_REGEX = /\b\d{17,19}\b/;
-
 export const ID_REGEX_EXACT = /^\d{17,19}$/;
+
+export const INVITE_LINK_PREFIX = 'https://discord.gg/';
+export const INVITE_CODE_REGEX = /^[a-z0-9-]{2,32}$/i;
+export const INVITE_REGEX = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/i;
+export const INVITE_REGEX_EXACT = /^(?:https?:\/\/)?discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})$/i;
+export const INVITE_REGEX_GLOBAL = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/gi;

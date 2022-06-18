@@ -28,6 +28,15 @@ export default class TimeUtils {
         return Date.now() - timestampMs;
     }
 
+    static untilTimestamp(timestamp: Timestamp) {
+        const timestampMs = TimeUtils.parseTimestampMillis(timestamp);
+        return timestampMs - Date.now();
+    }
+
+    static untilMillis(timestampMs: UnixTimestampMillis) {
+        return timestampMs - Date.now();
+    }
+
     static formatDuration(duration: number, locale?: Locale) {
 		let unit = 1, unitName: UnitName = 'MILLISECOND';
         if (duration >= unitMap.YEAR) {
@@ -60,7 +69,8 @@ export default class TimeUtils {
         if (!plural) {
             return LangUtils.get(langKey, locale);
         }
-		return LangUtils.getAndReplace(langKey, { number: number + '' }, locale);
+        const localizedNumber = LangUtils.formatNumber(number, locale);
+		return LangUtils.getAndReplace(langKey, { number: localizedNumber }, locale);
 	}
 
     static formatDate(date: Date | Timestamp | UnixTimestampMillis, locale: Locale = 'en-US') {

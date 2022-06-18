@@ -48,6 +48,10 @@ export default class LanguageUtils {
         }, locale);
     }
 
+    static formatNumber(num: number, locale?: Locale) {
+        return num.toLocaleString(locale);
+    }
+
     static getLocalizationMap(key: LangKey) {
         const dict: types.LocaleDict = {
             [DEFAULT_LANGUAGE]: LanguageUtils.get(key)

@@ -7,7 +7,6 @@ import APIError from '../../structures/apiError';
 import DiscordTypeUtils from '../../utils/discordTypes';
 import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';
-import PermissionUtils from '../../utils/permissions';
 import InfoCommand from '../info';
 
 const CATEGORY_MAX_CHANNELS = 10;
@@ -33,7 +32,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(interaction, `<#${channelID}>`, [PERMISSIONS.VIEW_CHANNEL], true);
     }
-    const hasPermissionCached = PermissionUtils.matchesMemberCache(this.bot.cache, this.bot.user.id, 'VIEW_CHANNEL', interaction.guild_id, channelID as types.Snowflake);
+    const hasPermissionCached = this.bot.perms.matchesMemberCache(this.bot.user.id, 'VIEW_CHANNEL', interaction.guild_id, channelID as types.Snowflake);
     if (hasPermissionCached === false) {
         return this.respondMissingPermissions(interaction, `<#${channelID}>`, [PERMISSIONS.VIEW_CHANNEL], true);
     }
@@ -78,9 +77,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
         let channels = this.bot.cache.channels.listCategory(channel.guild_id, channel.id)?.map(chan => `<#${chan.id}>`);
         if (channels && channels.length > CATEGORY_MAX_CHANNELS) {
-            const remainder = channels.length - CATEGORY_MAX_CHANNELS;
+            const remainder = LangUtils.formatNumber(channels.length - CATEGORY_MAX_CHANNELS, interaction.locale);
             channels = channels.slice(0, CATEGORY_MAX_CHANNELS);
-            const truncatedMsg = LangUtils.getAndReplace('CHANNEL_INFO_TRUNCATED', { count: remainder + '' }, interaction.locale);
+            const truncatedMsg = LangUtils.getAndReplace('CHANNEL_INFO_TRUNCATED', { count: remainder }, interaction.locale);
             channels.push(truncatedMsg);
         }
         let channelsInfo = '';

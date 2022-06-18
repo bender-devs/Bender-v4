@@ -18,6 +18,8 @@ export default class MessageCreateHandler extends EventHandler<MessageCreateData
     }
 
     handler = (/*eventData: MessageCreateData*/) => {
+        // TODO: check ephemeral flag before anything else
+        
         // TODO: handle filter/automod
 
         // TODO: if text commands are added, process those

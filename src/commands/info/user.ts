@@ -119,8 +119,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     const description = MiscUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = description + bannerNote;
+    const userTag = DiscordTypeUtils.user.getTag(user);
     embed.author = {
-        name: `${user.username}#${user.discriminator}${nickInfo}`,
+        name: `${userTag}${nickInfo}`,
         icon_url: avatar
     };
     embed.thumbnail = {

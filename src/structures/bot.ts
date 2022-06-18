@@ -11,10 +11,12 @@ import EventManager from './eventManager';
 import Shard from './shard';
 import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
+import PermissionUtils from '../utils/permissions';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
     cache: CacheHandler;
+    perms: PermissionUtils;
     gateway: Gateway;
     logger: Logger;
     events: EventManager;
@@ -39,6 +41,7 @@ export default class Bot extends EventEmitter {
 
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
+        this.perms = new PermissionUtils(this);
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);

@@ -4,6 +4,7 @@ import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 import { VERSION } from '../data/constants';
+import DiscordTypeUtils from '../utils/discordTypes';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
     requiresReady = false;
@@ -26,7 +27,8 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
     }
 
     handler = (/*eventData: ReadyData*/) => {
-        this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${this.bot.user.username}#${this.bot.user.discriminator} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
+        const userTag = DiscordTypeUtils.user.getTag(this.bot.user);
+        this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${userTag} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
         // TODO: use database to determine whether to update commands
         if (!this.bot.shard || this.bot.shard.id === 0) {

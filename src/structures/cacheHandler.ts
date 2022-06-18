@@ -393,6 +393,14 @@ export default class CacheHandler {
             }
             return guild.channels[channel_id] || null;
         },
+        find: (channel_id: types.Snowflake): types.Channel | null => {
+            for (const guild_id in this.#guilds) {
+                if (this.#guilds[guild_id as types.Snowflake].channels[channel_id]) {
+                    return this.#guilds[guild_id as types.Snowflake].channels[channel_id];
+                }
+            }
+            return null;
+        },
         create: (channel: types.Channel): void => {
             if (!channel.guild_id) {
                 return; // ignore dm channels
