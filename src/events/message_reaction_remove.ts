@@ -9,6 +9,8 @@ export default class ReactionRemoveHandler extends EventHandler<ReactionRemoveDa
     }
 
     handler = (/*eventData: ReactionRemoveData*/) => {
-        // TODO: handle role menus and giveaways if applicable
+        // TODO: handle role menu if applicable and it isn't replaced with interactions
+
+        // TODO: update starboard count if it isn't replaced with interactions
     }
 }

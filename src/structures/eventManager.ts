@@ -12,6 +12,7 @@ import auto_moderation_rule_execution from '../events/auto_moderation_rule_execu
 import channel_create from '../events/channel_create';
 import channel_delete from '../events/channel_delete';
 import channel_update from '../events/channel_update';
+import guild_ban_add from '../events/guild_ban_add';
 import guild_create from '../events/guild_create';
 import guild_delete from '../events/guild_delete';
 import guild_emojis_update from '../events/guild_emojis_update';
@@ -58,7 +59,7 @@ export default class EventManager {
     channel_delete: channel_delete;
     channel_pins_update: dummy_event<gatewayTypes.ChannelPinsUpdateData>;
     channel_update: channel_update;
-    guild_ban_add: dummy_event<gatewayTypes.GuildBanEventData>;
+    guild_ban_add: guild_ban_add;
     guild_ban_remove: dummy_event<gatewayTypes.GuildBanEventData>;
     guild_create: guild_create;
     guild_delete: guild_delete;
@@ -124,7 +125,7 @@ export default class EventManager {
         this.channel_delete = new channel_delete(this.bot);
         this.channel_pins_update = new dummy_event(this.bot, 'channel_pins_update');
         this.channel_update = new channel_update(this.bot);
-        this.guild_ban_add = new dummy_event(this.bot, 'guild_ban_add');
+        this.guild_ban_add = new guild_ban_add(this.bot);
         this.guild_ban_remove = new dummy_event(this.bot, 'guild_ban_remove');
         this.guild_create = new guild_create(this.bot);
         this.guild_delete = new guild_delete(this.bot);

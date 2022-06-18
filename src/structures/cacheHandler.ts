@@ -250,7 +250,14 @@ export default class CacheHandler {
                 return;
             }
             if (!this.#guilds[member_data.guild_id].members[member_data.user.id]) {
-                return; // don't cache, incomplete data
+                // only cache member if data is complete
+                if (member_data.joined_at) {
+                    member_data.deaf = member_data.deaf || false;
+                    member_data.mute = member_data.mute || false;
+                    // safe to use "as Member" here since 'joined_at' is present and 'deaf' and 'mute' are always defined
+                    this.#guilds[member_data.guild_id].members[member_data.user.id] = member_data as types.Member;
+                }
+                return;
             }
             Object.assign(this.#guilds[member_data.guild_id].members[member_data.user.id], member_data);
         },

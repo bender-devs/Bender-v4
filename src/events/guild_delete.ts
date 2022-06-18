@@ -18,6 +18,6 @@ export default class GuildDeleteHandler extends EventHandler<GuildDeleteData> {
     }
 
     handler = (/*eventData: GuildDeleteData*/) => {
-        // event unused for now
+        // TODO: remove premium status if applicable so it doesn't get "stuck"
     }
 }

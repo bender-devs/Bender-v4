@@ -2,7 +2,6 @@ import { EventHandler } from '../types/types';
 import { GuildCreateData, LowercaseEventName } from '../types/gatewayTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
-import TimeUtils from '../utils/time';
 
 export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
     constructor(bot: Bot) {
@@ -10,19 +9,21 @@ export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
     }
 
     cacheHandler = (eventData: GuildCreateData) => {
+        if (eventData.unavailable) {
+            return; // this shouldn't happen
+        }
         this.bot.cache.guilds.create(eventData);
+
         if (this.bot.cache.unavailableGuilds.includes(eventData.id)) {
             const index = this.bot.cache.unavailableGuilds.indexOf(eventData.id);
             this.bot.cache.unavailableGuilds.splice(index, 1);
+
+            this.bot.logger.debug('GUILD_CREATE', `Guild ${eventData.id} became available`);
+        } else {
+            // TODO: send intro message for new servers
         }
     }
 
-    handler = (eventData: GuildCreateData) => {
-        const millisSinceJoin = TimeUtils.sinceTimestamp(eventData.joined_at);
-        if (millisSinceJoin > 60*1000) {
-            this.bot.logger.debug('GUILD_CREATE', 'Skipped since this guild is just becoming available');
-            return;
-        }
-        // TODO: send intro message for new servers
-    }
+    // don't use this as we don't know whether it's a new guild here
+    handler = () => undefined
 }

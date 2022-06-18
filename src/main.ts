@@ -23,6 +23,7 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     const count = parseInt(process.env.SHARD_COUNT);
     const bot = new Bot([id, count]);
 
+    // TODO: call bot.init() first
     bot.connect(connectionData);
 } else if (SHARDED) {
     const shardManager = new ShardManager(SHARD_COUNT);
@@ -37,5 +38,6 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
     LanguageUtils.logLocalizationSupport(bot.logger);
 
+    // TODO: call bot.init() first
     bot.connect(connectionData);
 }

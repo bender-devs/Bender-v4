@@ -17,6 +17,12 @@ export default class MessageUpdateHandler extends EventHandler<MessageUpdateData
     }
 
     handler = (/*eventData: MessageUpdateData*/) => {
+        // TODO: handle filter/automod
+
+        // TODO: deal with agreement, if that feature isn't replaced by member screening
+
+        // TODO: if text commands are added, process those
+
         // TODO: if content changed and edit logging is enabled, post to log channel
     }
 }

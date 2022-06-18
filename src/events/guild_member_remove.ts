@@ -13,6 +13,8 @@ export default class GuildMemberRemoveHandler extends EventHandler<GuildMemberRe
     }
 
     handler = (/*eventData: GuildMemberRemoveData*/) => {
+        // TODO: check ban cache to avoid sending these messages for banned members
+
         // TODO: send to member log if configured
         // TODO: send to mod member log if configured
     }

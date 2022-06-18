@@ -13,6 +13,12 @@ export default class UserUpdateHandler extends EventHandler<UserUpdateData> {
     }
 
     handler = (/*eventData: UserUpdateData*/) => {
-        // event unused for now
+        // TODO: if user hasn't opted out, save username history
+
+        // TODO: handle namefilter in all guilds
+
+        // TODO: handle username update logging in all guilds
+
+        // TODO: handle avatar update logging in all guilds
     }
 }

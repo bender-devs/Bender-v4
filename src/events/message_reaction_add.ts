@@ -9,6 +9,10 @@ export default class ReactionAddHandler extends EventHandler<ReactionAddData> {
     }
 
     handler = (/*eventData: ReactionAddData*/) => {
-        // TODO: code for role menus & giveaways (if those aren't replaced with interactions)
+        // TODO: deal with agreement, if the emoji message is set and that feature isn't replaced by member screening or converted to interactions
+
+        // TODO: handle role menus & giveaways, if those aren't replaced with interactions
+
+        // TODO: handle starboard if it isn't replaced with interactions
     }
 }

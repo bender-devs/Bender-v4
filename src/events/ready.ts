@@ -28,8 +28,6 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
     handler = (/*eventData: ReadyData*/) => {
         this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${this.bot.user.username}#${this.bot.user.discriminator} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
-        // TODO: initialize database, other setup stuff
-
         // TODO: use database to determine whether to update commands
         if (!this.bot.shard || this.bot.shard.id === 0) {
             this.bot.commandManager.updateCommandList();

@@ -60,8 +60,16 @@ export default class Bot extends EventEmitter {
         }
     }
 
+    async init() {
+        // TODO: connect to DB
+        // TODO: create checkup interval
+    }
+
     async connect(identifyData: gatewayTypes.IdentifyData, reconnect = false) {
         this.logger.debug('BOT CONNECT', 'Connect method called...');
+
+        // TODO: check if init() was called; if not, don't connect
+        
         if (!this.cache.initialized) {
             await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
         }

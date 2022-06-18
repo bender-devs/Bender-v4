@@ -13,6 +13,6 @@ export default class ThreadListSyncHandler extends EventHandler<ThreadSyncData> 
     }
 
     handler = (/*eventData: ThreadSyncData*/) => {
-        // event unused for now
+        // TODO: join thread if any new threads were added and auto-join setting is enabled
     }
 }

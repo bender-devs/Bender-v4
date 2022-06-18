@@ -18,7 +18,12 @@ export default class MessageCreateHandler extends EventHandler<MessageCreateData
     }
 
     handler = (/*eventData: MessageCreateData*/) => {
-        // TODO: handle text commands (?)
         // TODO: handle filter/automod
+
+        // TODO: if text commands are added, process those
+
+        // TODO: deal with agreement, if that feature isn't replaced by member screening or converted to interactions
+
+        // TODO: if message mentions a role, handle mentionables
     }
 }
