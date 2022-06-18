@@ -116,6 +116,11 @@ export default class APIWrapper {
             return APIWrapper.makeRequest<types.VoiceRegion[]>('GET', `/guilds/${guild_id}/regions`, { 
                 headers: AUTH_HEADER
             });
+        },
+        async fetchInvites(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.ExtendedInvite[]>('GET', `/guilds/${guild_id}/invites`, { 
+                headers: AUTH_HEADER
+            });
         }
     }
 
@@ -394,8 +399,8 @@ export default class APIWrapper {
     static globalCommand = {
         async list(application_id: types.Snowflake, with_localizations: boolean) {
             return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/commands`, {
-                headers: AUTH_HEADER,
-                query: { with_localizations }
+                query: { with_localizations },
+                headers: AUTH_HEADER
             });
         },
         async create(application_id: types.Snowflake, command: types.CommandCreateData) {
@@ -431,8 +436,8 @@ export default class APIWrapper {
     static guildCommand = {
         async list(application_id: types.Snowflake, guild_id: types.Snowflake, with_localizations: boolean) {
             return APIWrapper.makeRequest<types.Command[]>('GET', `/applications/${application_id}/guilds/${guild_id}/commands`, {
-                headers: AUTH_HEADER,
-                query: { with_localizations }
+                query: { with_localizations },
+                headers: AUTH_HEADER
             });
         },
         async create(application_id: types.Snowflake, guild_id: types.Snowflake, command_data: types.CommandCreateData) {
@@ -555,6 +560,20 @@ export default class APIWrapper {
         async delete(guild_id: types.Snowflake, rule_id: types.Snowflake) {
             return APIWrapper.makeRequest<types.AutoModRule>('DELETE', `/guilds/${guild_id}/auto-moderation/rules/${rule_id}`, {
                 headers: AUTH_HEADER
+            });
+        }
+    }
+
+    static invite = {
+        async fetch(code: string, with_counts: boolean, with_expiration: boolean, guild_scheduled_event_id?: types.Snowflake) {
+            return APIWrapper.makeRequest<types.Invite>('GET', `/invites/${code}`, {
+                query: { with_counts, with_expiration, guild_scheduled_event_id },
+                headers: AUTH_HEADER
+            });
+        },
+        async delete(code: string, reason?: string) {
+            return APIWrapper.makeRequest<types.Invite>('DELETE', `/invites/${code}`, {
+                headers: APIWrapper.addReasonHeader(AUTH_HEADER, reason)
             });
         }
     }

@@ -179,6 +179,10 @@ export type Guild = {
     nsfw_level: num.NSFW_LEVELS;
 };
 
+export interface PartialGuild extends Pick<Guild, 'id' | 'name' | 'splash' | 'banner' | 'description' | 'icon' | 'features' | 'verification_level' | 'vanity_url_code' | 'premium_subscription_count' | 'welcome_screen' | 'nsfw_level'> {
+    nsfw?: boolean;
+}
+
 export type UnavailableGuild = {
     id: Snowflake,
     unavailable?: true
@@ -1068,6 +1072,29 @@ export type AutoModAction = {
 type AutoModActionMetadata = {
     channel_id?: Snowflake;
     duration_seconds?: number;
+}
+
+/************ invite types ************/
+
+export type Invite = {
+    code: string;
+    guild?: PartialGuild;
+    inviter?: User;
+    target_type?: number;
+    target_user?: User;
+    target_application?: PartialApplication;
+    approximate_presence_count?: number; // ?with_counts=true
+    approximate_member_count?: number; // ?with_counts=true
+    expires_at?: Timestamp | null; // ?with_expiration=true
+    guild_scheduled_event?: GuildScheduledEvent; // ?guild_scheduled_event_id=<id>
+}
+
+export interface ExtendedInvite extends Invite {
+    uses: number;
+    max_uses: number;
+    max_age: number;
+    temporary: boolean;
+    created_at: Timestamp;
 }
 
 /************ misc types ************/

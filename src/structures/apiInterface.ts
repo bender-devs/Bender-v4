@@ -595,4 +595,19 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
     }
+
+    invite = {
+        fetch: async (code: string, with_counts = true, with_expiration = true, guild_scheduled_event_id?: types.Snowflake) => {
+            return APIWrapper.invite.fetch(code, with_counts, with_expiration, guild_scheduled_event_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        delete: async (code: string, reason?: string) => {
+            return APIWrapper.invite.delete(code, reason)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        list: async(guild_id: types.Snowflake) => {
+            return APIWrapper.guild.fetchInvites(guild_id)
+                .then(res => res.body).catch(this.handleError.bind(this));
+        }
+    }
 }
