@@ -1,7 +1,7 @@
 import Bot from './bot';
 import * as types from '../types/types';
 import APIError from './apiError';
-import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_FLAGS, PERMISSIONS } from '../types/numberTypes';
+import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
@@ -23,9 +23,11 @@ export class CommandUtils {
         this.name = name;
     }
 
-    async ack(interaction: types.Interaction) {
+    async ack(interaction: types.Interaction, ephemeral = true) {
+        const flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
         return this.bot.api.interaction.sendResponse(interaction, {
-            type: INTERACTION_CALLBACK_TYPES.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+            type: INTERACTION_CALLBACK_TYPES.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+            data: { flags }
         }).catch(this.handleAPIError.bind(this));
     }
 
@@ -44,14 +46,8 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async editResponse(interaction: types.Interaction, content: string | types.Embed, ephemeral = true) {
-        const flags = ephemeral ? MESSAGE_FLAGS.EPHEMERAL : 0;
-        const data: types.MessageData = { flags };
-        if (typeof content === 'string') {
-            data.content = content;
-        } else {
-            data.embeds = [content];
-        }
+    async deferredResponse(interaction: types.Interaction, content: string | types.Embed) {
+        const data: types.MessageData = typeof content === 'string' ? { content } : { embeds: [content] };
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
 

@@ -278,7 +278,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     stop = Date.now();
 
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.editResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+                    return this.deferredResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
 
                 } catch(err) {
                     maxLength -= footer.length;
@@ -292,7 +292,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                         errString = MiscUtils.truncate(errString, maxLength - 50);
                     }
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.editResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+                    return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
                 }
             }
         }
