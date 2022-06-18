@@ -14,10 +14,19 @@
     "STRINGIFYING_FAILED": "Foutmelding met het omzetten van de payload naar tekst.",
 
     "TEXT_TOO_LONG": "⚠ Tekst is te lang!",
-    "EMOJI_NOT_FOUND": "⚠ Kan de emoji niet vinden!.",
+    "EMOJI_NOT_FOUND": "⚠ Kon de emoji niet vinden.",
+    "CHANNEL_NOT_FOUND": "⚠ Kon het kanaal niet vinden.",
+    "USER_OR_GUILD_NOT_FOUND": "⚠ Kon niet de gebruiker of de server vinden.",
+    "CHANNEL_FETCH_FAILED": "⚠ Niet gelukt om kanaal informatie te verkrijgen.",
+    "USER_FETCH_FAILED": "⚠ Niet gelukt om gebruiker informatie te verkijgen.",
+
+    "MISSING_PERMISSIONS": "⚠ Ik mis de volgende permissies voor {{context}}: {{permissions}}",
+    "MISSING_GUILD_PERMISSIONS": "⚠ Ik mis de volgende permissies in deze server: {{permissions}}",
+    "USER_MISSING_PERMISSIONS": "⚠ Je mist de volgende permissies voor {{context}}: {{permissions}}",
+    "USER_MISSING_GUILD_PERMISSIONS": "⚠ Je mist de volegnde permissies in deze server: {{permissions}}",
 
 
-
+    
     "----------- /ping -----------": "",
     
     "PING_NAME": "ping",
@@ -36,22 +45,22 @@
 
     "----------- /text -----------": "",
 
-    "TEXT_NAME": "text",
+    "TEXT_NAME": "tekst",
     "TEXT_DESCRIPTION": "Pas effecten toe op tekst. Ondersteunt alleen Engelse (ASCII) tekens.",
 
 
 
     "----------- /convert-text -----------": "",
 
-    "CONVERT_TEXT_NAME": "convert-text",
+    "CONVERT_TEXT_NAME": "tekst-omzetten",
     "CONVERT_TEXT_DESCRIPTION": "Tekst omzetten tussen formaten.",
 
-    "CONVERT_TEXT_OPTION_MODE": "mode",
+    "CONVERT_TEXT_OPTION_MODE": "modus",
     "CONVERT_TEXT_OPTION_MODE_DESCRIPTION": "Kies tussen encoderen of decoderen.",
     "CONVERT_TEXT_OPTION_MODE_ENCODE": "Encoderen",
     "CONVERT_TEXT_OPTION_MODE_DECODE": "Decoderen",
 
-    "CONVERT_TEXT_OPTION_TEXT": "text",
+    "CONVERT_TEXT_OPTION_TEXT": "tekst",
     "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "De tekst die gecodeerd of gedocdeerd moet worden.",
     
     "CONVERT_TEXT_SUBCOMMAND_BINARY": "binair",
@@ -68,10 +77,10 @@
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Haalt tekst door een hashing algoritme.",
     "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berekende hash:",
 
-    "CONVERT_TEXT_OPTION_ALGORITHM": "algorithm",
+    "CONVERT_TEXT_OPTION_ALGORITHM": "algoritme",
     "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Het te gebruiken hash-algoritme.",
 
-    "CONVERT_TEXT_OPTION_HASHTEXT": "text",
+    "CONVERT_TEXT_OPTION_HASHTEXT": "tekst",
     "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "De tekst om een hash voor te maken.",
 
 
@@ -83,9 +92,9 @@
 
     "------- /info user -------": "",
 
-    "USER_INFO_SUBCOMMAND": "user",
+    "USER_INFO_SUBCOMMAND": "gebruiker",
     "USER_INFO_SUBCOMMAND_DESCRIPTION": "Toont informatie over een server lid of gebruiker.",
-    "USER_INFO_OPTION": "user",
+    "USER_INFO_OPTION": "gebruiker",
     "USER_INFO_OPTION_DESCRIPTION": "De gebruiker of server lid om informatie over te tonen.",
 
     "USER_INFO_BOT": "🤖 Robot",
