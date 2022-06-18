@@ -844,10 +844,11 @@ interface UserMember extends User {
     member: PartialMember
 }
 
+// https://discord.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference
 export type AllowedMentions = {
-    parse: Array<'roles' | 'users' | 'everyone'>;
-    roles: Snowflake[];
-    users: Snowflake[];
+    parse?: Array<'roles' | 'users' | 'everyone'>;
+    roles?: Snowflake[];
+    users?: Snowflake[];
     replied_user?: boolean;
 };
 

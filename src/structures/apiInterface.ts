@@ -244,7 +244,10 @@ export default class APIInterface {
             }).then(res => res.body).catch(this.handleError.bind(this));
         },
         edit: async (message: types.Message, message_data: types.MessageData) => {
-            // TODO: apply default options (i.e. allowed_mentions)
+            // don't mention everyone or roles by default
+            if (!message_data.allowed_mentions) {
+                message_data.allowed_mentions = { parse: ['users'] };
+            }
             return APIWrapper.message.edit(message.channel_id, message.id, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -312,6 +315,10 @@ export default class APIInterface {
 
     interaction = {
         sendResponse: async (interaction: types.Interaction, interaction_response: types.InteractionResponse) => {
+            // don't mention everyone or roles by default
+            if (interaction_response.data && !interaction_response.data.allowed_mentions) {
+                interaction_response.data.allowed_mentions = { parse: ['users'] };
+            }
             return APIWrapper.interactionResponse.create(interaction.id, interaction.token, interaction_response)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -320,6 +327,10 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         editResponse: async (interaction: types.Interaction, message_data: types.MessageData) => {
+            // don't mention everyone or roles by default
+            if (!message_data.allowed_mentions) {
+                message_data.allowed_mentions = { parse: ['users'] };
+            }
             return APIWrapper.interactionResponse.edit(this.bot.user.id, interaction.token, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -329,10 +340,18 @@ export default class APIInterface {
         },
 
         sendFollowup: async (interaction: types.Interaction, message_data: types.MessageData) => {
+            // don't mention everyone or roles by default
+            if (!message_data.allowed_mentions) {
+                message_data.allowed_mentions = { parse: ['users'] };
+            }
             return APIWrapper.interactionFollowup.create(this.bot.user.id, interaction.token, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         editFollowup: async (interaction: types.Interaction, message_id: types.Snowflake, message_data: types.MessageData) => {
+            // don't mention everyone or roles by default
+            if (!message_data.allowed_mentions) {
+                message_data.allowed_mentions = { parse: ['users'] };
+            }
             return APIWrapper.interactionFollowup.edit(this.bot.user.id, interaction.token, message_id, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
