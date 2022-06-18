@@ -244,7 +244,7 @@ export default class Gateway extends EventEmitter {
             s: null,
             t: null
         }
-        this.bot.logger.debug('SEND GATEWAY IDENTIFY', payload);
+        //this.bot.logger.debug('SEND GATEWAY IDENTIFY', payload);
         return this.sendData(payload);
     }
 
@@ -270,7 +270,7 @@ export default class Gateway extends EventEmitter {
             s: null,
             t: null
         }
-        this.bot.logger.debug('SEND GATEWAY PRESENCE', payload);
+        //this.bot.logger.debug('SEND GATEWAY PRESENCE', payload);
         return this.sendData(payload);
     }
 
@@ -295,7 +295,7 @@ export default class Gateway extends EventEmitter {
                 s: null,
                 t: null
             }
-            this.bot.logger.debug('GATEWAY RESUME', payload);
+            //this.bot.logger.debug('GATEWAY RESUME', payload);
             return this.sendData(payload);
         })
     }

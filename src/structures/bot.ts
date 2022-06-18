@@ -89,7 +89,7 @@ export default class Bot extends EventEmitter {
             }
         }
         this.cache.gatewayInfo.set(gatewayInfo);
-        this.logger.debug('BOT CONNECT', gatewayInfo);
+        //this.logger.debug('BOT CONNECT', gatewayInfo);
         const wsURL = gatewayInfo.url + MiscUtils.parseQueryString(GATEWAY_PARAMS);
         return this.gateway.connectAndIdentify(wsURL, identifyData);
     }

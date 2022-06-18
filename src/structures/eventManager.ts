@@ -5,6 +5,9 @@ import events from '../types/eventTypes';
 import { EventHandler } from '../types/types';
 
 import dummy_event from '../events/_dummy';
+import application_command_create from '../events/application_command_create';
+import application_command_delete from '../events/application_command_delete';
+import application_command_update from '../events/application_command_update';
 import auto_moderation_rule_execution from '../events/auto_moderation_rule_execution';
 import channel_create from '../events/channel_create';
 import channel_delete from '../events/channel_delete';
@@ -43,10 +46,10 @@ import voice_state_update from '../events/voice_state_update';
 
 export default class EventManager {
     bot: Bot;
-    application_command_create: dummy_event<gatewayTypes.CommandUpdateData>;
-    application_command_delete: dummy_event<gatewayTypes.CommandUpdateData>;
+    application_command_create: application_command_create;
+    application_command_delete: application_command_delete;
     application_command_permissions_update: dummy_event<gatewayTypes.CommandPermissionsUpdateData>;
-    application_command_update: dummy_event<gatewayTypes.CommandUpdateData>;
+    application_command_update: application_command_update;
     auto_moderation_rule_create: dummy_event<gatewayTypes.AutoModUpdateData>;
     auto_moderation_rule_delete: dummy_event<gatewayTypes.AutoModUpdateData>;
     auto_moderation_rule_execution: auto_moderation_rule_execution;
@@ -109,10 +112,10 @@ export default class EventManager {
 
     constructor(bot: Bot) {
         this.bot = bot;
-        this.application_command_create = new dummy_event(this.bot, 'application_command_create');
-        this.application_command_delete = new dummy_event(this.bot, 'application_command_delete');
+        this.application_command_create = new application_command_create(this.bot);
+        this.application_command_delete = new application_command_delete(this.bot);
         this.application_command_permissions_update = new dummy_event(this.bot, 'application_command_permissions_update');
-        this.application_command_update = new dummy_event(this.bot, 'application_command_update');
+        this.application_command_update = new application_command_update(this.bot);
         this.auto_moderation_rule_create = new dummy_event(this.bot, 'auto_moderation_rule_create');
         this.auto_moderation_rule_delete = new dummy_event(this.bot, 'auto_moderation_rule_delete');
         this.auto_moderation_rule_execution = new auto_moderation_rule_execution(this.bot);

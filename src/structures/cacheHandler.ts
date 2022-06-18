@@ -28,6 +28,7 @@ export type EmojiMap = Record<types.Snowflake, types.Emoji>;
 type CachedGuildMap = Record<types.Snowflake, CachedGuild>;
 type UserMap = Record<types.Snowflake, types.User>;
 type MessageMap = Record<types.Snowflake, types.Message>;
+type CommandsMap = Record<types.Snowflake, types.Command[]>;
 type MessageMapMap = Record<types.Snowflake, MessageMap>;
 type StringMapMap = Record<string, types.StringMap>;
 
@@ -52,6 +53,8 @@ export default class CacheHandler {
     initialized = false;
     #guilds: CachedGuildMap;
     #dmMessages: MessageMapMap;
+    #commands: types.Command[];
+    #guildCommands: CommandsMap;
     #connected = false;
     #startTimestamp: number;
 
@@ -60,6 +63,8 @@ export default class CacheHandler {
         this.unavailableGuilds = [];
         this.#guilds = {};
         this.#dmMessages = {};
+        this.#commands = [];
+        this.#guildCommands = {};
         this.#startTimestamp = Date.now();
     }
 
@@ -92,7 +97,7 @@ export default class CacheHandler {
         return this.redisClient.connect();
     }
 
-    async getMultiMixed (string_keys: string[], hash_keys: string[])/*: Promise<(string | types.StringMap>*/ {
+    async #getMultiMixed (string_keys: string[], hash_keys: string[]) {
         const multi = this.redisClient.multi();
         for (const key of string_keys) {
             multi.get(key);
@@ -103,7 +108,7 @@ export default class CacheHandler {
         return multi.exec();
     }
 
-    async setMultiMixed(key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestamp) {
+    async #setMultiMixed(key: string, string_values: types.StringMap | null, hash_values: StringMapMap | null, expire?: types.UnixTimestamp) {
         const multi = this.redisClient.multi();
         for (const subkey in string_values) {
             const elemKey = `${key}.${subkey}`;
@@ -122,15 +127,15 @@ export default class CacheHandler {
         return multi.exec();
     }
 
-    async setExpire(key: string, value: string, expire: types.UnixTimestamp) {
+    async #setExpire(key: string, value: string, expire: types.UnixTimestamp) {
         return this.redisClient.multi().set(key, value).expireAt(key, expire).exec();
     }
 
-    async hsetExpire(key: string, value: types.StringMap, expire: types.UnixTimestamp) {
+    async #hsetExpire(key: string, value: types.StringMap, expire: types.UnixTimestamp) {
         return this.redisClient.multi().hSet(key, value).expireAt(key, expire).exec();
     }
 
-    async get(key: string, subkey?: string | true) {
+    async #get(key: string, subkey?: string | true) {
         if (subkey === true) {
             return this.redisClient.hGetAll(key);
         }
@@ -140,31 +145,35 @@ export default class CacheHandler {
         return this.redisClient.get(key);
     }
 
-    set(key: string, value: string | types.StringMap, expire?: types.UnixTimestamp) {
+    async #set(key: string, value: string | types.StringMap, expire?: types.UnixTimestamp) {
         if (typeof value === 'string') {
             if (expire) {
-                return this.setExpire(key, value, expire);
+                return this.#setExpire(key, value, expire);
             }
             return this.redisClient.set(key, value);
         }
         else if (expire) {
-            return this.hsetExpire(key, value, expire);
+            return this.#hsetExpire(key, value, expire);
         }
         return this.redisClient.hSet(key, value);
     }
 
-    hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestamp) {
+    async #hsetMulti(key: string, value: StringMapMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.setMultiMixed(key, null, value, expire);
+            return this.#setMultiMixed(key, null, value, expire);
         }
-        return this.setMultiMixed(key, null, value);
+        return this.#setMultiMixed(key, null, value);
     }
 
-    setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestamp) {
+    async #setMulti(key: string, value: types.StringMap, expire?: types.UnixTimestamp) {
         if (expire) {
-            return this.setMultiMixed(key, value, null, expire);
+            return this.#setMultiMixed(key, value, null, expire);
         }
-        return this.setMultiMixed(key, value, null);
+        return this.#setMultiMixed(key, value, null);
+    }
+
+    async #delete(key: string) {
+        return this.redisClient.del(key);
     }
 
     
@@ -212,6 +221,9 @@ export default class CacheHandler {
             this.#guilds[guild.id] = newGuild;
         },
         update: (guild: types.Guild): void => {
+            if (!this.#guilds[guild.id]) {
+                return; // don't cache, incomplete data
+            }
             Object.assign(this.#guilds[guild.id], guild);
         },
         delete: (guild_id: types.Snowflake): void => {
@@ -236,6 +248,9 @@ export default class CacheHandler {
         update: (member_data: GuildMemberUpdateData): void => {
             if (!this.guilds.get(member_data.guild_id)) {
                 return;
+            }
+            if (!this.#guilds[member_data.guild_id].members[member_data.user.id]) {
+                return; // don't cache, incomplete data
             }
             Object.assign(this.#guilds[member_data.guild_id].members[member_data.user.id], member_data);
         },
@@ -284,8 +299,21 @@ export default class CacheHandler {
             }
             this.#guilds[guild_id].roles[role.id] = role;
         },
+        setAll: (guild_id: types.Snowflake, roles: types.Role[]): void => {
+            if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            this.#guilds[guild_id].roles = {};
+            for (const role of roles) {
+                this.#guilds[guild_id].roles[role.id] = role;
+            }
+        },
         update: (guild_id: types.Snowflake, role: types.Role): void => {
             if (!this.guilds.get(guild_id)) {
+                return;
+            }
+            if (!this.#guilds[guild_id].roles[role.id]) {
+                this.#guilds[guild_id].roles[role.id] = role;
                 return;
             }
             Object.assign(this.#guilds[guild_id].roles[role.id], role);
@@ -299,9 +327,20 @@ export default class CacheHandler {
     }
 
     emojis = {
+        getAll: (guild_id: types.Snowflake): types.Emoji[] | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild?.emojis) {
+                return null;
+            }
+            const emojis: types.Emoji[] = [];
+            for (const emojiID in guild.emojis) {
+                emojis.push(guild.emojis[emojiID as types.Snowflake]);
+            }
+            return emojis.length ? emojis : null;
+        },
         get: (guild_id: types.Snowflake, emoji_id: types.Snowflake): types.Emoji | null => {
             const guild = this.guilds.get(guild_id);
-            if (!guild) {
+            if (!guild?.emojis) {
                 return null;
             }
             return guild.emojis[emoji_id] || null;
@@ -347,7 +386,7 @@ export default class CacheHandler {
             }
             return guild.channels[channel_id] || null;
         },
-        set: (channel: types.Channel): void => {
+        create: (channel: types.Channel): void => {
             if (!channel.guild_id) {
                 return; // ignore dm channels
             }
@@ -401,7 +440,7 @@ export default class CacheHandler {
             }
             return guild.message_cache[channel_id][message_id] || null;
         },
-        set: (message: types.Message): void => {
+        create: (message: types.Message): void => {
             if (!message.guild_id) {
                 return; // ignore dm messages
             }
@@ -468,7 +507,7 @@ export default class CacheHandler {
             }
             return guild.threads[thread_id] || null;
         },
-        set: (thread: types.ThreadChannel): void => {
+        create: (thread: types.ThreadChannel): void => {
             if (!this.guilds.get(thread.guild_id)) {
                 return;
             }
@@ -512,14 +551,14 @@ export default class CacheHandler {
                 this.bot.logger.handleError('REDIS', 'tried to call users.get() while disconnected');
                 return null;
             }
-            return this.get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
+            return this.#get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
-        set: async(user_id: types.Snowflake, user: types.User): Promise<void> => {
+        create: async(user: types.User): Promise<void> => {
             if (!this.#connected) {
-                this.bot.logger.handleError('REDIS', 'tried to call users.set() while disconnected');
+                this.bot.logger.handleError('REDIS', 'tried to call users.create() while disconnected');
                 return;
             }
-            return this.set(user_id, this.users._serialize(user)).then(() => undefined);
+            return this.#set(user.id, this.users._serialize(user)).then(() => undefined);
         },
         addChunk: async (user_list: UserMap): Promise<void> => {
             if (!this.#connected) {
@@ -531,7 +570,7 @@ export default class CacheHandler {
             for (id in user_list) {
                 obj[id] = this.users._serialize(user_list[id]);
             }
-            return this.hsetMulti('users', obj).then(() => undefined);
+            return this.#hsetMulti('users', obj).then(() => undefined);
         },
         // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
@@ -598,14 +637,21 @@ export default class CacheHandler {
                 this.bot.logger.handleError('REDIS', 'tried to call dmChannels.set() while disconnected');
                 return;
             }
-            return this.set(`dm_channels.${user_id}`, dm_channel_id).then(() => undefined);
+            return this.#set(`dm_channels.${user_id}`, dm_channel_id).then(() => undefined);
         },
         setAll: async (dm_channel_ids: types.StringMap): Promise<void> => {
             if (!this.#connected) {
                 this.bot.logger.handleError('REDIS', 'tried to call dmChannels.setAll() while disconnected');
                 return;
             }
-            return this.setMulti('dm_channels', dm_channel_ids).then(() => undefined);
+            return this.#setMulti('dm_channels', dm_channel_ids).then(() => undefined);
+        },
+        delete: async (user_id: types.Snowflake): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call dmChannels.delete() while disconnected');
+                return;
+            }
+            return this.#delete(`dm_channels.${user_id}`).then(() => undefined);
         }
         // TODO: decache dm channel when associated user is decached?
     }
@@ -617,7 +663,7 @@ export default class CacheHandler {
             }
             return this.#dmMessages[channel_id][message_id] || null;
         },
-        set: (message: types.Message): void => {
+        create: (message: types.Message): void => {
             if (message.guild_id) {
                 return; // ignore guild messages
             }
@@ -662,7 +708,7 @@ export default class CacheHandler {
                 this.bot.logger.handleError('REDIS', 'tried to call gatewayInfo.get() while disconnected');
                 return null;
             }
-            return this.getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
+            return this.#getMultiMixed(['gateway.url', 'gateway.shards'], ['gateway.session_start_limit']).then(data => {
                 if (!Array.isArray(data) || data.length !== 3 || typeof data[0] !== 'string' && typeof data[1] !== 'string') {
                     return null;
                 }
@@ -695,7 +741,7 @@ export default class CacheHandler {
                 return;
             }
             const reset_at = Math.floor((Date.now() + gateway_bot_info.session_start_limit.reset_after) / 1000);
-            return this.setMultiMixed('gateway', {
+            return this.#setMultiMixed('gateway', {
                 url: gateway_bot_info.url,
                 shards: gateway_bot_info.shards+''
             }, {
@@ -706,6 +752,96 @@ export default class CacheHandler {
                     max_concurrency: gateway_bot_info.session_start_limit.max_concurrency+''
                 }
             }, reset_at).then(() => undefined).catch(() => undefined);
+        }
+    }
+
+    globalCommands = {
+        getAll: () => {
+            return this.#commands?.length ? this.#commands : null;
+        },
+        get: (id: types.Snowflake) => {
+            return this.#commands.find(cmd => cmd.id === id) || null;
+        },
+        findByName: (name: string) => {
+            return this.#commands.find(cmd => cmd.name === name) || null;
+        },
+        setAll: (commands: types.Command[]) => {
+            this.#commands = commands;
+        },
+        update: (command: types.Command) => {
+            const cmd = this.globalCommands.get(command.id);
+            if (cmd) {
+                this.globalCommands._splice(cmd, command);
+            } else {
+                this.#commands.push(command);
+            }
+        },
+        delete: (id: types.Snowflake) => {
+            const cmd = this.globalCommands.get(id);
+            if (cmd) {
+                this.globalCommands._splice(cmd);
+            }
+        },
+        deleteByName: (name: string) => {
+            const cmd = this.globalCommands.findByName(name);
+            if (cmd) {
+                this.globalCommands._splice(cmd);
+            }
+        },
+        _splice: (cmd: types.Command, newCmd?: types.Command) => {
+            const index = this.#commands.indexOf(cmd);
+            if (newCmd) {
+                this.#commands.splice(index, 1, newCmd);
+            } else {
+                this.#commands.splice(index, 1);
+            }
+        }
+    }
+
+    guildCommands = {
+        getAll: (guild_id: types.Snowflake) => {
+            return guild_id in this.#guildCommands ? this.#guildCommands[guild_id] : null;
+        },
+        get: (guild_id: types.Snowflake, id: types.Snowflake) => {
+            const commands = this.guildCommands.getAll(guild_id);
+            return commands?.find(cmd => cmd.id === id) || null;
+        },
+        findByName: (guild_id: types.Snowflake, name: string) => {
+            const commands = this.guildCommands.getAll(guild_id);
+            return commands?.find(cmd => cmd.name === name) || null;
+        },
+        setAll: (guild_id: types.Snowflake, commands: types.Command[]) => {
+            this.#guildCommands[guild_id] = commands;
+        },
+        update: (guild_id: types.Snowflake, command: types.Command) => {
+            const cmd = this.guildCommands.get(guild_id, command.id);
+            if (cmd) {
+                this.guildCommands._splice(guild_id, cmd, command);
+            } else if (this.#guildCommands[guild_id]) {
+                this.#guildCommands[guild_id].push(command);
+            } else {
+                this.#guildCommands[guild_id] = [command];
+            }
+        },
+        delete: (guild_id: types.Snowflake, id: types.Snowflake) => {
+            const cmd = this.guildCommands.get(guild_id, id);
+            if (cmd) {
+                this.guildCommands._splice(guild_id, cmd);
+            }
+        },
+        deleteByName: (guild_id: types.Snowflake, name: string) => {
+            const cmd = this.guildCommands.findByName(guild_id, name);
+            if (cmd) {
+                this.guildCommands._splice(guild_id, cmd);
+            }
+        },
+        _splice: (guild_id: types.Snowflake, cmd: types.Command, newCmd?: types.Command) => {
+            const index = this.#guildCommands[guild_id].indexOf(cmd);
+            if (newCmd) {
+                this.#guildCommands[guild_id].splice(index, 1, newCmd);
+            } else {
+                this.#guildCommands[guild_id].splice(index, 1);
+            }
         }
     }
 }

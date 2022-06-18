@@ -9,7 +9,7 @@ export default class ThreadUpdateHandler extends EventHandler<ThreadUpdateData> 
     }
 
     cacheHandler = (eventData: ThreadUpdateData) => {
-        this.bot.cache.threads.set(eventData);
+        this.bot.cache.threads.create(eventData);
     }
 
     handler = (/*eventData: ThreadUpdateData*/) => {

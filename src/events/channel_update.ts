@@ -9,7 +9,7 @@ export default class ChannelUpdateHandler extends EventHandler<ChannelUpdateData
     }
 
     cacheHandler = (eventData: ChannelUpdateData) => {
-        this.bot.cache.channels.set(eventData);
+        this.bot.cache.channels.create(eventData);
     }
 
     handler = (/*eventData: ChannelUpdateData*/) => {

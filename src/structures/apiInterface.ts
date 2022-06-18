@@ -46,6 +46,9 @@ export default class APIInterface {
             if (!guild) {
                 guild = await APIWrapper.guild.fetch(guild_id, with_counts)
                     .then(res => res.body).catch(this.handleError.bind(this));
+                if (guild && this.cacheEnabled) {
+                    this.bot.cache.guilds.update(guild);
+                }
             }
             return guild;
         },
@@ -95,12 +98,19 @@ export default class APIInterface {
             if (!roles) {
                 roles = await APIWrapper.role.list(guild_id)
                     .then(res => res.body).catch(this.handleError.bind(this));
+                if (roles && this.cacheEnabled) {
+                    this.bot.cache.roles.setAll(guild_id, roles);
+                }
             }
             return roles;
         },
         fetch: async (guild_id: types.Snowflake, role_id: types.Snowflake) => {
-            return APIWrapper.role.fetch(guild_id, role_id)
+            const role = await APIWrapper.role.fetch(guild_id, role_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
+            if (role && this.cacheEnabled) {
+                this.bot.cache.roles.update(guild_id, role);
+            }
+            return role;
         },
         create: async (guild_id: types.Snowflake, role_data: types.RoleData, reason?: string) => {
             return APIWrapper.role.create(guild_id, role_data, reason)
@@ -129,6 +139,9 @@ export default class APIInterface {
             if (!member) {
                 member = await APIWrapper.member.fetch(guild_id, user_id)
                     .then(res => res.body).catch(this.handleError.bind(this));
+                if (member && this.cacheEnabled) {
+                    this.bot.cache.members.set(guild_id, member);
+                }
             }
             return member;
         },
@@ -164,8 +177,16 @@ export default class APIInterface {
 
     channel = {
         fetch: async (channel_id: types.Snowflake) => {
-            return APIWrapper.channel.fetch(channel_id)
+            const channel = await APIWrapper.channel.fetch(channel_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
+            if (channel && this.cacheEnabled) {
+                if (channel.guild_id) {
+                    this.bot.cache.channels.create(channel);
+                } else if (channel.recipients) {
+                    this.bot.cache.dmChannels.set(channel.recipients[0].id, channel_id);
+                }
+            }
+            return channel;
         },
         edit: async (channel_id: types.Snowflake, channel_data: types.ChannelData, reason?: string) => {
             return APIWrapper.channel.edit(channel_id, channel_data, reason)
@@ -195,9 +216,21 @@ export default class APIInterface {
     }
 
     message = {
-        fetch: async(channel_id: types.Snowflake, message_id: types.Snowflake) => {
-            return APIWrapper.message.fetch(channel_id, message_id)
+        fetch: async(channel: types.Channel | types.Snowflake, message_id: types.Snowflake) => {
+            const channel_id = typeof channel === 'string' ? channel : channel.id;
+            const guild_id = typeof channel === 'string' ? null : channel.guild_id;
+            let message: types.Message | null = null;
+            if (this.cacheEnabled && guild_id) {
+                message = this.bot.cache.messages.get(guild_id, channel_id, message_id);
+            }
+            if (!message) {
+                message = await APIWrapper.message.fetch(channel_id, message_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
+                if (message && this.cacheEnabled) {
+                    this.bot.cache.messages.create(message);
+                }
+            }
+            return message;
         },
         fetchMany: async(channel_id: types.Snowflake, limit: number, filter_ids: Omit<types.MessageFetchData, 'limit'>) => {
             if (Object.keys(filter_ids).length > 1) {
@@ -227,12 +260,32 @@ export default class APIInterface {
 
     user = {
         fetch: async (user_id: types.Snowflake) => {
-            return APIWrapper.user.fetch(user_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let user: types.User | null = null;
+            if (this.cacheEnabled) {
+                user = await this.bot.cache.users.get(user_id);
+            }
+            if (!user) {
+                user = await APIWrapper.user.fetch(user_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (user && this.cacheEnabled) {
+                    this.bot.cache.users.create(user);
+                }
+            }
+            return user;
         },
         fetchSelf: async () => {
-            return APIWrapper.user.fetchSelf()
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let user: types.User | null = null;
+            if (this.cacheEnabled) {
+                user = this.bot.user;
+            }
+            if (!user) {
+                user = await APIWrapper.user.fetchSelf()
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (user && this.cacheEnabled) {
+                    this.bot.user = user;
+                }
+            }
+            return user;
         },
         editSelf: async (user_data: types.UserData) => {
             return APIWrapper.user.editSelf(user_data)
@@ -291,16 +344,36 @@ export default class APIInterface {
 
     command = {
         list: async (with_localizations = false) => {
-            return APIWrapper.globalCommand.list(this.bot.user.id, with_localizations)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let commands: types.Command[] | null = null;
+            if (this.cacheEnabled) {
+                commands = await this.bot.cache.globalCommands.getAll();
+            }
+            if (!commands) {
+                commands = await APIWrapper.globalCommand.list(this.bot.user.id, with_localizations)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (commands && this.cacheEnabled) {
+                    this.bot.cache.globalCommands.setAll(commands);
+                }
+            }
+            return commands;
         },
         create: async (command: types.CommandCreateData) => {
             return APIWrapper.globalCommand.create(this.bot.user.id, command)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         fetch: async (command_id: types.Snowflake) => {
-            return APIWrapper.globalCommand.fetch(this.bot.user.id, command_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let command: types.Command | null = null;
+            if (this.cacheEnabled) {
+                command = this.bot.cache.globalCommands.get(command_id);
+            }
+            if (!command) {
+                command = await APIWrapper.globalCommand.fetch(this.bot.user.id, command_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (command && this.cacheEnabled) {
+                    this.bot.cache.globalCommands.update(command);
+                }
+            }
+            return command;
         },
         edit: async(command_id: types.Snowflake, command_data: types.CommandEditData) => {
             return APIWrapper.globalCommand.edit(this.bot.user.id, command_id, command_data)
@@ -334,16 +407,36 @@ export default class APIInterface {
 
     guildCommand = {
         list: async (guild_id: types.Snowflake, with_localizations = false) => {
-            return APIWrapper.guildCommand.list(this.bot.user.id, guild_id, with_localizations)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let commands: types.Command[] | null = null;
+            if (this.cacheEnabled) {
+                commands = await this.bot.cache.guildCommands.getAll(guild_id);
+            }
+            if (!commands) {
+                commands = await APIWrapper.guildCommand.list(this.bot.user.id, guild_id, with_localizations)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (commands && this.cacheEnabled) {
+                    this.bot.cache.guildCommands.setAll(guild_id, commands);
+                }
+            }
+            return commands;
         },
         create: async (guild_id: types.Snowflake, command: types.CommandCreateData) => {
             return APIWrapper.guildCommand.create(this.bot.user.id, guild_id, command)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         fetch: async (guild_id: types.Snowflake, command_id: types.Snowflake) => {
-            return APIWrapper.guildCommand.fetch(this.bot.user.id, guild_id, command_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let command: types.Command | null = null;
+            if (this.cacheEnabled) {
+                command = this.bot.cache.guildCommands.get(guild_id, command_id);
+            }
+            if (!command) {
+                command = await APIWrapper.guildCommand.fetch(this.bot.user.id, guild_id, command_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (command && this.cacheEnabled) {
+                    this.bot.cache.guildCommands.update(guild_id, command);
+                }
+            }
+            return command;
         },
         edit: async(guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) => {
             return APIWrapper.guildCommand.edit(this.bot.user.id, guild_id, command_id, command_data)
@@ -379,12 +472,32 @@ export default class APIInterface {
 
     emoji = {
         list: async (guild_id: types.Snowflake) => {
-            return APIWrapper.emoji.list(guild_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let emojis: types.Emoji[] | null = null;
+            if (this.cacheEnabled) {
+                emojis = this.bot.cache.emojis.getAll(guild_id);
+            }
+            if (!emojis) {
+                emojis = await APIWrapper.emoji.list(guild_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (emojis && this.cacheEnabled) {
+                    this.bot.cache.emojis.setAll(guild_id, emojis);
+                }
+            }
+            return emojis;
         },
         fetch: async (guild_id: types.Snowflake, emoji_id: types.Snowflake) => {
-            return APIWrapper.emoji.fetch(guild_id, emoji_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+            let emoji: types.Emoji | null = null;
+            if (this.cacheEnabled) {
+                emoji = this.bot.cache.emojis.get(guild_id, emoji_id);
+            }
+            if (!emoji) {
+                emoji = await APIWrapper.emoji.fetch(guild_id, emoji_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (emoji && this.cacheEnabled) {
+                    this.bot.cache.emojis.set(guild_id, emoji);
+                }
+            }
+            return emoji;
         },
         create: async (guild_id: types.Snowflake, name: string, imageData: types.ImageData, roles: types.Snowflake[] = []) => {
             return APIWrapper.emoji.create(guild_id, {

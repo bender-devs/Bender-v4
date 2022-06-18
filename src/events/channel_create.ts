@@ -12,7 +12,7 @@ export default class ChannelCreateHandler extends EventHandler<ChannelUpdateData
         if (!eventData.guild_id) {
             return; // ignore dm channels
         }
-        this.bot.cache.channels.set(eventData);
+        this.bot.cache.channels.create(eventData);
     }
 
     handler = (/*eventData: ChannelUpdateData*/) => {

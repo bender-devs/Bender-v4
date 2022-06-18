@@ -218,9 +218,11 @@ export interface GuildMemberUpdateData extends types.MemberData {
     guild_id: types.Snowflake;
     roles: types.Snowflake[];
     user: types.User;
-    joined_at?: types.Timestamp | null;
+    joined_at: types.Timestamp | null;
     premium_since?: types.Timestamp | null;
     pending?: boolean;
+    communication_disabled_until?: types.Timestamp | null;
+    avatar?: string | null;
 }
 
 export interface GuildMembersChunkPayload extends EventPayload {

@@ -151,7 +151,7 @@ export default class APIWrapper {
             });
         },
         async fetch(guild_id: types.Snowflake, role_id: types.Snowflake) {
-            return APIWrapper.makeRequest<types.Role[]>('GET', `/guilds/${guild_id}/roles/${role_id}`, {
+            return APIWrapper.makeRequest<types.Role>('GET', `/guilds/${guild_id}/roles/${role_id}`, {
                 headers: AUTH_HEADER
             });
         },
