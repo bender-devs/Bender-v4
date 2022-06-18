@@ -55,7 +55,10 @@ export default class CDNUtils {
         return this.#getGeneric('banners', userID, bannerHash, format, size);
     }
 
-    static userDefaultAvatar(discriminator: number): URL {
+    static userDefaultAvatar(discriminator: number | `${number}`): URL {
+        if (typeof discriminator === 'string') {
+            discriminator = parseInt(discriminator);
+        }
         return `${CDN_BASE}embed/avatars/${discriminator % 5}.png`;
     }
 

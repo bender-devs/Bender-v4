@@ -34,7 +34,7 @@ export type UserData = {
 export type PartialUser = {
     id: Snowflake;
     username: string;
-    discriminator: number;
+    discriminator: StringNum;
     avatar: string | null;
 }
 

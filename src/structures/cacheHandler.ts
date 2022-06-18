@@ -577,7 +577,7 @@ export default class CacheHandler {
             const obj: types.UserHash = {
                 id: user.id,
                 username: user.username,
-                discriminator: user.discriminator.toString() as types.StringNum,
+                discriminator: user.discriminator,
                 avatar: user.avatar || 'null'
             }
             if (user.bot) {
@@ -616,7 +616,7 @@ export default class CacheHandler {
             const obj: types.User = {
                 id: user_hash.id,
                 username: user_hash.username,
-                discriminator: parseInt(user_hash.discriminator),
+                discriminator: user_hash.discriminator,
                 avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
             }
             return obj;
