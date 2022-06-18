@@ -160,6 +160,23 @@
     "BANNER_INFO_GUILD_NO_BANNER": "ℹ This server doesn't have a banner.",
     "BANNER_INFO_TITLE": "🏔 Banner for **{{name}}** [[link]]({{bannerLink}})",
 
+    "------- /info invite -------": "",
+
+    "INVITE_INFO_SUBCOMMAND": "invite",
+    "INVITE_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a server invite.",
+    "INVITE_INFO_OPTION": "link",
+    "INVITE_INFO_OPTION_DESCRIPTION": "The invite link or code to view info about.",
+    
+    "INVITE_INFO_LINK_INVALID": "⚠ Invalid invite link.",
+    "INVITE_INFO_FETCH_FAILED": "❌ Failed to fetch invite info. The code may be invalid or I may have been banned from that server.",
+    "INVITE_INFO_CHANNEL": "**Channel:** {{channel}}",
+    "INVITE_INFO_VOICE_CHANNEL": "**Voice channel:** {{channel}}",
+    "INVITE_INFO_USES": "**Uses:** {{useInfo}}",
+    "INVITE_INFO_EXPIRES_IN": "**Expires in:** {{duration}}",
+    "INVITE_INFO_CREATED_BY": "Invite created by {{user}}",
+    "INVITE_INFO_MEMBERS": "Members",
+    "INVITE_INFO_MEMBER_PRESENCES": "🟢 **{{online}}** online | 👥 **{{total}}** total",
+
 
 
     "----------- Date/time formatting -----------": "",

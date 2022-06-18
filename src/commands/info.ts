@@ -8,6 +8,7 @@ import userInfo from './info/user';
 import emojiInfo from './info/emoji';
 import channelInfo from './info/channel';
 import bannerInfo from './info/banner';
+import inviteInfo from './info/invite';
 
 export default class InfoCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -98,6 +99,26 @@ export default class InfoCommand extends CommandUtils implements ICommand {
             description: LangUtils.get('BANNER_INFO_OPTION_DESCRIPTION'),
             description_localizations: LangUtils.getLocalizationMap('BANNER_INFO_OPTION_DESCRIPTION')
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'invite',
+        name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.STRING,
+
+            name: LangUtils.get('INVITE_INFO_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION'),
+
+            description: LangUtils.get('INVITE_INFO_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION_DESCRIPTION'),
+
+            required: true
+        }]
     }];
 
     run(interaction: types.Interaction): types.CommandResponse {
@@ -113,6 +134,8 @@ export default class InfoCommand extends CommandUtils implements ICommand {
                 return channelInfo.bind(this)(interaction, target);
             case 'banner':
                 return bannerInfo.bind(this)(interaction, target);
+            case 'invite':
+                return inviteInfo.bind(this)(interaction, target);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
