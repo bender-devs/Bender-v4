@@ -8,8 +8,14 @@ local cache:
 - guilds
 - members
 - roles
+- emojis
 - channels
-- commands (could be global but that would add too much complexity)
+- messages
+- threads
+- DM messages
+- commands (also stored in DB so might be redundant)
+- guild commands
+- presences
 */
 import * as types from '../types/types';
 import Bot from './bot';
@@ -55,6 +61,7 @@ export default class CacheHandler {
     #dmMessages: MessageMapMap;
     #commands: types.Command[];
     #guildCommands: CommandsMap;
+    #presences: PresenceMap;
     #connected = false;
     #startTimestamp: number;
 
@@ -65,6 +72,7 @@ export default class CacheHandler {
         this.#dmMessages = {};
         this.#commands = [];
         this.#guildCommands = {};
+        this.#presences = {};
         this.#startTimestamp = Date.now();
     }
 
@@ -568,9 +576,9 @@ export default class CacheHandler {
             }
             return this.#get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
-        create: async(user: types.User): Promise<void> => {
+        set: async (user: types.User): Promise<void> => {
             if (!this.#connected) {
-                this.bot.logger.handleError('REDIS', 'tried to call users.create() while disconnected');
+                this.bot.logger.handleError('REDIS', 'tried to call users.set() while disconnected');
                 return;
             }
             return this.#set(user.id, this.users._serialize(user)).then(() => undefined);
@@ -586,6 +594,14 @@ export default class CacheHandler {
                 obj[id] = this.users._serialize(user_list[id]);
             }
             return this.#hsetMulti('users', obj).then(() => undefined);
+        },
+        delete: async (user_id: types.Snowflake): Promise<void> => {
+            if (!this.#connected) {
+                this.bot.logger.handleError('REDIS', 'tried to call users.delete() while disconnected');
+                return;
+            }
+            this.presences.delete(user_id);
+            return this.#delete(user_id).then(() => undefined);
         },
         // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
@@ -857,6 +873,23 @@ export default class CacheHandler {
             } else {
                 this.#guildCommands[guild_id].splice(index, 1);
             }
+        }
+    }
+
+    presences = {
+        get: async (user_id: types.Snowflake): Promise<types.Presence | null> => {
+            return this.#presences[user_id] || null;
+        },
+        set: (presence: types.Presence) => {
+            this.#presences[presence.user.id] = presence;
+        },
+        addChunk: (presences: types.Presence[]) => {
+            for (const presence of presences) {
+                this.#presences[presence.user.id] = presence;
+            }
+        },
+        delete: (user_id: types.Snowflake) => {
+            delete this.#presences[user_id];
         }
     }
 }

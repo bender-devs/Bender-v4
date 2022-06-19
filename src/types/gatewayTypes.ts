@@ -321,14 +321,16 @@ export interface MessageCreatePayload extends EventPayload {
     d: MessageCreateData;
 }
 
-export type MessageCreateData = types.Message;
+export interface MessageCreateData extends types.Message {
+    member?: types.PartialMember;
+}
 
 export interface MessageUpdatePayload extends EventPayload {
     t: 'MESSAGE_UPDATE';
     d: MessageUpdateData;
 }
 
-export interface MessageUpdateData extends Partial<types.Message> {
+export interface MessageUpdateData extends Partial<MessageCreateData> {
     id: types.Snowflake;
     channel_id: types.Snowflake;
 }
@@ -338,7 +340,7 @@ export interface MessageDeletePayload extends EventPayload {
     d: MessageDeleteData;
 }
 
-export type MessageDeleteData = Pick<types.Message, 'id' | 'channel_id' | 'guild_id'>;
+export type MessageDeleteData = Pick<MessageUpdateData, 'id' | 'channel_id' | 'guild_id'>;
 
 export interface MessageDeleteBulkPayload extends EventPayload {
     t: 'MESSAGE_DELETE_BULK';

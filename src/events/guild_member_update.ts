@@ -9,6 +9,7 @@ export default class GuildMemberUpdateHandler extends EventHandler<GuildMemberUp
     }
 
     cacheHandler = (eventData: GuildMemberUpdateData) => {
+        this.bot.cache.users.set(eventData.user);
         const oldMember = this.bot.cache.members.get(eventData.guild_id, eventData.user.id);
         this.bot.cache.members.update(eventData);
         if (!oldMember) {

@@ -10,7 +10,13 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
         super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
-    cacheHandler = (/*eventData: InteractionCreateData*/) => {
+    cacheHandler = (eventData: InteractionCreateData) => {
+        if (eventData.guild_id && eventData.member) {
+            this.bot.cache.members.set(eventData.guild_id, eventData.member);
+        }
+        if (eventData.user) {
+            this.bot.cache.users.set(eventData.user);
+        }
         // TODO: cache interactions?
     }
 

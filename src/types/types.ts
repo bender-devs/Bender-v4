@@ -814,8 +814,7 @@ export type Message = {
     id: Snowflake;
     channel_id: Snowflake;
     guild_id?: Snowflake;
-    author: User;
-    member?: Member; // only included in MESSAGE_CREATE and MESSAGE_UPDATE
+    author: User | WebhookUser;
     content: string;
     timestamp: Timestamp;
     edited_timestamp: Timestamp | null;
@@ -847,6 +846,8 @@ export type Message = {
 interface UserMember extends User {
     member: PartialMember
 }
+
+type WebhookUser = Pick<User, 'id' | 'username' | 'avatar'>;
 
 // https://discord.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference
 export type AllowedMentions = {

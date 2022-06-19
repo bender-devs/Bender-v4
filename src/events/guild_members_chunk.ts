@@ -10,6 +10,9 @@ export default class GuildMembersChunkHandler extends EventHandler<GuildMembersC
 
     cacheHandler = (eventData: GuildMembersChunkData) => {
         this.bot.cache.members.addChunk(eventData.guild_id, eventData.members);
+        if (eventData.presences) {
+            this.bot.cache.presences.addChunk(eventData.presences);
+        }
     }
 
     handler = (/*eventData: GuildMembersChunkData*/) => {

@@ -10,6 +10,7 @@ export default class GuildMemberRemoveHandler extends EventHandler<GuildMemberRe
 
     cacheHandler = (eventData: GuildMemberRemoveData) => {
         this.bot.cache.members.delete(eventData.guild_id, eventData.user.id);
+        this.bot.cache.users.set(eventData.user);
     }
 
     handler = (/*eventData: GuildMemberRemoveData*/) => {

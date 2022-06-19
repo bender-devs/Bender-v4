@@ -8,6 +8,10 @@ export default class GuildBanAddHandler extends EventHandler<GuildBanEventData> 
         super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
+    cacheHandler = (eventData: GuildBanEventData) => {
+        this.bot.cache.users.set(eventData.user);
+    }
+
     handler = (/*eventData: GuildBanEventData*/) => {
         // TODO: cache ban to suppress GUILD_MEMBER_REMOVE messages
 

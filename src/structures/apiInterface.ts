@@ -271,7 +271,7 @@ export default class APIInterface {
                 user = await APIWrapper.user.fetch(user_id)
                     .then(res => res.body).catch(this.handleError.bind(this));
                 if (user && this.cacheEnabled) {
-                    this.bot.cache.users.create(user);
+                    this.bot.cache.users.set(user);
                 }
             }
             return user;
