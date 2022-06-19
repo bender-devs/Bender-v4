@@ -257,7 +257,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                         const result = await eval(code);
                         const typeofResult = typeof result;
                         evaled = inspect(result, { depth: 0 });
-                        footer = `\n${EMOTES.b} Bender v${VERSION} | ${EMOTES.node} Node ${process.version} | ${EMOTES.info} Typeof output: \`${typeofResult}\``;
+                        footer = `\n${EMOTES.BENDER} Bender v${VERSION} | ${EMOTES.NODEJS} Node ${process.version} | ${EMOTES.INFO} Typeof output: \`${typeofResult}\``;
                     } else {
                         const result = await execAsync(code);
                         if (result.stderr) {
