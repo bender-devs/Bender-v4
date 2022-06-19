@@ -2,9 +2,9 @@ import { DEFAULT_COLOR, INVITE_CODE_REGEX } from '../../data/constants';
 import { CHANNEL_TYPES } from '../../types/numberTypes';
 import * as types from '../../types/types';
 import CDNUtils from '../../utils/cdn';
-import DiscordTypeUtils from '../../utils/discordTypes';
+import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
-import TextFormatUtils from '../../utils/textFormats';
+import TextUtils from '../../utils/text';
 import TimeUtils from '../../utils/time';
 import InfoCommand from '../info';
 
@@ -16,7 +16,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (INVITE_CODE_REGEX.test(inviteString)) {
         inviteCode = inviteString;
     } else {
-        inviteCode = TextFormatUtils.inviteLinks.extract(inviteString) || '';
+        inviteCode = TextUtils.inviteLink.extract(inviteString) || '';
     }
     if (!inviteCode) {
         return this.respondKey(interaction, 'INVITE_INFO_LINK_INVALID');
@@ -69,7 +69,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     };
 
     if (invite.inviter) {
-        const userTag = DiscordTypeUtils.user.getTag(invite.inviter);
+        const userTag = DiscordUtils.user.getTag(invite.inviter);
         const userText = LangUtils.getAndReplace('INVITE_INFO_CREATED_BY', { user: userTag }, interaction.locale);
 
         let userAvatar: types.URL | null = null;

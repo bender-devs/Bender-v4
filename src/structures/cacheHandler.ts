@@ -253,6 +253,20 @@ export default class CacheHandler {
             }
             return guild.members[user_id] || null;
         },
+        filter: (guild_id: types.Snowflake, filterFunc: (member: types.Member) => boolean): types.Member[] | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            const members: types.Member[] = [];
+            for (const user_id in guild.members) {
+                const mem = guild.members[user_id as types.Snowflake];
+                if (filterFunc(mem)) {
+                    members.push(mem);
+                }
+            }
+            return members.length ? members : null;
+        },
         set: (guild_id: types.Snowflake, member: types.Member): void => {
             if (!this.guilds.get(guild_id)) {
                 return;
@@ -901,7 +915,7 @@ export default class CacheHandler {
     }
 
     presences = {
-        get: async (user_id: types.Snowflake): Promise<types.Presence | null> => {
+        get: (user_id: types.Snowflake) => {
             return this.#presences[user_id] || null;
         },
         set: (presence: types.Presence) => {

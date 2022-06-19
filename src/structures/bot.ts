@@ -12,11 +12,13 @@ import Shard from './shard';
 import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
 import PermissionUtils from '../utils/permissions';
+import TextUtils from '../utils/text';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
     cache: CacheHandler;
     perms: PermissionUtils;
+    utils: MiscUtils;
     gateway: Gateway;
     logger: Logger;
     events: EventManager;
@@ -42,6 +44,7 @@ export default class Bot extends EventEmitter {
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
         this.perms = new PermissionUtils(this);
+        this.utils = new MiscUtils(this);
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);
@@ -101,7 +104,7 @@ export default class Bot extends EventEmitter {
         }
         this.cache.gatewayInfo.set(gatewayInfo);
         //this.logger.debug('BOT CONNECT', gatewayInfo);
-        const wsURL = gatewayInfo.url + MiscUtils.parseQueryString(GATEWAY_PARAMS);
+        const wsURL = gatewayInfo.url + TextUtils.parseQueryString(GATEWAY_PARAMS);
         return this.gateway.connectAndIdentify(wsURL, identifyData);
     }
 }

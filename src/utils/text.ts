@@ -1,5 +1,5 @@
 import * as CONSTANTS from '../data/constants';
-import { Emoji, Snowflake, UnixTimestamp } from '../types/types';
+import { Emoji, Snowflake, UnixTimestampMillis } from '../types/types';
 
 function getRegex(chars: string, exact: boolean, timestamp = false) {
     return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`);
@@ -24,20 +24,20 @@ export const EMOJI_REGEX_EXACT = getRegex('(a?):([a-z0-9]{2,32}):', true);
 export const TIMESTAMP_REGEX = getRegex('t:', false, true);
 export const TIMESTAMP_REGEX_EXACT = getRegex('t:', true, true);
 
-export default class TextFormatUtils {
+export default class TextUtils {
     static #getFirstMatch(text: string, regex: RegExp): string | null {
         const matches = text.match(regex);
         return matches ? matches[1] : null;
     }
 
     static extractAny(text: string, exact = true): Snowflake | Emoji | number | null {
-        return this.mentions.extractUserID(text, exact)
-            || this.mentions.extractChannelID(text, exact)
-            || this.emojis.extract(text, exact)
-            || this.timestamps.extract(text, exact);
+        return this.mention.extractUserID(text, exact)
+            || this.mention.extractChannelID(text, exact)
+            || this.emoji.extract(text, exact)
+            || this.timestamp.extract(text, exact);
     }
 
-    static mentions = {
+    static mention = {
         extractUserID: (text: string, exact = true): NullableID => {
             const regex = exact ? USER_MENTION_REGEX_EXACT : USER_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
@@ -54,7 +54,7 @@ export default class TextFormatUtils {
         }
     }
 
-    static emojis = {
+    static emoji = {
         extract: (text: string, exact = true): Emoji | null => {
             const regex = exact ? EMOJI_REGEX_EXACT : EMOJI_REGEX;
             const matches = text.match(regex);
@@ -69,18 +69,27 @@ export default class TextFormatUtils {
         }
     }
 
-    static timestamps = {
-        extract: (text: string, exact = true): UnixTimestamp | null => {
+    static timestamp = {
+        extract: (text: string, exact = true): UnixTimestampMillis | null => {
             const regex = exact ? TIMESTAMP_REGEX_EXACT : TIMESTAMP_REGEX;
             const match = this.#getFirstMatch(text, regex);
-            return match ? parseInt(match) : null;
+            return match ? parseInt(match) * 1000 : null;
         },
-        parse: (timestamp: UnixTimestamp, format?: TimestampFormat): string => {
-            return `<t:${timestamp}${format ? `:${format}` : ''}>`;
+        parse: (timestamp: UnixTimestampMillis, format?: TimestampFormat): string => {
+            return `<t:${Math.round(timestamp / 1000)}${format ? `:${format}` : ''}>`;
+        },
+        // https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
+        fromSnowflake(id: Snowflake): UnixTimestampMillis {
+            const idInt = BigInt(id);
+            return Number(idInt >> BigInt(22)) + CONSTANTS.DISCORD_EPOCH;
+        },
+        // https://discord.com/developers/docs/reference#snowflake-ids-in-pagination-generating-a-snowflake-id-from-a-timestamp-example
+        toSnowflake(timestamp: UnixTimestampMillis) {
+            return (timestamp - CONSTANTS.DISCORD_EPOCH) << 22;
         }
     }
 
-    static inviteLinks = {
+    static inviteLink = {
         extract: (text: string, exact = true): string | null => {
             const regex = exact ? CONSTANTS.INVITE_REGEX_EXACT : CONSTANTS.INVITE_REGEX;
             return this.#getFirstMatch(text, regex);
@@ -92,4 +101,18 @@ export default class TextFormatUtils {
             return CONSTANTS.INVITE_LINK_PREFIX + code;
         }
     }
+
+    static parseQueryString(data: Record<string, string | number>): string {
+        let qs = '';
+        for (const key in data) {
+            qs += `${qs ? '&' : '?'}${key}=${encodeURIComponent(data[key])}`;
+        }
+        return qs;
+    }
+
+    static truncate(text: string, length = 2000, suffix?: string, strict = false) {
+		const len = strict ? text.length : Array.from(text).length;
+        const suffixLength = (suffix?.length || 0) + 4;
+		return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
+	}
 }

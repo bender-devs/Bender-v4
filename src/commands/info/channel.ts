@@ -4,9 +4,9 @@ import IMAGES from '../../data/images';
 import { CHANNEL_TYPES, PERMISSIONS } from '../../types/numberTypes';
 import * as types from '../../types/types';
 import APIError from '../../structures/apiError';
-import DiscordTypeUtils from '../../utils/discordTypes';
+import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
-import MiscUtils from '../../utils/misc';
+import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
 
 const CATEGORY_MAX_CHANNELS = 10;
@@ -52,7 +52,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respondKey(interaction, 'CHANNEL_NOT_FOUND');
     }
 
-    const createdAt = MiscUtils.snowflakeToTimestamp(channel.id);
+    const createdAt = TextUtils.timestamp.fromSnowflake(channel.id);
     let description = LangUtils.formatDateAgo('CHANNEL_INFO_CREATED_AT', createdAt, interaction.locale);
 
     let parentChannel: types.Channel | types.PartialChannel | null = null;
@@ -66,7 +66,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         description += '\n' + LangUtils.get('CHANNEL_INFO_NO_CATEGORY', interaction.locale);
     }
 
-    const perms = DiscordTypeUtils.channel.getEveryonePerms(channel);
+    const perms = DiscordUtils.channel.getEveryonePerms(channel);
 
     let title = '', iconURL: types.URL = IMAGES.channel;
 
@@ -105,14 +105,14 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
         let topic = '';
         if (channel.topic) {   
-            topic = LangUtils.getAndReplace('CHANNEL_INFO_TOPIC', { topic: MiscUtils.truncate(channel.topic, 900) }, interaction.locale);
+            topic = LangUtils.getAndReplace('CHANNEL_INFO_TOPIC', { topic: TextUtils.truncate(channel.topic, 900) }, interaction.locale);
         } else {
             topic = LangUtils.get('CHANNEL_INFO_NO_TOPIC', interaction.locale);
         }
 
         let lastActivityInfo = '';
         if (channel.last_message_id) {   
-            const lastMessageTimestamp = MiscUtils.snowflakeToTimestamp(channel.last_message_id);
+            const lastMessageTimestamp = TextUtils.timestamp.fromSnowflake(channel.last_message_id);
             lastActivityInfo = LangUtils.formatDateAgo('CHANNEL_INFO_LAST_ACTIVITY', lastMessageTimestamp, interaction.locale);
         } else {
             lastActivityInfo = LangUtils.get('CHANNEL_INFO_LAST_ACTIVITY_UNKNOWN', interaction.locale);

@@ -6,6 +6,7 @@ import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
 import { inspect } from 'util';
+import { EmojiKey } from '../utils/misc';
 
 export interface ICommand extends types.CommandCreateData {
     bot: Bot;
@@ -21,6 +22,10 @@ export class CommandUtils {
     constructor(bot: Bot, name: string) {
         this.bot = bot;
         this.name = name;
+    }
+
+    getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
+        return this.bot.utils.getEmoji(emojiKey, interaction.guild_id, interaction.channel_id);
     }
 
     async ack(interaction: types.Interaction, ephemeral = true) {

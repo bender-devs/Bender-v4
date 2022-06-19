@@ -1,14 +1,16 @@
-import { DISCORD_EPOCH } from '../data/constants';
-import { Snowflake, UnixTimestampMillis } from '../types/types';
+import Bot from '../structures/bot';
+import * as EMOTES from '../data/emotes.json';
+import * as SHITTY_EMOTES from '../data/shitty_emotes.json';
+import { Snowflake } from '../types/types';
 import * as os from 'os';
 
+export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
+
 export default class MiscUtils {
-    static parseQueryString(data: Record<string, string | number>): string {
-        let qs = '';
-        for (const key in data) {
-            qs += `${qs ? '&' : '?'}${key}=${encodeURIComponent(data[key])}`;
-        }
-        return qs;
+    bot: Bot;
+
+    constructor(bot: Bot) {
+        this.bot = bot;
     }
 
     static getOSType() {
@@ -23,20 +25,11 @@ export default class MiscUtils {
         }
     }
 
-    // https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
-    static snowflakeToTimestamp(id: Snowflake): UnixTimestampMillis {
-        const idInt = BigInt(id);
-        return Number(idInt >> BigInt(22)) + DISCORD_EPOCH;
+    getEmoji(emojiKey: EmojiKey, guildID?: Snowflake, channelID?: Snowflake) {
+        if (!guildID) {
+            return EMOTES[emojiKey];
+        }
+        const matches = this.bot.perms.matchesMemberCache(this.bot.user.id, 'USE_EXTERNAL_EMOJIS', guildID, channelID);
+        return matches ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
     }
-
-    // https://discord.com/developers/docs/reference#snowflake-ids-in-pagination-generating-a-snowflake-id-from-a-timestamp-example
-    static timestampToSnowflake(timestamp: UnixTimestampMillis) {
-        return (timestamp - DISCORD_EPOCH) << 22;
-    }
-
-    static truncate(text: string, length = 2000, suffix?: string, strict = false) {
-		const len = strict ? text.length : Array.from(text).length;
-        const suffixLength = (suffix?.length || 0) + 4;
-		return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
-	}
 }

@@ -3,9 +3,9 @@ import { PERMISSIONS } from '../../types/numberTypes';
 import * as types from '../../types/types';
 import { CachedGuild } from '../../structures/cacheHandler';
 import CDNUtils from '../../utils/cdn';
-import DiscordTypeUtils from '../../utils/discordTypes';
+import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
-import MiscUtils from '../../utils/misc';
+import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
@@ -56,7 +56,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
             const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
-                const highestRole = DiscordTypeUtils.member.getHighestRole(member, roleList);
+                const highestRole = DiscordUtils.member.getHighestRole(member, roleList);
                 if (highestRole) {
                     let roleIcon = '🔘';
                     const perms = BigInt(highestRole.permissions);
@@ -71,7 +71,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                     }
                     userRank = `${roleIcon} ${highestRole.name}`;
                 }
-                const sortedRoles = DiscordTypeUtils.member.getSortedRoles(member, roleList);
+                const sortedRoles = DiscordUtils.member.getSortedRoles(member, roleList);
                 if (sortedRoles.length) {
                     roles = '\n\n' + LangUtils.getAndReplace('USER_INFO_ROLES', {
                         roles: sortedRoles.map(role => `<@&${role.id}>`).join(', ')
@@ -81,9 +81,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                 userRank = LangUtils.get('USER_INFO_MEMBER', interaction.locale);
             }
             if (roleList && !user.accent_color) {
-                let color = DiscordTypeUtils.member.getColor(member, roleList);
+                let color = DiscordUtils.member.getColor(member, roleList);
                 if (!color) {
-                    color = DiscordTypeUtils.guild.getColor(roleList);
+                    color = DiscordUtils.guild.getColor(roleList);
                 }
                 if (color) {
                     embed.color = color;
@@ -103,7 +103,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
         }
     }
-    const createdAt = MiscUtils.snowflakeToTimestamp(user.id);
+    const createdAt = TextUtils.timestamp.fromSnowflake(user.id);
     const creationInfo = LangUtils.formatDateAgo('USER_INFO_CREATED_AT', createdAt, interaction.locale);
 
     let bannerNote = '';
@@ -117,9 +117,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     const unknownStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
     const userStatus = unknownStatus; // TODO: get user presence when possible
 
-    const description = MiscUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
+    const description = TextUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = description + bannerNote;
-    const userTag = DiscordTypeUtils.user.getTag(user);
+    const userTag = DiscordUtils.user.getTag(user);
     embed.author = {
         name: `${userTag}${nickInfo}`,
         icon_url: avatar

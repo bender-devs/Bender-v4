@@ -1,6 +1,6 @@
 import { Channel, Member, PartialMember, Role, User } from '../types/types';
 
-export default class DiscordTypeUtils {
+export default class DiscordUtils {
     static member = {
         getHighestRole: (member: Member | PartialMember, guildRoles: Role[]) => {
             let highest: Role | null = null;
@@ -12,7 +12,7 @@ export default class DiscordTypeUtils {
             return highest;
         },
         getSortedRoles: (member: Member | PartialMember, guildRoles: Role[]) => {
-            const sortedGuildRoles = DiscordTypeUtils.roles.sort(guildRoles);
+            const sortedGuildRoles = DiscordUtils.roles.sort(guildRoles);
             return sortedGuildRoles.filter(role => member.roles.includes(role.id));
         },
         getColor: (member: Member | PartialMember, guildRoles: Role[]) => {

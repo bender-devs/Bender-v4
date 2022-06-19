@@ -2,8 +2,7 @@ import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
 import * as types from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import LangUtils from '../../utils/language';
-import MiscUtils from '../../utils/misc';
-import TextFormatUtils from '../../utils/textFormats';
+import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, emojiString?: types.CommandOptionValue) {
@@ -17,19 +16,19 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (ID_REGEX_EXACT.test(emojiString)) {
         cachedEmoji = this.bot.cache.emojis.find(emojiString as types.Snowflake);
     }
-    const emoji = cachedEmoji || TextFormatUtils.emojis.extract(emojiString);
+    const emoji = cachedEmoji || TextUtils.emoji.extract(emojiString);
     if (!emoji) {
         return this.respondKey(interaction, 'EMOJI_NOT_FOUND');
     }
 
-    const createdAt = MiscUtils.snowflakeToTimestamp(emoji.id);
+    const createdAt = TextUtils.timestamp.fromSnowflake(emoji.id);
     let description = LangUtils.formatDateAgo('EMOJI_INFO_CREATED_AT', createdAt, interaction.locale);
     description += `\n**ID:** ${emoji.id}\n`;
     if (!cachedEmoji) {
         cachedEmoji = this.bot.cache.emojis.find(emoji.id);
     }
     description += LangUtils.getAndReplace('EMOJI_INFO_RAW_FORMAT', {
-        emoji: TextFormatUtils.emojis.parse(emoji, !cachedEmoji)
+        emoji: TextUtils.emoji.parse(emoji, !cachedEmoji)
     }, interaction.locale);
 
     if (emoji.managed) {

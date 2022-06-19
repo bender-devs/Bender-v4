@@ -4,7 +4,7 @@ import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes';
 import Bot from '../structures/bot';
 import { basename } from 'path';
 import { VERSION } from '../data/constants';
-import DiscordTypeUtils from '../utils/discordTypes';
+import DiscordUtils from '../utils/discord';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
     requiresReady = false;
@@ -27,7 +27,7 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
     }
 
     handler = (/*eventData: ReadyData*/) => {
-        const userTag = DiscordTypeUtils.user.getTag(this.bot.user);
+        const userTag = DiscordUtils.user.getTag(this.bot.user);
         this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${userTag} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
         // TODO: use database to determine whether to update commands

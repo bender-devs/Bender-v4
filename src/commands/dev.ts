@@ -8,10 +8,9 @@ import PermissionUtils from '../utils/permissions';
 import LangUtils from '../utils/language';
 import { GatewayData, GatewayPayload } from '../types/gatewayTypes';
 import { VERSION } from '../data/constants';
-import * as EMOTES from '../data/emotes.json';
 import { inspect, promisify } from 'util';
 import { exec } from 'child_process';
-import MiscUtils from '../utils/misc';
+import TextUtils from '../utils/text';
 const execAsync = promisify(exec);
 
 const tokenRegexes: RegExp[] = [];
@@ -257,7 +256,10 @@ export default class DevCommand extends CommandUtils implements ICommand {
                         const result = await eval(code);
                         const typeofResult = typeof result;
                         evaled = inspect(result, { depth: 0 });
-                        footer = `\n${EMOTES.BENDER} Bender v${VERSION} | ${EMOTES.NODEJS} Node ${process.version} | ${EMOTES.INFO} Typeof output: \`${typeofResult}\``;
+                        const bender = this.getEmoji('BENDER', interaction);
+                        const node = this.getEmoji('NODEJS', interaction);
+                        const info = this.getEmoji('INFO', interaction);
+                        footer = `\n${bender} Bender v${VERSION} | ${node} Node ${process.version} | ${info} Typeof output: \`${typeofResult}\``;
                     } else {
                         const result = await execAsync(code);
                         if (result.stderr) {
@@ -272,7 +274,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     const truncated = evaled.length >= maxLength;
                     if (truncated) {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), evaled);
-                        evaled = MiscUtils.truncate(evaled, maxLength - 50);
+                        evaled = TextUtils.truncate(evaled, maxLength - 50);
                     }
                     
                     stop = Date.now();
@@ -289,7 +291,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     const truncated = errString.length >= maxLength;
                     if (truncated) {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), errString);
-                        errString = MiscUtils.truncate(errString, maxLength - 50);
+                        errString = TextUtils.truncate(errString, maxLength - 50);
                     }
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
                     return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
