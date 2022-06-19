@@ -184,6 +184,9 @@ export default class CacheHandler {
         return this.redisClient.del(key);
     }
 
+    async #dbSize() {
+        return this.redisClient.dbSize();
+    }
     
 
     guilds = {
@@ -236,6 +239,9 @@ export default class CacheHandler {
         },
         delete: (guild_id: types.Snowflake): void => {
             delete this.#guilds[guild_id];
+        },
+        size: (): number => {
+            return Object.keys(this.#guilds).length;
         }
     }
 
@@ -284,6 +290,9 @@ export default class CacheHandler {
                 memberMap[member.user.id] = member;
             }
             Object.assign(this.#guilds[guild_id].members, memberMap);
+        },
+        size: (guild_id: types.Snowflake): number => {
+            return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].members).length : 0;
         }
         // TODO: decache members under certain circumstances?
     }
@@ -338,6 +347,9 @@ export default class CacheHandler {
                 return;
             }
             delete this.#guilds[guild_id].roles[role_id];
+        },
+        size: (guild_id: types.Snowflake): number => {
+            return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].roles).length : 0;
         }
     }
 
@@ -390,6 +402,9 @@ export default class CacheHandler {
                 }
             }
             return null;
+        },
+        size: (guild_id: types.Snowflake): number => {
+            return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].emojis).length : 0;
         }
     }
 
@@ -449,6 +464,9 @@ export default class CacheHandler {
                 }
             }
             return chans;
+        },
+        size: (guild_id: types.Snowflake): number => {
+            return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].channels).length : 0;
         }
     }
 
@@ -565,6 +583,9 @@ export default class CacheHandler {
                     delete this.#guilds[guild_id].message_cache[threadID];
                 }
             }
+        },
+        size: (guild_id: types.Snowflake): number => {
+            return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].threads).length : 0;
         }
     }
 
@@ -602,6 +623,9 @@ export default class CacheHandler {
             }
             this.presences.delete(user_id);
             return this.#delete(user_id).then(() => undefined);
+        },
+        size: async () => { // approximate; includes dmChannel size too
+            return this.#dbSize();
         },
         // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
@@ -890,6 +914,9 @@ export default class CacheHandler {
         },
         delete: (user_id: types.Snowflake) => {
             delete this.#presences[user_id];
+        },
+        size: (): number => {
+            return Object.keys(this.#presences).length;
         }
     }
 }
