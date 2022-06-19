@@ -74,7 +74,7 @@ export interface UserHash extends UserBaseHash {
 }
 
 export type Presence = {
-    user: User;
+    user: { id: Snowflake };
     guild_id: Snowflake;
     status: Status;
     activities: Activity[];

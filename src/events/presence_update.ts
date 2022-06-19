@@ -8,8 +8,8 @@ export default class PresenceUpdateHandler extends EventHandler<PresenceUpdateDa
         super(basename(__filename, '.js') as LowercaseEventName, bot);
     }
 
-    cacheHandler = (/*eventData: PresenceUpdateData*/) => {
-        // TODO: cache presences for /userinfo & /playing
+    cacheHandler = (eventData: PresenceUpdateData) => {
+        this.bot.cache.presences.set(eventData);
     }
 
     handler = (/*eventData: PresenceUpdateData*/) => {

@@ -395,10 +395,7 @@ export interface PresenceUpdatePayload extends EventPayload {
     d: PresenceUpdateData;
 }
 
-export interface PresenceUpdateData extends Pick<types.Presence, 'activities' | 'status'> {
-    since: types.UnixTimestampMillis | null,
-    afk: boolean
-}
+export type PresenceUpdateData = types.Presence;
 
 /****** typing ******/
 
@@ -544,7 +541,7 @@ export type IdentifyData = {
     compress?: boolean;
     large_threshold?: number;
     shard?: ShardConnectionData;
-    presence: PresenceUpdateData;
+    presence: UpdatePresenceData;
     intents: types.Flags;
 }
 
@@ -563,12 +560,10 @@ export interface UpdatePresencePayload extends NonEventPayload {
     d: UpdatePresenceData;
 }
 
-export type UpdatePresenceData = {
-    since: number | null;
-    status: types.Status;
-    activities: types.Activity[];
-    afk: boolean;
-};
+export interface UpdatePresenceData extends Pick<types.Presence, 'activities' | 'status'> {
+    since: types.UnixTimestampMillis | null,
+    afk: boolean
+}
 
 /****** voice state update ******/
 

@@ -183,7 +183,7 @@ export default class EventManager {
             this.bot.logger.debug(eventHandler.name, 'skipped due to client not ready');
             return null;
         }
-        this.bot.logger.debug(eventHandler.name, eventData);
+        //this.bot.logger.debug(eventHandler.name, eventData);
         if (eventHandler.cacheHandler) {
             eventHandler.cacheHandler(eventData);
         }
