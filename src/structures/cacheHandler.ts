@@ -623,7 +623,7 @@ export default class CacheHandler {
                 this.bot.logger.handleError('REDIS', 'tried to call users.get() while disconnected');
                 return null;
             }
-            return this.#get(user_id).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
+            return this.#get(user_id, true).then(data => this.users._deserialize(data === null ? null : data as types.UserHash));
         },
         set: async (user: types.User): Promise<void> => {
             if (!this.#connected) {
