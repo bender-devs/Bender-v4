@@ -255,7 +255,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     if (subcommand === 'eval') {
                         const result = await eval(code);
                         const typeofResult = typeof result;
-                        evaled = inspect(result, { depth: 0 });
+                        evaled = inspect(result, { depth: 1 });
                         const bender = this.getEmoji('BENDER', interaction);
                         const node = this.getEmoji('NODEJS', interaction);
                         const info = this.getEmoji('INFO', interaction);

@@ -98,7 +98,7 @@ export class CommandUtils {
             invite: SUPPORT_SERVER
         });
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
-        this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69));
+        this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69, true));
         return this.respond(interaction, `❌ ${message}\n${supportNotice}`);
     }
 }
