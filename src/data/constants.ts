@@ -1,8 +1,20 @@
 import { GatewayParams, IdentifyData } from '../types/gatewayTypes';
 import { GATEWAY_VERSIONS } from '../types/numberTypes';
 import { ACTIVITY_TYPES, INTENT_FLAGS } from '../types/numberTypes';
-import MiscUtils from '../utils/misc';
+import * as os from 'os';
 import { Snowflake } from '../types/types';
+
+function getOSType() {
+    const type = os.type();
+    switch (type) {
+        case 'Darwin':
+            return 'macOS';
+        case 'Windows_NT':
+            return 'Windows';
+        default:
+            return type;
+    }
+}
 
 /***** bot options *****/
 
@@ -61,7 +73,7 @@ export const INTENTS = INTENT_FLAGS.GUILDS | INTENT_FLAGS.GUILD_MEMBERS | INTENT
 export const CONNECT_DATA: IdentifyData = {
     token: '', // assigned later
     properties: {
-        os: MiscUtils.getOSType(),
+        os: getOSType(),
         browser: 'Custom (https://benderbot.co)',
         device: 'Custom (https://benderbot.co)'
     },
