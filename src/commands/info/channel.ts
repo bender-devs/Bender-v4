@@ -127,7 +127,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
     }
 
-    const linkTitle = LangUtils.get('CHANNEL_INFO_LINK_TITLE', interaction.locale);
+    const linkTitle = LangUtils.getAndReplace('CHANNEL_INFO_LINK_TITLE', {
+        linkEmoji: this.getEmoji('LINK', interaction)
+    }, interaction.locale);
     description += `\n\n[${linkTitle}](https://discord.com/channels/${channel.guild_id}/${channel.id})`;
 
     return this.respond(interaction, {

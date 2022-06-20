@@ -97,10 +97,10 @@
     "USER_INFO_OPTION": "user",
     "USER_INFO_OPTION_DESCRIPTION": "The user or member to show info about.",
 
-    "USER_INFO_BOT": "🤖 Bot",
-    "USER_INFO_HUMAN": "👤 Human",
+    "USER_INFO_BOT": "{{botEmoji}} Bot",
+    "USER_INFO_HUMAN": "{{userEmoji}} Human",
     "USER_INFO_OWNER": "{{ownerEmoji}} Server Owner",
-    "USER_INFO_MEMBER": "👤 Member",
+    "USER_INFO_MEMBER": "{{userEmoji}} Member",
     "USER_INFO_UNKNOWN_STATUS": "*Unknown status*",
     "USER_INFO_BOOST_INFO": "**Server Booster** since {{date}} ({{ago}} ago)",
     "USER_INFO_JOINED_AT": "**Joined at:** {{date}} ({{ago}} ago)",
@@ -119,10 +119,10 @@
     "EMOJI_INFO_TITLE": "Emoji info - :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
     "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`\n^ *can be used to put emojis where there's no autocomplete, such as channel topics*",
-    "EMOJI_INFO_MANAGED": "\\ℹ *This emoji is managed by an external service (such as Twitch.)*",
+    "EMOJI_INFO_MANAGED": "{{infoEmoji}} *This emoji is managed by an external service (such as Twitch.)*",
     "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
     "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *This emoji is animated, and can only be used by users with Nitro.*",
-    "EMOJI_INFO_LINK": "🔗 View emoji in browser",
+    "EMOJI_INFO_LINK": "{{linkEmoji}} View emoji in browser",
 
     "------- /info channel -------": "",
 
@@ -137,7 +137,7 @@
     "CHANNEL_INFO_TITLE_CATEGORY": "Category: {{channelName}}",
 
     "CHANNEL_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
-    "CHANNEL_INFO_LINK_TITLE": "🔗 Go to channel",
+    "CHANNEL_INFO_LINK_TITLE": "{{linkEmoji}} Go to channel",
     "CHANNEL_INFO_TOPIC": "**Topic:** {{topic}}",
     "CHANNEL_INFO_NO_TOPIC": "**Topic:** *(none)*",
     "CHANNEL_INFO_LAST_ACTIVITY": "**Last activity:** {{ago}} ago",

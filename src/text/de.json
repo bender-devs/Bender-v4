@@ -88,10 +88,10 @@
     "USER_INFO_OPTION": "user",
     "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen",
 
-    "USER_INFO_BOT": "🤖 Bot",
-    "USER_INFO_HUMAN": "👤 Mensch",
+    "USER_INFO_BOT": "{{botEmoji}} Bot",
+    "USER_INFO_HUMAN": "{{userEmoji}} Mensch",
     "USER_INFO_OWNER": "{{ownerEmoji}} Besitzer",
-    "USER_INFO_MEMBER": "👤 Member",
+    "USER_INFO_MEMBER": "{{userEmoji}} Member",
     "USER_INFO_UNKNOWN_STATUS": "*unbekannter Status*",
     "USER_INFO_BOOST_INFO": "**Server Booster** seit {{date}} (vor {{ago}})",
     "USER_INFO_JOINED_AT": "**Beigetreten am:** {{date}} (vor {{ago}})",
@@ -109,10 +109,10 @@
     "EMOJI_INFO_TITLE": "Emoji Info - :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{date}} (vor {{ago}})",
     "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`\n^ *Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt, z.B. Kanal Themas*",
-    "EMOJI_INFO_MANAGED": "\\ℹ *Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)*",
+    "EMOJI_INFO_MANAGED": "{{infoEmoji}} *Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)*",
     "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",
     "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro*",
-    "EMOJI_INFO_LINK": "🔗 Zeige das Emoji im Browser an",
+    "EMOJI_INFO_LINK": "{{linkEmoji}} Zeige das Emoji im Browser an",
 
 
 

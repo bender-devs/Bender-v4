@@ -39,7 +39,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         color: user.accent_color || DEFAULT_COLOR,
         footer: { text: `ID: ${user.id}` }
     };
-    let userRank = LangUtils.get(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, interaction.locale);
+    let userRank = LangUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {
+        botEmoji: this.getEmoji('BOT', interaction),
+        userEmoji: this.getEmoji('USER', interaction)
+    }, interaction.locale);
     let boostStatus = '', joinDate = '', roles = '', nickInfo = '';
     let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
     if (guild) {
@@ -80,7 +83,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                     }, interaction.locale);
                 }
             } else if (!isOwner) {
-                userRank = LangUtils.get('USER_INFO_MEMBER', interaction.locale);
+                userRank = LangUtils.getAndReplace('USER_INFO_MEMBER', {
+                    userEmoji: this.getEmoji('USER', interaction)
+                }, interaction.locale);
             }
             if (roleList && !user.accent_color) {
                 let color = DiscordUtils.member.getColor(member, roleList);

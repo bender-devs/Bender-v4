@@ -32,7 +32,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }, interaction.locale);
 
     if (emoji.managed) {
-        description += '\n' + LangUtils.get('EMOJI_INFO_MANAGED', interaction.locale);
+        description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_MANAGED', {
+            infoEmoji: this.getEmoji('INFO_MINI', interaction)
+        }, interaction.locale);
     }
     if (emoji.roles?.length) {
         description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_RESTRICTED', {
@@ -48,7 +50,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     const title = LangUtils.getAndReplace('EMOJI_INFO_TITLE', { emojiName: emoji.name }, interaction.locale);
     const url = CDNUtils.emojiURL(emoji.id, emoji.animated || false);
-    const linkTitle = LangUtils.get('EMOJI_INFO_LINK', interaction.locale);
+    const linkTitle = LangUtils.getAndReplace('EMOJI_INFO_LINK', {
+        linkEmoji: this.getEmoji('LINK', interaction)
+    }, interaction.locale);
 
     description += `\n\n[${linkTitle}](${url})`;
 

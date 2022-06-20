@@ -97,10 +97,10 @@
     "USER_INFO_OPTION": "gebruiker",
     "USER_INFO_OPTION_DESCRIPTION": "De gebruiker of server lid om informatie over te tonen.",
 
-    "USER_INFO_BOT": "🤖 Robot",
-    "USER_INFO_HUMAN": "👤 Mens",
+    "USER_INFO_BOT": "{{botEmoji}} Robot",
+    "USER_INFO_HUMAN": "{{userEmoji}} Mens",
     "USER_INFO_OWNER": "{{ownerEmoji}} Server Eigenaar",
-    "USER_INFO_MEMBER": "👤 Lid",
+    "USER_INFO_MEMBER": "{{userEmoji}} Lid",
     "USER_INFO_UNKNOWN_STATUS": "*Onbekende status*",
     "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{date}} ({{ago}} geleden)",
     "USER_INFO_JOINED_AT": "**Lid geworden op:** {{date}} ({{ago}} geleden)",
@@ -118,10 +118,10 @@
     "EMOJI_INFO_TITLE": "Emoji informatie- :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} ago)",
     "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`\n^ *kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is, zoals kanaal onderwerpen*",
-    "EMOJI_INFO_MANAGED": "\\ℹ *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
+    "EMOJI_INFO_MANAGED": "{{infoEmoji}} *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
     "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",
     "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.*",
-    "EMOJI_INFO_LINK": "🔗 Bekijk de emoji in de browser",
+    "EMOJI_INFO_LINK": "{{linkEmoji}} Bekijk de emoji in de browser",
 
 
 

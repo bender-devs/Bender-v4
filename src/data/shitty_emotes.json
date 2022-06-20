@@ -44,6 +44,12 @@
 	"PONG":       "🏓",
 	"REVERSE":    "🔀",
 	"BANNER":     "🖼",
+	"LINK":       "🔗",
+	"BOT":        "🤖",
+	"USER":       "👤",
+	"USERS":      "👥",
+	"DATE":       "🗓",
+	"INFO_MINI":  "\\ℹ",
 
 	"ROTATE":     "↩",
 	"SPIN":       "🔄",
