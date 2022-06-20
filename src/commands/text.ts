@@ -1,6 +1,6 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../types/types';
+import { CommandOption, CommandResponse, Interaction } from '../types/types';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import * as textMap from '../data/text.json';
 import LangUtils from '../utils/language';
@@ -19,7 +19,7 @@ const replaceRegex = {
     subscript: /[a-z()\-+=\d]/gi,
     superscript: /[a-z()\-+=\d]/gi
 };
-const textOpt: types.CommandOption = {
+const textOpt: CommandOption = {
     type: COMMAND_OPTION_TYPES.STRING,
     name: 'text',
     description: 'The text to which to apply the effect.',
@@ -39,7 +39,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
 
     readonly dm_permission: boolean = true;
 
-    readonly options: types.CommandOption[] = [{
+    readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'case',
         description: 'Change the case of text.',
@@ -124,7 +124,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
         options: [textOpt]
     }];
 
-    async run(interaction: types.Interaction): types.CommandResponse {
+    async run(interaction: Interaction): CommandResponse {
         const effect = interaction.data?.options?.[0]?.name;
         let text = interaction.data?.options?.[0]?.options?.[0]?.value;
         if (!effect || !text || typeof text !== 'string') {
@@ -166,7 +166,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
         return this.respond(interaction, newText);
     }
 
-    async #doTextCase(interaction: types.Interaction, mode: string) {
+    async #doTextCase(interaction: Interaction, mode: string) {
         const text = interaction.data?.options?.[0]?.options?.[1]?.value;
         if (!text || typeof text !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');

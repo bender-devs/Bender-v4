@@ -1,11 +1,11 @@
 import * as en_US from './en-US.json';
 import * as nl_NL from './nl.json';
 import * as de from './de.json';
-import * as types from '../types/types';
+import { LangMap } from '../types/types';
 
 export type LangKey = keyof typeof en_US;
 
-const languages: types.LangMap = {
+const languages: LangMap = {
     'en-US': en_US,
     'nl': nl_NL,
     'de': de,

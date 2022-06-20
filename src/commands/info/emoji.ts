@@ -1,20 +1,20 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
-import * as types from '../../types/types';
+import { CommandOptionValue, Emoji, Interaction, Snowflake } from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import LangUtils from '../../utils/language';
 import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
 
-export default async function (this: InfoCommand, interaction: types.Interaction, emojiString?: types.CommandOptionValue) {
+export default async function (this: InfoCommand, interaction: Interaction, emojiString?: CommandOptionValue) {
     if (!emojiString || typeof emojiString !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
     if (Array.from(emojiString.substring(0,2)).length === 1) {
         // TODO: run /info char instead?
     }
-    let cachedEmoji: types.Emoji | null = null;
+    let cachedEmoji: Emoji | null = null;
     if (ID_REGEX_EXACT.test(emojiString)) {
-        cachedEmoji = this.bot.cache.emojis.find(emojiString as types.Snowflake);
+        cachedEmoji = this.bot.cache.emojis.find(emojiString as Snowflake);
     }
     const emoji = cachedEmoji || TextUtils.emoji.extract(emojiString);
     if (!emoji) {

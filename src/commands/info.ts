@@ -1,6 +1,6 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../types/types';
+import { CommandOption, CommandResponse, Interaction } from '../types/types';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 
@@ -22,7 +22,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
 
     readonly dm_permission: boolean = true;
 
-    readonly options: types.CommandOption[] = [{
+    readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
         name: 'user',
@@ -130,7 +130,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
         description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
     }];
 
-    run(interaction: types.Interaction): types.CommandResponse {
+    run(interaction: Interaction): CommandResponse {
         const args = interaction.data?.options;
         const subcommand = args?.[0]?.name;
         const target = args?.[0]?.options?.[0]?.value;

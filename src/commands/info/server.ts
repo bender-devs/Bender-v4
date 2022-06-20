@@ -1,6 +1,6 @@
 import { DEFAULT_COLOR } from '../../data/constants';
 import { VERIFICATION_LEVELS } from '../../types/numberTypes';
-import * as types from '../../types/types';
+import { Embed, Interaction } from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
@@ -8,7 +8,7 @@ import { EmojiKey } from '../../utils/misc';
 import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
 
-function getSecurityLevelText(this: InfoCommand, interaction: types.Interaction, level: VERIFICATION_LEVELS) {
+function getSecurityLevelText(this: InfoCommand, interaction: Interaction, level: VERIFICATION_LEVELS) {
     let key: EmojiKey;
     switch (level) {
         case VERIFICATION_LEVELS.VERY_HIGH: {
@@ -37,7 +37,7 @@ function getSecurityLevelText(this: InfoCommand, interaction: types.Interaction,
     }, interaction.locale);
 }
 
-export default async function (this: InfoCommand, interaction: types.Interaction) {
+export default async function (this: InfoCommand, interaction: Interaction) {
     if (!interaction.guild_id) {
         return this.respondKey(interaction, 'GUILD_ONLY', 'GUILD');
     }
@@ -95,7 +95,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         count: LangUtils.formatNumber(emojiCount)
     }, interaction.locale);
 
-    const embed: types.Embed = {
+    const embed: Embed = {
         color: DEFAULT_COLOR,
         description: `${memberInfo}\n${ownerInfo}\n${createdInfo}\n${securityInfo}\n\n${roleInfo} | ${emojiInfo} | ${textInfo} | ${voiceInfo}`,
         footer: { text: `ID: ${guild.id}` }

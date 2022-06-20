@@ -1,6 +1,5 @@
 import { GatewayParams, IdentifyData } from '../types/gatewayTypes';
-import { GATEWAY_VERSIONS } from '../types/numberTypes';
-import { ACTIVITY_TYPES, INTENT_FLAGS } from '../types/numberTypes';
+import { GATEWAY_VERSIONS, ACTIVITY_TYPES, INTENT_FLAGS } from '../types/numberTypes';
 import * as os from 'os';
 import { Snowflake } from '../types/types';
 

@@ -1,11 +1,11 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../types/types';
+import { CommandOption, CommandResponse, Interaction } from '../types/types';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import { createHash } from 'crypto';
 import LangUtils from '../utils/language';
 
-const encodeDecodeMode: types.CommandOption[] = [{
+const encodeDecodeMode: CommandOption[] = [{
     type: COMMAND_OPTION_TYPES.STRING,
 
     name: LangUtils.get('CONVERT_TEXT_OPTION_MODE'),
@@ -47,7 +47,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
 
     readonly dm_permission: boolean = true;
 
-    readonly options: types.CommandOption[] = [{
+    readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
         name: 'base64',
@@ -107,7 +107,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }]
     }];
 
-    async run(interaction: types.Interaction): types.CommandResponse {
+    async run(interaction: Interaction): CommandResponse {
         const args = interaction.data?.options;
         const subcommand = args?.[0]?.name;
         const modeOrAlgorithm = args?.[0]?.options?.[0]?.value;
@@ -127,7 +127,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
 
-    #base64(interaction: types.Interaction, mode: string, text: string) {
+    #base64(interaction: Interaction, mode: string, text: string) {
         let result = '';
         if (mode === 'decode') {
             result = Buffer.from(text, 'base64').toString('utf8');
@@ -141,7 +141,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
 
-    #binary(interaction: types.Interaction, mode: string, text: string) {
+    #binary(interaction: Interaction, mode: string, text: string) {
         let result = '';
         if (mode === 'decode') {
             let binaryPieces = text.split(' '), validPieceLength = true;
@@ -174,7 +174,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
 
-    #hash(interaction: types.Interaction, algorithm: string, text: string) {
+    #hash(interaction: Interaction, algorithm: string, text: string) {
         const hash = createHash(algorithm).update(text).digest('hex');
         const computedMsg = LangUtils.get('CONVERT_TEXT_COMPUTED_HASH', interaction.locale);
         return this.respond(interaction, `${computedMsg} \`${hash}\``, 'SHORT_TEXT');

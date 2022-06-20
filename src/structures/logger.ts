@@ -1,5 +1,5 @@
 import Bot from './bot';
-import * as CONSTANTS from '../data/constants';
+import { DEBUG } from '../data/constants';
 import * as chalk from 'chalk';
 import { createHash } from 'crypto';
 
@@ -56,7 +56,7 @@ export default class Logger {
     }
 
     debug(moduleName: string, ...args: unknown[]): void {
-        if (!CONSTANTS.DEBUG) {
+        if (!DEBUG) {
             return;
         }
         return this.moduleLog(moduleName, ...args);

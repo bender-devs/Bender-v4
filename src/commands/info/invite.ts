@@ -1,5 +1,5 @@
 import { DEFAULT_COLOR, INVITE_CODE_REGEX } from '../../data/constants';
-import * as types from '../../types/types';
+import { Channel, CommandOptionValue, Embed, ExtendedInvite, Interaction, URL } from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
@@ -7,7 +7,7 @@ import TextUtils from '../../utils/text';
 import TimeUtils from '../../utils/time';
 import InfoCommand from '../info';
 
-export default async function (this: InfoCommand, interaction: types.Interaction, inviteString?: types.CommandOptionValue) {
+export default async function (this: InfoCommand, interaction: Interaction, inviteString?: CommandOptionValue) {
     if (!inviteString || typeof inviteString !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
@@ -27,7 +27,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
 
     const userID = interaction.member?.user.id;
-    let fullInvite: types.ExtendedInvite | null = null;
+    let fullInvite: ExtendedInvite | null = null;
     if (userID && invite.guild.id === interaction.guild_id && this.bot.perms.matchesMemberCache(userID, 'MANAGE_GUILD', interaction.guild_id)) {
         const invites = await this.bot.api.invite.list(interaction.guild_id).catch(() => null);
         if (invites) {
@@ -37,7 +37,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     let description = `**ID:** ${invite.guild.id}`;
     if (invite.channel) {
-        let cachedChannel: types.Channel | null = null;
+        let cachedChannel: Channel | null = null;
         if (invite.guild.id === interaction.guild_id) {
             cachedChannel = this.bot.cache.channels.get(interaction.guild_id, invite.channel.id);
         } else {
@@ -62,7 +62,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         description += '\n' + LangUtils.getAndReplace('INVITE_INFO_EXPIRES_IN', { duration }, interaction.locale);
     }
 
-    const embed: types.Embed = {
+    const embed: Embed = {
         color: DEFAULT_COLOR,
         description
     };
@@ -71,7 +71,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         const userTag = DiscordUtils.user.getTag(invite.inviter);
         const userText = LangUtils.getAndReplace('INVITE_INFO_CREATED_BY', { user: userTag }, interaction.locale);
 
-        let userAvatar: types.URL | null = null;
+        let userAvatar: URL | null = null;
         if (invite.inviter.avatar) {
             userAvatar = CDNUtils.userAvatar(invite.inviter.id, invite.inviter.avatar);
         } else {

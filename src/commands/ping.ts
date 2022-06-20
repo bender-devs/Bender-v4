@@ -1,6 +1,6 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../types/types';
+import { CommandResponse, Interaction, Locale } from '../types/types';
 import LangUtils from '../utils/language';
 import TimeUtils from '../utils/time';
 
@@ -15,7 +15,7 @@ export default class PingCommand extends CommandUtils implements ICommand {
 
     readonly dm_permission: boolean = true;
 
-    run(interaction: types.Interaction): types.CommandResponse {
+    run(interaction: Interaction): CommandResponse {
         const pongMessage = this.getPongMessage(interaction.locale);
         const startTimestamp = Date.now();
         return this.respond(interaction, pongMessage, 'PONG').then(() => {
@@ -23,12 +23,12 @@ export default class PingCommand extends CommandUtils implements ICommand {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    roundtripCallback(interaction: types.Interaction, startTimestamp: number) {
+    roundtripCallback(interaction: Interaction, startTimestamp: number) {
         const millis = TimeUtils.sinceMillis(startTimestamp);
         return this.editResponse(interaction, this.getPongMessage(interaction.locale, millis), 'PONG');
     }
 
-    getPongMessage(locale?: types.Locale, roundtripMillis?: number) {
+    getPongMessage(locale?: Locale, roundtripMillis?: number) {
         const millis = LangUtils.formatNumber(this.bot.gateway.ping, locale);
         if (roundtripMillis) {
             return LangUtils.getAndReplace('PONG_ROUNDTRIP', {

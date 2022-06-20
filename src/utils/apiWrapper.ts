@@ -1,11 +1,11 @@
-import * as CONSTANTS from '../data/constants';
+import { API_BASE, MAX_RATE_LIMIT_DELAY, USER_AGENT } from '../data/constants';
 import * as superagent from 'superagent';
 import * as types from '../types/types';
-import * as gatewayTypes from '../types/gatewayTypes';
+import { GatewayBotInfo, GatewayInfo } from '../types/gatewayTypes';
 import APIError from '../structures/apiError';
 
 const USER_AGENT_HEADER: types.RequestHeaders = {
-    'user-agent': CONSTANTS.USER_AGENT
+    'user-agent': USER_AGENT
 };
 
 const TOKEN = process.env[`TOKEN_${process.env.RUNTIME_MODE}`];
@@ -30,7 +30,7 @@ export default class APIWrapper {
     }
 
     static async makeRequest<ResponseType>(method: string, path: string, options: types.RequestOptions): types.RequestResponse<ResponseType> {
-        path = CONSTANTS.API_BASE + path;
+        path = API_BASE + path;
         const request = superagent(method.toLowerCase(), path);
         if (options.data) {
             request.send(options.data);
@@ -55,7 +55,7 @@ export default class APIWrapper {
                     const resetTimestamp = parseInt(resetString);
                     resetDelay = resetTimestamp - Date.now();
                 }
-                if (resetString && resetDelay >= 0 && resetDelay <= CONSTANTS.MAX_RATE_LIMIT_DELAY) {
+                if (resetString && resetDelay >= 0 && resetDelay <= MAX_RATE_LIMIT_DELAY) {
                     if (request._retries) {
                         request._retries++;
                     } else {
@@ -580,13 +580,13 @@ export default class APIWrapper {
 
     static gateway = {
         async fetchURL() {
-            return APIWrapper.makeRequest<gatewayTypes.GatewayInfo>('GET', `/gateway`, {
+            return APIWrapper.makeRequest<GatewayInfo>('GET', `/gateway`, {
                 headers: USER_AGENT_HEADER
             });
         },
 
         async fetchBotInfo() {
-            return APIWrapper.makeRequest<gatewayTypes.GatewayBotInfo>('GET', `/gateway/bot`, {
+            return APIWrapper.makeRequest<GatewayBotInfo>('GET', `/gateway/bot`, {
                 headers: AUTH_HEADER
             });
         }

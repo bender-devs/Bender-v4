@@ -1,6 +1,6 @@
 import { EventEmitter } from 'stream';
-import * as types from '../types/types';
-import * as gatewayTypes from '../types/gatewayTypes';
+import { PartialApplication, TimeoutList, User } from '../types/types';
+import { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes';
 import APIInterface from './apiInterface';
 import CacheHandler from './cacheHandler';
 import Gateway from './gateway';
@@ -25,14 +25,14 @@ export default class Bot extends EventEmitter {
     commandManager: CommandManager;
 
     shard?: Shard;
-    user!: types.User;
-    application?: types.PartialApplication;
+    user!: User;
+    application?: PartialApplication;
 
-    timeouts: types.TimeoutList;
+    timeouts: TimeoutList;
     state: CLIENT_STATE;
     useCache: boolean;
 
-    constructor(shard_data?: gatewayTypes.ShardConnectionData) {
+    constructor(shard_data?: ShardConnectionData) {
         super();
         this.logger = new Logger(this);
 
@@ -71,7 +71,7 @@ export default class Bot extends EventEmitter {
         // TODO: create checkup interval
     }
 
-    async connect(identifyData: gatewayTypes.IdentifyData, reconnect = false) {
+    async connect(identifyData: IdentifyData, reconnect = false) {
         this.logger.debug('BOT CONNECT', 'Connect method called...');
 
         // TODO: check if init() was called; if not, don't connect
@@ -80,7 +80,7 @@ export default class Bot extends EventEmitter {
             await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
         }
         this.timeouts.gatewayError = [];
-        let gatewayInfo: gatewayTypes.GatewayBotInfo | null = null;
+        let gatewayInfo: GatewayBotInfo | null = null;
         if (this.useCache) {
             this.logger.debug('BOT CONNECT', 'Checking cache for gateway info...');
             gatewayInfo = await this.cache.gatewayInfo.get();

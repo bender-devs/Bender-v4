@@ -1,6 +1,6 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import * as types from '../types/types';
+import { CommandOption, CommandResponse, Interaction } from '../types/types';
 import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes';
 import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../structures/shardManager';
 import { randomUUID } from 'crypto';
@@ -47,7 +47,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
 
     readonly dm_permission: boolean = true;
 
-    readonly options: types.CommandOption[] = [{
+    readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
         name: 'msg',
         description: 'Send a message to a shard or the shard manager.',
@@ -165,7 +165,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
         }]
     }];
 
-    async run(interaction: types.Interaction): types.CommandResponse {
+    async run(interaction: Interaction): CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
             return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED', 'AUTH');

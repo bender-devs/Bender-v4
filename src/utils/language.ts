@@ -1,6 +1,5 @@
-import { LOCALE_LIST, Locale } from '../types/types';
+import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap } from '../types/types';
 import languages, { LangKey } from '../text/languageList';
-import * as types from '../types/types';
 import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
@@ -26,7 +25,7 @@ export default class LanguageUtils {
         return languages[locale]?.[key] || languages[DEFAULT_LANGUAGE]?.[key] || '';
     }
 
-    static getAndReplace(key: LangKey, replaceMap: types.ReplaceMap, locale: Locale = DEFAULT_LANGUAGE): string {
+    static getAndReplace(key: LangKey, replaceMap: ReplaceMap, locale: Locale = DEFAULT_LANGUAGE): string {
         let text = LanguageUtils.get(key, locale);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
@@ -35,7 +34,7 @@ export default class LanguageUtils {
         return text;
     }
 
-    static formatDateAgo(key: LangKey, timestamp: types.Timestamp | types.UnixTimestampMillis, locale?: Locale) {
+    static formatDateAgo(key: LangKey, timestamp: Timestamp | UnixTimestampMillis, locale?: Locale) {
         if (typeof timestamp === 'string') {
             timestamp = TimeUtils.parseTimestampMillis(timestamp);
         }
@@ -53,7 +52,7 @@ export default class LanguageUtils {
     }
 
     static getLocalizationMap(key: LangKey) {
-        const dict: types.LocaleDict = {
+        const dict: LocaleDict = {
             [DEFAULT_LANGUAGE]: LanguageUtils.get(key)
         }
         for (const locale in languages) {
@@ -66,7 +65,7 @@ export default class LanguageUtils {
     }
 
     static getFriendlyPermissionName(perm: PERMISSIONS, locale?: Locale) {
-        const permKey: types.PermissionName = typeof perm === 'number' ? PERMISSIONS[perm] as types.PermissionName : perm;
+        const permKey: PermissionName = typeof perm === 'number' ? PERMISSIONS[perm] as PermissionName : perm;
         return LanguageUtils.get(`PERMISSION_${permKey}`, locale);
     }
 
