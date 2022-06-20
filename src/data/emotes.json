@@ -51,6 +51,12 @@
 	"DATE":       "🗓",
 	"INFO_MINI":  "\\ℹ",
 
+	"SECURITY_NONE":      "🔓",
+    "SECURITY_LOW":       "🔒",
+    "SECURITY_MEDIUM":    "🔏",
+    "SECURITY_HIGH":      "🔐",
+    "SECURITY_VERY_HIGH": "📱",
+
 	"ROTATE":     "<:rotate:539310324717977615>",
 	"SPIN":       "<a:spin:540406081159954432>",
 	"MIRROR":     "<:mirror:540674352119808010>",

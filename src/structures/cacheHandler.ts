@@ -438,6 +438,20 @@ export default class CacheHandler {
             }
             return null;
         },
+        filter: (guild_id: types.Snowflake, filterFunc: (channel: types.Channel) => boolean): types.Channel[] | null => {
+            const guild = this.guilds.get(guild_id);
+            if (!guild) {
+                return null;
+            }
+            const channels: types.Channel[] = [];
+            for (const chan_id in guild.channels) {
+                const chan = guild.channels[chan_id as types.Snowflake];
+                if (filterFunc(chan)) {
+                    channels.push(chan);
+                }
+            }
+            return channels.length ? channels : null;
+        },
         create: (channel: types.Channel): void => {
             if (!channel.guild_id) {
                 return; // ignore dm channels

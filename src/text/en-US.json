@@ -177,6 +177,31 @@
     "INVITE_INFO_MEMBERS": "Members",
     "INVITE_INFO_MEMBER_PRESENCES": "{{onlineEmoji}} **{{online}}** online | 👥 **{{total}}** total",
 
+    "------- /info server -------": "",
+
+    "SERVER_INFO_SUBCOMMAND": "server",
+    "SERVER_INFO_SUBCOMMAND_DESCRIPTION": "Show information about the current server.",
+
+    "SERVER_INFO_FETCH_FAILED": "Failed to fetch server info.",
+    "SERVER_INFO_MEMBERS": "{{usersEmoji}} **{{total}}** members [{{bots}} bots] | {{onlineEmoji}} **{{online}}** online",
+    "SERVER_INFO_OWNER": "{{userEmoji}} **Owner:** {{owner}}{{nickInfo}}",
+    "SERVER_INFO_OWNER_UNKNOWN": "{{userEmoji}} **Owner:** *Unknown*",
+    "SERVER_INFO_CREATED_AT": "**Created:** {{date}} ({{ago}} ago)",
+
+    "SERVER_INFO_SECURITY_NONE": "**Security:** {{securityEmoji}} None",
+    "SERVER_INFO_SECURITY_LOW": "**Security:** {{securityEmoji}} Low",
+    "SERVER_INFO_SECURITY_MEDIUM": "**Security:** {{securityEmoji}} Medium",
+    "SERVER_INFO_SECURITY_HIGH": "**Security:** {{securityEmoji}} High",
+    "SERVER_INFO_SECURITY_VERY_HIGH": "**Security:** {{securityEmoji}} Verified Phone",
+
+    "SERVER_INFO_TEXT_CHANNEL_COUNT": "{{chanEmoji}} **{{count}}** text channels",
+    "SERVER_INFO_TEXT_CHANNEL_SINGLE": "{{chanEmoji}} **1** text channel",
+    "SERVER_INFO_VOICE_CHANNEL_COUNT": "{{chanEmoji}} **{{count}}** voice channels",
+    "SERVER_INFO_VOICE_CHANNEL_SINGLE": "{{chanEmoji}} **1** voice channel",
+    "SERVER_INFO_ROLE_COUNT": "**{{count}}** roles",
+    "SERVER_INFO_ROLE_SINGLE": "**1** role",
+    "SERVER_INFO_EMOJI_COUNT": "**{{count}}** emojis",
+    "SERVER_INFO_EMOJI_SINGLE": "**1** emojis",
 
 
     "----------- Date/time formatting -----------": "",

@@ -9,6 +9,7 @@ import emojiInfo from './info/emoji';
 import channelInfo from './info/channel';
 import bannerInfo from './info/banner';
 import inviteInfo from './info/invite';
+import serverInfo from './info/server';
 
 export default class InfoCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -119,6 +120,14 @@ export default class InfoCommand extends CommandUtils implements ICommand {
 
             required: true
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'server',
+        name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
     }];
 
     run(interaction: types.Interaction): types.CommandResponse {
@@ -136,6 +145,8 @@ export default class InfoCommand extends CommandUtils implements ICommand {
                 return bannerInfo.bind(this)(interaction, target);
             case 'invite':
                 return inviteInfo.bind(this)(interaction, target);
+            case 'server':
+                return serverInfo.bind(this)(interaction);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
