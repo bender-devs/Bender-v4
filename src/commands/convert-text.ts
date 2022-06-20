@@ -136,9 +136,9 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }
         const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BASE64`, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG');
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING');
         }
-        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
 
     #binary(interaction: types.Interaction, mode: string, text: string) {
@@ -169,14 +169,14 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }
         const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BINARY`, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG');
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING');
         }
-        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``);
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
 
     #hash(interaction: types.Interaction, algorithm: string, text: string) {
         const hash = createHash(algorithm).update(text).digest('hex');
         const computedMsg = LangUtils.get('CONVERT_TEXT_COMPUTED_HASH', interaction.locale);
-        return this.respond(interaction, `${computedMsg} \`${hash}\``);
+        return this.respond(interaction, `${computedMsg} \`${hash}\``, 'SHORT_TEXT');
     }
 }

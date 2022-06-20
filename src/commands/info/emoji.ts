@@ -18,7 +18,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
     const emoji = cachedEmoji || TextUtils.emoji.extract(emojiString);
     if (!emoji) {
-        return this.respondKey(interaction, 'EMOJI_NOT_FOUND');
+        return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING');
     }
 
     const createdAt = TextUtils.timestamp.fromSnowflake(emoji.id);
@@ -41,7 +41,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
         
     if (emoji.animated) {
-        description += '\n' + LangUtils.get('EMOJI_INFO_ANIMATED', interaction.locale);
+        description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_ANIMATED', {
+            nitroEmoji: this.getEmoji('NITRO', interaction)
+        }, interaction.locale);
     }
 
     const title = LangUtils.getAndReplace('EMOJI_INFO_TITLE', { emojiName: emoji.name }, interaction.locale);

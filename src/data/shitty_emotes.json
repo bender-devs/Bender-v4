@@ -34,6 +34,17 @@
 	"INFO":        "ℹ",
 	"HAL":         "🔴",
 
+	"GUILD":      "🛠",
+	"AUTH":       "🔑",
+	"LONG_TEXT":  "📃",
+	"SHORT_TEXT": "🗒",
+	"MSG_SENT":   "📬",
+	"SENT":       "📤",
+	"RECEIVED":   "📥",
+	"PONG":       "🏓",
+	"REVERSE":    "🔀",
+	"BANNER":     "🖼",
+
 	"ROTATE":     "↩",
 	"SPIN":       "🔄",
 	"MIRROR":     "🪞",

@@ -9,7 +9,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     let partialUser: types.PartialUser | null = null;
     if (!userID && !interaction.guild_id) {
         if (!interaction.user) {
-            return this.respondKey(interaction, 'BANNER_INFO_MISSING_USER');
+            return this.respondKey(interaction, 'BANNER_INFO_MISSING_USER', 'WARNING');
         }
         userID = interaction.user.id;
         partialUser = interaction.user;
@@ -27,7 +27,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         user = await this.bot.api.user.fetch(partialUser.id);
         if (!user) {
-            return this.respondKey(interaction, 'USER_FETCH_FAILED');
+            return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR');
         }
     }
     let member: types.Member | types.PartialMember | null = null;
@@ -38,10 +38,15 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (user) {
         const name = member?.nick ?? user.username;
         if (!user.banner) {
-            return this.respondKeyReplace(interaction, 'BANNER_INFO_USER_NO_BANNER', { name });
+            return this.respondKeyReplace(interaction, 'BANNER_INFO_USER_NO_BANNER', { name }, 'INFO');
         }
         const bannerLink = CDNUtils.userBanner(user.id, user.banner, undefined, 512);
-        const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', { name, bannerLink }, interaction.locale);
+        const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', {
+            name,
+            bannerLink,
+            bannerEmoji: this.getEmoji('BANNER', interaction)
+        }, interaction.locale);
+
         return this.respond(interaction, {
             description: title,
             color: user.accent_color || DEFAULT_COLOR,
@@ -56,14 +61,19 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     if (!guild) {
-        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND');
+        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND', 'WARNING');
     }
 
     if (!guild.banner) {
-        return this.respondKey(interaction, 'BANNER_INFO_GUILD_NO_BANNER');
+        return this.respondKey(interaction, 'BANNER_INFO_GUILD_NO_BANNER', 'INFO');
     }
     const bannerLink = CDNUtils.guildBanner(guild.id, guild.banner, undefined, 512);
-    const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', { name: guild.name, bannerLink }, interaction.locale);
+    const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', {
+        name: guild.name,
+        bannerLink,
+        bannerEmoji: this.getEmoji('BANNER', interaction)
+    }, interaction.locale);
+    
     return this.respond(interaction, {
         description: title,
         color: DEFAULT_COLOR,

@@ -21,7 +21,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
     const user = await this.bot.api.user.fetch(partialUser.id);
     if (!user) {
-        return this.respondKey(interaction, 'USER_FETCH_FAILED');
+        return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR');
     }
 
     let member: types.Member | types.PartialMember | null = null;
@@ -45,7 +45,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (guild) {
         const isOwner = user.id === guild.owner_id;
         if (isOwner) {
-            userRank = LangUtils.get('USER_INFO_OWNER', interaction.locale);
+            userRank = LangUtils.getAndReplace('USER_INFO_OWNER', {
+                ownerEmoji: this.getEmoji('OWNER', interaction)
+            }, interaction.locale);
         }
         if (member) {
             const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);

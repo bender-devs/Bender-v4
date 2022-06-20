@@ -19,12 +19,12 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         inviteCode = TextUtils.inviteLink.extract(inviteString) || '';
     }
     if (!inviteCode) {
-        return this.respondKey(interaction, 'INVITE_INFO_LINK_INVALID');
+        return this.respondKey(interaction, 'INVITE_INFO_LINK_INVALID', 'WARNING');
     }
 
     const invite = await this.bot.api.invite.fetch(inviteCode).catch(() => null);
     if (!invite?.guild) {
-        return this.respondKey(interaction, 'INVITE_INFO_FETCH_FAILED');
+        return this.respondKey(interaction, 'INVITE_INFO_FETCH_FAILED', 'ERROR');
     }
 
     const userID = interaction.member?.user.id;
@@ -96,7 +96,11 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (invite.approximate_presence_count && invite.approximate_member_count) {
         const online = LangUtils.formatNumber(invite.approximate_presence_count, interaction.locale);
         const total = LangUtils.formatNumber(invite.approximate_member_count, interaction.locale);
-        const presenceInfo = LangUtils.getAndReplace('INVITE_INFO_MEMBER_PRESENCES', { online, total }, interaction.locale);
+        const presenceInfo = LangUtils.getAndReplace('INVITE_INFO_MEMBER_PRESENCES', {
+            online,
+            total,
+            onlineEmoji: this.getEmoji('ONLINE', interaction)
+        }, interaction.locale);
         embed.fields = [{
             name: LangUtils.get('INVITE_INFO_MEMBERS', interaction.locale),
             value: presenceInfo

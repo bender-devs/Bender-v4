@@ -168,7 +168,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
     async run(interaction: types.Interaction): types.CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED');
+            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED', 'AUTH');
         }
         const args = interaction.data?.options;
         if (!args) {
@@ -178,7 +178,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
         switch (command) {
             case 'msg': {
                 if (!this.bot.shard) {
-                    return this.respond(interaction, 'This bot isn\'t sharded; can\'t send shard messages.');
+                    return this.respond(interaction, 'This bot isn\'t sharded; can\'t send shard messages.', 'ERROR');
                 }
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
                 const operation = args[0].options?.[0]?.options?.[0]?.value;
@@ -194,7 +194,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     nonce: nonce ? nonce as string : randomUUID(),
                     data: data ? data as string : undefined
                 });
-                return this.respond(interaction, '📬 Message sent.');
+                return this.respond(interaction, 'Message sent.', 'MSG_SENT');
             }
             case 'gateway': {
                 const rawOpcode = args[0].options?.[0]?.options?.[0]?.value;
@@ -217,7 +217,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                             s: null,
                             t: null
                         });
-                        return this.respond(interaction, '📤 Gateway event sent.');
+                        return this.respond(interaction, 'Gateway event sent.', 'SENT');
                     }
                     case 'receive': {
                         const payload: GatewayPayload = {
@@ -233,7 +233,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
                             return this.handleUnexpectedError(interaction, 'STRINGIFYING_FAILED');
                         }
                         this.bot.gateway.emit('message', payloadString);
-                        return this.respond(interaction, '📥 Simulated gateway event.');
+                        return this.respond(interaction, 'Simulated gateway event.', 'RECEIVED');
                     }
                 }
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');

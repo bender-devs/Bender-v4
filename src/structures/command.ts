@@ -24,6 +24,20 @@ export class CommandUtils {
         this.name = name;
     }
 
+    #getMessageData(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey): types.MessageData {
+        if (typeof content === 'string') {
+            if (emojiKey) {
+                const emoji = this.getEmoji(emojiKey, interaction);
+                content = `${emoji} ${content}`;
+            }
+            return { content };
+        }
+        return { embeds: [content] }
+    }
+    #getResponseData(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
+        return this.#getMessageData(interaction, content, emojiKey) as types.InteractionResponseData;
+    }
+
     getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
         return this.bot.utils.getEmoji(emojiKey, interaction.guild_id, interaction.channel_id);
     }
@@ -36,40 +50,40 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async respond(interaction: types.Interaction, content: string | types.Embed, ephemeral = true, deferred = false) {
+    async respond(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
         const responseType = deferred ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE : INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE;
-        const flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
-        const data: types.InteractionResponseData = { flags };
-        if (typeof content === 'string') {
-            data.content = content;
-        } else {
-            data.embeds = [content];
-        }
+        const data = this.#getResponseData(interaction, content, emojiKey);
+        data.flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
         return this.bot.api.interaction.sendResponse(interaction, {
             type: responseType,
             data
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async deferredResponse(interaction: types.Interaction, content: string | types.Embed) {
-        const data: types.MessageData = typeof content === 'string' ? { content } : { embeds: [content] };
+    async editResponse(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
+        const data = this.#getMessageData(interaction, content, emojiKey);
+        return this.bot.api.interaction.editResponse(interaction, data).catch(this.handleAPIError.bind(this));
+    }
+
+    async deferredResponse(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
+        const data = this.#getMessageData(interaction, content, emojiKey);
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
-    async respondKey(interaction: types.Interaction, messageLangKey: LangKey) {
+    async respondKey(interaction: types.Interaction, messageLangKey: LangKey, emojiKey?: EmojiKey) {
         const content = LangUtils.get(messageLangKey, interaction.locale);
-        return this.respond(interaction, content);
+        return this.respond(interaction, content, emojiKey);
     }
 
-    async respondKeyReplace(interaction: types.Interaction, messageLangKey: LangKey, replaceMap: types.ReplaceMap) {
+    async respondKeyReplace(interaction: types.Interaction, messageLangKey: LangKey, replaceMap: types.ReplaceMap, emojiKey?: EmojiKey) {
         const content = LangUtils.getAndReplace(messageLangKey, replaceMap, interaction.locale);
-        return this.respond(interaction, content);
+        return this.respond(interaction, content, emojiKey);
     }
 
     async respondMissingPermissions(interaction: types.Interaction, context: string, perms: PERMISSIONS[], forUser = false) {
         const permNames = perms.map(perm => LangUtils.getFriendlyPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
-        return this.respondKeyReplace(interaction, key, { context, permissions: permNames.join(', ') });
+        return this.respondKeyReplace(interaction, key, { context, permissions: permNames.join(', ') }, 'WARNING');
     }
 
     async handleAPIError(err: APIError) {

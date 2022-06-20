@@ -1,8 +1,8 @@
 {
     "----------- Generic command errors -----------": "",
 
-    "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` is only available in servers, not DMs.",
-    "COMMAND_UNAUTHORIZED": "🔑 You aren't authorized to use this command.",
+    "GUILD_ONLY": "`{{prefix}}{{command}}` is only available in servers, not DMs.",
+    "COMMAND_UNAUTHORIZED": "You aren't authorized to use this command.",
     "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
     "ARGS_MISSING": "No required arguments supplied.",
     "ARGS_INCOMPLETE": "Not all required arguments supplied.",
@@ -13,17 +13,17 @@
     "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
     "STRINGIFYING_FAILED": "Error stringifying payload.",
 
-    "TEXT_TOO_LONG": "⚠ Text is too long!",
-    "EMOJI_NOT_FOUND": "⚠ Couldn't find emoji.",
-    "CHANNEL_NOT_FOUND": "⚠ Couldn't find channel.",
-    "USER_OR_GUILD_NOT_FOUND": "⚠ Couldn't find user or server.",
-    "CHANNEL_FETCH_FAILED": "⚠ Failed to get channel info.",
-    "USER_FETCH_FAILED": "⚠ Failed to get user info.",
+    "TEXT_TOO_LONG": "Text is too long!",
+    "EMOJI_NOT_FOUND": "Couldn't find emoji.",
+    "CHANNEL_NOT_FOUND": "Couldn't find channel.",
+    "USER_OR_GUILD_NOT_FOUND": "Couldn't find user or server.",
+    "CHANNEL_FETCH_FAILED": "Failed to get channel info.",
+    "USER_FETCH_FAILED": "Failed to get user info.",
 
-    "MISSING_PERMISSIONS": "⚠ I'm missing the following permissions for {{context}}: {{permissions}}",
-    "MISSING_GUILD_PERMISSIONS": "⚠ I'm missing the following permissions in this server: {{permissions}}",
-    "USER_MISSING_PERMISSIONS": "⚠ You're missing the following permissions for {{context}}: {{permissions}}",
-    "USER_MISSING_GUILD_PERMISSIONS": "⚠ You're missing the following permissions in this server: {{permissions}}",
+    "MISSING_PERMISSIONS": "I'm missing the following permissions for {{context}}: {{permissions}}",
+    "MISSING_GUILD_PERMISSIONS": "I'm missing the following permissions in this server: {{permissions}}",
+    "USER_MISSING_PERMISSIONS": "You're missing the following permissions for {{context}}: {{permissions}}",
+    "USER_MISSING_GUILD_PERMISSIONS": "You're missing the following permissions in this server: {{permissions}}",
 
 
 
@@ -31,8 +31,8 @@
 
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "Test the bot's responsiveness.",
-    "PONG_API": "🏓 Pong! `{{millis}}ms`",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+    "PONG_API": "Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
 
 
@@ -65,17 +65,17 @@
 
     "CONVERT_TEXT_SUBCOMMAND_BINARY": "binary",
     "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Encodes or decodes text in binary.",
-    "CONVERT_TEXT_ENCODED_BINARY": "📃 Encoded binary:",
-    "CONVERT_TEXT_DECODED_BINARY": "📃 Decoded binary:",
+    "CONVERT_TEXT_ENCODED_BINARY": "Encoded binary:",
+    "CONVERT_TEXT_DECODED_BINARY": "Decoded binary:",
 
     "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
     "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encodes or decodes text in base64.",
-    "CONVERT_TEXT_ENCODED_BASE64": "📃 Encoded base64:",
-    "CONVERT_TEXT_DECODED_BASE64": "📃 Decoded base64:",
+    "CONVERT_TEXT_ENCODED_BASE64": "Encoded base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "Decoded base64:",
 
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Runs text through a hashing algorithm.",
-    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Computed hash:",
+    "CONVERT_TEXT_COMPUTED_HASH": "Computed hash:",
 
     "CONVERT_TEXT_OPTION_ALGORITHM": "algorithm",
     "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "The hash algorithm to use.",
@@ -99,7 +99,7 @@
 
     "USER_INFO_BOT": "🤖 Bot",
     "USER_INFO_HUMAN": "👤 Human",
-    "USER_INFO_OWNER": "👑 Server Owner",
+    "USER_INFO_OWNER": "{{ownerEmoji}} Server Owner",
     "USER_INFO_MEMBER": "👤 Member",
     "USER_INFO_UNKNOWN_STATUS": "*Unknown status*",
     "USER_INFO_BOOST_INFO": "**Server Booster** since {{date}} ({{ago}} ago)",
@@ -121,7 +121,7 @@
     "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`\n^ *can be used to put emojis where there's no autocomplete, such as channel topics*",
     "EMOJI_INFO_MANAGED": "\\ℹ *This emoji is managed by an external service (such as Twitch.)*",
     "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
-    "EMOJI_INFO_ANIMATED": "💎 *This emoji is animated, and can only be used by users with Nitro.*",
+    "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *This emoji is animated, and can only be used by users with Nitro.*",
     "EMOJI_INFO_LINK": "🔗 View emoji in browser",
 
     "------- /info channel -------": "",
@@ -155,10 +155,10 @@
     "BANNER_INFO_OPTION": "user",
     "BANNER_INFO_OPTION_DESCRIPTION": "The user to show the banner for. If not specified, the server's banner will be shown.",
 
-    "BANNER_INFO_MISSING_USER": "⚠ In a DM, you need to provide a user for this command.",
-    "BANNER_INFO_USER_NO_BANNER": "ℹ **{{name}}** doesn't have a banner.",
-    "BANNER_INFO_GUILD_NO_BANNER": "ℹ This server doesn't have a banner.",
-    "BANNER_INFO_TITLE": "🏔 Banner for **{{name}}** [[link]]({{bannerLink}})",
+    "BANNER_INFO_MISSING_USER": "In a DM, you need to provide a user for this command.",
+    "BANNER_INFO_USER_NO_BANNER": "**{{name}}** doesn't have a banner.",
+    "BANNER_INFO_GUILD_NO_BANNER": "This server doesn't have a banner.",
+    "BANNER_INFO_TITLE": "{{bannerEmoji}} Banner for **{{name}}** [[link]]({{bannerLink}})",
 
     "------- /info invite -------": "",
 
@@ -167,15 +167,15 @@
     "INVITE_INFO_OPTION": "link",
     "INVITE_INFO_OPTION_DESCRIPTION": "The invite link or code to view info about.",
     
-    "INVITE_INFO_LINK_INVALID": "⚠ Invalid invite link.",
-    "INVITE_INFO_FETCH_FAILED": "❌ Failed to fetch invite info. The code may be invalid or I may have been banned from that server.",
+    "INVITE_INFO_LINK_INVALID": "Invalid invite link.",
+    "INVITE_INFO_FETCH_FAILED": "Failed to fetch invite info. The code may be invalid or I may have been banned from that server.",
     "INVITE_INFO_CHANNEL": "**Channel:** {{channel}}",
     "INVITE_INFO_VOICE_CHANNEL": "**Voice channel:** {{channel}}",
     "INVITE_INFO_USES": "**Uses:** {{useInfo}}",
     "INVITE_INFO_EXPIRES_IN": "**Expires in:** {{duration}}",
     "INVITE_INFO_CREATED_BY": "Invite created by {{user}}",
     "INVITE_INFO_MEMBERS": "Members",
-    "INVITE_INFO_MEMBER_PRESENCES": "🟢 **{{online}}** online | 👥 **{{total}}** total",
+    "INVITE_INFO_MEMBER_PRESENCES": "{{onlineEmoji}} **{{online}}** online | 👥 **{{total}}** total",
 
 
 

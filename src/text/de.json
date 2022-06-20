@@ -1,8 +1,8 @@
 {
     "----------- Generic command errors -----------": "",
 
-    "GUILD_ONLY": "🛠 `{{prefix}}{{command}}` ",
-    "COMMAND_UNAUTHORIZED": "🔑 du bist nicht berechtigt um diesen Kommand zu benutzen",
+    "GUILD_ONLY": "`{{prefix}}{{command}}` ",
+    "COMMAND_UNAUTHORIZED": "du bist nicht berechtigt um diesen Kommand zu benutzen",
     "INTERACTION_ERROR_NOTICE": "*Fehler wie dieser sollten nicht passieren, sollte er bestehen bleiben, melde Ihn bitte in dem Support Server:* {{invite}}",
     "ARGS_MISSING": "Keine der erforderlichen Argumente angegeben.",
     "ARGS_INCOMPLETE": "Nicht alle erforderlichen Argumente wurden angegeben.",
@@ -13,8 +13,8 @@
     "INVALID_SUBCOMMAND_GROUP": "Invalide Sub command Gruppe.",
     "STRINGIFYING_FAILED": "Error stringifying payload.",
 
-    "TEXT_TOO_LONG": "⚠ Text ist zu lang!",
-    "EMOJI_NOT_FOUND": "⚠ Konnte das Emoji nicht finden.",
+    "TEXT_TOO_LONG": "Text ist zu lang!",
+    "EMOJI_NOT_FOUND": "Konnte das Emoji nicht finden.",
 
 
 
@@ -22,8 +22,8 @@
 
     "PING_NAME": "ping",
     "PING_DESCRIPTION": "teste die erreichbarkeit des Bottes",
-    "PONG_API": "🏓 Pong! `{{millis}}ms`",
-    "PONG_ROUNDTRIP": "🏓 Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
+    "PONG_API": "Pong! `{{millis}}ms`",
+    "PONG_ROUNDTRIP": "Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
 
 
 
@@ -56,17 +56,17 @@
 
     "CONVERT_TEXT_SUBCOMMAND_BINARY": "binär",
     "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Enkode- oder dekodierte Text in Binär",
-    "CONVERT_TEXT_ENCODED_BINARY": "📃 Encodierter Binärtext:",
-    "CONVERT_TEXT_DECODED_BINARY": "📃 Decodierter Binärtext:",
+    "CONVERT_TEXT_ENCODED_BINARY": "Encodierter Binärtext:",
+    "CONVERT_TEXT_DECODED_BINARY": "Decodierter Binärtext:",
 
     "CONVERT_TEXT_SUBCOMMAND_BASE64": "base64",
     "CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION": "Encode- oder dekodiert Text in base64.",
-    "CONVERT_TEXT_ENCODED_BASE64": "📃 Enkodierter base64:",
-    "CONVERT_TEXT_DECODED_BASE64": "📃 Dekodierter base64:",
+    "CONVERT_TEXT_ENCODED_BASE64": "Enkodierter base64:",
+    "CONVERT_TEXT_DECODED_BASE64": "Dekodierter base64:",
 
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Lässt Text durch einen Hash-Algorithmus laufen",
-    "CONVERT_TEXT_COMPUTED_HASH": "🗒 Berechneter Hash:",
+    "CONVERT_TEXT_COMPUTED_HASH": "Berechneter Hash:",
     
     "CONVERT_TEXT_OPTION_ALGORITHM": "algorithmus",
     "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der hash Algorithmus, der benutzt werden soll.",
@@ -90,7 +90,7 @@
 
     "USER_INFO_BOT": "🤖 Bot",
     "USER_INFO_HUMAN": "👤 Mensch",
-    "USER_INFO_OWNER": "👑 Besitzer",
+    "USER_INFO_OWNER": "{{ownerEmoji}} Besitzer",
     "USER_INFO_MEMBER": "👤 Member",
     "USER_INFO_UNKNOWN_STATUS": "*unbekannter Status*",
     "USER_INFO_BOOST_INFO": "**Server Booster** seit {{date}} (vor {{ago}})",
@@ -111,7 +111,7 @@
     "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`\n^ *Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt, z.B. Kanal Themas*",
     "EMOJI_INFO_MANAGED": "\\ℹ *Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)*",
     "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",
-    "EMOJI_INFO_ANIMATED": "💎 *Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro*",
+    "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro*",
     "EMOJI_INFO_LINK": "🔗 Zeige das Emoji im Browser an",
 
 
