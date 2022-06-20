@@ -39,7 +39,7 @@ export class CommandUtils {
     }
 
     getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
-        return this.bot.utils.getEmoji(emojiKey, interaction.guild_id, interaction.channel_id);
+        return this.bot.utils.getEmoji(emojiKey, interaction);
     }
 
     async ack(interaction: types.Interaction, ephemeral = true) {

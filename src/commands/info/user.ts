@@ -61,7 +61,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
             const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
-                const highestRole = DiscordUtils.member.getHighestRole(member, roleList);
+                const highestRole = isOwner ? null : DiscordUtils.member.getHighestRole(member, roleList);
                 if (highestRole) {
                     let roleIcon = '🔘';
                     const perms = BigInt(highestRole.permissions);

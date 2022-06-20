@@ -13,6 +13,9 @@ export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
             return; // this shouldn't happen
         }
         this.bot.cache.guilds.create(eventData);
+        if (eventData.presences?.length) {
+            this.bot.cache.presences.addChunk(eventData.presences);
+        }
 
         if (this.bot.cache.unavailableGuilds.includes(eventData.id)) {
             const index = this.bot.cache.unavailableGuilds.indexOf(eventData.id);

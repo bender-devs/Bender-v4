@@ -135,6 +135,20 @@ export default class PermissionUtils {
         return this.has(bitfield, discordPerm);
     }
 
+    static matchesEveryone(perm: DiscordPermission, guild: CachedGuild, channel?: Channel) {
+        const everyonePerms = BigInt(guild.roles[guild.id]?.permissions || 0);
+        if (channel) {
+            const overwrite = channel.permission_overwrites?.find(ow => ow.id === guild.id);
+            if (overwrite) {
+                return this.computeBitfieldFromOverwrite({
+                    allow: BigInt(overwrite.allow),
+                    deny: BigInt(overwrite.deny)
+                }, everyonePerms);
+            }
+        }
+        return this.has(everyonePerms, perm);
+    }
+
     matchesMemberCache(userID: Snowflake, perm: BenderPermission, guildID: Snowflake, channelID?: Snowflake) {
         const guild = this.bot.cache.guilds.get(guildID);
         const member = this.bot.cache.members.get(guildID, userID);
@@ -143,6 +157,15 @@ export default class PermissionUtils {
         }
         const channel = channelID ? this.bot.cache.channels.get(guildID, channelID) || undefined : undefined;
         return PermissionUtils.matchesMember(member, perm, guild, channel);
+    }
+
+    matchesEveryoneCache(perm: DiscordPermission, guildID: Snowflake, channelID?: Snowflake) {
+        const guild = this.bot.cache.guilds.get(guildID);
+        if (!guild) {
+            return null;
+        }
+        const channel = channelID ? this.bot.cache.channels.get(guildID, channelID) || undefined : undefined;
+        return PermissionUtils.matchesEveryone(perm, guild, channel);
     }
 
     static isOwner(user?: User | Snowflake) {

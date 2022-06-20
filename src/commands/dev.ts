@@ -251,11 +251,12 @@ export default class DevCommand extends CommandUtils implements ICommand {
 
                 let footer = '', maxLength = 1950;
                 try {
-                    let evaled = '';
+                    let evaled = '', evaledColor = '';
                     if (subcommand === 'eval') {
                         const result = await eval(code);
                         const typeofResult = typeof result;
-                        evaled = inspect(result, { depth: 1 });
+                        evaled = inspect(result, false, 1);
+                        evaledColor = inspect(result, false, 1, true);
                         const bender = this.getEmoji('BENDER', interaction);
                         const node = this.getEmoji('NODEJS', interaction);
                         const info = this.getEmoji('INFO', interaction);
@@ -273,14 +274,14 @@ export default class DevCommand extends CommandUtils implements ICommand {
 
                     const truncated = evaled.length >= maxLength;
                     if (truncated) {
-                        this.bot.logger.moduleLog(subcommand.toUpperCase(), evaled);
-                        evaled = TextUtils.truncate(evaled, maxLength - 50);
+                        this.bot.logger.moduleLog(subcommand.toUpperCase(), evaledColor);
+                        evaled = TextUtils.truncate(evaled, maxLength - 50, '```');
                     }
                     
                     stop = Date.now();
 
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.deferredResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+                    return this.deferredResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
 
                 } catch(err) {
                     maxLength -= footer.length;
@@ -291,10 +292,10 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     const truncated = errString.length >= maxLength;
                     if (truncated) {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), errString);
-                        errString = TextUtils.truncate(errString, maxLength - 50);
+                        errString = TextUtils.truncate(errString, maxLength - 50, '```');
                     }
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}\`\`\`${truncated ? '\n(Truncated; full results in console)' : ''}${footer}`);
+                    return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
                 }
             }
         }
