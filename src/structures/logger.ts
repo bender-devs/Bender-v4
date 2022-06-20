@@ -77,7 +77,7 @@ export default class Logger {
         }
         const shardText = `Shard ${this.bot.shard.id}`;
         const shardColor = this.#getColor(shardText);
-        return chalk.hex(shardColor).bold(`[${shardText}]`) + ' ';
+        return `${chalk.hex(shardColor).bold(`[${shardText}]`)} `;
     }
 
     static getHashHexColor(moduleName: string): string {

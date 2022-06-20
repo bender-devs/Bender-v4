@@ -30,28 +30,28 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
             if (eventData.guild_id) {
                 const devCmd = this.bot.commandManager.developer_commands.find(command => command.name === name);
                 if (devCmd) {
-                    this.bot.logger.debug('INTERACTION', 'Received developer command: /' + name);
+                    this.bot.logger.debug('INTERACTION', `Received developer command: /${name}`);
                     if (eventData.data?.options) {
-                        this.bot.logger.debug('INTERACTION', 'Command options: ', inspect(eventData.data.options, false, 69, true));
+                        this.bot.logger.debug('INTERACTION', 'Command options:', inspect(eventData.data.options, false, 69, true));
                     }
                     return devCmd.run(eventData).catch(err => {
-                        return this.bot.logger.handleError('Command failed: /' + name, err);
+                        return this.bot.logger.handleError(`COMMAND FAILED: /${name}`, err);
                     });
                 }
                 // TODO: check db for guild (custom) commands
-                this.bot.logger.debug('INTERACTION', `Guild command not found: /${name} [Guild ID: ${eventData.guild_id}]`);
+                //this.bot.logger.debug('INTERACTION', `Guild command not found: /${name} [Guild ID: ${eventData.guild_id}]`);
             }
             const cmd = this.bot.commandManager.commands.find(command => command.name === name);
             if (cmd) {
-                this.bot.logger.debug('INTERACTION', 'Received command: /' + name);
+                this.bot.logger.debug('INTERACTION', `Received command: /${name}`);
                 if (eventData.data?.options) {
                     this.bot.logger.debug('INTERACTION', 'Command options: ', inspect(eventData.data.options, false, 69, true));
                 }
                 return cmd.run(eventData).catch(err => {
-                    return this.bot.logger.handleError('Command failed: /' + name, err);
+                    return this.bot.logger.handleError(`COMMAND FAILED: /${name}`, err);
                 });
             } else {
-                this.bot.logger.debug('INTERACTION', 'Command not found: /' + name);
+                this.bot.logger.debug('INTERACTION', `Command not found: /${name}`);
             }
         }
     }

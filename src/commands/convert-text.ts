@@ -163,7 +163,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
                 if (!block) {
                     continue;
                 }
-                result += block.padStart(block.length > 8 ? 16 : 8, '0') + ' ';
+                result += `${block.padStart(block.length > 8 ? 16 : 8, '0')} `;
             }
             result = result.trim();
         }

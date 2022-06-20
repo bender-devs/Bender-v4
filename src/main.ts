@@ -28,14 +28,14 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
 } else if (SHARDED) {
     const shardManager = new ShardManager(SHARD_COUNT);
 
-    console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
+    console.log(`Starting Bender with mode: ${process.env.RUNTIME_MODE}`);
     LanguageUtils.logLocalizationSupport(shardManager.logger);
 
     shardManager.spawnProcesses();
 } else {
     const bot = new Bot();
 
-    console.log('Starting Bender with mode: ' + process.env.RUNTIME_MODE);
+    console.log(`Starting Bender with mode: ${process.env.RUNTIME_MODE}`);
     LanguageUtils.logLocalizationSupport(bot.logger);
 
     // TODO: call bot.init() first

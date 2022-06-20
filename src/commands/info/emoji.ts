@@ -32,20 +32,20 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     }, interaction.locale);
 
     if (emoji.managed) {
-        description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_MANAGED', {
+        description += `\n${LangUtils.getAndReplace('EMOJI_INFO_MANAGED', {
             infoEmoji: this.getEmoji('INFO_MINI', interaction)
-        }, interaction.locale);
+        }, interaction.locale)}`;
     }
     if (emoji.roles?.length) {
-        description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_RESTRICTED', {
+        description += `\n${LangUtils.getAndReplace('EMOJI_INFO_RESTRICTED', {
             roles: emoji.roles.map(id => `<@&${id}>`).join(', ')
-        }, interaction.locale);
+        }, interaction.locale)}`;
     }
         
     if (emoji.animated) {
-        description += '\n' + LangUtils.getAndReplace('EMOJI_INFO_ANIMATED', {
+        description += `\n${LangUtils.getAndReplace('EMOJI_INFO_ANIMATED', {
             nitroEmoji: this.getEmoji('NITRO', interaction)
-        }, interaction.locale);
+        }, interaction.locale)}`;
     }
 
     const title = LangUtils.getAndReplace('EMOJI_INFO_TITLE', { emojiName: emoji.name }, interaction.locale);

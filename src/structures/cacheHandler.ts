@@ -826,13 +826,13 @@ export default class CacheHandler {
             const reset_at = Math.floor((Date.now() + gateway_bot_info.session_start_limit.reset_after) / 1000);
             return this.#setMultiMixed('gateway', {
                 url: gateway_bot_info.url,
-                shards: gateway_bot_info.shards+''
+                shards: `${gateway_bot_info.shards}`
             }, {
                 session_start_limit: {
-                    total: gateway_bot_info.session_start_limit.total+'',
-                    remaining: gateway_bot_info.session_start_limit.remaining+'',
-                    reset_at: reset_at+'',
-                    max_concurrency: gateway_bot_info.session_start_limit.max_concurrency+''
+                    total: `${gateway_bot_info.session_start_limit.total}`,
+                    remaining: `${gateway_bot_info.session_start_limit.remaining}`,
+                    reset_at: `${reset_at}`,
+                    max_concurrency: `${gateway_bot_info.session_start_limit.max_concurrency}`
                 }
             }, reset_at).then(() => undefined).catch(() => undefined);
         }

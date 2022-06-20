@@ -54,10 +54,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         if (member) {
             const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
-            roles = '\n\n' + (member.roles.length ? LangUtils.getAndReplace('USER_INFO_ROLES', {
+            roles = `\n\n${member.roles.length ? LangUtils.getAndReplace('USER_INFO_ROLES', {
                 roles: member.roles.map(id => `<@&${id}>`).join(', ')
-            }, interaction.locale) : noRolesText);
-            joinDate = '\n' + LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale);
+            }, interaction.locale) : noRolesText}`;
+            joinDate = `\n${LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale)}`;
 
             const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
@@ -78,9 +78,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                 }
                 const sortedRoles = DiscordUtils.member.getSortedRoles(member, roleList);
                 if (sortedRoles.length) {
-                    roles = '\n\n' + LangUtils.getAndReplace('USER_INFO_ROLES', {
+                    roles = `\n\n${LangUtils.getAndReplace('USER_INFO_ROLES', {
                         roles: sortedRoles.map(role => `<@&${role.id}>`).join(', ')
-                    }, interaction.locale);
+                    }, interaction.locale)}`;
                 }
             } else if (!isOwner) {
                 userRank = LangUtils.getAndReplace('USER_INFO_MEMBER', {
@@ -98,7 +98,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
 
             if (member.premium_since) {
-                boostStatus = '\n\n' + LangUtils.formatDateAgo('USER_INFO_BOOST_INFO', member.premium_since, interaction.locale);
+                boostStatus = `\n\n${LangUtils.formatDateAgo('USER_INFO_BOOST_INFO', member.premium_since, interaction.locale)}`;
             }
 
             if (member.nick) {

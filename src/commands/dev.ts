@@ -287,7 +287,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
 
                     stop = Date.now();
 
-                    let errString = err + '';
+                    let errString = `${err}`;
                     const truncated = errString.length >= maxLength;
                     if (truncated) {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), errString);

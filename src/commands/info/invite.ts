@@ -44,22 +44,22 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
             cachedChannel = this.bot.cache.channels.find(invite.channel.id);
         }
         const isVoice = cachedChannel && DiscordUtils.channel.isVoice(cachedChannel);
-        description += '\n' + LangUtils.getAndReplace(`INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`, {
+        description += `\n${LangUtils.getAndReplace(`INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`, {
             channel: invite.guild.id === interaction.guild_id ? `<#${invite.channel.id}>` : `#${invite.channel.name}`
-        }, interaction.locale);
+        }, interaction.locale)}`;
     }
 
     if (fullInvite?.uses) {
         const uses = LangUtils.formatNumber(fullInvite.uses, interaction.locale);
         const maxUses = fullInvite.max_uses ? LangUtils.formatNumber(fullInvite.max_uses, interaction.locale) : '';
         const useInfo = maxUses ? `${uses}/${maxUses}` : uses;
-        description += '\n' + LangUtils.getAndReplace('INVITE_INFO_USES', { useInfo }, interaction.locale);
+        description += `\n${LangUtils.getAndReplace('INVITE_INFO_USES', { useInfo }, interaction.locale)}`;
     }
 
     if (invite.expires_at) {
         const durationMillis = TimeUtils.untilTimestamp(invite.expires_at);
         const duration = TimeUtils.formatDuration(durationMillis, interaction.locale);
-        description += '\n' + LangUtils.getAndReplace('INVITE_INFO_EXPIRES_IN', { duration }, interaction.locale);
+        description += `\n${LangUtils.getAndReplace('INVITE_INFO_EXPIRES_IN', { duration }, interaction.locale)}`;
     }
 
     const embed: Embed = {

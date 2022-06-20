@@ -60,10 +60,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         parentChannel = await this.bot.api.channel.fetch(channel.parent_id);
     }
     if (parentChannel) {
-        description += '\n' + LangUtils.getAndReplace('CHANNEL_INFO_CATEGORY', { categoryName: parentChannel.name as string }, interaction.locale);
+        description += `\n${LangUtils.getAndReplace('CHANNEL_INFO_CATEGORY', { categoryName: parentChannel.name as string }, interaction.locale)}`;
     }
     else if (channel.type !== CHANNEL_TYPES.GUILD_CATEGORY) {
-        description += '\n' + LangUtils.get('CHANNEL_INFO_NO_CATEGORY', interaction.locale);
+        description += `\n${LangUtils.get('CHANNEL_INFO_NO_CATEGORY', interaction.locale)}`;
     }
 
     const perms = DiscordUtils.channel.getEveryonePerms(channel);
@@ -88,7 +88,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         } else {
             channelsInfo = LangUtils.get('CHANNEL_INFO_CATEGORY_EMPTY', interaction.locale);
         }
-        description += '\n' + channelsInfo;
+        description += `\n${channelsInfo}`;
     }
     else if (DiscordUtils.channel.isVoice(channel)) {
         const voiceChannel = channel as types.VoiceBasedChannel;

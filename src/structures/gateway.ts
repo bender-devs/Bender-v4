@@ -60,7 +60,7 @@ export default class Gateway extends EventEmitter {
             this.#promiseResolve = null;
         }
         this.ping = TimeUtils.sinceMillis(this.#beginTimestamp);
-        this.bot.logger.debug('GATEWAY CONNECTED', this.ping + ' ms');
+        this.bot.logger.debug('GATEWAY CONNECTED', `${this.ping}ms`);
     }
 
     async #handleErrorEvent(err: Error) {
