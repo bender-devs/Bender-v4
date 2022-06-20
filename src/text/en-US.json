@@ -204,6 +204,23 @@
     "SERVER_INFO_EMOJI_SINGLE": "**1** emojis",
 
 
+
+    "----------- Presences -----------": "",
+
+    "STATUS_ONLINE": "Online",
+    "STATUS_IDLE": "AFK",
+    "STATUS_DND": "Do Not Disturb",
+    "STATUS_OFFLINE": "Offline",
+
+    "PRESENCE_TYPE_PLAYING": "Playing",
+    "PRESENCE_TYPE_STREAMING": "Streaming",
+    "PRESENCE_TYPE_LISTENING": "Listening to",
+    "PRESENCE_TYPE_WATCHING": "Watching",
+    "PRESENCE_TYPE_CUSTOM": "",
+    "PRESENCE_TYPE_COMPETING": "Competing in",
+
+
+
     "----------- Date/time formatting -----------": "",
 
     "DURATION_MILLISECOND": "1 millisecond",

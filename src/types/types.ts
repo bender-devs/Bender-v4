@@ -98,7 +98,7 @@ export type Activity = {
     application_id?: Snowflake;
     details?: string | null;
     state?: string | null;
-    emoji?: Emoji | null;
+    emoji?: PartialEmoji | null;
     party?: ActivityParty;
     assets?: ActivityAssets;
     secrets?: ActivitySecrets;
@@ -340,7 +340,7 @@ export type EmojiEditData = {
 }
 
 export interface PartialEmoji extends Omit<Emoji, 'id' | 'name'> {
-    id: Snowflake | null;
+    id?: Snowflake | null;
     name: string | null;
 }
 

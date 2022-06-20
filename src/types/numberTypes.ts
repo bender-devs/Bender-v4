@@ -24,7 +24,7 @@ export const enum PREMIUM_TYPES {
 }
 
 // https://discord.com/developers/docs/topics/gateway#activity-object-activity-types
-export const enum ACTIVITY_TYPES {
+export enum ACTIVITY_TYPES {
     PLAYING,
     STREAMING,
     LISTENING,

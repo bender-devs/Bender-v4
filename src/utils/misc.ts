@@ -1,7 +1,10 @@
 import Bot from '../structures/bot';
 import * as EMOTES from '../data/emotes.json';
 import * as SHITTY_EMOTES from '../data/shitty_emotes.json';
-import { Interaction, Snowflake } from '../types/types';
+import { Interaction, Locale, Snowflake, Status } from '../types/types';
+import LangUtils from './language';
+import { ACTIVITY_TYPES } from '../types/numberTypes';
+import TextUtils from './text';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 
@@ -27,5 +30,68 @@ export default class MiscUtils {
         }
         const matches = this.bot.perms.matchesEveryoneCache('USE_EXTERNAL_EMOJIS', interaction.guild_id, interaction.channel_id);
         return matches ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
+    }
+
+    #getActivityTypeName(type: ACTIVITY_TYPES, locale?: Locale) {
+        const stringType = ACTIVITY_TYPES[type] as keyof typeof ACTIVITY_TYPES;
+        return LangUtils.get(`PRESENCE_TYPE_${stringType}`, locale);
+    }
+
+    getStatus(userID: Snowflake, interaction: Interaction) {
+        const presence = this.bot.cache.presences.get(userID);
+        if (!presence) {
+            return null;
+        }
+        const uppercaseStatus = presence.status.toUpperCase() as Uppercase<Status>;
+        let status = this.getEmoji(uppercaseStatus, interaction);
+        const statusType = LangUtils.get(`STATUS_${uppercaseStatus}`, interaction.locale);
+        if (!presence.activities.length) {
+            return `${status} ${statusType}`;
+        }
+        const activity = presence.activities[0];
+        status += ` ${this.#getActivityTypeName(activity.type)}`;
+        if (activity.type === ACTIVITY_TYPES.CUSTOM) {
+            if (activity.emoji) {
+				const emojiObject = activity.emoji.id ? this.bot.cache.emojis.find(activity.emoji.id) : null;
+                const emojiText = emojiObject ? TextUtils.emoji.parse(emojiObject) : activity.emoji.name;
+				if (emojiText) {
+					status += ` ${emojiText}${activity.state ? ` **${activity.state}**` : ''}`;
+				} else if (presence.activities.length > 1) {
+					const secondActivity = presence.activities[1];
+					status += this.#getActivityTypeName(activity.type);
+					if (
+                        secondActivity.type === ACTIVITY_TYPES.STREAMING && 
+                        secondActivity.name && !/^\s+$/.test(secondActivity.name) &&
+                        secondActivity.url && !/^\s$/.test(secondActivity.url)
+                    ) {
+                        status += ` **[${secondActivity.name}](${secondActivity.url})**`;
+                    } else {
+                        status += ` **${secondActivity.name}**`
+                    }
+				} else {
+					status += ` ${statusType}`;
+				}
+			} else if (!activity.state || !activity.details || !activity.application_id) {
+				status += ` ${statusType}`;
+			} else {
+				status += ` **${activity.state}**`;
+			}
+        } else if (
+            activity.type === ACTIVITY_TYPES.STREAMING &&
+            activity.name.trim() && 
+            activity.url && !/^\s$/.test(activity.url)
+        ) {
+			status += ` **[${activity.name}](${activity.url})**`;
+		} else {
+			status += ` **${activity.name}**`;
+		}
+
+        for (const activity of presence.activities) {
+			if (activity.type !== ACTIVITY_TYPES.CUSTOM && (activity.application_id || activity.details || activity.state)) {
+				status += ` ${this.getEmoji('RPC', interaction)}`;
+                break;
+			}
+		}
+		return status;
     }
 }
