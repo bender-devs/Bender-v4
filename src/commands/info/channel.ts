@@ -90,7 +90,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         description += '\n' + channelsInfo;
     }
-    else if (channel.type === CHANNEL_TYPES.GUILD_VOICE || channel.type === CHANNEL_TYPES.GUILD_STAGE_VOICE) {
+    else if (DiscordUtils.channel.isVoice(channel)) {
         const voiceChannel = channel as types.VoiceBasedChannel;
         title = LangUtils.getAndReplace('CHANNEL_INFO_TITLE_VOICE', { channelName: voiceChannel.name }, interaction.locale);
         if (perms && parseInt(perms.deny) & PERMISSIONS.CONNECT) {

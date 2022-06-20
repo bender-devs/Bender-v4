@@ -1,5 +1,4 @@
 import { DEFAULT_COLOR, INVITE_CODE_REGEX } from '../../data/constants';
-import { CHANNEL_TYPES } from '../../types/numberTypes';
 import * as types from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import DiscordUtils from '../../utils/discord';
@@ -44,7 +43,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         } else {
             cachedChannel = this.bot.cache.channels.find(invite.channel.id);
         }
-        const isVoice = cachedChannel?.type === CHANNEL_TYPES.GUILD_VOICE || cachedChannel?.type === CHANNEL_TYPES.GUILD_STAGE_VOICE;
+        const isVoice = cachedChannel && DiscordUtils.channel.isVoice(cachedChannel);
         description += '\n' + LangUtils.getAndReplace(`INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`, {
             channel: invite.guild.id === interaction.guild_id ? `<#${invite.channel.id}>` : `#${invite.channel.name}`
         }, interaction.locale);

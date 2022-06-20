@@ -1,3 +1,4 @@
+import { CHANNEL_TYPES } from '../types/numberTypes';
 import { Channel, Member, PartialMember, Role, User } from '../types/types';
 
 export default class DiscordUtils {
@@ -59,7 +60,9 @@ export default class DiscordUtils {
                 return null;
             }
             return channel.permission_overwrites.find(perm => perm.id === channel.guild_id) || null;
-        }
+        },
+        isText: (channel: Channel) => [CHANNEL_TYPES.GUILD_TEXT, CHANNEL_TYPES.GUILD_NEWS, CHANNEL_TYPES.GUILD_NEWS].includes(channel.type),
+        isVoice: (channel: Channel) => [CHANNEL_TYPES.GUILD_VOICE, CHANNEL_TYPES.GUILD_STAGE_VOICE].includes(channel.type)
     }
 
     static user = {
