@@ -203,6 +203,19 @@
     "SERVER_INFO_EMOJI_COUNT": "**{{count}}** emojis",
     "SERVER_INFO_EMOJI_SINGLE": "**1** emojis",
 
+    "------- /info avatar -------": "",
+
+    "AVATAR_INFO_SUBCOMMAND": "avatar",
+    "AVATAR_INFO_SUBCOMMAND_DESCRIPTION": "Show a user's avatar or the server's icon.",
+    "AVATAR_INFO_OPTION": "user",
+    "AVATAR_INFO_OPTION_DESCRIPTION": "The user to show the avatar for. If not specified, the server's icon will be shown.",
+
+    "AVATAR_INFO_MISSING_USER": "In a DM, you need to provide a user for this command.",
+    "AVATAR_INFO_USER_NO_AVATAR": "**{{name}}** doesn't have a avatar.",
+    "AVATAR_INFO_GUILD_NO_AVATAR": "This server doesn't have an icon.",
+    "AVATAR_INFO_USER_TITLE": "{{avatarEmoji}} Avatar for **{{name}}** [[link]]({{avatarLink}})",
+    "AVATAR_INFO_GUILD_TITLE": "{{avatarEmoji}} Icon for **{{name}}** [[link]]({{avatarLink}})",
+
 
 
     "----------- Presences -----------": "",
