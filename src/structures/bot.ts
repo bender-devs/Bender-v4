@@ -13,9 +13,11 @@ import CommandManager from './commandManager';
 import MiscUtils from '../utils/misc';
 import PermissionUtils from '../utils/permissions';
 import TextUtils from '../utils/text';
+import DatabaseManager from './db';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
+    db: DatabaseManager;
     cache: CacheHandler;
     perms: PermissionUtils;
     utils: MiscUtils;
@@ -31,6 +33,7 @@ export default class Bot extends EventEmitter {
     timeouts: TimeoutList;
     state: CLIENT_STATE;
     useCache: boolean;
+    initialized = false;
 
     constructor(shard_data?: ShardConnectionData) {
         super();
@@ -43,6 +46,7 @@ export default class Bot extends EventEmitter {
 
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
+        this.db = new DatabaseManager(this);
         this.perms = new PermissionUtils(this);
         this.utils = new MiscUtils(this);
         this.gateway = new Gateway(this);
@@ -67,18 +71,27 @@ export default class Bot extends EventEmitter {
     }
 
     async init() {
-        // TODO: connect to DB
+        await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
+        let dbError: unknown;
+        await this.db.connect().catch(err => {
+            dbError = err;
+            this.logger.handleError('DATABASE ERROR', err)
+        });
+        if (dbError) {
+            process.exit(EXIT_CODE_NO_RESTART);
+        }
         // TODO: create checkup interval
+        this.initialized = true;
     }
 
     async connect(identifyData: IdentifyData, reconnect = false) {
         this.logger.debug('BOT CONNECT', 'Connect method called...');
 
-        // TODO: check if init() was called; if not, don't connect
-        
-        if (!this.cache.initialized) {
-            await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
+        if (!this.initialized) {
+            this.logger.handleError('BOT CONNECT', 'Tried to call connect() before init()!');
+            return null;
         }
+
         this.timeouts.gatewayError = [];
         let gatewayInfo: GatewayBotInfo | null = null;
         if (this.useCache) {

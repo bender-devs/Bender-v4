@@ -368,10 +368,10 @@ export const enum GATEWAY_VERSIONS {
 // used internally to determine gateway connection state
 export const enum CLIENT_STATE {
     ALIVE,
-    DEAD,
     CONNECTING,
     RECONNECTING,
-    WAITING
+    WAITING,
+    DEAD
 }
 
 // https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags

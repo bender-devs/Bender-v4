@@ -90,15 +90,17 @@ export default class CacheHandler {
         this.redisClient.on('ready', () => {
             this.#connected = true;
             const latency = TimeUtils.sinceMillis(this.#startTimestamp);
-            this.bot.logger.debug('REDIS', `CONNECTED, took ${latency}ms`);
+            this.bot.logger.debug('REDIS', `Connected in ${latency}ms`);
         });
         this.redisClient.on('error', err => this.bot.logger.handleError('REDIS ERROR', err));  
         this.redisClient.on('end', () => {
             this.#connected = false;
+            this.#startTimestamp = Date.now();
             this.bot.logger.debug('REDIS', 'DISCONNECTED!');
         });
         this.redisClient.on('reconnecting', () => {
             this.#connected = false;
+            this.#startTimestamp = Date.now();
             this.bot.logger.debug('REDIS', 'RECONNECTING...');
         });
 
@@ -242,6 +244,9 @@ export default class CacheHandler {
         },
         size: (): number => {
             return Object.keys(this.#guilds).length;
+        },
+        listIDs: (): types.Snowflake[] => {
+            return Object.keys(this.#guilds) as types.Snowflake[];
         }
     }
 

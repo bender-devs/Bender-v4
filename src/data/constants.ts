@@ -101,6 +101,12 @@ export const CDN_BASE = 'https://cdn.discordapp.com/';
 
 export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only when wait time is at or below this number
 
+/***** database constants *****/
+
+export const DB_WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };
+
+export const DB_RECONNECT_DELAY = 1000;
+
 /***** webserver constants *****/
 
 export const WEBSERVER_PORT = 9001;
