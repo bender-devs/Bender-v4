@@ -2,7 +2,6 @@ import Bot from './bot';
 import { ICommand } from './command';
 import { DEV_SERVER } from '../data/constants';
 import { Snowflake } from '../types/types';
-//import isEqualWith from 'lodash.isequalwith';
 import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes';
 
 import PingCommand from '../commands/ping';
@@ -38,7 +37,7 @@ export default class SlashCommandManager {
 
     async updateCommandList(commandList: ICommand[], guildID?: Snowflake) {
         const listTypeInfo = `[${guildID ? `GUILD ${guildID}` : 'GLOBAL'}]`;
-        this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Looking for changes...')
+        this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updating command list...')
 
         const currentCommands = await (guildID ? this.bot.db.guildCommand.list(guildID) : this.bot.db.command.list());
         if (!currentCommands.length) {
@@ -80,16 +79,16 @@ export default class SlashCommandManager {
         }
         if (!newCommands.length && !Object.keys(editedCommands).length && !deletedCommands.length) {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'No command changes detected.');
-        } else {
-            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands, 'Updated commands:', editedCommands, 'Deleted commands:', deletedCommands);
         }
         if (newCommands.length) {
+            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands.map(cmd => cmd.name));
             await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ? 
                 this.bot.api.guildCommand.create(guildID, cmd).then(command => command ? this.bot.db.guildCommand.create(guildID, command) : null) : 
                 this.bot.api.command.create(cmd).then(command => command ? this.bot.db.command.create(command) : null)
             )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         if (Object.keys(editedCommands).length) {
+            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updated commands:', Object.values(editedCommands).map(cmd => cmd.name));
             const promises: Promise<DatabaseResult | null>[] = [];
             let id: Snowflake;
             for (id in editedCommands) {
@@ -102,6 +101,7 @@ export default class SlashCommandManager {
             await Promise.all(promises).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         if (deletedCommands.length) {
+            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Deleted commands:', deletedCommands.map(cmd => cmd.name));
             await Promise.all(deletedCommands.map(cmd => guildID ? 
                 this.bot.api.guildCommand.delete(guildID, cmd.id).then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
                 this.bot.api.command.delete(cmd.id).then(() => this.bot.db.command.delete(cmd.id))
@@ -116,17 +116,6 @@ export default class SlashCommandManager {
         return newCmd;
     }
 
-    /*// consider null and undefined the same since Discord will sometimes convert between them internally
-    #compareValues(value1: unknown, value2: unknown) {
-        console.log('COMMAND MANAGER', arguments);
-        if (value1 === null && value2 === undefined) {
-            return true;
-        }
-        if (value1 === undefined && value2 === null) {
-            return true;
-        }
-    }*/
-
     #isEqual<T>(value1: T, value2: T) {
         if (value1 === value2) {
             return true;
@@ -136,14 +125,10 @@ export default class SlashCommandManager {
             return true;
         }
         if (typeof value1 !== typeof value2 || Array.isArray(value1) !== Array.isArray(value2)) {
-            this.bot.logger.debug('COMMAND MANAGER', 'typeof value1 !== typeof value2');
-            this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
             return false;
         }
         if (Array.isArray(value1) && Array.isArray(value2)) {
             if (value1.length !== value2.length) {
-                this.bot.logger.debug('COMMAND MANAGER', 'value1.length !== value2.length');
-                this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
                 return false;
             }
             for (const index in value1) {
@@ -164,8 +149,6 @@ export default class SlashCommandManager {
             }
             return true;
         }
-        this.bot.logger.debug('COMMAND MANAGER', 'fallback: false');
-        this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
         return false;
     }
 
@@ -180,9 +163,6 @@ export default class SlashCommandManager {
                 }
             }
             else if (!this.#isEqual(actualValue, expectedValue)) {
-                this.bot.logger.debug('COMMAND MANAGER', `key ${key}:`);
-                //this.bot.logger.debug('COMMAND MANAGER', 'expectedValue !== actualValue');
-                //this.bot.logger.debug('COMMAND MANAGER', { key, expectedValue, actualValue });
                 return false;
             }
         }
