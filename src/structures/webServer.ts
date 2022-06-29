@@ -1,5 +1,5 @@
 import ShardManager from './shardManager';
-import * as express from 'express';
+import express from 'express';
 import Logger from './logger';
 import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants';
 import * as nacl from 'tweetnacl';

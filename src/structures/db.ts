@@ -2,18 +2,12 @@ import * as mongodb from 'mongodb';
 import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART } from '../data/constants';
 import DB_INDEXES from '../data/db_indexes';
 import * as dbTypes from '../types/dbTypes';
-import { Snowflake, UnixTimestampMillis } from '../types/types';
+import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types';
 import Bot from './bot';
+import { ICommand } from './command';
 import DatabaseCacheHandler from './dbCache';
 
 const WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };
-
-type DatabaseResult = {
-    changes: number;
-    edits: number;
-    insertions: number;
-    deletions: number;
-}
 
 export default class DatabaseManager {
     bot: Bot;
@@ -322,10 +316,10 @@ export default class DatabaseManager {
             }
 			const bs = this.bender.collection('bot_settings');
             // TODO: !!!IMPORTANT!!! check that timestamps work properly here
-			return bs.deleteMany({ lastModified: { $lt: Date.now() - 1000 * 60 * 60 * 24 * 30 }, guild: { $nin: guildIDArray } }).then(DatabaseManager.reformat);
+			return bs.deleteMany({ lastModified: { $lt: Date.now() - 1000 * 60 * 60 * 24 * 30 }, guild: { $nin: guildIDArray } }).then(DatabaseManager.#reformat);
 		},*/
 
-		needsCheckup: async (key: dbTypes.GuildKey) => {
+		needsCheckup: async (key: dbTypes.GuildKey): Promise<dbTypes.GuildSettings[]> => {
 			const bs = this.bender.collection('bot_settings');
 	
 			const id_array = this.bot.cache.guilds.listIDs();
@@ -340,7 +334,7 @@ export default class DatabaseManager {
 					['agreement.channel']: { $type: 'string' }
 				});
 			}
-			return bs.find(findObject).project({ _id: 0, guild: 1, [key]: 1 }).toArray();
+			return bs.find(findObject).project({ _id: 0, guild: 1, [key]: 1 }).toArray().then(DatabaseManager.asTypeArrayFiltered<dbTypes.GuildSettings>);
 		}
 	}
 
@@ -428,6 +422,7 @@ export default class DatabaseManager {
 
     /******************* User functions *******************/
 	/******************************************************/
+
 	reminders = {
 		getCount: async (user_id: Snowflake) => {
 			const rs = this.bender.collection('user_reminders');
@@ -554,23 +549,26 @@ export default class DatabaseManager {
 
     /******************* Premium functions *******************/
 	/*********************************************************/
+    
 	premium = {
 		get: async (ppid: string) => {
 			// TODO: use cache?
 			const p = this.bender.collection('premium');
-			return p.findOne({ ppid });
+			return p.findOne({ ppid }).then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
 		},
 
 		getFromUserID: async (discord_id: Snowflake) => {
 			// TODO: use cache?
 			const p = this.bender.collection('premium');
-			return p.findOne({ $or: [{ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { ppid: discord_id, ['plan.valid_until']: { $gte: Date.now() } }] }).catch(this.#handleError);
+			return p.findOne({ $or: [{ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { ppid: discord_id, ['plan.valid_until']: { $gte: Date.now() } }] })
+                .then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
 		},
 
 		getFromGuildID: async (guildID: Snowflake) => {
 			// TODO: use cache?
 			const p = this.bender.collection('premium');
-			return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } }).catch(this.#handleError);
+			return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } })
+            .then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
 		},
 
 		set: async (ppid: string, data: dbTypes.PremiumData) => {
@@ -596,7 +594,7 @@ export default class DatabaseManager {
 		findPPID: async (discord_id: Snowflake) => {
 			// TODO: use cache?
 			const p = this.bender.collection('premium');
-			return p.findOne({ $or: [{ discord_id }, { ppid: discord_id }] }).then(result => result && result.ppid ? result.ppid : null);
+			return p.findOne({ $or: [{ discord_id }, { ppid: discord_id }] }).then(result => result?.ppid || null);
 		},
 
 		includesUser: async (discord_id: Snowflake) => {
@@ -612,24 +610,184 @@ export default class DatabaseManager {
 		},
 	}
 
+    /********************** Command functions **********************/
+	/***************************************************************/
+
+    command = {
+		get: async (id: Snowflake) => {
+			const c = this.bender.collection('commands');
+			return c.findOne({ id }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
+		},
+
+        getByName: async (name: string) => {
+			const c = this.bender.collection('commands');
+			return c.findOne({ name }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
+		},
+
+		list: async () => {
+			const c = this.bender.collection('commands');
+			return c.find({}).toArray().then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GlobalCommand>(doc));
+		},
+
+        create: async (command: Command) => {
+            const savedCommand = DatabaseManager.convertCommand(command);
+			const c = this.bender.collection('commands');
+			return c.insertOne(savedCommand).then(DatabaseManager.fixShittyReturnTypes);
+		},
+
+        update: async (id: Snowflake, commandData: CommandCreateData) => {
+			const c = this.bender.collection('commands');
+            //this.bot.logger.debug('????? update ???????/?????', id, commandData)
+			return c.updateOne({ id }, { $set: commandData }).then(DatabaseManager.reformat);
+		},
+
+		replace: async (id: Snowflake, command: dbTypes.GlobalCommand) => {
+			const c = this.bender.collection('commands');
+			return c.replaceOne({ id }, command).then(DatabaseManager.fixShittyReturnTypes);
+		},
+
+        replaceByName: async (name: string, command: dbTypes.GlobalCommand) => {
+			const c = this.bender.collection('commands');
+			return c.replaceOne({ name }, command).then(DatabaseManager.fixShittyReturnTypes);
+		},
+
+        replaceAll: async (commands: Command[]) => {
+			const c = this.bender.collection('commands');
+			return c.deleteMany({}).then(() => c.insertMany(commands)).then(DatabaseManager.reformat);
+		},
+
+        updateAll: async (commands: Command[]) => {
+			const c = this.bender.collection('commands');
+			return c.bulkWrite(commands.map(cmd => ({ updateOne: { filter: { name: cmd.name }, update: { $set: cmd } } }))).then(DatabaseManager.reformat);
+		},
+
+        delete: async (id: Snowflake) => {
+			const c = this.bender.collection('commands');
+			return c.deleteOne({ id }).then(DatabaseManager.reformat);
+		},
+	}
+
+
+    /******************* Guild command functions *******************/
+	/***************************************************************/
+
+    guildCommand = {
+		get: async (guildID: Snowflake, id: Snowflake) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
+            }
+			return gc.findOne(
+                { guild_id: guildID, 'commands.id': id },
+                { projection: { _id: 0, 'commands.$': 1 } }
+            ).then(doc => DatabaseManager.asType<dbTypes.GuildCommand>(doc?.commands?.[0] || null));
+		},
+
+        getByName: async (guildID: Snowflake, name: string) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
+            }
+			return gc.findOne(
+                { guild_id: guildID, 'commands.name': name },
+                { projection: { _id: 0, 'commands.$': 1 } }
+            ).then(doc => DatabaseManager.asType<dbTypes.GuildCommand>(doc?.commands?.[0] || null));
+		},
+
+		list: async (guildID: Snowflake) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => []);
+            }
+			return gc.findOne({ guild_id: guildID }).then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GuildCommand>(doc?.commands || null));
+		},
+
+        create: async (guildID: Snowflake, command: Command) => {
+            const savedCommand = DatabaseManager.convertCommand(command);
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [savedCommand] }).then(DatabaseManager.reformat);
+            }
+			return gc.updateOne({ guild_id: guildID }, { $addToSet: { commands: savedCommand } }).then(DatabaseManager.reformat);
+		},
+
+        update: async (guildID: Snowflake, id: Snowflake, commandData: CommandCreateData) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return DatabaseManager.reformat(null);
+            }
+            const updateObj = this.generateDotFormat('commands.$.', commandData);
+			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: updateObj }).then(DatabaseManager.reformat);
+		},
+
+		replace: async (guildID: Snowflake, id: Snowflake, command: dbTypes.GuildCommand) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
+            }
+			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
+		},
+
+        replaceByName: async (guildID: Snowflake, name: string, command: dbTypes.GuildCommand) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
+            }
+			return gc.updateOne({ guild_id: guildID, 'commands.name': name }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
+		},
+
+        replaceAll: async (guildID: Snowflake, commands: Command[]) => {
+            const savedCommands = commands.map(DatabaseManager.convertCommand);
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+				return gc.insertOne({ guild_id: guildID, commands: savedCommands }).then(DatabaseManager.reformat);
+            }
+			return gc.updateOne({ guild_id: guildID }, { $set: { commands: savedCommands } }).then(DatabaseManager.reformat);
+		},
+
+        delete: async (guildID: Snowflake, id: Snowflake) => {
+			const gc = this.bender.collection('guild_commands');
+            const exists = await gc.countDocuments({ guild_id: guildID });
+			if (!exists) {
+                return DatabaseManager.reformat(null);
+            }
+
+			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $unset: { 'commands.$': '' }}).then(dbResult => {
+				const fResult = DatabaseManager.reformat(dbResult);
+				if (!fResult.changes) {
+                    return fResult;
+                }
+				return gc.updateOne({ guild_id: guildID }, { $pull: { commands: null }}).then(DatabaseManager.reformat);
+			});
+		},
+	}
+
 
     /******************** Shard stats functions ********************/
 	/***************************************************************/
 
 	shard = {
 		getDead: async () => { // shards that haven't posted stats in 10 minutes
-			const p = this.bender.collection('bot_status');
-			return p.find({ lastUpdated: { $lt: Date.now() - 1000 * 60 * 10 } }).project({}).toArray();
+			const s = this.bender.collection('bot_status');
+			return s.find({ lastUpdated: { $lt: Date.now() - 1000 * 60 * 10 } }).project({}).toArray();
 		},
 
-		update: async (data: dbTypes.ShardData): Promise<DatabaseResult> => {
-			const p = this.bender.collection('bot_status');
-			return p.replaceOne({ shard_id: data.shard_id }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
+		update: async (data: dbTypes.ShardData): Promise<dbTypes.DatabaseResult> => {
+			const s = this.bender.collection('bot_status');
+			return s.replaceOne({ shard_id: data.shard_id }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
 		},
 
 		removeExtra: async (shard_count: number) => {
-			const p = this.bender.collection('bot_status');
-			return p.deleteMany({ $and: [{ shard_id: { $ne: 'OVERALL' } }, { shard_id: { $gte: shard_count } }] }).then(DatabaseManager.reformat);
+			const s = this.bender.collection('bot_status');
+			return s.deleteMany({ $and: [{ shard_id: { $ne: 'OVERALL' } }, { shard_id: { $gte: shard_count } }] }).then(DatabaseManager.reformat);
 		},
 	}
 
@@ -639,18 +797,48 @@ export default class DatabaseManager {
 
 	oauthKeys = {
 		get: async (type: dbTypes.OAuthServices): Promise<string> => {
-			const n = this.bender.collection('oauth_keys');
-			return n.findOne({ service_name: type }).then(result => result?.key);
+			const o = this.bender.collection('oauth_keys');
+			return o.findOne({ service_name: type }).then(result => result?.key);
 		},
 		set: async (type: dbTypes.OAuthServices, newKey: string, newExpiration: UnixTimestampMillis) => {
-			const n = this.bender.collection('oauth_keys');
-			return n.updateOne({ service_name: type }, { $set: { key: newKey, expiresAt: newExpiration } }, { upsert: true }).then(DatabaseManager.reformat);
+			const o = this.bender.collection('oauth_keys');
+			return o.updateOne({ service_name: type }, { $set: { key: newKey, expiresAt: newExpiration } }, { upsert: true }).then(DatabaseManager.reformat);
 		}
 	}
 
 
     /********************** Utility functions **********************/
 	/***************************************************************/
+
+    static convertCommand(command: Command | ICommand): dbTypes.SavedCommand {
+        const savedCommand: dbTypes.SavedCommand = Object.assign({}, command, {
+            application_id: undefined,
+            version: undefined,
+            bot: undefined
+        });
+        delete savedCommand.application_id;
+        delete savedCommand.version;
+        delete savedCommand.bot;
+        return savedCommand;
+    }
+
+    static asTypeArrayFiltered<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: (mongodb.Document | null)[]) {
+        return this.asTypeArray<T>(value).filter(item => item !== null) as T[];
+    }
+    static asTypeArray<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: (mongodb.Document | null)[]) {
+        return value.map(item => this.asType<T>(item));
+    }
+    static asType<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: mongodb.Document | null) {
+        return value ? value as T : null;
+    }
+
+    generateDotFormat(prefix = '', value: CommandCreateData) {
+        const resultObj: Record<string, unknown> = {};
+        for (const key of Object.keys(value)) {
+            resultObj[`${prefix}${key}`] = value[key as keyof CommandCreateData];
+        }
+        return resultObj;
+    }
 
     static expandDotFormat(keyParts: string[], value: unknown, workingObject: Record<string, unknown> = {}) {
 		const thisPart = keyParts.shift();
@@ -666,8 +854,8 @@ export default class DatabaseManager {
 		return workingObject;
 	}
 
-    static reformat(commandResult: mongodb.UpdateResult | mongodb.DeleteResult | mongodb.InsertOneResult | null) {
-        const result: DatabaseResult = { edits: 0, changes: 0, insertions: 0, deletions: 0 };
+    static reformat(commandResult: mongodb.UpdateResult | mongodb.DeleteResult | mongodb.InsertOneResult | mongodb.InsertManyResult | mongodb.BulkWriteResult | null) {
+        const result: dbTypes.DatabaseResult = { edits: 0, changes: 0, insertions: 0, deletions: 0 };
         if (!commandResult) {
             return result;
         }
@@ -677,6 +865,11 @@ export default class DatabaseManager {
             result.changes = 1;
             result.insertions = 1;
             return result;
+        }
+
+        if ('insertedCount' in commandResult) {
+            result.insertions += commandResult.insertedCount;
+            result.changes += commandResult.insertedCount;
         }
 
         if ('modifiedCount' in commandResult) {

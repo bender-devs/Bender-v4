@@ -30,9 +30,8 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
         const userTag = DiscordUtils.user.getTag(this.bot.user);
         this.bot.logger.moduleLog('LOGGED IN', `\nLocked and loaded. Time to kill all humans?\n[${userTag} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`);
 
-        // TODO: use database to determine whether to update commands
         if (!this.bot.shard || this.bot.shard.id === 0) {
-            this.bot.commandManager.updateCommandList();
+            this.bot.commandManager.updateGlobalAndDevCommands();
         }
 
         this.bot.gateway.updatePresence({

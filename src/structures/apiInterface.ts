@@ -377,7 +377,7 @@ export default class APIInterface {
             return commands;
         },
         create: async (command: types.CommandCreateData) => {
-            return APIWrapper.globalCommand.create(this.bot.user.id, command)
+            return APIWrapper.globalCommand.create(this.bot.user.id, this.#stripCommand(command))
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         fetch: async (command_id: types.Snowflake) => {
@@ -404,8 +404,6 @@ export default class APIInterface {
         },
         replaceAll: async (commands_data: types.CommandCreateData[]) => {
             const strippedCommands = this.#stripCommands(commands_data);
-            this.bot.logger.debug('UPDATE GLOBAL COMMAND LIST', strippedCommands);
-
             return APIWrapper.globalCommand.replaceAll(this.bot.user.id, strippedCommands)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
@@ -467,8 +465,6 @@ export default class APIInterface {
         },
         replaceAll: async (guild_id: types.Snowflake, commands_data: types.CommandCreateData[]) => {
             const strippedCommands = this.#stripCommands(commands_data);
-            this.bot.logger.debug('UPDATE GUILD COMMAND LIST', guild_id, strippedCommands);
-
             return APIWrapper.guildCommand.replaceAll(this.bot.user.id, guild_id, strippedCommands)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }

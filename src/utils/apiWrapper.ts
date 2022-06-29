@@ -1,5 +1,5 @@
 import { API_BASE, MAX_RATE_LIMIT_DELAY, USER_AGENT } from '../data/constants';
-import * as superagent from 'superagent';
+import superagent from 'superagent';
 import * as types from '../types/types';
 import { GatewayBotInfo, GatewayInfo } from '../types/gatewayTypes';
 import APIError from '../structures/apiError';

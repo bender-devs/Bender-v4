@@ -1,7 +1,7 @@
 import Bot from './bot';
 import * as types from '../types/types';
 import APIError from './apiError';
-import { INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../types/numberTypes';
+import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
@@ -18,6 +18,7 @@ export interface ICommand extends types.CommandCreateData {
 export class CommandUtils {
     bot: Bot;
     name: string;
+    type = COMMAND_TYPES.CHAT_INPUT;
 
     constructor(bot: Bot, name: string) {
         this.bot = bot;

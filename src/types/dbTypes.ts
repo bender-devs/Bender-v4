@@ -1,5 +1,12 @@
 import { CLIENT_STATE } from './numberTypes';
-import { BenderPermission, Snowflake, UnixTimestampMillis } from './types';
+import { BenderPermission, Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types';
+
+export type DatabaseResult = {
+    changes: number;
+    edits: number;
+    insertions: number;
+    deletions: number;
+}
 
 /*** modlog (cases) ***/
 
@@ -58,14 +65,14 @@ export type Reminder = {
 /*** premium ***/
 
 export type PremiumData = {
-    ppid: string;
-    discord_id: Snowflake;
-    plan: PremiumPlan;
-    guilds: Snowflake[];
-    txn_id: string; // transaction ID
-    txn_timestamp: UnixTimestampMillis; // transaction timestamp
-    payer_name: string;
-    payer_email: string;
+    ppid: string | Snowflake;
+    discord_id?: Snowflake;
+    plan?: PremiumPlan;
+    guilds?: Snowflake[];
+    txn_id?: string; // transaction ID
+    txn_timestamp?: UnixTimestampMillis; // transaction timestamp
+    payer_name?: string;
+    payer_email?: string;
 };
 export type PremiumPlan = {
     is_active: boolean;
@@ -76,6 +83,34 @@ export type PremiumPlan = {
     valid_until: UnixTimestampMillis;
 };
 
+/*** commands ***/
+
+export const COMPARE_COMMANDS_KEYS: (keyof CommandCreateData)[] = ['name', 'name_localizations', 'description', 'description_localizations', 'options', 'default_member_permissions', 'dm_permission', 'type'];
+
+export type SavedCommand = Command & {
+    application_id: never;
+    version: never;
+    bot: never;
+}
+
+// add metadata to global commands to see which are most popular
+export type GlobalCommand = SavedCommand & {
+    total_uses?: number;
+}
+
+// don't add this data to guild commands to preserve privacy
+export type GuildCommand = SavedCommand;
+
+export type GuildCommands = {
+    [id: Snowflake]: GuildCommand;
+}
+
+export type GuildCommandsData = {
+    guild_id: Snowflake;
+    commands: GuildCommands;
+}
+
+// TODO: add "unsupported locales" counter per locale
 
 /*** shard status ***/
 
@@ -125,6 +160,7 @@ type NonObject = string | boolean | number | null | Array<unknown>;
 // turbo nerd mode activated
 type ObjectTypes<KeyMap extends ObjectLevel1> = { [Key in keyof KeyMap as KeyMap[Key] extends NonObject ? never : Key ]: Key extends string ? KeyMap[Key] extends never ? never : KeyMap[Key] : never };
 
+// tags and customcommands are indexed by any string; omit them to keep subkey typing
 type GuildObjectTypes = ObjectTypes<Required<Omit<GuildSettings, 'tags' | 'customcommands'>>>;
 
 type Subkeys<KeyMap extends ObjectLevel1> = { [Key in keyof KeyMap]: Key extends string ? KeyMap[Key] extends NonObject ? never : keyof KeyMap[Key] : never }[keyof KeyMap];
@@ -177,8 +213,6 @@ export type GuildSettings = {
     tags?: Tags;
     timezone?: Timezone;
 };
-
-// TODO: all the following types need to be checked for completeness and accuracy
 
 type Agreement = {
     enabled?: boolean;

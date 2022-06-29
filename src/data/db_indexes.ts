@@ -7,7 +7,7 @@ type ComplexIndex = {
     options: CreateIndexesOptions;
 };
 
-type Indexes = Record<'bot_settings' | 'premium' | 'user_settings' | 'user_reminders' | 'bot_status' | 'oauth_keys', (string | ComplexIndex)[]>;
+type Indexes = Record<'bot_settings' | 'premium' | 'user_settings' | 'user_reminders' | 'bot_status' | 'oauth_keys' | 'commands' | 'guild_commands', (string | ComplexIndex)[]>;
 
 const DB_INDEXES: Indexes = {
     bot_settings: [
@@ -67,6 +67,13 @@ const DB_INDEXES: Indexes = {
         'starboard', // for messageReactionAdd
         'tags', // for message
         'temproles', // for guildMemberAdd, checkups.temproles
+    ],
+    commands: [
+        { name: 'id', options: { unique: true } },
+        { name: 'name', options: { unique: true } },
+    ],
+    guild_commands: [
+        { name: 'guild_id', options: { unique: true } }
     ],
     premium: [
         { name: 'ppid', options: { unique: true } },

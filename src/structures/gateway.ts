@@ -4,7 +4,7 @@ import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } 
 import { EventEmitter } from 'stream';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
 import * as zlib from 'zlib-sync';
-import * as WebSocket from 'ws';
+import WS from 'ws';
 import TimeUtils from '../utils/time';
 
 const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
@@ -14,7 +14,7 @@ export default class Gateway extends EventEmitter {
     decoder: TextDecoder;
     version?: number;
     sessionID?: string;
-    ws!: WebSocket;
+    ws!: WS;
     ping = -1;
 
     #beginTimestamp = -1;
@@ -71,7 +71,7 @@ export default class Gateway extends EventEmitter {
         this.bot.logger.handleError('GATEWAY ERROR', err);
     }
 
-    async #handleMessageEvent(data: WebSocket.RawData | string): Promise<boolean> {
+    async #handleMessageEvent(data: WS.RawData | string): Promise<boolean> {
         let payloadText: string;
         if (typeof data === 'string') {
             payloadText = data;
@@ -150,7 +150,7 @@ export default class Gateway extends EventEmitter {
         if (reason instanceof Buffer) {
             reason = reason.toString();
         }
-        this.bot.logger.handleError('WEBSOCKET DISCONNECT', { code, reason });
+        this.bot.logger.handleError('WS DISCONNECT', { code, reason });
         switch (code) {
             case GATEWAY_ERRORS.AUTHENTICATION_FAILED:
             case GATEWAY_ERRORS.INVALID_SHARD:
@@ -176,10 +176,10 @@ export default class Gateway extends EventEmitter {
                         token: this.#identifyData.token
                     });
                 } else if (this.#identifyData) {
-                    this.bot.logger.debug('WEBSOCKET DISCONNECTED', 'Invalid session, reconnecting...');
+                    this.bot.logger.debug('WS DISCONNECTED', 'Invalid session, reconnecting...');
                     return this.connectAndIdentify(this.ws.url, this.#identifyData, true);
                 }
-                this.bot.logger.debug('WEBSOCKET DISCONNECTED', 'Invalid session and no identify data cached, restarting...');
+                this.bot.logger.debug('WS DISCONNECTED', 'Invalid session and no identify data cached, restarting...');
                 process.exit(EXIT_CODE_RESTART);
             }
         }
@@ -194,7 +194,7 @@ export default class Gateway extends EventEmitter {
         if (!this.ws) {
             return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS);
         }
-        if (this.ws.readyState !== WebSocket.OPEN) {
+        if (this.ws.readyState !== WS.OPEN) {
             return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT);
         }
         let stringifiedData: string | null = null;
@@ -225,7 +225,7 @@ export default class Gateway extends EventEmitter {
         } else {
             this.bot.state = CLIENT_STATE.CONNECTING;
         }
-        this.ws = new WebSocket(wsURL);
+        this.ws = new WS(wsURL);
         return new Promise((resolve: (value: unknown) => void, reject: (reason?: unknown) => void) => {
             this.#promiseResolve = resolve;
             this.#promiseReject = reject;

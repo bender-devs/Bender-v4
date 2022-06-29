@@ -1,6 +1,6 @@
 import Bot from './bot';
 import { DEBUG } from '../data/constants';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { createHash } from 'crypto';
 
 export default class Logger {

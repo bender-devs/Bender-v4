@@ -1,6 +1,9 @@
 import Bot from './bot';
 import { ICommand } from './command';
 import { DEV_SERVER } from '../data/constants';
+import { Snowflake } from '../types/types';
+//import isEqualWith from 'lodash.isequalwith';
+import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes';
 
 import PingCommand from '../commands/ping';
 import TextCommand from '../commands/text';
@@ -28,11 +31,161 @@ export default class SlashCommandManager {
         this.developer_commands.push(new DevCommand(this.bot));
     }
 
-    updateCommandList() {
-        // TODO: use db to determine what commands need updating so that permissions aren't reset every time
-        this.bot.api.command.replaceAll(this.commands)
-            .catch(error => this.bot.logger.handleError('UPDATE COMMAND LIST', error));
-        this.bot.api.guildCommand.replaceAll(DEV_SERVER, this.developer_commands)
-            .catch(error => this.bot.logger.handleError('UPDATE COMMAND LIST', error));
+    async updateGlobalAndDevCommands() {
+        await this.updateCommandList(this.commands);
+        await this.updateCommandList(this.developer_commands, DEV_SERVER);
+    }
+
+    async updateCommandList(commandList: ICommand[], guildID?: Snowflake) {
+        const listTypeInfo = `[${guildID ? `GUILD ${guildID}` : 'GLOBAL'}]`;
+        this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Looking for changes...')
+
+        const currentCommands = await (guildID ? this.bot.db.guildCommand.list(guildID) : this.bot.db.command.list());
+        if (!currentCommands.length) {
+            await (guildID ? this.bot.api.guildCommand.replaceAll(guildID, commandList) : this.bot.api.command.replaceAll(commandList)).then(cmds => {
+                return cmds ? (guildID ? this.bot.db.guildCommand.replaceAll(guildID, cmds) : this.bot.db.command.replaceAll(cmds)) : null;
+            }).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+            return true;
+        }
+        const newCommands: ICommand[] = [];
+        const editedCommands: Record<Snowflake, ICommand> = {};
+        const deletedCommands: SavedCommand[] = [];
+        for (const command of currentCommands) {
+            const loadedCommand = commandList.find(cmd => cmd.name === command.name);
+            if (!loadedCommand) {
+                deletedCommands.push(command);
+            }
+            else if (!this.#compareCommands(command, loadedCommand)) {
+                editedCommands[command.id] = loadedCommand;
+            }
+        }
+        for (const command of commandList) {
+            if (currentCommands.find(cmd => cmd.name === command.name)) {
+                continue;
+            }
+            if (deletedCommands.find(cmd => cmd.name === command.name)) {
+                continue;
+            }
+            let id: Snowflake, foundEdited = false;
+            for (id in editedCommands) {
+                if (editedCommands[id].name === command.name) {
+                    foundEdited = true;
+                    break;
+                }
+            }
+            if (foundEdited) {
+                continue;
+            }
+            newCommands.push(command);
+        }
+        if (!newCommands.length && !Object.keys(editedCommands).length && !deletedCommands.length) {
+            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'No command changes detected.');
+        } else {
+            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands, 'Updated commands:', editedCommands, 'Deleted commands:', deletedCommands);
+        }
+        if (newCommands.length) {
+            await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ? 
+                this.bot.api.guildCommand.create(guildID, cmd).then(command => command ? this.bot.db.guildCommand.create(guildID, command) : null) : 
+                this.bot.api.command.create(cmd).then(command => command ? this.bot.db.command.create(command) : null)
+            )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+        }
+        if (Object.keys(editedCommands).length) {
+            const promises: Promise<DatabaseResult | null>[] = [];
+            let id: Snowflake;
+            for (id in editedCommands) {
+                const cmd = this.#stripBotValue(editedCommands[id]);
+                promises.push(guildID ? 
+                    this.bot.api.guildCommand.edit(guildID, id, cmd).then(command => command ? this.bot.db.guildCommand.update(guildID, id, command) : null) :
+                    this.bot.api.command.edit(id, cmd).then(command => command ? this.bot.db.command.update(id, command) : null)
+                );
+            }
+            await Promise.all(promises).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+        }
+        if (deletedCommands.length) {
+            await Promise.all(deletedCommands.map(cmd => guildID ? 
+                this.bot.api.guildCommand.delete(guildID, cmd.id).then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
+                this.bot.api.command.delete(cmd.id).then(() => this.bot.db.command.delete(cmd.id))
+            )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+        }
+        return true;
+    }
+
+    #stripBotValue(cmd: ICommand) {
+        const newCmd: ICommand & { bot: never } = Object.assign({}, cmd, { bot: undefined });
+        delete newCmd.bot;
+        return newCmd;
+    }
+
+    /*// consider null and undefined the same since Discord will sometimes convert between them internally
+    #compareValues(value1: unknown, value2: unknown) {
+        console.log('COMMAND MANAGER', arguments);
+        if (value1 === null && value2 === undefined) {
+            return true;
+        }
+        if (value1 === undefined && value2 === null) {
+            return true;
+        }
+    }*/
+
+    #isEqual<T>(value1: T, value2: T) {
+        if (value1 === value2) {
+            return true;
+        }
+        // consider null and undefined the same since Discord will sometimes convert between them internally
+        if ((value1 === null && value2 === undefined) || (value1 === undefined && value2 === null)) {
+            return true;
+        }
+        if (typeof value1 !== typeof value2 || Array.isArray(value1) !== Array.isArray(value2)) {
+            this.bot.logger.debug('COMMAND MANAGER', 'typeof value1 !== typeof value2');
+            this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
+            return false;
+        }
+        if (Array.isArray(value1) && Array.isArray(value2)) {
+            if (value1.length !== value2.length) {
+                this.bot.logger.debug('COMMAND MANAGER', 'value1.length !== value2.length');
+                this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
+                return false;
+            }
+            for (const index in value1) {
+                if (!this.#isEqual(value1[index], value2[index])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (typeof value1 === 'object' && value1 !== null && typeof value2 === 'object' && value2 !== null) {
+            // skip Object.keys() length and key list comparison, since we want to consider 'key: null' and the absence of a key (undefined) the same in this case
+            const val1 = value1 as Record<string, unknown>;
+            const val2 = value2 as Record<string, unknown>;
+            for (const key of Object.keys(val1)) {
+                if (!this.#isEqual(val1[key], val2[key])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        this.bot.logger.debug('COMMAND MANAGER', 'fallback: false');
+        this.bot.logger.debug('COMMAND MANAGER', { value1, value2 });
+        return false;
+    }
+
+    #compareCommands(savedCommand: SavedCommand, loadedCommand: ICommand) {
+        for (const key of COMPARE_COMMANDS_KEYS) {
+            const expectedValue = savedCommand[key];
+            const actualValue = loadedCommand[key];
+            if (key === 'dm_permission') {
+                // for this case, setting it to true makes discord return undefined. therefore only compare false
+                if ((expectedValue === false && actualValue !== false) || (expectedValue !== false && actualValue === false)) {
+                    return false;
+                }
+            }
+            else if (!this.#isEqual(actualValue, expectedValue)) {
+                this.bot.logger.debug('COMMAND MANAGER', `key ${key}:`);
+                //this.bot.logger.debug('COMMAND MANAGER', 'expectedValue !== actualValue');
+                //this.bot.logger.debug('COMMAND MANAGER', { key, expectedValue, actualValue });
+                return false;
+            }
+        }
+        return true;
     }
 }

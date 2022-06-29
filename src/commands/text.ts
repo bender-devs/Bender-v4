@@ -60,7 +60,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'big',
-        description: 'Converts text to 🇪\u200B🇲\u200B🇴\u200B🇯\u200B🇮\u200B🇸.',
+        description: 'Converts text to 🇪🇲🇴🇯🇮🇸.',
         options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
