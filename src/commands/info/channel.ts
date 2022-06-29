@@ -55,16 +55,23 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     const createdAt = TextUtils.timestamp.fromSnowflake(channel.id);
     let description = LangUtils.formatDateAgo('CHANNEL_INFO_CREATED_AT', createdAt, interaction.locale);
 
+    const total = this.bot.cache.channels.size(interaction.guild_id);
+    let line2 = LangUtils.getAndReplace('CHANNEL_INFO_POSITION', {
+        position: channel.position ? LangUtils.formatNumber(channel.position + 1, interaction.locale) : '???',
+        total: total ? LangUtils.formatNumber(total, interaction.locale) : '???'
+    }, interaction.locale);
+
     let parentChannel: types.Channel | types.PartialChannel | null = null;
     if (channel.parent_id) {
         parentChannel = await this.bot.api.channel.fetch(channel.parent_id);
     }
     if (parentChannel) {
-        description += `\n${LangUtils.getAndReplace('CHANNEL_INFO_CATEGORY', { categoryName: parentChannel.name as string }, interaction.locale)}`;
+        line2 += ` | ${LangUtils.getAndReplace('CHANNEL_INFO_CATEGORY', { categoryName: parentChannel.name as string }, interaction.locale)}`;
     }
     else if (channel.type !== CHANNEL_TYPES.GUILD_CATEGORY) {
-        description += `\n${LangUtils.get('CHANNEL_INFO_NO_CATEGORY', interaction.locale)}`;
+        line2 += ` | ${LangUtils.get('CHANNEL_INFO_NO_CATEGORY', interaction.locale)}`;
     }
+    description += `\n${line2}`;
 
     const perms = DiscordUtils.channel.getEveryonePerms(channel);
 

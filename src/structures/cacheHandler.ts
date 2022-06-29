@@ -23,7 +23,7 @@ import * as redis from 'redis';
 import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../types/gatewayTypes';
 import TimeUtils from '../utils/time';
 
-type ChannelMap = Record<types.Snowflake, types.Channel>;
+type ChannelMap = Record<types.Snowflake, types.GuildChannel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
 type MemberMap = Record<types.Snowflake, types.Member>;
 type PresenceMap = Record<types.Snowflake, types.Presence>;
@@ -428,14 +428,14 @@ export default class CacheHandler {
     }
 
     channels = {
-        get: (guild_id: types.Snowflake, channel_id: types.Snowflake): types.Channel | null => {
+        get: (guild_id: types.Snowflake, channel_id: types.Snowflake): types.GuildChannel | null => {
             const guild = this.guilds.get(guild_id);
             if (!guild) {
                 return null;
             }
             return guild.channels[channel_id] || null;
         },
-        find: (channel_id: types.Snowflake): types.Channel | null => {
+        find: (channel_id: types.Snowflake): types.GuildChannel | null => {
             for (const guild_id in this.#guilds) {
                 if (this.#guilds[guild_id as types.Snowflake].channels[channel_id]) {
                     return this.#guilds[guild_id as types.Snowflake].channels[channel_id];
@@ -443,12 +443,12 @@ export default class CacheHandler {
             }
             return null;
         },
-        filter: (guild_id: types.Snowflake, filterFunc: (channel: types.Channel) => boolean): types.Channel[] | null => {
+        filter: (guild_id: types.Snowflake, filterFunc: (channel: types.Channel) => boolean): types.GuildChannel[] | null => {
             const guild = this.guilds.get(guild_id);
             if (!guild) {
                 return null;
             }
-            const channels: types.Channel[] = [];
+            const channels: types.GuildChannel[] = [];
             for (const chan_id in guild.channels) {
                 const chan = guild.channels[chan_id as types.Snowflake];
                 if (filterFunc(chan)) {
@@ -464,7 +464,7 @@ export default class CacheHandler {
             if (!this.guilds.get(channel.guild_id)) {
                 return;
             }
-            this.#guilds[channel.guild_id].channels[channel.id] = channel;
+            this.#guilds[channel.guild_id].channels[channel.id] = channel as types.GuildChannel;
         },
         delete: (guild_id: types.Snowflake, channel_id: types.Snowflake): void => {
             if (!this.guilds.get(guild_id)) {
@@ -485,11 +485,11 @@ export default class CacheHandler {
             }
             return Object.keys(this.#guilds[guild_id].channels).length;
         },
-        listCategory: (guild_id: types.Snowflake, category_id: types.Snowflake): types.Channel[] | null => {
+        listCategory: (guild_id: types.Snowflake, category_id: types.Snowflake): types.GuildChannel[] | null => {
             if (!this.guilds.get(guild_id)) {
                 return null;
             }
-            const chans: types.Channel[] = [];
+            const chans: types.GuildChannel[] = [];
             for (const chanID in this.#guilds[guild_id].channels) {
                 const chan = this.#guilds[guild_id].channels[chanID as types.Snowflake]; 
                 if (chan.parent_id === category_id) {

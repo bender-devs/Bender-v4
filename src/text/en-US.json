@@ -144,6 +144,7 @@
     "CHANNEL_INFO_LAST_ACTIVITY_UNKNOWN": "**Last activity:** *unknown*",
     "CHANNEL_INFO_CATEGORY": "**Category:** {{categoryName}}",
     "CHANNEL_INFO_NO_CATEGORY": "**Category:** *(none)*",
+    "CHANNEL_INFO_POSITION": "**Position**: {{position}}/{{total}}",
     "CHANNEL_INFO_CATEGORY_CHANNELS": "**Channels:** {{channelList}}",
     "CHANNEL_INFO_CATEGORY_EMPTY": "**Channels:** *(none)*",
     "CHANNEL_INFO_TRUNCATED": "*and {{count}} more...*",

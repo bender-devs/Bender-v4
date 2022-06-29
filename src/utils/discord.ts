@@ -61,7 +61,8 @@ export default class DiscordUtils {
             }
             return channel.permission_overwrites.find(perm => perm.id === channel.guild_id) || null;
         },
-        isText: (channel: Channel) => [CHANNEL_TYPES.GUILD_TEXT, CHANNEL_TYPES.GUILD_NEWS, CHANNEL_TYPES.GUILD_NEWS].includes(channel.type),
+        isText: (channel: Channel) => [CHANNEL_TYPES.GUILD_TEXT, CHANNEL_TYPES.GUILD_NEWS].includes(channel.type) || this.channel.isThread(channel),
+        isThread: (channel: Channel) => [CHANNEL_TYPES.GUILD_NEWS_THREAD, CHANNEL_TYPES.GUILD_PUBLIC_THREAD, CHANNEL_TYPES.GUILD_PRIVATE_THREAD].includes(channel.type),
         isVoice: (channel: Channel) => [CHANNEL_TYPES.GUILD_VOICE, CHANNEL_TYPES.GUILD_STAGE_VOICE].includes(channel.type)
     }
 
