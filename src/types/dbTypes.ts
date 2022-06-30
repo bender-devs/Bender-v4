@@ -179,7 +179,7 @@ export type GuildSubSubkey = SubkeysNested<GuildObjectTypes>;
 
 export type GuildDotFormatKey = GuildKey | DotFormatKeys<GuildObjectTypes> | DotFormatKeysNested<GuildObjectTypes>;
 
-export const ALL_GUILD_KEYS: GuildKey[] = ['agreement', 'automod', 'autorole', 'config', 'customcommands', 'filter', 'ignore', 'joinables', 'logging', 'memberLog', 'mutes', 'namefilter', 'starboard', 'tags', 'timezone'];
+export const ALL_GUILD_KEYS: GuildKey[] = ['agreement', 'automod', 'autorole', 'config', 'customcommands', 'filter', 'ignore', 'joinables', 'logging', 'memberLog', 'mutes', 'namefilter', 'reactionRoles', 'starboard', 'tags', 'temproles', 'timezone'];
 
 // technically MongoDB would also support exclusive queries ({key: 0})
 // but this ensures the amount of data returned is limited
@@ -209,8 +209,10 @@ export type GuildSettings = {
     mutes?: Mutes;
     namefilter?: Namefilter;
     nicknames?: Nicknames;
+    reactionRoles?: ReactionRoles;
     starboard?: Starboard;
     tags?: Tags;
+    temproles?: TempRoles;
     timezone?: Timezone;
 };
 
@@ -399,6 +401,23 @@ type Nicknames = {
     [userID: Snowflake]: string[]
 }
 
+type ReactionRoles = {
+    [roleID: Snowflake]: ReactionRoleEntry;
+}
+type ReactionRoleEntry = {
+    channel: Snowflake;
+    title: string;
+    type: 'basic'; // more types planned
+    roles: ReactionRole;
+}
+type ReactionRole = {
+    id: Snowflake;
+    name: string;
+    emoji_name: string;
+    emoji_id: Snowflake | null;
+    emoji_anim: boolean;
+}
+
 type Starboard = {
     enabled?: boolean;
     channel?: Snowflake | null;
@@ -409,5 +428,16 @@ type Starboard = {
 }
 
 type Tags = Record<string, string>;
+
+type TempRoles = {
+    [roleID: Snowflake]: {
+        [userID: Snowflake]: TempRoleEntry;
+    }
+}
+type TempRoleEntry = {
+    timestamp: 'forever' | UnixTimestampMillis;
+    issuer: Snowflake;
+    startTime: UnixTimestampMillis;
+}
 
 type Timezone = string | null; // TODO: replace with real list of IANA timezones?
