@@ -20,7 +20,6 @@ export const SHARD_OPERATION_LIST: CommandOptionChoice[] = [
 export type ShardDestination = number[] | 'ALL' | 'MANAGER';
 export const GENERAL_STATS = ['ping', 'uptime', 'lastActivity', 'totalGuilds', 'availableGuilds'];
 
-type FetchCallback = (message: ShardMessage) => unknown;
 
 export type ShardMessage = {
     operation: ShardOperation;
@@ -30,10 +29,20 @@ export type ShardMessage = {
     data?: string;
 }
 
+export type ShardFetchData = unknown[] | null;
+export type ShardFetchCallback = (fetchData: ShardFetchData) => unknown;
+export type ShardComplexCallbackData = {
+    completed: number;
+    expected: number;
+    currentValues: ShardFetchData[];
+}
+
 export default class ShardManager {
     logger: Logger;
     shardCount: number;
-    #callbacks: Record<string, FetchCallback>;
+    #callbacks: Record<string, ShardFetchCallback>;
+    #complexCallbacks: Record<string, ShardComplexCallbackData>;
+    #timeouts: Record<string, NodeJS.Timeout>;
     #shardProcesses: (child_process.ChildProcess | null)[];
     #lastActivityTimestamps: UnixTimestampMillis[];
     #upSinceTimestamps: UnixTimestampMillis[];
@@ -42,6 +51,8 @@ export default class ShardManager {
         this.logger = new Logger();
         this.shardCount = count;
         this.#callbacks = {};
+        this.#complexCallbacks = {};
+        this.#timeouts = {};
 
         this.#shardProcesses = [];
         this.#shardProcesses.fill(null, 0, count-1);
@@ -182,8 +193,23 @@ export default class ShardManager {
                 responseMessage.data = JSON.stringify(data);
                 return this.sendMessage(responseMessage);
             }
+            case 'reply_with_values': {
+                let parsedValues: ShardFetchData = null;
+                try {
+                    parsedValues = message.data ? JSON.parse(message.data) : null;
+                } catch(err) {
+                    this.logger.handleError('SHARD MESSAGE', 'Failed to parse returned values:', message.data);
+                }
+                if (this.#complexCallbacks[message.nonce]) {
+                    this.#handleComplexCallback(message.nonce, parsedValues);
+                } else if (this.#callbacks[message.nonce]) {
+                    this.#callbacks[message.nonce](parsedValues);
+                    delete this.#callbacks[message.nonce];
+                    clearTimeout(this.#timeouts[message.nonce]);
+                }
+                break;
+            }
             case 'pong':
-            case 'reply_with_values':
             default: {
                 this.#lastActivityTimestamps[message.fromShard] = Date.now();
                 break;
@@ -233,7 +259,24 @@ export default class ShardManager {
         return this.getValues(shards, GENERAL_STATS);
     }
 
-    async getValues(shards: number[] | 'ALL', values: string[]): Promise<ShardMessage | null> {
+    #handleComplexCallback(nonce: string, fetchData: ShardFetchData) {
+        const cc = this.#complexCallbacks[nonce];
+        if (!cc || !this.#callbacks[nonce]) {
+            return null;
+        }
+        cc.currentValues.push(fetchData);
+        cc.completed += 1;
+        if (cc.completed >= cc.expected) {
+            delete this.#complexCallbacks[nonce];
+            this.#callbacks[nonce](cc.currentValues);
+            delete this.#callbacks[nonce];
+            clearTimeout(this.#timeouts[nonce]);
+        } else {
+            this.#complexCallbacks[nonce] = cc;
+        }
+    }
+
+    async getValues(shards: number[] | 'ALL', values: string[]): Promise<unknown[] | null> {
         if (!values.length) {
             return null;
         }
@@ -246,16 +289,16 @@ export default class ShardManager {
             data: values.join(',')
         };
 
-        const callback: FetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
         return new Promise((resolve, reject) => {
             this.#callbacks[nonce] = resolve;
-            setTimeout(() => {
+            this.#timeouts[nonce] = setTimeout(() => {
                 this.logger.debug('getStats TIMED OUT', message);
                 delete this.#callbacks[nonce];
-                reject();
+                reject('Shard operation timed out.');
             }, SHARD_MESSAGE_TIMEOUT);
         })
     }

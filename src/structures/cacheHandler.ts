@@ -313,6 +313,10 @@ export default class CacheHandler {
         },
         size: (guild_id: types.Snowflake): number => {
             return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].members).length : 0;
+        },
+        totalSize: (): number => {
+            const sizes = Object.values(this.#guilds).map(g => Object.keys(g.members).length);
+            return sizes.reduce((prev, current) => prev + current);
         }
         // TODO: decache members under certain circumstances?
     }

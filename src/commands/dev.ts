@@ -163,6 +163,24 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 description: 'The code to run.'
             }]
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+        name: 'shard',
+        description: 'Perform operations on shard(s).',
+        options: [{
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            name: 'get',
+            description: 'Get values from a shard or all shards.',
+            options: [{
+                type: COMMAND_OPTION_TYPES.NUMBER,
+                name: 'shard-id',
+                description: 'The shard ID from which to get values.'
+            }, {
+                type: COMMAND_OPTION_TYPES.STRING,
+                name: 'value',
+                description: 'The value to get.'
+            }]
+        }]
     }];
 
     async run(interaction: Interaction): CommandResponse {
@@ -297,6 +315,33 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
                     return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
                 }
+            }
+            case 'shard': {
+                if (!this.bot.shard) {
+                    return this.respond(interaction, 'Bot isn\'t sharded.', 'ERROR');
+                }
+                const subcommand = args[0].options?.[0]?.name;
+                const values = args[0].options?.[0]?.options?.find(opt => opt.name === 'value')?.value;
+                if (!subcommand || typeof subcommand !== 'string' || !values || typeof values !== 'string') {
+                    return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
+                }
+                const rawShardID = args[0].options?.[0]?.options?.find(opt => opt.name === 'shard-id')?.value;
+                const shardID = typeof rawShardID === 'number' ? rawShardID : null;
+
+                await this.ack(interaction);
+
+                const start = Date.now();
+                let stop = 0, err;
+
+                const result = await this.bot.shard.getValues(shardID ? [shardID] : 'ALL', values.split(',')).catch(e => err = e);
+
+                stop = Date.now();
+                const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+
+                if (!result || err) {
+                    return this.deferredResponse(interaction, `❌ Failed to fetch values in \`${elapsedTime}\`.\n${err || ''}`);
+                }
+                return this.deferredResponse(interaction, `💻 Fetched shard values in \`${elapsedTime}\`.\n\`\`\`js\n${inspect(result, false, 1)}\`\`\``);
             }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');
