@@ -57,8 +57,8 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     const total = this.bot.cache.channels.size(interaction.guild_id);
     let line2 = LangUtils.getAndReplace('CHANNEL_INFO_POSITION', {
-        position: channel.position ? LangUtils.formatNumber(channel.position + 1, interaction.locale) : '???',
-        total: total ? LangUtils.formatNumber(total, interaction.locale) : '???'
+        position: channel.position ? channel.position + 1 : '???',
+        total: total || '???'
     }, interaction.locale);
 
     let parentChannel: types.Channel | types.PartialChannel | null = null;
@@ -84,7 +84,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
         let channels = this.bot.cache.channels.listCategory(channel.guild_id, channel.id)?.map(chan => `<#${chan.id}>`);
         if (channels && channels.length > CATEGORY_MAX_CHANNELS) {
-            const remainder = LangUtils.formatNumber(channels.length - CATEGORY_MAX_CHANNELS, interaction.locale);
+            const remainder = channels.length - CATEGORY_MAX_CHANNELS;
             channels = channels.slice(0, CATEGORY_MAX_CHANNELS);
             const truncatedMsg = LangUtils.getAndReplace('CHANNEL_INFO_TRUNCATED', { count: remainder }, interaction.locale);
             channels.push(truncatedMsg);

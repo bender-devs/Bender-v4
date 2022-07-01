@@ -1107,7 +1107,7 @@ export type LangMap = { [key: string]: Lang };
 
 export type Lang = Record<string, string>;
 
-export type ReplaceMap = Record<string, string>;
+export type ReplaceMap = Record<string, string | number>;
 
 /****** special dev types ******/
 

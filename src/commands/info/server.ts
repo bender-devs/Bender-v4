@@ -54,9 +54,9 @@ export default async function (this: InfoCommand, interaction: Interaction) {
     })?.length || 0;
     const memberInfo = LangUtils.getAndReplace('SERVER_INFO_MEMBERS', {
         usersEmoji: this.getEmoji('USERS', interaction),
-        total: LangUtils.formatNumber(total, interaction.locale),
-        bots: LangUtils.formatNumber(bots, interaction.locale),
-        online: LangUtils.formatNumber(online, interaction.locale),
+        total,
+        bots,
+        online,
         onlineEmoji: this.getEmoji('ONLINE', interaction)
     }, interaction.locale);
 
@@ -75,24 +75,24 @@ export default async function (this: InfoCommand, interaction: Interaction) {
 
     const textCount = this.bot.cache.channels.filter(guild.id, chan => DiscordUtils.channel.isText(chan))?.length || 0;
     const textInfo = LangUtils.getAndReplace(`SERVER_INFO_TEXT_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: LangUtils.formatNumber(textCount),
+        count: textCount,
         chanEmoji: this.getEmoji('CHANNEL_TEXT', interaction)
     }, interaction.locale);
 
     const voiceCount = this.bot.cache.channels.filter(guild.id, chan => DiscordUtils.channel.isVoice(chan))?.length || 0;
     const voiceInfo = LangUtils.getAndReplace(`SERVER_INFO_VOICE_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: LangUtils.formatNumber(voiceCount),
+        count: voiceCount,
         chanEmoji: this.getEmoji('CHANNEL_VOICE', interaction)
     }, interaction.locale);
 
     const roleCount = this.bot.cache.roles.size(guild.id);
     const roleInfo = LangUtils.getAndReplace(`SERVER_INFO_ROLE_${roleCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: LangUtils.formatNumber(roleCount)
+        count: roleCount
     }, interaction.locale);
 
     const emojiCount = this.bot.cache.emojis.size(guild.id);
     const emojiInfo = LangUtils.getAndReplace(`SERVER_INFO_EMOJI_${emojiCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: LangUtils.formatNumber(emojiCount)
+        count: emojiCount
     }, interaction.locale);
 
     const embed: Embed = {

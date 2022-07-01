@@ -93,11 +93,9 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
     }
 
     if (invite.approximate_presence_count && invite.approximate_member_count) {
-        const online = LangUtils.formatNumber(invite.approximate_presence_count, interaction.locale);
-        const total = LangUtils.formatNumber(invite.approximate_member_count, interaction.locale);
         const presenceInfo = LangUtils.getAndReplace('INVITE_INFO_MEMBER_PRESENCES', {
-            online,
-            total,
+            online: invite.approximate_presence_count,
+            total: invite.approximate_member_count,
             onlineEmoji: this.getEmoji('ONLINE', interaction)
         }, interaction.locale);
         embed.fields = [{

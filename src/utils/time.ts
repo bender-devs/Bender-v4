@@ -69,8 +69,7 @@ export default class TimeUtils {
         if (!plural) {
             return LangUtils.get(langKey, locale);
         }
-        const localizedNumber = LangUtils.formatNumber(number, locale);
-		return LangUtils.getAndReplace(langKey, { number: localizedNumber }, locale);
+		return LangUtils.getAndReplace(langKey, { number }, locale);
 	}
 
     static formatDate(date: Date | Timestamp | UnixTimestampMillis, locale: Locale = 'en-US') {

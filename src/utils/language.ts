@@ -29,7 +29,9 @@ export default class LanguageUtils {
         let text = LanguageUtils.get(key, locale);
         for (const key in replaceMap) {
             const replaceRegex = new RegExp(`{{${key}}}`, 'g');
-            text = text.replace(replaceRegex, replaceMap[key]);
+            const replacement = replaceMap[key];
+            const replaceText = typeof replacement === 'number' ? LanguageUtils.formatNumber(replacement, locale) : replacement;
+            text = text.replace(replaceRegex, replaceText);
         }
         return text;
     }
