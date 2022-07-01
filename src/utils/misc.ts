@@ -5,6 +5,7 @@ import { Interaction, Locale, Snowflake, Status } from '../types/types';
 import LangUtils from './language';
 import { ACTIVITY_TYPES } from '../types/numberTypes';
 import TextUtils from './text';
+import PermissionUtils from './permissions';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 
@@ -23,13 +24,11 @@ export default class MiscUtils {
         return matches ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
     }
 
-    // interaction replies are webhooks, so instead of the bot needing emoji perms, @everyone needs the perm
     getEmoji(emojiKey: EmojiKey, interaction: Interaction) {
-        if (!interaction.guild_id) {
-            return EMOTES[emojiKey];
+        if (interaction.app_permissions) {
+            return PermissionUtils.has(interaction.app_permissions, 'USE_EXTERNAL_EMOJIS') ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
         }
-        const matches = this.bot.perms.matchesEveryoneCache('USE_EXTERNAL_EMOJIS', interaction.guild_id, interaction.channel_id);
-        return matches ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
+        return this.getEmojiText(emojiKey, interaction.guild_id, interaction.channel_id);
     }
 
     #getActivityTypeName(type: ACTIVITY_TYPES, locale?: Locale) {

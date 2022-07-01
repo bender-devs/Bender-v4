@@ -657,6 +657,7 @@ export type Interaction = {
     token: string;
     version: 1;
     message?: Message;
+    app_permissions?: Bitfield;
     locale?: Locale;
     guild_locale?: Locale;
 }
