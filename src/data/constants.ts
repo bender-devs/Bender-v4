@@ -36,6 +36,8 @@ export const DASHBOARD = `https://dashboard.${DOMAIN}`;
 
 export const SUPPORT_SERVER = 'https://discord.gg/99xaeGn';
 
+export const GITHUB_LINK = 'https://github.com/bender-devs/Bender-v4';
+
 export const DEFAULT_COLOR = 0xCC1616;
 
 export const PUBLIC_KEY = ''; // TODO: fill this in

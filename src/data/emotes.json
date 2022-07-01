@@ -15,9 +15,12 @@
 	"DISCORD":     "<:Discord:354114880283869184>",
 	"NITRO":       "<:nitro:354113480753807376>",
 	"NODEJS":      "<:nodejs:422663087389147136>",
-	"JOE":         "<:joe:409944941544996865>",
-	"MARK":        "<a:mark:750372935365165074>",
-	"REDDIT":     "<:reddit:539156953675464704>",
+	"REDDIT":      "<:reddit:539156953675464704>",
+	"GITHUB":      "<:github:992315867201273967>",
+
+	"JOE":  "<:joe:409944941544996865>",
+	"MARK": "<a:mark:750372935365165074>",
+	"LUCY": "👤",
 
 	"FILTER":    "<:filter:484572080180822016>",
 	"PING_WARN": "<:ping_warn:484572211714195468>",
@@ -50,7 +53,14 @@
 	"USER":       "👤",
 	"USERS":      "👥",
 	"DATE":       "🗓",
+
 	"INFO_MINI":  "\\ℹ",
+	"LINK_MINI":  "\\🔗",
+	"PRO_MINI":   "\\🏆",
+	"SITE_MINI":  "\\🌎",
+	"CHAT_MINI":  "\\💬",
+	"DASH_MINI":  "\\🎨",
+	"TOS_MINI":   "\\📄",
 
 	"SECURITY_NONE":      "🔓",
     "SECURITY_LOW":       "🔒",

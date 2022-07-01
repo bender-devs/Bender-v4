@@ -11,6 +11,7 @@ import bannerInfo from './info/banner';
 import inviteInfo from './info/invite';
 import serverInfo from './info/server';
 import avatarInfo from './info/avatar';
+import botInfo from './info/bot';
 
 export default class InfoCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -24,6 +25,14 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     readonly dm_permission: boolean = true;
 
     readonly options: CommandOption[] = [{
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'bot',
+        name_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('BOT_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND_DESCRIPTION')
+    }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
         name: 'user',
@@ -43,6 +52,34 @@ export default class InfoCommand extends CommandUtils implements ICommand {
 
             required: true
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'channel',
+        name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.CHANNEL,
+
+            name: LangUtils.get('CHANNEL_INFO_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION'),
+
+            description: LangUtils.get('CHANNEL_INFO_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION_DESCRIPTION'),
+
+            required: true
+        }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'server',
+        name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
@@ -66,22 +103,20 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'channel',
-        name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND'),
+        name: 'avatar',
+        name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
+        description: LangUtils.get('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
 
         options: [{
-            type: COMMAND_OPTION_TYPES.CHANNEL,
+            type: COMMAND_OPTION_TYPES.USER,
 
-            name: LangUtils.get('CHANNEL_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION'),
+            name: LangUtils.get('AVATAR_INFO_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION'),
 
-            description: LangUtils.get('CHANNEL_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION_DESCRIPTION'),
-
-            required: true
+            description: LangUtils.get('AVATAR_INFO_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION_DESCRIPTION')
         }]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
@@ -121,32 +156,6 @@ export default class InfoCommand extends CommandUtils implements ICommand {
 
             required: true
         }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-
-        name: 'server',
-        name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
-
-        description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-
-        name: 'avatar',
-        name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND'),
-
-        description: LangUtils.get('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
-
-        options: [{
-            type: COMMAND_OPTION_TYPES.USER,
-
-            name: LangUtils.get('AVATAR_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION'),
-
-            description: LangUtils.get('AVATAR_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION_DESCRIPTION')
-        }]
     }];
 
     run(interaction: Interaction): CommandResponse {
@@ -168,6 +177,8 @@ export default class InfoCommand extends CommandUtils implements ICommand {
                 return serverInfo.bind(this)(interaction);
             case 'avatar':
                 return avatarInfo.bind(this)(interaction, target);
+            case 'bot':
+                return botInfo.bind(this)(interaction);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

@@ -15,9 +15,12 @@
 	"DISCORD":     "💩",
 	"NITRO":       "🏳️‍🌈",
 	"NODEJS":      "🛠",
-	"JOE":         "👤",
-	"MARK":        "👤",
 	"REDDIT":      "👀",
+	"GITHUB":      "👩‍💻",
+
+	"JOE":  "👤",
+	"MARK": "👤",
+	"LUCY": "👤",
 
 	"FILTER":    "🛑",
 	"PING_WARN": "🏓",
@@ -50,7 +53,14 @@
 	"USER":       "👤",
 	"USERS":      "👥",
 	"DATE":       "🗓",
+
 	"INFO_MINI":  "\\ℹ",
+	"LINK_MINI":  "\\🔗",
+	"PRO_MINI":   "\\🏆",
+	"SITE_MINI":  "\\🌎",
+	"CHAT_MINI":  "\\💬",
+	"DASH_MINI":  "\\🎨",
+	"TOS_MINI":   "\\📄",
 
 	"SECURITY_NONE":      "🔓",
     "SECURITY_LOW":       "🔒",

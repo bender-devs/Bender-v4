@@ -202,7 +202,7 @@
     "SERVER_INFO_ROLE_COUNT": "**{{count}}** roles",
     "SERVER_INFO_ROLE_SINGLE": "**1** role",
     "SERVER_INFO_EMOJI_COUNT": "**{{count}}** emojis",
-    "SERVER_INFO_EMOJI_SINGLE": "**1** emojis",
+    "SERVER_INFO_EMOJI_SINGLE": "**1** emoji",
 
     "------- /info avatar -------": "",
 
@@ -216,6 +216,30 @@
     "AVATAR_INFO_GUILD_NO_AVATAR": "This server doesn't have an icon.",
     "AVATAR_INFO_USER_TITLE": "{{avatarEmoji}} Avatar for **{{name}}** [[link]]({{avatarLink}})",
     "AVATAR_INFO_GUILD_TITLE": "{{avatarEmoji}} Icon for **{{name}}** [[link]]({{avatarLink}})",
+
+    "------- /info bot -------": "",
+
+    "BOT_INFO_SUBCOMMAND": "bot",
+    "BOT_INFO_SUBCOMMAND_DESCRIPTION": "Shows information about Bender.",
+
+    "BOT_INFO_UPTIME": "**Uptime:** {{ago}} (since {{date}})",
+    "BOT_INFO_PING": "**Average ping:** {{ping}}ms",
+    "BOT_INFO_CPU": "**CPU:** {{cpu}}%",
+    "BOT_INFO_MEMORY": "**Memory:** {{memory}}%",
+    "BOT_INFO_SHARDS": "**{{shards}}** shards",
+    "BOT_INFO_SERVERS": "**{{servers}}** servers",
+    "BOT_INFO_CHANNELS": "**{{channels}}** channels",
+    "BOT_INFO_USERS": "**{{users}}** users",
+    "BOT_INFO_DEVELOPERS": "**Developed by:** {{devInfo}}",
+    "BOT_INFO_LIBRARY": "Using a **custom library** made with ❤ and 🥃",
+
+    "BOT_INFO_LINKS_ADD": "Add Bender to your server",
+    "BOT_INFO_LINKS_SUPPORT": "Support Server",
+    "BOT_INFO_LINKS_PRO": "Purchase Bender Pro",
+    "BOT_INFO_LINKS_SITE": "Website",
+    "BOT_INFO_LINKS_DASHBOARD": "Dashboard",
+    "BOT_INFO_LINKS_TOS": "TOS",
+    "BOT_INFO_LINKS_GITHUB": "Source Code",
 
 
 
