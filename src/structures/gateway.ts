@@ -270,6 +270,7 @@ export default class Gateway extends EventEmitter {
             s: null,
             t: null
         }
+        this.bot.cache.presences.updateSelf(presenceData);
         //this.bot.logger.debug('SEND GATEWAY PRESENCE', payload);
         return this.sendData(payload);
     }

@@ -20,7 +20,7 @@ local cache:
 import * as types from '../types/types';
 import Bot from './bot';
 import * as redis from 'redis';
-import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../types/gatewayTypes';
+import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData, UpdatePresenceData } from '../types/gatewayTypes';
 import TimeUtils from '../utils/time';
 import { PREMIUM_TYPES } from '../types/numberTypes';
 
@@ -967,6 +967,11 @@ export default class CacheHandler {
         },
         set: (presence: types.Presence) => {
             this.#presences[presence.user.id] = presence;
+        },
+        updateSelf: (presenceData: UpdatePresenceData) => {
+            if (this.#presences[this.bot.user.id]) {
+                this.#presences[this.bot.user.id] = Object.assign({}, this.#presences[this.bot.user.id], presenceData);
+            }
         },
         addChunk: (presences: types.Presence[]) => {
             for (const presence of presences) {
