@@ -1,23 +1,15 @@
 import { ShardConnectionData } from '../types/gatewayTypes';
-import ShardManager, { GENERAL_STATS, ShardDestination, ShardMessage } from './shardManager';
+import ShardManager, { GENERAL_STATS, ShardComplexCallbackData, ShardDestination, ShardFetchCallback, ShardFetchData, ShardMessage, ShardValues } from './shardManager';
 import Bot from './bot';
 import { randomUUID } from 'crypto';
 import { SHARD_MESSAGE_TIMEOUT } from '../data/constants';
-
-type FetchData = unknown[] | null;
-type FetchCallback = (fetchData: FetchData) => unknown;
-type ComplexCallbackData = {
-    completed: number;
-    expected: number;
-    currentValues: FetchData[];
-}
 
 export default class Shard {
     bot: Bot;
     id!: number;
     total_shards!: number;
-    #callbacks: Record<string, FetchCallback>;
-    #complexCallbacks: Record<string, ComplexCallbackData>;
+    #callbacks: Record<string, ShardFetchCallback>;
+    #complexCallbacks: Record<string, ShardComplexCallbackData>;
     #timeouts: Record<string, NodeJS.Timeout>;
 
     constructor(bot: Bot, data: ShardConnectionData) {
@@ -54,17 +46,13 @@ export default class Shard {
                 if (!values) {
                     break;
                 }
-                if (!values.includes('guildCount') && !values.includes('userCount')) {
-                    this.bot.logger.debug('IGNORING SHARD MESSAGE', message, '(requesting shard values other than guildCount or userCount)');
-                    break;
-                }
                 const responseMessage: ShardMessage = {
                     operation: 'reply_with_values',
                     fromShard: this.id,
                     toShards: message.fromShard === 'MANAGER' ? 'MANAGER' : [message.fromShard],
                     nonce: message.nonce
                 }
-                const data: { guildCount?: number, memberCount?: number, userCount?: number } = {};
+                const data: ShardValues = {};
                 if (values.includes('guildCount')) {
                     data.guildCount = this.bot.cache.guilds.size();
                 }
@@ -74,11 +62,14 @@ export default class Shard {
                 if (values.includes('memberCount')) {
                     data.memberCount = this.bot.cache.members.totalSize();
                 }
+                if (values.includes('channelCount')) {
+                    data.channelCount = this.bot.cache.channels.totalSize();
+                }
                 responseMessage.data = JSON.stringify(data);
                 return this.sendMessage(responseMessage);
             }
             case 'reply_with_values': {
-                let parsedValues: FetchData = null;
+                let parsedValues: ShardFetchData = null;
                 try {
                     parsedValues = message.data ? JSON.parse(message.data) : null;
                 } catch(err) {
@@ -87,7 +78,7 @@ export default class Shard {
                 if (this.#complexCallbacks[message.nonce]) {
                     this.#handleComplexCallback(message.nonce, parsedValues);
                 } else if (this.#callbacks[message.nonce]) {
-                    this.#callbacks[message.nonce](parsedValues);
+                    this.#callbacks[message.nonce]([parsedValues]);
                     delete this.#callbacks[message.nonce];
                     clearTimeout(this.#timeouts[message.nonce]);
                 }
@@ -127,7 +118,7 @@ export default class Shard {
             data: GENERAL_STATS.join(',')
         };
 
-        const callback: FetchCallback = () => this.bot.logger.handleError('getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () => this.bot.logger.handleError('getStats', 'CALLBACK BEFORE READY', message);
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
@@ -141,7 +132,7 @@ export default class Shard {
         })
     }
 
-    #handleComplexCallback(nonce: string, fetchData: FetchData) {
+    #handleComplexCallback(nonce: string, fetchData: ShardFetchData) {
         const cc = this.#complexCallbacks[nonce];
         if (!cc || !this.#callbacks[nonce]) {
             return null;
@@ -158,7 +149,7 @@ export default class Shard {
         }
     }
 
-    async getValues(shards: number[] | 'ALL', values: string[]): Promise<FetchData> {
+    async getValues(shards: number[] | 'ALL', values: string[]): Promise<ShardFetchData[] | null> {
         if (!values.length) {
             return null;
         }
@@ -171,15 +162,18 @@ export default class Shard {
             data: values.join(',')
         };
 
-        const callback: FetchCallback = () => this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () => {
+            this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
+            return null;
+        }
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
         return new Promise((resolve, reject) => {
-            if (shards === 'ALL') {
+            if (shards === 'ALL' || shards.length) {
                 this.#complexCallbacks[nonce] = {
                     completed: 0,
-                    expected: this.total_shards,
+                    expected: shards.length || this.total_shards,
                     currentValues: []
                 };
             }

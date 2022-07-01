@@ -29,8 +29,21 @@ export type ShardMessage = {
     data?: string;
 }
 
-export type ShardFetchData = unknown[] | null;
-export type ShardFetchCallback = (fetchData: ShardFetchData) => unknown;
+export type ShardManagerValues = {
+    pids?: (number | null)[],
+    lastActivity?: number[],
+    uptime?: number[]
+}
+
+export type ShardValues = {
+    guildCount?: number,
+    memberCount?: number,
+    userCount?: number,
+    channelCount?: number
+};
+
+export type ShardFetchData = ShardValues | null;
+export type ShardFetchCallback = (fetchData: ShardFetchData[]) => ShardValues | null | void;
 export type ShardComplexCallbackData = {
     completed: number;
     expected: number;
@@ -180,7 +193,7 @@ export default class ShardManager {
                     toShards: [message.fromShard],
                     nonce: message.nonce
                 }
-                const data: { pids?: (number | null)[], lastActivity?: number[], uptime?: number[] } = {};
+                const data: ShardManagerValues = {};
                 if (values.includes('pids')) {
                     data.pids = this.#shardProcesses.map(proc => proc?.pid || null);
                 }
@@ -203,7 +216,7 @@ export default class ShardManager {
                 if (this.#complexCallbacks[message.nonce]) {
                     this.#handleComplexCallback(message.nonce, parsedValues);
                 } else if (this.#callbacks[message.nonce]) {
-                    this.#callbacks[message.nonce](parsedValues);
+                    this.#callbacks[message.nonce]([parsedValues]);
                     delete this.#callbacks[message.nonce];
                     clearTimeout(this.#timeouts[message.nonce]);
                 }
@@ -276,7 +289,7 @@ export default class ShardManager {
         }
     }
 
-    async getValues(shards: number[] | 'ALL', values: string[]): Promise<unknown[] | null> {
+    async getValues(shards: number[] | 'ALL', values: string[]): Promise<ShardFetchData[] | null> {
         if (!values.length) {
             return null;
         }
@@ -289,7 +302,10 @@ export default class ShardManager {
             data: values.join(',')
         };
 
-        const callback: ShardFetchCallback = () => this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () => {
+            this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
+            return null;
+        }
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
