@@ -229,7 +229,7 @@
     "BOT_INFO_SHARDS": "**{{shards}}** shards",
     "BOT_INFO_SERVERS": "**{{servers}}** servers",
     "BOT_INFO_CHANNELS": "**{{channels}}** channels",
-    "BOT_INFO_USERS": "**{{users}}** users",
+    "BOT_INFO_MEMBERS": "**{{members}}** online members",
     "BOT_INFO_DEVELOPERS": "**Developed by:** {{devInfo}}",
     "BOT_INFO_LIBRARY": "Using a **custom library** made with ❤ and 🥃",
 

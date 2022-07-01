@@ -67,7 +67,7 @@ export default async function (this: InfoCommand, interaction: Interaction) {
     }
     description += `${LangUtils.getAndReplace('BOT_INFO_SERVERS', { servers: guildCount || '???' }, interaction.locale)} | `;
     description += `${LangUtils.getAndReplace('BOT_INFO_CHANNELS', { channels: channelCount || '???' }, interaction.locale)} | `;
-    description += `${LangUtils.getAndReplace('BOT_INFO_USERS', { users: memberCount || '???' }, interaction.locale)}\n\n`;
+    description += `${LangUtils.getAndReplace('BOT_INFO_MEMBERS', { members: memberCount || '???' }, interaction.locale)}\n\n`;
 
     const joeEmoji = this.bot.utils.getEmoji('JOE', interaction);
     const joe = await this.bot.api.user.fetch(OWNERS[0]);

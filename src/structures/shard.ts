@@ -119,14 +119,14 @@ export default class Shard {
             data: GENERAL_STATS.join(',')
         };
 
-        const callback: ShardFetchCallback = () => this.bot.logger.handleError('getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () => this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
         return new Promise((resolve, reject) => {
             this.#callbacks[nonce] = resolve;
             this.#timeouts[nonce] = setTimeout(() => {
-                this.bot.logger.debug('getStats', 'TIMED OUT', message);
+                this.bot.logger.debug('shard.getStats', 'TIMED OUT', message);
                 delete this.#callbacks[nonce];
                 reject();
             })
@@ -180,7 +180,7 @@ export default class Shard {
             }
             this.#callbacks[nonce] = resolve;
             this.#timeouts[nonce] = setTimeout(() => {
-                this.bot.logger.debug('getStats TIMED OUT', message);
+                this.bot.logger.debug('shard.getStats', 'TIMED OUT', message);
                 delete this.#callbacks[nonce];
                 reject('Shard operation timed out.');
             }, SHARD_MESSAGE_TIMEOUT);

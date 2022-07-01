@@ -315,7 +315,7 @@ export default class CacheHandler {
             return this.#guilds[guild_id] ? Object.keys(this.#guilds[guild_id].members).length : 0;
         },
         totalSize: (): number => {
-            const sizes = Object.values(this.#guilds).map(g => g.approximate_member_count || 0);
+            const sizes = Object.values(this.#guilds).map(g => Object.keys(g.members).length || 0);
             return sizes.reduce((prev, current) => prev + current);
         }
         // TODO: decache members under certain circumstances?

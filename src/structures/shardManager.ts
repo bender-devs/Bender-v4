@@ -246,9 +246,6 @@ export default class ShardManager {
             if (!messageObject.operation || !shardOperations.includes(messageObject.operation) || messageObject.toShards === undefined || messageObject.fromShard === undefined || messageObject.nonce === undefined) {
                 return null;
             }
-            if (logger) {
-                logger.debug('PARSED SHARD MESSAGE', messageObject);
-            }
             return {
                 operation: messageObject.operation,
                 fromShard: messageObject.fromShard,
@@ -317,7 +314,7 @@ export default class ShardManager {
             }
             this.#callbacks[nonce] = resolve;
             this.#timeouts[nonce] = setTimeout(() => {
-                this.logger.debug('getStats TIMED OUT', message);
+                this.logger.debug('shardManager.getStats', 'TIMED OUT', message);
                 delete this.#callbacks[nonce];
                 reject('Shard operation timed out.');
             }, SHARD_MESSAGE_TIMEOUT);
