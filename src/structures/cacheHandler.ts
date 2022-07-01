@@ -22,6 +22,7 @@ import Bot from './bot';
 import * as redis from 'redis';
 import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData } from '../types/gatewayTypes';
 import TimeUtils from '../utils/time';
+import { PREMIUM_TYPES } from '../types/numberTypes';
 
 type ChannelMap = Record<types.Snowflake, types.GuildChannel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;
@@ -698,7 +699,7 @@ export default class CacheHandler {
             return obj as types.StringMap;
         },
         _deserialize: (user_hash: types.UserHash | null): types.User | null => {
-            if (user_hash === null) {
+            if (user_hash === null || !user_hash.id || !user_hash.username || !user_hash.discriminator || !user_hash.avatar) {
                 return null;
             }
             const obj: types.User = {
@@ -706,6 +707,33 @@ export default class CacheHandler {
                 username: user_hash.username,
                 discriminator: user_hash.discriminator,
                 avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
+            }
+            if (user_hash.bot) {
+                obj.bot = true;
+            }
+            if (user_hash.system) {
+                obj.system = true;
+            }
+            if (user_hash.mfa_enabled) {
+                obj.mfa_enabled = true;
+            }
+            if (user_hash.verified) {
+                obj.verified = true;
+            }
+            if (user_hash.locale) {
+                obj.locale = user_hash.locale as types.Locale;
+            }
+            if (user_hash.email) {
+                obj.email = user_hash.email;
+            }
+            if (user_hash.flags) {
+                obj.flags = parseInt(user_hash.flags)
+            }
+            if (user_hash.public_flags) {
+                obj.public_flags = parseInt(user_hash.public_flags);
+            }
+            if (user_hash.premium_type) {
+                obj.premium_type = parseInt(user_hash.premium_type) as PREMIUM_TYPES;
             }
             return obj;
         }
