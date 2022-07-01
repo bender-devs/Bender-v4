@@ -166,7 +166,6 @@ export default class ShardManager {
             return; // avoid infinite loops
         }
         if (message.toShards !== 'MANAGER') {
-            this.logger.debug('FORWARDING SHARD MESSAGE', message);
             return this.sendMessage(message); // forward messages to other shards
         }
         switch (message.operation) {
@@ -231,7 +230,6 @@ export default class ShardManager {
     }
 
     handleMessage(message: string) {
-        this.logger.debug('SHARD MESSAGE', message);
         const parsedMessage = this.parseMessage(message);
         if (parsedMessage) {
             this.processMessage(parsedMessage);
@@ -310,6 +308,13 @@ export default class ShardManager {
 
         this.sendMessage(message);
         return new Promise((resolve, reject) => {
+            if (shards === 'ALL' || shards.length) {
+                this.#complexCallbacks[nonce] = {
+                    completed: 0,
+                    expected: shards === 'ALL' ? this.shardCount : shards.length,
+                    currentValues: []
+                };
+            }
             this.#callbacks[nonce] = resolve;
             this.#timeouts[nonce] = setTimeout(() => {
                 this.logger.debug('getStats TIMED OUT', message);

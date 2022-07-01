@@ -27,6 +27,7 @@ export default class Shard {
 
     async processMessage(message: ShardMessage) {
         if (!this.bot.shard || (Array.isArray(message.toShards) && !message.toShards.includes(this.bot.shard.id))) {
+            this.bot.logger.handleError('SHARD MESSAGE', 'Received irrelevant shard message:', message);
             return; // invalid message or not intended for this shard
         }
         switch (message.operation) {
@@ -173,7 +174,7 @@ export default class Shard {
             if (shards === 'ALL' || shards.length) {
                 this.#complexCallbacks[nonce] = {
                     completed: 0,
-                    expected: shards.length || this.total_shards,
+                    expected: shards === 'ALL' ? this.total_shards : shards.length,
                     currentValues: []
                 };
             }
