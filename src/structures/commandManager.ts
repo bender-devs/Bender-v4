@@ -1,8 +1,9 @@
 import Bot from './bot';
-import { ICommand } from './command';
+import { ICommand, MessageCommand, UserCommand, UserOrMessageCommand } from './command';
 import { DEV_SERVER } from '../data/constants';
 import { Snowflake } from '../types/types';
 import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes';
+import { COMMAND_TYPES } from '../types/numberTypes';
 
 import PingCommand from '../commands/ping';
 import TextCommand from '../commands/text';
@@ -11,11 +12,15 @@ import InfoCommand from '../commands/info';
 
 import DevCommand from '../commands/dev';
 
+import getUserCommands from '../commands/nonText/user';
+import getMessageCommands from '../commands/nonText/message';
 
 export default class SlashCommandManager {
     bot: Bot;
     commands: ICommand[];
     developer_commands: ICommand[];
+    user_commands: UserCommand[];
+    message_commands: MessageCommand[];
     
     constructor(bot: Bot) {
         this.bot = bot;
@@ -28,16 +33,19 @@ export default class SlashCommandManager {
         
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
+
+        this.user_commands = getUserCommands(this.bot);
+        this.message_commands = getMessageCommands(/*this.bot*/);
     }
 
     async updateGlobalAndDevCommands() {
-        await this.updateCommandList(this.commands);
+        await this.updateCommandList([...this.commands, ...this.user_commands]);
         await this.updateCommandList(this.developer_commands, DEV_SERVER);
     }
 
-    async updateCommandList(commandList: ICommand[], guildID?: Snowflake) {
+    async updateCommandList(commandList: (ICommand | UserOrMessageCommand)[], guildID?: Snowflake) {
         const listTypeInfo = `[${guildID ? `GUILD ${guildID}` : 'GLOBAL'}]`;
-        this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updating command list...')
+        this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updating command list...');
 
         const currentCommands = await (guildID ? this.bot.db.guildCommand.list(guildID) : this.bot.db.command.list());
         if (!currentCommands.length) {
@@ -46,8 +54,8 @@ export default class SlashCommandManager {
             }).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
             return true;
         }
-        const newCommands: ICommand[] = [];
-        const editedCommands: Record<Snowflake, ICommand> = {};
+        const newCommands: (ICommand | UserOrMessageCommand)[] = [];
+        const editedCommands: Record<Snowflake, ICommand | UserOrMessageCommand> = {};
         const deletedCommands: SavedCommand[] = [];
         for (const command of currentCommands) {
             const loadedCommand = commandList.find(cmd => cmd.name === command.name);
@@ -110,7 +118,16 @@ export default class SlashCommandManager {
         return true;
     }
 
-    #stripBotValue(cmd: ICommand) {
+    #stripBotValue(cmd: ICommand | UserOrMessageCommand) {
+        if (cmd.type !== COMMAND_TYPES.CHAT_INPUT) {
+            const newCmd: UserOrMessageCommand & {
+                bot: never;
+                description: never;
+            } = Object.assign({}, cmd, { bot: undefined, description: undefined });
+            delete newCmd.bot;
+            delete newCmd.description;
+            return newCmd;
+        }
         const newCmd: ICommand & { bot: never } = Object.assign({}, cmd, { bot: undefined });
         delete newCmd.bot;
         return newCmd;
@@ -152,7 +169,11 @@ export default class SlashCommandManager {
         return false;
     }
 
-    #compareCommands(savedCommand: SavedCommand, loadedCommand: ICommand) {
+    #compareCommands(savedCommand: SavedCommand, loadedCommand: ICommand | UserOrMessageCommand) {
+        if (loadedCommand.type !== COMMAND_TYPES.CHAT_INPUT) {
+            // TODO: this will need updating when user/message commands support name_localizations
+            return savedCommand.name === loadedCommand.name && savedCommand.type === loadedCommand.type;
+        }
         for (const key of COMPARE_COMMANDS_KEYS) {
             const expectedValue = savedCommand[key];
             const actualValue = loadedCommand[key];

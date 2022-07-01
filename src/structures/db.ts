@@ -637,7 +637,6 @@ export default class DatabaseManager {
 
         update: async (id: Snowflake, commandData: CommandCreateData) => {
 			const c = this.bender.collection('commands');
-            //this.bot.logger.debug('????? update ???????/?????', id, commandData)
 			return c.updateOne({ id }, { $set: commandData }).then(DatabaseManager.reformat);
 		},
 
@@ -823,10 +822,10 @@ export default class DatabaseManager {
     }
 
     static asTypeArrayFiltered<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: (mongodb.Document | null)[]) {
-        return this.asTypeArray<T>(value).filter(item => item !== null) as T[];
+        return DatabaseManager.asTypeArray<T>(value).filter(item => item !== null) as T[];
     }
     static asTypeArray<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: (mongodb.Document | null)[]) {
-        return value.map(item => this.asType<T>(item));
+        return value.map(item => DatabaseManager.asType<T>(item));
     }
     static asType<T extends dbTypes.GuildTopLevelValue | dbTypes.SavedCommand>(value: mongodb.Document | null) {
         return value ? value as T : null;
@@ -850,7 +849,7 @@ export default class DatabaseManager {
 			return workingObject;
 		}
         // TODO: not really type safe so idk if this will work right
-		workingObject[thisPart] = this.expandDotFormat(keyParts, value, workingObject[thisPart] as Record<string, unknown>);
+		workingObject[thisPart] = DatabaseManager.expandDotFormat(keyParts, value, workingObject[thisPart] as Record<string, unknown>);
 		return workingObject;
 	}
 
@@ -910,13 +909,13 @@ export default class DatabaseManager {
             !(result.upsertedId instanceof mongodb.ObjectId)
         ) {
             // result must be a Document; since this behavior isn't documented, assume the operation succeeded
-            const dummyResult = this.reformat(null);
+            const dummyResult = DatabaseManager.reformat(null);
             dummyResult.changes = 1;
             dummyResult.edits = 1;
             return dummyResult;
         } else {
             // result must be an UpdateResult, but since Document is impossible to filter out, we have to use 'as'
-            return this.reformat(result as mongodb.UpdateResult);
+            return DatabaseManager.reformat(result as mongodb.UpdateResult);
         }
     }
 

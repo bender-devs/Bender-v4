@@ -8,6 +8,32 @@ import { LangKey } from '../text/languageList';
 import { inspect } from 'util';
 import { EmojiKey } from '../utils/misc';
 
+// the format in which user/message commands are stored (both in files and in the database.)
+export class UserOrMessageCommand {
+    bot: Bot;
+    name: string;
+    type: COMMAND_TYPES.USER | COMMAND_TYPES.MESSAGE;
+    description: '' = '';
+    run: (interaction: types.Interaction) => types.CommandResponse;
+
+    constructor(bot: Bot, name: string, run: UserOrMessageCommand['run'], type: UserOrMessageCommand['type']) {
+        this.bot = bot;
+        this.name = name;
+        this.run = run;
+        this.type = type;
+    }
+}
+export class UserCommand extends UserOrMessageCommand {
+    constructor(bot: Bot, name: string, run: UserOrMessageCommand['run']) {
+        super(bot, name, run, COMMAND_TYPES.USER);
+    }
+}
+export class MessageCommand extends UserOrMessageCommand {
+    constructor(bot: Bot, name: string, run: UserOrMessageCommand['run']) {
+        super(bot, name, run, COMMAND_TYPES.MESSAGE);
+    }
+}
+
 export interface ICommand extends types.CommandCreateData {
     bot: Bot;
     dm_permission: boolean;
