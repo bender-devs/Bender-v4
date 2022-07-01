@@ -1,5 +1,5 @@
 import * as mongodb from 'mongodb';
-import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART } from '../data/constants';
+import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants';
 import DB_INDEXES from '../data/db_indexes';
 import * as dbTypes from '../types/dbTypes';
 import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types';
@@ -204,7 +204,7 @@ export default class DatabaseManager {
 			return bs.find({
 				guild: { $in: guildIDs },
 				$or: [ 
-					{'logging.accChanges': { $regex: /^\d{17,18}$/ } },
+					{'logging.accChanges': { $regex: ID_REGEX_EXACT } },
 					{ 'namefilter.enabled': true }, 
 					{ 'namefilter.patterns': { $exists: true, $not: { $size: 0 } } }]
 			}).project({ _id: 0, guild: 1, namefilter: 1, 'ignore.names': 1, 'logging.accChanges': 1 })
