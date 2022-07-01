@@ -174,7 +174,7 @@ export default class DatabaseCacheHandler {
             }
         }
     }
-    
+
 
     premium = {
         get: (ppid: string) => {

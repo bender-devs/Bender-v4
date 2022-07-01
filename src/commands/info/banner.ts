@@ -73,7 +73,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         bannerLink,
         bannerEmoji: this.getEmoji('BANNER', interaction)
     }, interaction.locale);
-    
+
     return this.respond(interaction, {
         description: title,
         color: DEFAULT_COLOR,

@@ -946,7 +946,7 @@ export type MessageComponentSelectOption = {
 /****** embed types ******/
 
 export type Embed = {
-    title?:	string;
+    title?: string;
     type?: string;
     description?: string;
     url?: URL;
@@ -1011,7 +1011,7 @@ export type Application = {
     flags?: num.APPLICATION_FLAGS;
     tags?: string[];
     install_params?: ApplicationInstallParams;
-    custom_install_url?:	string;
+    custom_install_url?: string;
 }
 
 export type PartialApplication = Pick<Application, 'id' | 'flags'>

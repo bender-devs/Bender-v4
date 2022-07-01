@@ -5,12 +5,12 @@ import LangUtils from './language';
 const unitMap = {
     MILLISECOND: 1,
     SECOND: 1000,
-    MINUTE: 1000*60,
-    HOUR:   1000*60*60,
-    DAY:    1000*60*60*24,
-    WEEK:   1000*60*60*24*7,
-    MONTH:  1000*60*60*24*30,
-    YEAR:   1000*60*60*24*7*52
+    MINUTE: 1000 * 60,
+    HOUR: 1000 * 60 * 60,
+    DAY: 1000 * 60 * 60 * 24,
+    WEEK: 1000 * 60 * 60 * 24 * 7,
+    MONTH: 1000 * 60 * 60 * 24 * 30,
+    YEAR: 1000 * 60 * 60 * 24 * 365.25
 }
 type UnitName = keyof typeof unitMap;
 
@@ -38,7 +38,7 @@ export default class TimeUtils {
     }
 
     static formatDuration(duration: number, locale?: Locale) {
-		let unit = 1, unitName: UnitName = 'MILLISECOND';
+        let unit = 1, unitName: UnitName = 'MILLISECOND';
         if (duration >= unitMap.YEAR) {
             unit = unitMap.YEAR;
             unitName = 'YEAR';
@@ -69,8 +69,8 @@ export default class TimeUtils {
         if (!plural) {
             return LangUtils.get(langKey, locale);
         }
-		return LangUtils.getAndReplace(langKey, { number }, locale);
-	}
+        return LangUtils.getAndReplace(langKey, { number }, locale);
+    }
 
     static formatDate(date: Date | Timestamp | UnixTimestampMillis, locale: Locale = 'en-US') {
         if (typeof date === 'number') {

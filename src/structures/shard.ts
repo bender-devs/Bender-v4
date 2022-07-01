@@ -73,7 +73,7 @@ export default class Shard {
                 let parsedValues: ShardFetchData = null;
                 try {
                     parsedValues = message.data ? JSON.parse(message.data) : null;
-                } catch(err) {
+                } catch (err) {
                     this.bot.logger.handleError('SHARD MESSAGE', 'Failed to parse returned values:', message.data);
                 }
                 if (this.#complexCallbacks[message.nonce]) {

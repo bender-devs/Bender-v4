@@ -31,7 +31,7 @@ export default class DatabaseManager {
     }
 
     /****************** Initialization functions *******************/
-	/***************************************************************/
+    /***************************************************************/
 
     async connect(autoInit = true) {
         if (!process.env.MONGODB_HOST || !process.env.MONGODB_PORT) {
@@ -48,7 +48,7 @@ export default class DatabaseManager {
         this.#startTimestamp = Date.now();
         this.client = await mongodb.MongoClient.connect(`mongodb://${authString}@${hostString}?authSource=bender`);
         this.bot.logger.debug('DATABASE', `Connected in ${Date.now() - this.#startTimestamp}ms`);
-		this.bender = this.client.db('bender');
+        this.bender = this.client.db('bender');
         this.connected = true;
 
         this.client.on('error', err => {
@@ -85,15 +85,15 @@ export default class DatabaseManager {
             return;
         }
         // create all collections and indexes if they don't exist
-		const collections = await this.bender.collections().then(colls => colls.map(coll => coll.collectionName));
+        const collections = await this.bender.collections().then(colls => colls.map(coll => coll.collectionName));
         let collName: keyof typeof DB_INDEXES;
-		for (collName in DB_INDEXES) {
+        for (collName in DB_INDEXES) {
             if (!collections.includes(collName)) {
                 await this.bender.createCollection(collName);
             }
-			const expectedIndexes = DB_INDEXES[collName];
-			const indexes = await this.bender.collection(collName).indexes().then(ind => ind.filter(index => index?.key && Object.keys(index.key)[0]).map(index => Object.keys(index.key)[0]));
-			for (const key of expectedIndexes) {
+            const expectedIndexes = DB_INDEXES[collName];
+            const indexes = await this.bender.collection(collName).indexes().then(ind => ind.filter(index => index?.key && Object.keys(index.key)[0]).map(index => Object.keys(index.key)[0]));
+            for (const key of expectedIndexes) {
                 if (typeof key === 'string') {
                     if (!indexes.includes(key)) {
                         await this.bender.createIndex(collName, key);
@@ -103,8 +103,8 @@ export default class DatabaseManager {
                         await this.bender.createIndex(collName, key.name, key.options);
                     }
                 }
-			}
-		}
+            }
+        }
 
         if (this.cacheEnabled) {
             const guildSettings = this.bender.collection('bot_settings');
@@ -120,26 +120,26 @@ export default class DatabaseManager {
             this.#premiumWatcher = premiumSettings.watch(undefined, WATCHER_OPTIONS);
             this.#premiumWatcher.on('change', this.processPremiumChange);
         }
-		return this.client;
+        return this.client;
     }
 
 
     /******************* Guild functions *******************/
-	/*******************************************************/
-	guild = {
-		get: async (guildID: Snowflake, fields: dbTypes.ProjectionObject) => {
+    /*******************************************************/
+    guild = {
+        get: async (guildID: Snowflake, fields: dbTypes.ProjectionObject) => {
             const idObj: dbTypes.GuildSettings = { guild: guildID };
-			const bs = this.bender.collection('bot_settings');
-			const exists = await bs.countDocuments(idObj);
-			if (!exists) {
-				return bs.insertOne(idObj).then(() => idObj);
+            const bs = this.bender.collection('bot_settings');
+            const exists = await bs.countDocuments(idObj);
+            if (!exists) {
+                return bs.insertOne(idObj).then(() => idObj);
             }
 
             const uncachedFields = Object.assign({}, fields); // make a copy so we keep the original query intact
-			const cached: dbTypes.GuildSettings = Object.assign({}, idObj);
-			if (this.cacheEnabled) {
+            const cached: dbTypes.GuildSettings = Object.assign({}, idObj);
+            if (this.cacheEnabled) {
                 const cachedGuild = this.cache.guilds.get(guildID);
-				for (const key in fields) {
+                for (const key in fields) {
                     if (key === '_id') {
                         continue;
                     }
@@ -147,23 +147,23 @@ export default class DatabaseManager {
                     if (key in cachedGuild) {
                         cachedValue = cachedGuild[key as dbTypes.GuildKey];
                     }
-					if (!cachedValue) {
+                    if (!cachedValue) {
                         continue;
                     }
-					const addToCache = DatabaseManager.expandDotFormat(key.split('.'), cachedValue);
+                    const addToCache = DatabaseManager.expandDotFormat(key.split('.'), cachedValue);
                     Object.assign(cached, addToCache);
 
-					delete uncachedFields[key as dbTypes.GuildDotFormatKey]; // don't fetch this from the db
-				}
-			}
+                    delete uncachedFields[key as dbTypes.GuildDotFormatKey]; // don't fetch this from the db
+                }
+            }
 
-			const cacheOnly = this.cacheEnabled && Object.keys(fields).length <= 1;
+            const cacheOnly = this.cacheEnabled && Object.keys(fields).length <= 1;
             if (cacheOnly) {
                 return cached;
             }
-			const freshData = await bs.findOne(idObj, { projection: fields });
+            const freshData = await bs.findOne(idObj, { projection: fields });
 
-			if (this.cacheEnabled) {
+            if (this.cacheEnabled) {
                 // only cache full keys, i.e. 'automod' but not 'automod.enabled'
                 for (const key in fields) {
                     if (key.indexOf('.') !== -1) {
@@ -174,7 +174,7 @@ export default class DatabaseManager {
                         this.cache.guilds.update(guildID, { [key]: cached[settingsKey] });
                     }
                 }
-			} else if (freshData) {
+            } else if (freshData) {
                 return Object.assign(freshData, idObj);
             } else {
                 return idObj;
@@ -184,630 +184,630 @@ export default class DatabaseManager {
                 return Object.assign(freshData, cached);
             }
             return cached;
-		},
+        },
 
-		// only used for checkups
-		getAll: async (guildIDs: Snowflake[], key: dbTypes.GuildKey) => {
-			const bs = this.bender.collection('bot_settings');
-			// TODO: note that cache is not used here - this may be an issue
-			return bs.find({
-				guild: { $in: guildIDs },
-				[key]: { $exists: true }
-			}).project({ _id: 0, guild: 1, [key]: 1 })
-            .toArray().then(DatabaseManager.createDocumentMap);
-		},
+        // only used for checkups
+        getAll: async (guildIDs: Snowflake[], key: dbTypes.GuildKey) => {
+            const bs = this.bender.collection('bot_settings');
+            // TODO: note that cache is not used here - this may be an issue
+            return bs.find({
+                guild: { $in: guildIDs },
+                [key]: { $exists: true }
+            }).project({ _id: 0, guild: 1, [key]: 1 })
+                .toArray().then(DatabaseManager.createDocumentMap);
+        },
 
-		// only used for user update check
-		getActiveSettings: async (guildIDs: Snowflake[]) => {
-			const bs = this.bender.collection('bot_settings');
-			// TODO: note that cache is not used here - this may be an issue
-			return bs.find({
-				guild: { $in: guildIDs },
-				$or: [ 
-					{'logging.accChanges': { $regex: ID_REGEX_EXACT } },
-					{ 'namefilter.enabled': true }, 
-					{ 'namefilter.patterns': { $exists: true, $not: { $size: 0 } } }]
-			}).project({ _id: 0, guild: 1, namefilter: 1, 'ignore.names': 1, 'logging.accChanges': 1 })
-            .toArray().then(DatabaseManager.createDocumentMap);
-		},
+        // only used for user update check
+        getActiveSettings: async (guildIDs: Snowflake[]) => {
+            const bs = this.bender.collection('bot_settings');
+            // TODO: note that cache is not used here - this may be an issue
+            return bs.find({
+                guild: { $in: guildIDs },
+                $or: [
+                    { 'logging.accChanges': { $regex: ID_REGEX_EXACT } },
+                    { 'namefilter.enabled': true },
+                    { 'namefilter.patterns': { $exists: true, $not: { $size: 0 } } }]
+            }).project({ _id: 0, guild: 1, namefilter: 1, 'ignore.names': 1, 'logging.accChanges': 1 })
+                .toArray().then(DatabaseManager.createDocumentMap);
+        },
 
         replace: async (guildID: Snowflake, val: dbTypes.GuildSettings) => {
-			const bs = this.bender.collection('bot_settings');
-			return bs.replaceOne({ guild: guildID }, val, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
-		},
+            const bs = this.bender.collection('bot_settings');
+            return bs.replaceOne({ guild: guildID }, val, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
+        },
 
-		set: async (guildID: Snowflake, key: dbTypes.GuildKey, val: dbTypes.GuildTopLevelValue) => {
+        set: async (guildID: Snowflake, key: dbTypes.GuildKey, val: dbTypes.GuildTopLevelValue) => {
             const idObj = { guild: guildID };
-			const bs = this.bender.collection('bot_settings');
-			const exists = await bs.countDocuments(idObj);
-			if (!exists) {
-				return bs.insertOne({ guild: guildID, [key]: val }).then(DatabaseManager.reformat);
+            const bs = this.bender.collection('bot_settings');
+            const exists = await bs.countDocuments(idObj);
+            if (!exists) {
+                return bs.insertOne({ guild: guildID, [key]: val }).then(DatabaseManager.reformat);
             }
 
-			return bs.updateOne(idObj, { $set: { [key]: val }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		},
+            return bs.updateOne(idObj, { $set: { [key]: val }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
 
-		update: async (guildID: Snowflake, key: dbTypes.GuildDotFormatKey, val: unknown) => {
-			const bs = this.bender.collection('bot_settings');
-			const exists = await bs.countDocuments({ guild: guildID });
-			if (!exists) {
-				return bs.insertOne({ guild: guildID, [key]: val }).then(DatabaseManager.reformat);
+        update: async (guildID: Snowflake, key: dbTypes.GuildDotFormatKey, val: unknown) => {
+            const bs = this.bender.collection('bot_settings');
+            const exists = await bs.countDocuments({ guild: guildID });
+            if (!exists) {
+                return bs.insertOne({ guild: guildID, [key]: val }).then(DatabaseManager.reformat);
             }
 
-			const obj = DatabaseManager.expandDotFormat(key.split('.'), val);
-			if (Object.keys(obj).length === 0) {
-				return DatabaseManager.reformat(null);
+            const obj = DatabaseManager.expandDotFormat(key.split('.'), val);
+            if (Object.keys(obj).length === 0) {
+                return DatabaseManager.reformat(null);
             }
-			return bs.updateOne({ guild: guildID }, { $set: obj, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		},
+            return bs.updateOne({ guild: guildID }, { $set: obj, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
 
-		// nested update which checks for null values to avoid errors
-		nestedUpdate: async (guildID: Snowflake, key: dbTypes.GuildKey, subkey: dbTypes.GuildSubkey, val: dbTypes.GuildSubSubkey | unknown, otherVal?: unknown) => {
-			const hasSecondSubkey = !!otherVal && (typeof val === 'string' || typeof val === 'number');
-			const baseObj = hasSecondSubkey ? {[subkey]: {[val]: otherVal}} : {[subkey]: val};
+        // nested update which checks for null values to avoid errors
+        nestedUpdate: async (guildID: Snowflake, key: dbTypes.GuildKey, subkey: dbTypes.GuildSubkey, val: dbTypes.GuildSubSubkey | unknown, otherVal?: unknown) => {
+            const hasSecondSubkey = !!otherVal && (typeof val === 'string' || typeof val === 'number');
+            const baseObj = hasSecondSubkey ? { [subkey]: { [val]: otherVal } } : { [subkey]: val };
 
-			const bs = this.bender.collection('bot_settings');
-			const exists = await bs.countDocuments({ guild: guildID });
-			if (!exists) {
-				return this.guild.set(guildID, key, baseObj);
-            }
-
-			const keyExists = await bs.countDocuments({ guild: guildID, [key]: { $exists: true } });
-			if (!keyExists) {
-				return bs.updateOne({ guild: guildID }, { $set: {[key]: baseObj}, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+            const bs = this.bender.collection('bot_settings');
+            const exists = await bs.countDocuments({ guild: guildID });
+            if (!exists) {
+                return this.guild.set(guildID, key, baseObj);
             }
 
-			if (hasSecondSubkey) {
-				const subkeyExists = await bs.countDocuments({ guild: guildID, [`${key}.${subkey}`]: { $exists: true, $ne: null } });
+            const keyExists = await bs.countDocuments({ guild: guildID, [key]: { $exists: true } });
+            if (!keyExists) {
+                return bs.updateOne({ guild: guildID }, { $set: { [key]: baseObj }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+            }
 
-				const setObj = subkeyExists ? { [`${key}.${subkey}.${val}`]: otherVal } : { [`${key}.${subkey}`]: { [val]: otherVal } };
+            if (hasSecondSubkey) {
+                const subkeyExists = await bs.countDocuments({ guild: guildID, [`${key}.${subkey}`]: { $exists: true, $ne: null } });
 
-				return bs.updateOne({ guild: guildID }, { $set: setObj, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-			}
-			
-			return bs.updateOne({ guild: guildID }, { $set: { [`${key}.${subkey}`]: val }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		},
+                const setObj = subkeyExists ? { [`${key}.${subkey}.${val}`]: otherVal } : { [`${key}.${subkey}`]: { [val]: otherVal } };
 
-		// should only be used for testing
-		directUpdate: async (guildID: Snowflake, val: dbTypes.GuildSettings) => {
-			const bs = this.bender.collection('bot_settings');
-			return bs.updateOne({ guild: guildID }, Object.assign(val, { $currentDate: { lastModified: true } })).then(DatabaseManager.reformat);
-		},
+                return bs.updateOne({ guild: guildID }, { $set: setObj, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+            }
 
-		deleteValue: async (guildID: Snowflake, dfKey: dbTypes.GuildDotFormatKey, index?: number) => {
-			if (this.cacheEnabled) {
-				const firstPiece = dfKey.split('.')[0];
+            return bs.updateOne({ guild: guildID }, { $set: { [`${key}.${subkey}`]: val }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
+
+        // should only be used for testing
+        directUpdate: async (guildID: Snowflake, val: dbTypes.GuildSettings) => {
+            const bs = this.bender.collection('bot_settings');
+            return bs.updateOne({ guild: guildID }, Object.assign(val, { $currentDate: { lastModified: true } })).then(DatabaseManager.reformat);
+        },
+
+        deleteValue: async (guildID: Snowflake, dfKey: dbTypes.GuildDotFormatKey, index?: number) => {
+            if (this.cacheEnabled) {
+                const firstPiece = dfKey.split('.')[0];
                 this.cache.guilds.update(guildID, undefined, [firstPiece]);
-			}
-            
-			const bs = this.bender.collection('bot_settings');
-			const obj = { $unset: { [`${dfKey}${typeof index === 'number' ? `.${index}` : ''}`]: '' }, $currentDate: { lastModified: true } };
-			const r = await bs.updateOne({ guild: guildID }, obj).then(DatabaseManager.reformat);
-			if (typeof index !== 'number') {
+            }
+
+            const bs = this.bender.collection('bot_settings');
+            const obj = { $unset: { [`${dfKey}${typeof index === 'number' ? `.${index}` : ''}`]: '' }, $currentDate: { lastModified: true } };
+            const r = await bs.updateOne({ guild: guildID }, obj).then(DatabaseManager.reformat);
+            if (typeof index !== 'number') {
                 return r;
             }
-			return bs.updateOne({ guild: guildID }, { $pull: { [dfKey]: null }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		},
+            return bs.updateOne({ guild: guildID }, { $pull: { [dfKey]: null }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
 
-		addToSet: async (guildID: Snowflake, dfKey: dbTypes.GuildDotFormatKey, arr: Array<unknown>) => {
-			const bs = this.bender.collection('bot_settings');
-			arr = arr.filter(item => item !== null)
-			return bs.updateOne({ guild: guildID }, { $addToSet: { [dfKey]: { $each: arr } } }).then(DatabaseManager.reformat);
-		},
+        addToSet: async (guildID: Snowflake, dfKey: dbTypes.GuildDotFormatKey, arr: Array<unknown>) => {
+            const bs = this.bender.collection('bot_settings');
+            arr = arr.filter(item => item !== null)
+            return bs.updateOne({ guild: guildID }, { $addToSet: { [dfKey]: { $each: arr } } }).then(DatabaseManager.reformat);
+        },
 
-		delete: async (guildID: Snowflake) => {
-			if (this.cacheEnabled) {
-				this.cache.guilds.delete(guildID);
-			}
-             
-			const bs = this.bender.collection('bot_settings');
-			return bs.deleteOne({ guild: guildID }).then(DatabaseManager.reformat);
-		},
+        delete: async (guildID: Snowflake) => {
+            if (this.cacheEnabled) {
+                this.cache.guilds.delete(guildID);
+            }
 
-		/***** required utility functions not yet present *****
-		// purge all guilds that Bender isn't in & settings haven't been updated in 30 days
+            const bs = this.bender.collection('bot_settings');
+            return bs.deleteOne({ guild: guildID }).then(DatabaseManager.reformat);
+        },
+
+        /***** required utility functions not yet present *****
+        // purge all guilds that Bender isn't in & settings haven't been updated in 30 days
         purgeInactive: async () => {
-			const guildIDArray = await this.bot.getGuildList().catch(err => {
-				this.bot.logger.handleError('DATABASE ERROR', err);
-				return false;
-			});
-			if (!guildIDArray) {
+            const guildIDArray = await this.bot.getGuildList().catch(err => {
+                this.bot.logger.handleError('DATABASE ERROR', err);
+                return false;
+            });
+            if (!guildIDArray) {
                 return;
             }
-			const bs = this.bender.collection('bot_settings');
+            const bs = this.bender.collection('bot_settings');
             // TODO: !!!IMPORTANT!!! check that timestamps work properly here
-			return bs.deleteMany({ lastModified: { $lt: Date.now() - 1000 * 60 * 60 * 24 * 30 }, guild: { $nin: guildIDArray } }).then(DatabaseManager.#reformat);
-		},*/
+            return bs.deleteMany({ lastModified: { $lt: Date.now() - 1000 * 60 * 60 * 24 * 30 }, guild: { $nin: guildIDArray } }).then(DatabaseManager.#reformat);
+        },*/
 
-		needsCheckup: async (key: dbTypes.GuildKey): Promise<dbTypes.GuildSettings[]> => {
-			const bs = this.bender.collection('bot_settings');
-	
-			const id_array = this.bot.cache.guilds.listIDs();
-			const findObject = {
-				[key]: { $type: 'object' },
-				guild: { $in: id_array }
-			};
-			if (key === 'agreement') {
-				Object.assign(findObject, {
-					['agreement.enabled']: true,
-					['agreement.role']: { $type: 'string' },
-					['agreement.channel']: { $type: 'string' }
-				});
-			}
-			return bs.find(findObject).project({ _id: 0, guild: 1, [key]: 1 }).toArray().then(DatabaseManager.asTypeArrayFiltered<dbTypes.GuildSettings>);
-		}
-	}
+        needsCheckup: async (key: dbTypes.GuildKey): Promise<dbTypes.GuildSettings[]> => {
+            const bs = this.bender.collection('bot_settings');
+
+            const id_array = this.bot.cache.guilds.listIDs();
+            const findObject = {
+                [key]: { $type: 'object' },
+                guild: { $in: id_array }
+            };
+            if (key === 'agreement') {
+                Object.assign(findObject, {
+                    ['agreement.enabled']: true,
+                    ['agreement.role']: { $type: 'string' },
+                    ['agreement.channel']: { $type: 'string' }
+                });
+            }
+            return bs.find(findObject).project({ _id: 0, guild: 1, [key]: 1 }).toArray().then(DatabaseManager.asTypeArrayFiltered<dbTypes.GuildSettings>);
+        }
+    }
 
 
     /******************* Modlog functions *******************/
-	/********************************************************/
-	cases = {
-		setup: async (guildID: Snowflake) => {
-			const bs = this.bender.collection('bot_settings');
-			const exists = await bs.countDocuments({ guild: guildID, modlog: { $type: 'array' } });
-			return exists ? null : this.guild.set(guildID, 'modlog', []);
-		},
+    /********************************************************/
+    cases = {
+        setup: async (guildID: Snowflake) => {
+            const bs = this.bender.collection('bot_settings');
+            const exists = await bs.countDocuments({ guild: guildID, modlog: { $type: 'array' } });
+            return exists ? null : this.guild.set(guildID, 'modlog', []);
+        },
 
-		getCount: async (guildID: Snowflake) => {
-			await this.cases.setup(guildID);
-			const bs = this.bender.collection('bot_settings');
-			const test = await bs.aggregate([
-				{ $match: { guild: guildID } },
-				{ $project: { count: { $size: '$modlog' } } }
-			]).toArray().then(arr => arr[0].count);
+        getCount: async (guildID: Snowflake) => {
+            await this.cases.setup(guildID);
+            const bs = this.bender.collection('bot_settings');
+            const test = await bs.aggregate([
+                { $match: { guild: guildID } },
+                { $project: { count: { $size: '$modlog' } } }
+            ]).toArray().then(arr => arr[0].count);
 
-			return test || 0;
-		},
+            return test || 0;
+        },
 
-		get: async (guildID: Snowflake, caseID: number) => {
-			await this.cases.setup(guildID);
-			const bs = this.bender.collection('bot_settings');
-			const sets = await bs.findOne({ guild: guildID, modlog: { $elemMatch: { id: { $in: [caseID, caseID+''] } } } }, {projection: { _id: 0, 'modlog.$': 1 }});
-			return sets?.modlog?.[0] || null;
-		},
+        get: async (guildID: Snowflake, caseID: number) => {
+            await this.cases.setup(guildID);
+            const bs = this.bender.collection('bot_settings');
+            const sets = await bs.findOne({ guild: guildID, modlog: { $elemMatch: { id: { $in: [caseID, caseID + ''] } } } }, { projection: { _id: 0, 'modlog.$': 1 } });
+            return sets?.modlog?.[0] || null;
+        },
 
-		getMany: async (guildID: Snowflake, filter: dbTypes.ModlogFilter, page = 1) => {
-			let filterObj = {};
-			if (filter.by && filter.type) {
-                filterObj = { $and: [{ $eq: [ '$$item.moderator', filter.by ] }, { $eq: [ '$$item.action', filter.type ] }] };
+        getMany: async (guildID: Snowflake, filter: dbTypes.ModlogFilter, page = 1) => {
+            let filterObj = {};
+            if (filter.by && filter.type) {
+                filterObj = { $and: [{ $eq: ['$$item.moderator', filter.by] }, { $eq: ['$$item.action', filter.type] }] };
             }
-			else if (filter.for && filter.type && filter.valid) { // only used for warns atm, may need to change in the future
-				filterObj = { $and: [{ $eq: [ '$$item.target', filter.for ] }, { $eq: [ '$$item.action', filter.type ] }, { $ne: [ '$$item.extras.invalid', false ] }] };
+            else if (filter.for && filter.type && filter.valid) { // only used for warns atm, may need to change in the future
+                filterObj = { $and: [{ $eq: ['$$item.target', filter.for] }, { $eq: ['$$item.action', filter.type] }, { $ne: ['$$item.extras.invalid', false] }] };
             }
-			else if (filter.for && filter.type) {
-				filterObj = { $and: [{ $eq: [ '$$item.target', filter.for ] }, { $eq: [ '$$item.action', filter.type ] }] };
+            else if (filter.for && filter.type) {
+                filterObj = { $and: [{ $eq: ['$$item.target', filter.for] }, { $eq: ['$$item.action', filter.type] }] };
             }
-			else if (filter.type) {
-				filterObj = { $eq: [ '$$item.action', filter.type ] };
+            else if (filter.type) {
+                filterObj = { $eq: ['$$item.action', filter.type] };
             }
-			else if (filter.by) {
-				filterObj = { $eq: [ '$$item.moderator', filter.by ] };
+            else if (filter.by) {
+                filterObj = { $eq: ['$$item.moderator', filter.by] };
             }
-			else if (filter.for) {
-				filterObj = { $eq: [ '$$item.target', filter.for ] };
+            else if (filter.for) {
+                filterObj = { $eq: ['$$item.target', filter.for] };
             }
 
-			const count = await this.cases.getCount(guildID);
-			const totalPages = Math.ceil(count / 20);
-			if (page > totalPages) {
+            const count = await this.cases.getCount(guildID);
+            const totalPages = Math.ceil(count / 20);
+            if (page > totalPages) {
                 page = totalPages;
             }
 
-			const bs = this.bender.collection('bot_settings');
-			const projFilter = { $filter: { input: '$modlog', as: 'item', cond: filterObj } };
-			const projFilterSliced = { $slice: [projFilter, (page - 1) * 20, 20] };
-			return bs.aggregate([
-				{ $match: { guild: guildID } },
-				{ $project: { entries: { $concatArrays: [[{ $size: projFilter }], projFilterSliced] } } }
-			]).toArray().then(arr => arr[0] ? arr[0].entries : []);
-		},
+            const bs = this.bender.collection('bot_settings');
+            const projFilter = { $filter: { input: '$modlog', as: 'item', cond: filterObj } };
+            const projFilterSliced = { $slice: [projFilter, (page - 1) * 20, 20] };
+            return bs.aggregate([
+                { $match: { guild: guildID } },
+                { $project: { entries: { $concatArrays: [[{ $size: projFilter }], projFilterSliced] } } }
+            ]).toArray().then(arr => arr[0] ? arr[0].entries : []);
+        },
 
-		add: async (guildID: Snowflake, value: dbTypes.ModlogEntry) => {
-			await this.cases.setup(guildID);
+        add: async (guildID: Snowflake, value: dbTypes.ModlogEntry) => {
+            await this.cases.setup(guildID);
 
-			const bs = this.bender.collection('bot_settings');
-			return bs.updateOne({ guild: guildID }, { $addToSet: { modlog: value }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		},
+            const bs = this.bender.collection('bot_settings');
+            return bs.updateOne({ guild: guildID }, { $addToSet: { modlog: value }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
 
-		update: async (guildID: Snowflake, caseID: number, value: dbTypes.ModlogEntry) => {
-			if (isNaN(caseID) || caseID < 0) {
-				return this.cases.add(guildID, value);
-			}
-			await this.cases.setup(guildID);
-			const bs = this.bender.collection('bot_settings');
-			return bs.updateOne({ guild: guildID, 'modlog.id': caseID }, { $set: { ['modlog.$']: value }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
-		}
-	}
+        update: async (guildID: Snowflake, caseID: number, value: dbTypes.ModlogEntry) => {
+            if (isNaN(caseID) || caseID < 0) {
+                return this.cases.add(guildID, value);
+            }
+            await this.cases.setup(guildID);
+            const bs = this.bender.collection('bot_settings');
+            return bs.updateOne({ guild: guildID, 'modlog.id': caseID }, { $set: { ['modlog.$']: value }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        }
+    }
 
 
     /******************* User functions *******************/
-	/******************************************************/
+    /******************************************************/
 
-	reminders = {
-		getCount: async (user_id: Snowflake) => {
-			const rs = this.bender.collection('user_reminders');
-			const result = await rs.aggregate([
-				{ $match: { user_id } },
-				{ $project: { count: { $size: '$reminders' } } }
-			]).toArray().then(arr => arr.length ? arr[0].count : 0);
+    reminders = {
+        getCount: async (user_id: Snowflake) => {
+            const rs = this.bender.collection('user_reminders');
+            const result = await rs.aggregate([
+                { $match: { user_id } },
+                { $project: { count: { $size: '$reminders' } } }
+            ]).toArray().then(arr => arr.length ? arr[0].count : 0);
 
-			return result || 0;
-		},
+            return result || 0;
+        },
 
-		getAll: async (user_id: Snowflake) => {
-			if (this.cacheEnabled) {
-				const cachedReminders = this.cache.userReminders.get(user_id);
+        getAll: async (user_id: Snowflake) => {
+            if (this.cacheEnabled) {
+                const cachedReminders = this.cache.userReminders.get(user_id);
                 if (cachedReminders?.length) {
                     return cachedReminders;
                 }
             }
 
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
-				return [];
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
+                return [];
             }
-			return rs.findOne({ user_id }).then(result => {
+            return rs.findOne({ user_id }).then(result => {
                 if (!result) {
                     return null;
                 }
-				const reminders = result.reminders || [];
+                const reminders = result.reminders || [];
                 if (this.cacheEnabled) {
-					this.cache.userReminders.set(user_id, result._id, reminders);
-				}
+                    this.cache.userReminders.set(user_id, result._id, reminders);
+                }
                 return reminders;
-			});
-		},
+            });
+        },
 
-		getByMessageID: async (user_id: Snowflake, message_id: Snowflake) => {
-			if (this.cacheEnabled){
+        getByMessageID: async (user_id: Snowflake, message_id: Snowflake) => {
+            if (this.cacheEnabled) {
                 const reminder = this.cache.userReminders.findByMessage(user_id, message_id);
                 if (reminder) {
                     return reminder;
                 }
             }
 
-			const rs = this.bender.collection('user_reminders');
-			return rs.findOne({ user_id, 'reminders.message': message_id }, { projection: { _id: 0, ['reminders.$']: 1 } }).then(rm => rm?.reminders?.[0]);
-		},
+            const rs = this.bender.collection('user_reminders');
+            return rs.findOne({ user_id, 'reminders.message': message_id }, { projection: { _id: 0, ['reminders.$']: 1 } }).then(rm => rm?.reminders?.[0]);
+        },
 
-		getActive: async () => {
+        getActive: async () => {
             // TODO: use cache for this?
-			const rs = this.bender.collection('user_reminders');
-			return rs.find({
-				reminders: { $type: 'array', $not: { $size: 0 } },
-				['reminders.endsAt']: { $lte: Date.now() + 1000*60 }
-			}, { projection: { reminders: 1, user_id: 1, _id: 0 } }).toArray();
-		},
+            const rs = this.bender.collection('user_reminders');
+            return rs.find({
+                reminders: { $type: 'array', $not: { $size: 0 } },
+                ['reminders.endsAt']: { $lte: Date.now() + 1000 * 60 }
+            }, { projection: { reminders: 1, user_id: 1, _id: 0 } }).toArray();
+        },
 
-		update: async (user_id: Snowflake, message_id: Snowflake, data: dbTypes.Reminder) => {
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
+        update: async (user_id: Snowflake, message_id: Snowflake, data: dbTypes.Reminder) => {
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
                 return this.reminders.add(user_id, data);
             }
 
-			return rs.updateOne({ user_id, 'reminders.message': message_id }, { $set: { 'reminders.$': data } }, { upsert: true }).then(DatabaseManager.reformat);
-		},
+            return rs.updateOne({ user_id, 'reminders.message': message_id }, { $set: { 'reminders.$': data } }, { upsert: true }).then(DatabaseManager.reformat);
+        },
 
-		deleteAll: async (user_id: Snowflake) => {
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
+        deleteAll: async (user_id: Snowflake) => {
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
                 return DatabaseManager.reformat(null);
             }
 
-			return rs.deleteOne({ user_id }).then(DatabaseManager.reformat);
-		},
+            return rs.deleteOne({ user_id }).then(DatabaseManager.reformat);
+        },
 
-		delete: async (user_id: Snowflake, index: number) => {
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
+        delete: async (user_id: Snowflake, index: number) => {
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
                 return DatabaseManager.reformat(null);
             }
 
-			return rs.updateOne({ user_id }, { $unset: { [`reminders.${index}`]: '' }}).then(dbResult => {
-				const fResult = DatabaseManager.reformat(dbResult);
-				if (!fResult.changes) {
+            return rs.updateOne({ user_id }, { $unset: { [`reminders.${index}`]: '' } }).then(dbResult => {
+                const fResult = DatabaseManager.reformat(dbResult);
+                if (!fResult.changes) {
                     return fResult;
                 }
-				return rs.updateOne({ user_id }, { $pull: { reminders: null }}).then(DatabaseManager.reformat);
-			});
-		},
+                return rs.updateOne({ user_id }, { $pull: { reminders: null } }).then(DatabaseManager.reformat);
+            });
+        },
 
         deleteByMessageID: async (user_id: Snowflake, message_id: Snowflake) => {
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
                 return DatabaseManager.reformat(null);
             }
 
-			return rs.updateOne({ user_id, 'reminders.message': message_id }, { $unset: { 'reminders.$': '' }}).then(dbResult => {
-				const fResult = DatabaseManager.reformat(dbResult);
-				if (!fResult.changes) {
+            return rs.updateOne({ user_id, 'reminders.message': message_id }, { $unset: { 'reminders.$': '' } }).then(dbResult => {
+                const fResult = DatabaseManager.reformat(dbResult);
+                if (!fResult.changes) {
                     return fResult;
                 }
                 // remove the reminders set to null by $unset
-				return rs.updateOne({ user_id }, { $pull: { reminders: null }}).then(DatabaseManager.reformat);
-			});
-		},
+                return rs.updateOne({ user_id }, { $pull: { reminders: null } }).then(DatabaseManager.reformat);
+            });
+        },
 
-		add: async (user_id: Snowflake, data: dbTypes.Reminder) => {
-			const rs = this.bender.collection('user_reminders');
-			const exists = await rs.countDocuments({ user_id });
-			if (!exists) {
+        add: async (user_id: Snowflake, data: dbTypes.Reminder) => {
+            const rs = this.bender.collection('user_reminders');
+            const exists = await rs.countDocuments({ user_id });
+            if (!exists) {
                 return rs.insertOne({ user_id, reminders: [data] }).then(DatabaseManager.reformat)
             }
 
             // TODO: handle cache here rather than re-fetching it in the cache handler?
-			
-			return rs.updateOne({ user_id }, { $addToSet: { reminders: data } }).then(DatabaseManager.reformat);
-		}
-	}
+
+            return rs.updateOne({ user_id }, { $addToSet: { reminders: data } }).then(DatabaseManager.reformat);
+        }
+    }
 
 
     /******************* Premium functions *******************/
-	/*********************************************************/
-    
-	premium = {
-		get: async (ppid: string) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ ppid }).then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
-		},
+    /*********************************************************/
 
-		getFromUserID: async (discord_id: Snowflake) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ $or: [{ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { ppid: discord_id, ['plan.valid_until']: { $gte: Date.now() } }] })
+    premium = {
+        get: async (ppid: string) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ ppid }).then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
+        },
+
+        getFromUserID: async (discord_id: Snowflake) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ $or: [{ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { ppid: discord_id, ['plan.valid_until']: { $gte: Date.now() } }] })
                 .then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
-		},
+        },
 
-		getFromGuildID: async (guildID: Snowflake) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } })
-            .then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
-		},
+        getFromGuildID: async (guildID: Snowflake) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } })
+                .then(DatabaseManager.asType<dbTypes.PremiumData>).catch(this.#handleError);
+        },
 
-		set: async (ppid: string, data: dbTypes.PremiumData) => {
-			const p = this.bender.collection('premium');
-			return p.replaceOne({ ppid }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes); // TODO: use cache?
-		},
+        set: async (ppid: string, data: dbTypes.PremiumData) => {
+            const p = this.bender.collection('premium');
+            return p.replaceOne({ ppid }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes); // TODO: use cache?
+        },
 
-		delete: async (ppid: string) => {
-			const p = this.bender.collection('premium');
-			return p.deleteOne({ ppid }).then(DatabaseManager.reformat); // TODO: use cache?
-		},
+        delete: async (ppid: string) => {
+            const p = this.bender.collection('premium');
+            return p.deleteOne({ ppid }).then(DatabaseManager.reformat); // TODO: use cache?
+        },
 
-		addGuild: async (ppid: string, guildID: Snowflake) => {
-			const p = this.bender.collection('premium');
-			return p.updateOne({ ppid }, { $addToSet: { guilds: guildID } }).then(DatabaseManager.reformat); // TODO: use cache?
-		},
+        addGuild: async (ppid: string, guildID: Snowflake) => {
+            const p = this.bender.collection('premium');
+            return p.updateOne({ ppid }, { $addToSet: { guilds: guildID } }).then(DatabaseManager.reformat); // TODO: use cache?
+        },
 
-		removeGuild: async (ppid: string, guildID: Snowflake) => {
-			const p = this.bender.collection('premium');
-			return p.updateOne({ ppid }, { $pull: { guilds: guildID } }).then(DatabaseManager.reformat); // TODO: use cache?
-		},
+        removeGuild: async (ppid: string, guildID: Snowflake) => {
+            const p = this.bender.collection('premium');
+            return p.updateOne({ ppid }, { $pull: { guilds: guildID } }).then(DatabaseManager.reformat); // TODO: use cache?
+        },
 
-		findPPID: async (discord_id: Snowflake) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ $or: [{ discord_id }, { ppid: discord_id }] }).then(result => result?.ppid || null);
-		},
+        findPPID: async (discord_id: Snowflake) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ $or: [{ discord_id }, { ppid: discord_id }] }).then(result => result?.ppid || null);
+        },
 
-		includesUser: async (discord_id: Snowflake) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { projection: {} }).then(data => !!data).catch(this.#handleErrorFalse);
-		},
+        includesUser: async (discord_id: Snowflake) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ discord_id, ['plan.valid_until']: { $gte: Date.now() } }, { projection: {} }).then(data => !!data).catch(this.#handleErrorFalse);
+        },
 
-		includesGuild: async (guildID: Snowflake) => {
-			// TODO: use cache?
-			const p = this.bender.collection('premium');
-			return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } }, { projection: {} }).then(data => !!data).catch(this.#handleErrorFalse);
-		},
-	}
+        includesGuild: async (guildID: Snowflake) => {
+            // TODO: use cache?
+            const p = this.bender.collection('premium');
+            return p.findOne({ guilds: guildID, ['plan.valid_until']: { $gte: Date.now() } }, { projection: {} }).then(data => !!data).catch(this.#handleErrorFalse);
+        },
+    }
 
     /********************** Command functions **********************/
-	/***************************************************************/
+    /***************************************************************/
 
     command = {
-		get: async (id: Snowflake) => {
-			const c = this.bender.collection('commands');
-			return c.findOne({ id }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
-		},
+        get: async (id: Snowflake) => {
+            const c = this.bender.collection('commands');
+            return c.findOne({ id }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
+        },
 
         getByName: async (name: string) => {
-			const c = this.bender.collection('commands');
-			return c.findOne({ name }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
-		},
+            const c = this.bender.collection('commands');
+            return c.findOne({ name }).then(DatabaseManager.asType<dbTypes.GlobalCommand>);
+        },
 
-		list: async () => {
-			const c = this.bender.collection('commands');
-			return c.find({}).toArray().then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GlobalCommand>(doc));
-		},
+        list: async () => {
+            const c = this.bender.collection('commands');
+            return c.find({}).toArray().then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GlobalCommand>(doc));
+        },
 
         create: async (command: Command) => {
             const savedCommand = DatabaseManager.convertCommand(command);
-			const c = this.bender.collection('commands');
-			return c.insertOne(savedCommand).then(DatabaseManager.fixShittyReturnTypes);
-		},
+            const c = this.bender.collection('commands');
+            return c.insertOne(savedCommand).then(DatabaseManager.fixShittyReturnTypes);
+        },
 
         update: async (id: Snowflake, commandData: CommandCreateData) => {
-			const c = this.bender.collection('commands');
-			return c.updateOne({ id }, { $set: commandData }).then(DatabaseManager.reformat);
-		},
+            const c = this.bender.collection('commands');
+            return c.updateOne({ id }, { $set: commandData }).then(DatabaseManager.reformat);
+        },
 
-		replace: async (id: Snowflake, command: dbTypes.GlobalCommand) => {
-			const c = this.bender.collection('commands');
-			return c.replaceOne({ id }, command).then(DatabaseManager.fixShittyReturnTypes);
-		},
+        replace: async (id: Snowflake, command: dbTypes.GlobalCommand) => {
+            const c = this.bender.collection('commands');
+            return c.replaceOne({ id }, command).then(DatabaseManager.fixShittyReturnTypes);
+        },
 
         replaceByName: async (name: string, command: dbTypes.GlobalCommand) => {
-			const c = this.bender.collection('commands');
-			return c.replaceOne({ name }, command).then(DatabaseManager.fixShittyReturnTypes);
-		},
+            const c = this.bender.collection('commands');
+            return c.replaceOne({ name }, command).then(DatabaseManager.fixShittyReturnTypes);
+        },
 
         replaceAll: async (commands: Command[]) => {
-			const c = this.bender.collection('commands');
-			return c.deleteMany({}).then(() => c.insertMany(commands)).then(DatabaseManager.reformat);
-		},
+            const c = this.bender.collection('commands');
+            return c.deleteMany({}).then(() => c.insertMany(commands)).then(DatabaseManager.reformat);
+        },
 
         updateAll: async (commands: Command[]) => {
-			const c = this.bender.collection('commands');
-			return c.bulkWrite(commands.map(cmd => ({ updateOne: { filter: { name: cmd.name }, update: { $set: cmd } } }))).then(DatabaseManager.reformat);
-		},
+            const c = this.bender.collection('commands');
+            return c.bulkWrite(commands.map(cmd => ({ updateOne: { filter: { name: cmd.name }, update: { $set: cmd } } }))).then(DatabaseManager.reformat);
+        },
 
         delete: async (id: Snowflake) => {
-			const c = this.bender.collection('commands');
-			return c.deleteOne({ id }).then(DatabaseManager.reformat);
-		},
-	}
+            const c = this.bender.collection('commands');
+            return c.deleteOne({ id }).then(DatabaseManager.reformat);
+        },
+    }
 
 
     /******************* Guild command functions *******************/
-	/***************************************************************/
+    /***************************************************************/
 
     guildCommand = {
-		get: async (guildID: Snowflake, id: Snowflake) => {
-			const gc = this.bender.collection('guild_commands');
+        get: async (guildID: Snowflake, id: Snowflake) => {
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
             }
-			return gc.findOne(
+            return gc.findOne(
                 { guild_id: guildID, 'commands.id': id },
                 { projection: { _id: 0, 'commands.$': 1 } }
             ).then(doc => DatabaseManager.asType<dbTypes.GuildCommand>(doc?.commands?.[0] || null));
-		},
+        },
 
         getByName: async (guildID: Snowflake, name: string) => {
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => null);
             }
-			return gc.findOne(
+            return gc.findOne(
                 { guild_id: guildID, 'commands.name': name },
                 { projection: { _id: 0, 'commands.$': 1 } }
             ).then(doc => DatabaseManager.asType<dbTypes.GuildCommand>(doc?.commands?.[0] || null));
-		},
+        },
 
-		list: async (guildID: Snowflake) => {
-			const gc = this.bender.collection('guild_commands');
+        list: async (guildID: Snowflake) => {
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => []);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [] }).then(() => []);
             }
-			return gc.findOne({ guild_id: guildID }).then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GuildCommand>(doc?.commands || null));
-		},
+            return gc.findOne({ guild_id: guildID }).then(doc => DatabaseManager.asTypeArrayFiltered<dbTypes.GuildCommand>(doc?.commands || null));
+        },
 
         create: async (guildID: Snowflake, command: Command) => {
             const savedCommand = DatabaseManager.convertCommand(command);
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [savedCommand] }).then(DatabaseManager.reformat);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [savedCommand] }).then(DatabaseManager.reformat);
             }
-			return gc.updateOne({ guild_id: guildID }, { $addToSet: { commands: savedCommand } }).then(DatabaseManager.reformat);
-		},
+            return gc.updateOne({ guild_id: guildID }, { $addToSet: { commands: savedCommand } }).then(DatabaseManager.reformat);
+        },
 
         update: async (guildID: Snowflake, id: Snowflake, commandData: CommandCreateData) => {
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return DatabaseManager.reformat(null);
+            if (!exists) {
+                return DatabaseManager.reformat(null);
             }
             const updateObj = this.generateDotFormat('commands.$.', commandData);
-			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: updateObj }).then(DatabaseManager.reformat);
-		},
+            return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: updateObj }).then(DatabaseManager.reformat);
+        },
 
-		replace: async (guildID: Snowflake, id: Snowflake, command: dbTypes.GuildCommand) => {
-			const gc = this.bender.collection('guild_commands');
+        replace: async (guildID: Snowflake, id: Snowflake, command: dbTypes.GuildCommand) => {
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
             }
-			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
-		},
+            return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
+        },
 
         replaceByName: async (guildID: Snowflake, name: string, command: dbTypes.GuildCommand) => {
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: [command] }).then(DatabaseManager.reformat);
             }
-			return gc.updateOne({ guild_id: guildID, 'commands.name': name }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
-		},
+            return gc.updateOne({ guild_id: guildID, 'commands.name': name }, { $set: { 'commands.$': command } }).then(DatabaseManager.reformat);
+        },
 
         replaceAll: async (guildID: Snowflake, commands: Command[]) => {
             const savedCommands = commands.map(DatabaseManager.convertCommand);
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
-				return gc.insertOne({ guild_id: guildID, commands: savedCommands }).then(DatabaseManager.reformat);
+            if (!exists) {
+                return gc.insertOne({ guild_id: guildID, commands: savedCommands }).then(DatabaseManager.reformat);
             }
-			return gc.updateOne({ guild_id: guildID }, { $set: { commands: savedCommands } }).then(DatabaseManager.reformat);
-		},
+            return gc.updateOne({ guild_id: guildID }, { $set: { commands: savedCommands } }).then(DatabaseManager.reformat);
+        },
 
         delete: async (guildID: Snowflake, id: Snowflake) => {
-			const gc = this.bender.collection('guild_commands');
+            const gc = this.bender.collection('guild_commands');
             const exists = await gc.countDocuments({ guild_id: guildID });
-			if (!exists) {
+            if (!exists) {
                 return DatabaseManager.reformat(null);
             }
 
-			return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $unset: { 'commands.$': '' }}).then(dbResult => {
-				const fResult = DatabaseManager.reformat(dbResult);
-				if (!fResult.changes) {
+            return gc.updateOne({ guild_id: guildID, 'commands.id': id }, { $unset: { 'commands.$': '' } }).then(dbResult => {
+                const fResult = DatabaseManager.reformat(dbResult);
+                if (!fResult.changes) {
                     return fResult;
                 }
-				return gc.updateOne({ guild_id: guildID }, { $pull: { commands: null }}).then(DatabaseManager.reformat);
-			});
-		},
-	}
+                return gc.updateOne({ guild_id: guildID }, { $pull: { commands: null } }).then(DatabaseManager.reformat);
+            });
+        },
+    }
 
 
     /******************** Shard stats functions ********************/
-	/***************************************************************/
+    /***************************************************************/
 
-	shard = {
-		getDead: async () => { // shards that haven't posted stats in 10 minutes
-			const s = this.bender.collection('bot_status');
-			return s.find({ lastUpdated: { $lt: Date.now() - 1000 * 60 * 10 } }).project({}).toArray();
-		},
+    shard = {
+        getDead: async () => { // shards that haven't posted stats in 10 minutes
+            const s = this.bender.collection('bot_status');
+            return s.find({ lastUpdated: { $lt: Date.now() - 1000 * 60 * 10 } }).project({}).toArray();
+        },
 
-		update: async (data: dbTypes.ShardData): Promise<dbTypes.DatabaseResult> => {
-			const s = this.bender.collection('bot_status');
-			return s.replaceOne({ shard_id: data.shard_id }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
-		},
+        update: async (data: dbTypes.ShardData): Promise<dbTypes.DatabaseResult> => {
+            const s = this.bender.collection('bot_status');
+            return s.replaceOne({ shard_id: data.shard_id }, data, { upsert: true }).then(DatabaseManager.fixShittyReturnTypes);
+        },
 
-		removeExtra: async (shard_count: number) => {
-			const s = this.bender.collection('bot_status');
-			return s.deleteMany({ $and: [{ shard_id: { $ne: 'OVERALL' } }, { shard_id: { $gte: shard_count } }] }).then(DatabaseManager.reformat);
-		},
-	}
+        removeExtra: async (shard_count: number) => {
+            const s = this.bender.collection('bot_status');
+            return s.deleteMany({ $and: [{ shard_id: { $ne: 'OVERALL' } }, { shard_id: { $gte: shard_count } }] }).then(DatabaseManager.reformat);
+        },
+    }
 
 
-	/****************** Key management functions *******************/
-	/***************************************************************/
+    /****************** Key management functions *******************/
+    /***************************************************************/
 
-	oauthKeys = {
-		get: async (type: dbTypes.OAuthServices): Promise<string> => {
-			const o = this.bender.collection('oauth_keys');
-			return o.findOne({ service_name: type }).then(result => result?.key);
-		},
-		set: async (type: dbTypes.OAuthServices, newKey: string, newExpiration: UnixTimestampMillis) => {
-			const o = this.bender.collection('oauth_keys');
-			return o.updateOne({ service_name: type }, { $set: { key: newKey, expiresAt: newExpiration } }, { upsert: true }).then(DatabaseManager.reformat);
-		}
-	}
+    oauthKeys = {
+        get: async (type: dbTypes.OAuthServices): Promise<string> => {
+            const o = this.bender.collection('oauth_keys');
+            return o.findOne({ service_name: type }).then(result => result?.key);
+        },
+        set: async (type: dbTypes.OAuthServices, newKey: string, newExpiration: UnixTimestampMillis) => {
+            const o = this.bender.collection('oauth_keys');
+            return o.updateOne({ service_name: type }, { $set: { key: newKey, expiresAt: newExpiration } }, { upsert: true }).then(DatabaseManager.reformat);
+        }
+    }
 
 
     /********************** Utility functions **********************/
-	/***************************************************************/
+    /***************************************************************/
 
     static convertCommand(command: Command | ICommand): dbTypes.SavedCommand {
         const savedCommand: dbTypes.SavedCommand = Object.assign({}, command, {
@@ -840,18 +840,18 @@ export default class DatabaseManager {
     }
 
     static expandDotFormat(keyParts: string[], value: unknown, workingObject: Record<string, unknown> = {}) {
-		const thisPart = keyParts.shift();
+        const thisPart = keyParts.shift();
         if (!thisPart) {
             return workingObject;
         }
-		if (!keyParts.length) {
-			workingObject[thisPart] = value;
-			return workingObject;
-		}
+        if (!keyParts.length) {
+            workingObject[thisPart] = value;
+            return workingObject;
+        }
         // TODO: not really type safe so idk if this will work right
-		workingObject[thisPart] = DatabaseManager.expandDotFormat(keyParts, value, workingObject[thisPart] as Record<string, unknown>);
-		return workingObject;
-	}
+        workingObject[thisPart] = DatabaseManager.expandDotFormat(keyParts, value, workingObject[thisPart] as Record<string, unknown>);
+        return workingObject;
+    }
 
     static reformat(commandResult: mongodb.UpdateResult | mongodb.DeleteResult | mongodb.InsertOneResult | mongodb.InsertManyResult | mongodb.BulkWriteResult | null) {
         const result: dbTypes.DatabaseResult = { edits: 0, changes: 0, insertions: 0, deletions: 0 };
@@ -887,7 +887,7 @@ export default class DatabaseManager {
             result.changes += commandResult.deletedCount;
         }
 
-		return result;
+        return result;
     }
 
     static createDocumentMap(docs: mongodb.Document[]) {
@@ -921,20 +921,20 @@ export default class DatabaseManager {
 
     #handleError(err: unknown) {
         this.bot.logger.handleError('DATABASE ERROR', err);
-		return null;
+        return null;
     }
     #handleErrorFalse(err: unknown) {
         this.bot.logger.handleError('DATABASE ERROR', err);
-		return false;
+        return false;
     }
 
 
-	/*********************** Cache functions ***********************/
-	/***************************************************************/
+    /*********************** Cache functions ***********************/
+    /***************************************************************/
 
     async processUserChange(event: mongodb.ChangeStreamDocument, isReminders = false) {
-		try {
-			this.bot.logger.debug('DATABASE', 'Received user change event', event);
+        try {
+            this.bot.logger.debug('DATABASE', 'Received user change event', event);
 
             if (event.operationType === 'invalidate') {
                 this.bot.logger.handleError('DATABASE ERROR', `USER ${isReminders ? 'REMINDERS' : 'SETTINGS'} COLLECTION INVALIDATED! No more changes will be processed.`);
@@ -1016,19 +1016,19 @@ export default class DatabaseManager {
                 return;
             }
 
-			if (isReminders) {
+            if (isReminders) {
                 this.cache.userReminders.update(userID, ud.updatedFields, ud.removedFields);
             } else {
                 this.cache.userSettings.update(userID, ud.updatedFields, ud.removedFields);
             }
-		} catch (err) {
-			this.bot.logger.handleError('DATABASE ERROR', err);
-		}
-	}
+        } catch (err) {
+            this.bot.logger.handleError('DATABASE ERROR', err);
+        }
+    }
 
     async processPremiumChange(event: mongodb.ChangeStreamDocument) {
-		try {
-			this.bot.logger.debug('DATABASE', 'Received premium change event', event);
+        try {
+            this.bot.logger.debug('DATABASE', 'Received premium change event', event);
 
             if (event.operationType === 'invalidate') {
                 this.bot.logger.handleError('DATABASE ERROR', `PREMIUM COLLECTION INVALIDATED! No more changes will be processed.`);
@@ -1083,14 +1083,14 @@ export default class DatabaseManager {
             }
 
             this.cache.premium.update(ppid, ud.updatedFields, ud.removedFields);
-		} catch (err) {
-			this.bot.logger.handleError('DATABASE ERROR', err);
-		}
-	}
+        } catch (err) {
+            this.bot.logger.handleError('DATABASE ERROR', err);
+        }
+    }
 
     async processGuildChange(event: mongodb.ChangeStreamDocument) {
-		try {
-			this.bot.logger.debug('DATABASE', 'Received guild change event', event);
+        try {
+            this.bot.logger.debug('DATABASE', 'Received guild change event', event);
 
             if (event.operationType === 'invalidate') {
                 this.bot.logger.handleError('DATABASE ERROR', 'GUILD SETTINGS COLLECTION INVALIDATED! No more changes will be processed.');
@@ -1145,8 +1145,8 @@ export default class DatabaseManager {
             }
 
             this.cache.guilds.update(guildID, ud.updatedFields, ud.removedFields);
-		} catch (err) {
-			this.bot.logger.handleError('DATABASE ERROR', err);
-		}
-	}
+        } catch (err) {
+            this.bot.logger.handleError('DATABASE ERROR', err);
+        }
+    }
 }

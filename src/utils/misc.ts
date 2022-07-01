@@ -51,15 +51,15 @@ export default class MiscUtils {
         status += ` ${this.#getActivityTypeName(activity.type)}`;
         if (activity.type === ACTIVITY_TYPES.CUSTOM) {
             if (activity.emoji) {
-				const emojiObject = activity.emoji.id ? this.bot.cache.emojis.find(activity.emoji.id) : null;
+                const emojiObject = activity.emoji.id ? this.bot.cache.emojis.find(activity.emoji.id) : null;
                 const emojiText = emojiObject ? TextUtils.emoji.parse(emojiObject) : activity.emoji.name;
-				if (emojiText) {
-					status += ` ${emojiText}${activity.state ? ` **${activity.state}**` : ''}`;
-				} else if (presence.activities.length > 1) {
-					const secondActivity = presence.activities[1];
-					status += this.#getActivityTypeName(activity.type);
-					if (
-                        secondActivity.type === ACTIVITY_TYPES.STREAMING && 
+                if (emojiText) {
+                    status += ` ${emojiText}${activity.state ? ` **${activity.state}**` : ''}`;
+                } else if (presence.activities.length > 1) {
+                    const secondActivity = presence.activities[1];
+                    status += this.#getActivityTypeName(activity.type);
+                    if (
+                        secondActivity.type === ACTIVITY_TYPES.STREAMING &&
                         secondActivity.name && !/^\s+$/.test(secondActivity.name) &&
                         secondActivity.url && !/^\s$/.test(secondActivity.url)
                     ) {
@@ -67,30 +67,30 @@ export default class MiscUtils {
                     } else {
                         status += ` **${secondActivity.name}**`
                     }
-				} else {
-					status += ` ${statusType}`;
-				}
-			} else if (!activity.state || !activity.details || !activity.application_id) {
-				status += ` ${statusType}`;
-			} else {
-				status += ` **${activity.state}**`;
-			}
+                } else {
+                    status += ` ${statusType}`;
+                }
+            } else if (!activity.state || !activity.details || !activity.application_id) {
+                status += ` ${statusType}`;
+            } else {
+                status += ` **${activity.state}**`;
+            }
         } else if (
             activity.type === ACTIVITY_TYPES.STREAMING &&
-            activity.name.trim() && 
+            activity.name.trim() &&
             activity.url && !/^\s$/.test(activity.url)
         ) {
-			status += ` **[${activity.name}](${activity.url})**`;
-		} else {
-			status += ` **${activity.name}**`;
-		}
+            status += ` **[${activity.name}](${activity.url})**`;
+        } else {
+            status += ` **${activity.name}**`;
+        }
 
         for (const activity of presence.activities) {
-			if (activity.type !== ACTIVITY_TYPES.CUSTOM && (activity.application_id || activity.details || activity.state)) {
-				status += ` ${this.getEmoji('RPC', interaction)}`;
+            if (activity.type !== ACTIVITY_TYPES.CUSTOM && (activity.application_id || activity.details || activity.state)) {
+                status += ` ${this.getEmoji('RPC', interaction)}`;
                 break;
-			}
-		}
-		return status;
+            }
+        }
+        return status;
     }
 }

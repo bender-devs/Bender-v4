@@ -9,7 +9,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     if (!emojiString || typeof emojiString !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
-    if (Array.from(emojiString.substring(0,2)).length === 1) {
+    if (Array.from(emojiString.substring(0, 2)).length === 1) {
         // TODO: run /info char instead?
     }
     let cachedEmoji: Emoji | null = null;
@@ -41,7 +41,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
             roles: emoji.roles.map(id => `<@&${id}>`).join(', ')
         }, interaction.locale)}`;
     }
-        
+
     if (emoji.animated) {
         description += `\n${LangUtils.getAndReplace('EMOJI_INFO_ANIMATED', {
             nitroEmoji: this.getEmoji('NITRO', interaction)

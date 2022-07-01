@@ -158,7 +158,7 @@ type ObjectLevel2 = Record<string, ObjectLevel1>;
 type NonObject = string | boolean | number | null | Array<unknown>;
 
 // turbo nerd mode activated
-type ObjectTypes<KeyMap extends ObjectLevel1> = { [Key in keyof KeyMap as KeyMap[Key] extends NonObject ? never : Key ]: Key extends string ? KeyMap[Key] extends never ? never : KeyMap[Key] : never };
+type ObjectTypes<KeyMap extends ObjectLevel1> = { [Key in keyof KeyMap as KeyMap[Key] extends NonObject ? never : Key]: Key extends string ? KeyMap[Key] extends never ? never : KeyMap[Key] : never };
 
 // tags and customcommands are indexed by any string; omit them to keep subkey typing
 type GuildObjectTypes = ObjectTypes<Required<Omit<GuildSettings, 'tags' | 'customcommands'>>>;

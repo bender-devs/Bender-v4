@@ -295,13 +295,13 @@ export default class DevCommand extends CommandUtils implements ICommand {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), evaledColor);
                         evaled = TextUtils.truncate(evaled, maxLength - 50, '```');
                     }
-                    
+
                     stop = Date.now();
 
                     const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
                     return this.deferredResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
 
-                } catch(err) {
+                } catch (err) {
                     maxLength -= footer.length;
 
                     stop = Date.now();

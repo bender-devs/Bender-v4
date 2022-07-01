@@ -29,7 +29,7 @@ export default class Gateway extends EventEmitter {
     #inflator!: zlib.Inflate;
     #inflate(data: Buffer) {
         this.#inflator.push(data, zlib.Z_SYNC_FLUSH);
-        if(this.#inflator.err < 0) {
+        if (this.#inflator.err < 0) {
             this.bot.logger.handleError('ZLIB ERROR', this.#inflator.msg);
             return null;
         }
@@ -99,14 +99,14 @@ export default class Gateway extends EventEmitter {
         let parsedPayload: gatewayTypes.GatewayPayload;
         try {
             parsedPayload = JSON.parse(payloadText);
-        } catch(err) {
+        } catch (err) {
             this.bot.logger.handleError('GATEWAY MESSAGE ERROR', 'Failed to parse gateway message:', err, data);
             return false;
         }
         if (parsedPayload.op !== GATEWAY_OPCODES.DISPATCH) {
             this.bot.logger.debug('GATEWAY MESSAGE PARSED', parsedPayload);
         }
-        switch(parsedPayload.op) {
+        switch (parsedPayload.op) {
             case GATEWAY_OPCODES.DISPATCH: {
                 const payload = parsedPayload as gatewayTypes.EventPayload;
                 if (payload.t === 'READY' && payload.d && 'session_id' in payload.d) {
@@ -201,7 +201,7 @@ export default class Gateway extends EventEmitter {
         try {
             stringifiedData = JSON.stringify(data);
         }
-        catch(err) {
+        catch (err) {
             this.bot.logger.handleError('GATEWAY sendData', err as Error);
         }
         if (!stringifiedData) {
@@ -300,7 +300,7 @@ export default class Gateway extends EventEmitter {
             return this.sendData(payload);
         })
     }
-    
+
     async requestGuildMembers(requestGuildMembersData: gatewayTypes.RequestMembersData) {
         const payload: gatewayTypes.RequestMembersPayload = {
             op: GATEWAY_OPCODES.REQUEST_GUILD_MEMBERS,

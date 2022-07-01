@@ -7,7 +7,7 @@ import LangUtils from '../../utils/language';
 import DiscordUtils from '../../utils/discord';
 
 // modified from https://github.com/oscmejia/os-utils
-function getCPUInfo() { 
+function getCPUInfo() {
     const cpuInfo = cpus();
     let idle = 0, used = 0;
     for (const cpu in cpuInfo) {
@@ -18,18 +18,18 @@ function getCPUInfo() {
     return { idle, used };
 }
 const getCPULoad = async (interval = 1000): Promise<number> => {
-	return new Promise(resolve => {
+    return new Promise(resolve => {
         const start = getCPUInfo();
         setTimeout(() => {
             const end = getCPUInfo();
-            
+
             const idle = end.idle - start.idle;
             const used = end.used - start.used;
             const perc = used / (used + idle);
-            
+
             resolve(Math.round(perc * 10000) / 100); // include 2 decimal places 
         }, interval);
-	});
+    });
 };
 
 const getMemoryUsage = () => {

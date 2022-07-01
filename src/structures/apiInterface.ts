@@ -165,11 +165,11 @@ export default class APIInterface {
             return APIWrapper.member.edit(guild_id, user_id, member_data, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        setSelfNick: async(guild_id: types.Snowflake, nick: string | null, reason?: string) => {
+        setSelfNick: async (guild_id: types.Snowflake, nick: string | null, reason?: string) => {
             return APIWrapper.member.setSelfNick(guild_id, nick, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        kick: async(guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string) => {
+        kick: async (guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string) => {
             return APIWrapper.member.kick(guild_id, user_id, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
@@ -201,7 +201,7 @@ export default class APIInterface {
             return APIWrapper.message.create(channel_id, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        setPositions: async(guild_id: types.Snowflake, channel_position_data: Array<types.ChannelPositionData>, reason?: string) => {
+        setPositions: async (guild_id: types.Snowflake, channel_position_data: Array<types.ChannelPositionData>, reason?: string) => {
             return APIWrapper.channel.setPositions(guild_id, channel_position_data, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -216,7 +216,7 @@ export default class APIInterface {
     }
 
     message = {
-        fetch: async(channel: types.Channel | types.Snowflake, message_id: types.Snowflake) => {
+        fetch: async (channel: types.Channel | types.Snowflake, message_id: types.Snowflake) => {
             const channel_id = typeof channel === 'string' ? channel : channel.id;
             const guild_id = typeof channel === 'string' ? null : channel.guild_id;
             let message: types.Message | null = null;
@@ -225,14 +225,14 @@ export default class APIInterface {
             }
             if (!message) {
                 message = await APIWrapper.message.fetch(channel_id, message_id)
-                .then(res => res.body).catch(this.handleError.bind(this));
+                    .then(res => res.body).catch(this.handleError.bind(this));
                 if (message && this.cacheEnabled) {
                     this.bot.cache.messages.create(message);
                 }
             }
             return message;
         },
-        fetchMany: async(channel_id: types.Snowflake, limit: number, filter_ids: Omit<types.MessageFetchData, 'limit'>) => {
+        fetchMany: async (channel_id: types.Snowflake, limit: number, filter_ids: Omit<types.MessageFetchData, 'limit'>) => {
             if (Object.keys(filter_ids).length > 1) {
                 throw new Error('Only one field can be used in message fetch data.');
             }
@@ -394,7 +394,7 @@ export default class APIInterface {
             }
             return command;
         },
-        edit: async(command_id: types.Snowflake, command_data: types.CommandEditData) => {
+        edit: async (command_id: types.Snowflake, command_data: types.CommandEditData) => {
             return APIWrapper.globalCommand.edit(this.bot.user.id, command_id, command_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -455,7 +455,7 @@ export default class APIInterface {
             }
             return command;
         },
-        edit: async(guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) => {
+        edit: async (guild_id: types.Snowflake, command_id: types.Snowflake, command_data: types.CommandEditData) => {
             return APIWrapper.guildCommand.edit(this.bot.user.id, guild_id, command_id, command_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -471,15 +471,15 @@ export default class APIInterface {
     }
 
     guildCommandPermissions = {
-        list: async(guild_id: types.Snowflake) => {
+        list: async (guild_id: types.Snowflake) => {
             return APIWrapper.guildCommandPermissions.list(this.bot.user.id, guild_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        fetch: async(guild_id: types.Snowflake, command_id: types.Snowflake) => {
+        fetch: async (guild_id: types.Snowflake, command_id: types.Snowflake) => {
             return APIWrapper.guildCommandPermissions.fetch(this.bot.user.id, guild_id, command_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        edit: async(guild_id: types.Snowflake, command_id: types.Snowflake, permissions: types.CommandPermissionsData) => {
+        edit: async (guild_id: types.Snowflake, command_id: types.Snowflake, permissions: types.CommandPermissionsData) => {
             return APIWrapper.guildCommandPermissions.edit(this.bot.user.id, guild_id, command_id, permissions)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }
@@ -528,11 +528,11 @@ export default class APIInterface {
     }
 
     voice = {
-        move: async(guild_id: types.Snowflake, member_id: types.Snowflake, new_channel_id: types.Snowflake) => {
+        move: async (guild_id: types.Snowflake, member_id: types.Snowflake, new_channel_id: types.Snowflake) => {
             return APIWrapper.voice.move(guild_id, member_id, new_channel_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        kick: async(guild_id: types.Snowflake, member_id: types.Snowflake) => {
+        kick: async (guild_id: types.Snowflake, member_id: types.Snowflake) => {
             return APIWrapper.voice.kick(guild_id, member_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -543,19 +543,19 @@ export default class APIInterface {
     }
 
     reaction = {
-        add: async(message: types.Message, emoji_identifier: types.EmojiIdentifier) => {
+        add: async (message: types.Message, emoji_identifier: types.EmojiIdentifier) => {
             return APIWrapper.reaction.create(message.channel_id, message.id, emoji_identifier)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        listUsers: async(message: types.Message, emoji_identifier: types.EmojiIdentifier, limit: number, after?: types.Snowflake) => {
+        listUsers: async (message: types.Message, emoji_identifier: types.EmojiIdentifier, limit: number, after?: types.Snowflake) => {
             return APIWrapper.reaction.listUsers(message.channel_id, message.id, emoji_identifier, { limit, after })
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        deleteSelf: async(message: types.Message, emoji_identifier: types.EmojiIdentifier, reason?: string) => {
+        deleteSelf: async (message: types.Message, emoji_identifier: types.EmojiIdentifier, reason?: string) => {
             return APIWrapper.reaction.deleteSelf(message.channel_id, message.id, emoji_identifier, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        delete: async(message: types.Message, emoji_identifier: types.EmojiIdentifier, user_id: types.Snowflake, reason?: string) => {
+        delete: async (message: types.Message, emoji_identifier: types.EmojiIdentifier, user_id: types.Snowflake, reason?: string) => {
             return APIWrapper.reaction.delete(message.channel_id, message.id, emoji_identifier, user_id, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
@@ -601,7 +601,7 @@ export default class APIInterface {
             return APIWrapper.invite.delete(code, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
-        list: async(guild_id: types.Snowflake) => {
+        list: async (guild_id: types.Snowflake) => {
             return APIWrapper.guild.fetchInvites(guild_id)
                 .then(res => res.body).catch(this.handleError.bind(this));
         }

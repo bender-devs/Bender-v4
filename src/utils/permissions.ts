@@ -1,6 +1,6 @@
 import { ID_REGEX_EXACT, OWNERS } from '../data/constants';
 import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes';
-import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types'; 
+import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types';
 import { CachedGuild } from '../structures/cacheHandler';
 import Bot from '../structures/bot';
 

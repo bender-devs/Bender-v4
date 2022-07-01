@@ -111,14 +111,14 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         title = LangUtils.getAndReplace(`CHANNEL_INFO_TITLE${channel.nsfw ? '_NSFW' : ''}`, { channelName: textChannel.name }, interaction.locale);
 
         let topic = '';
-        if (channel.topic) {   
+        if (channel.topic) {
             topic = LangUtils.getAndReplace('CHANNEL_INFO_TOPIC', { topic: TextUtils.truncate(channel.topic, 900) }, interaction.locale);
         } else {
             topic = LangUtils.get('CHANNEL_INFO_NO_TOPIC', interaction.locale);
         }
 
         let lastActivityInfo = '';
-        if (channel.last_message_id) {   
+        if (channel.last_message_id) {
             const lastMessageTimestamp = TextUtils.timestamp.fromSnowflake(channel.last_message_id);
             lastActivityInfo = LangUtils.formatDateAgo('CHANNEL_INFO_LAST_ACTIVITY', lastMessageTimestamp, interaction.locale);
         } else {

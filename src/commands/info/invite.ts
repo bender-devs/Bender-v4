@@ -77,7 +77,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
         } else {
             userAvatar = CDNUtils.userDefaultAvatar(invite.inviter.discriminator);
         }
-        
+
         embed.footer = {
             text: userText,
             icon_url: userAvatar

@@ -111,8 +111,8 @@ export default class TextUtils {
     }
 
     static truncate(text: string, length = 2000, suffix = '', strict = false) {
-		const len = strict ? text.length : Array.from(text).length;
+        const len = strict ? text.length : Array.from(text).length;
         const suffixLength = suffix.length + 4;
-		return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
-	}
+        return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
+    }
 }

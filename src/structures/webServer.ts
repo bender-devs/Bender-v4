@@ -45,7 +45,7 @@ export default class WebServer {
         let body = '';
         try {
             body = JSON.stringify(request.body);
-        } catch(err) {
+        } catch (err) {
             this.logger.handleError('webServer validateHeaders', err);
         }
 

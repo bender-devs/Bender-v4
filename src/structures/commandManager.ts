@@ -21,7 +21,7 @@ export default class SlashCommandManager {
     developer_commands: ICommand[];
     user_commands: UserCommand[];
     message_commands: MessageCommand[];
-    
+
     constructor(bot: Bot) {
         this.bot = bot;
 
@@ -30,7 +30,7 @@ export default class SlashCommandManager {
         this.commands.push(new TextCommand(this.bot));
         this.commands.push(new ConvertTextCommand(this.bot));
         this.commands.push(new InfoCommand(this.bot));
-        
+
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
 
@@ -90,8 +90,8 @@ export default class SlashCommandManager {
         }
         if (newCommands.length) {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands.map(cmd => cmd.name));
-            await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ? 
-                this.bot.api.guildCommand.create(guildID, cmd).then(command => command ? this.bot.db.guildCommand.create(guildID, command) : null) : 
+            await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ?
+                this.bot.api.guildCommand.create(guildID, cmd).then(command => command ? this.bot.db.guildCommand.create(guildID, command) : null) :
                 this.bot.api.command.create(cmd).then(command => command ? this.bot.db.command.create(command) : null)
             )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
@@ -101,7 +101,7 @@ export default class SlashCommandManager {
             let id: Snowflake;
             for (id in editedCommands) {
                 const cmd = this.#stripBotValue(editedCommands[id]);
-                promises.push(guildID ? 
+                promises.push(guildID ?
                     this.bot.api.guildCommand.edit(guildID, id, cmd).then(command => command ? this.bot.db.guildCommand.update(guildID, id, command) : null) :
                     this.bot.api.command.edit(id, cmd).then(command => command ? this.bot.db.command.update(id, command) : null)
                 );
@@ -110,7 +110,7 @@ export default class SlashCommandManager {
         }
         if (deletedCommands.length) {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Deleted commands:', deletedCommands.map(cmd => cmd.name));
-            await Promise.all(deletedCommands.map(cmd => guildID ? 
+            await Promise.all(deletedCommands.map(cmd => guildID ?
                 this.bot.api.guildCommand.delete(guildID, cmd.id).then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
                 this.bot.api.command.delete(cmd.id).then(() => this.bot.db.command.delete(cmd.id))
             )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));

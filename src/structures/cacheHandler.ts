@@ -87,13 +87,13 @@ export default class CacheHandler {
             password: process.env.REDIS_PASS
         });
         this.initialized = true;
-        
+
         this.redisClient.on('ready', () => {
             this.#connected = true;
             const latency = TimeUtils.sinceMillis(this.#startTimestamp);
             this.bot.logger.debug('REDIS', `Connected in ${latency}ms`);
         });
-        this.redisClient.on('error', err => this.bot.logger.handleError('REDIS ERROR', err));  
+        this.redisClient.on('error', err => this.bot.logger.handleError('REDIS ERROR', err));
         this.redisClient.on('end', () => {
             this.#connected = false;
             this.#startTimestamp = Date.now();
@@ -108,7 +108,7 @@ export default class CacheHandler {
         return this.redisClient.connect();
     }
 
-    async #getMultiMixed (string_keys: string[], hash_keys: string[]) {
+    async #getMultiMixed(string_keys: string[], hash_keys: string[]) {
         const multi = this.redisClient.multi();
         for (const key of string_keys) {
             multi.get(key);
@@ -190,7 +190,7 @@ export default class CacheHandler {
     async #dbSize() {
         return this.redisClient.dbSize();
     }
-    
+
 
     guilds = {
         get: (guild_id: types.Snowflake): CachedGuild | null => {
@@ -496,7 +496,7 @@ export default class CacheHandler {
             }
             const chans: types.GuildChannel[] = [];
             for (const chanID in this.#guilds[guild_id].channels) {
-                const chan = this.#guilds[guild_id].channels[chanID as types.Snowflake]; 
+                const chan = this.#guilds[guild_id].channels[chanID as types.Snowflake];
                 if (chan.parent_id === category_id) {
                     chans.push(chan);
                 }

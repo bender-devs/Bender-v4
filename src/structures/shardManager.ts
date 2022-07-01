@@ -68,11 +68,11 @@ export default class ShardManager {
         this.#timeouts = {};
 
         this.#shardProcesses = [];
-        this.#shardProcesses.fill(null, 0, count-1);
+        this.#shardProcesses.fill(null, 0, count - 1);
         this.#lastActivityTimestamps = [];
-        this.#lastActivityTimestamps.fill(0, 0, count-1);
+        this.#lastActivityTimestamps.fill(0, 0, count - 1);
         this.#upSinceTimestamps = [];
-        this.#upSinceTimestamps.fill(0, 0, count-1);
+        this.#upSinceTimestamps.fill(0, 0, count - 1);
 
         process.on('message', this.handleMessage);
     }
@@ -85,7 +85,7 @@ export default class ShardManager {
 
     spawnProcess(shardID: number): child_process.ChildProcess {
         const shardProcess = child_process.spawn(SHARD_SPAWN_COMMAND, [SHARD_SPAWN_FILE], {
-            env: Object.assign({}, process.env, { 
+            env: Object.assign({}, process.env, {
                 SHARD_ID: shardID,
                 SHARD_COUNT: this.shardCount
             }),
@@ -153,7 +153,7 @@ export default class ShardManager {
         let messageString = '';
         try {
             messageString = JSON.stringify(message);
-        } catch(err) {
+        } catch (err) {
             this.logger.handleError('dispatchMessage JSON.stringify', err, message);
             return;
         }
@@ -209,7 +209,7 @@ export default class ShardManager {
                 let parsedValues: ShardFetchData = null;
                 try {
                     parsedValues = message.data ? JSON.parse(message.data) : null;
-                } catch(err) {
+                } catch (err) {
                     this.logger.handleError('SHARD MESSAGE', 'Failed to parse returned values:', message.data);
                 }
                 if (this.#complexCallbacks[message.nonce]) {
@@ -253,7 +253,7 @@ export default class ShardManager {
                 nonce: messageObject.nonce,
                 data: messageObject.data
             }
-        } catch(err) {
+        } catch (err) {
             if (logger) {
                 logger.handleError('PARSING SHARD MESSAGE FAILED', err, message);
             } else {
@@ -262,7 +262,7 @@ export default class ShardManager {
             return null;
         }
     }
-    
+
     async getStats(shards: number[] | 'ALL' = 'ALL') {
         return this.getValues(shards, GENERAL_STATS);
     }

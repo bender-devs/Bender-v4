@@ -96,7 +96,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             required: true
         }, {
             type: COMMAND_OPTION_TYPES.STRING,
-            
+
             name: 'text',
             name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_HASHTEXT'),
 

@@ -7,7 +7,7 @@ import * as types from './types';
 
 export const enum ERRORS {
     PAYLOAD_SENT_BEFORE_WS = 'Tried to send data before the WebSocket was established.',
-    PAYLOAD_SENT_BEFORE_CONNECT  = 'Tried to send data before the WebSocket was connected.'
+    PAYLOAD_SENT_BEFORE_CONNECT = 'Tried to send data before the WebSocket was connected.'
 }
 
 export interface GatewayError extends Error {
@@ -55,11 +55,11 @@ export interface ReadyPayload extends EventPayload {
 
 export type ReadyData = {
     v: num.GATEWAY_VERSIONS;
-	user: types.User;
-	guilds: types.UnavailableGuild[];
-	session_id: string;
-	shard?: ShardConnectionData;
-	application: types.PartialApplication;
+    user: types.User;
+    guilds: types.UnavailableGuild[];
+    session_id: string;
+    shard?: ShardConnectionData;
+    application: types.PartialApplication;
 }
 
 export interface ResumedPayload extends EventPayload {

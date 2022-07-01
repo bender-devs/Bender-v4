@@ -42,7 +42,7 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         return this.respondKey(interaction, 'GUILD_ONLY', 'GUILD');
     }
 
-    const guild = await this.bot.api.guild.fetch(interaction.guild_id, true).catch(() => null); 
+    const guild = await this.bot.api.guild.fetch(interaction.guild_id, true).catch(() => null);
     if (!guild) {
         return this.respondKey(interaction, 'SERVER_INFO_FETCH_FAILED', 'ERROR');
     }
