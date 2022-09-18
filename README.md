@@ -1,7 +1,5 @@
 # Bender-v4
-The latest and greatest version of Bender.
-
-## Links
+_The latest and greatest version of Bender._
 
 |   |   |
 |---|---|
