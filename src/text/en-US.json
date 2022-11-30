@@ -243,6 +243,79 @@
 
 
 
+    "----------- /fun -----------": "",
+
+    "FUN_NAME": "fun",
+    "FUN_DESCRIPTION": "Commands for entertainment and randomness.",
+
+    "------- /fun 8ball -------": "",
+
+    "FUN_8BALL_SUBCOMMAND": "8ball",
+    "FUN_8BALL_SUBCOMMAND_DESCRIPTION": "Ask the magic 8-ball life's toughest questions.",
+    "FUN_8BALL_OPTION": "question",
+    "FUN_8BALL_OPTION_DESCRIPTION": "What's on your mind?",
+
+    "FUN_8BALL_OUTCOMES": [
+        "It is certain",
+        "It is decidedly so",
+        "Without a doubt",
+        "Yes, definitely",
+        "You may rely on it",
+        "As I see it, yes",
+        "Most likely",
+        "Outlook good",
+        "Yes",
+        "Signs point to yes",
+        "Reply hazy try again",
+        "Ask again later",
+        "Better not tell you now",
+        "Cannot predict now",
+        "Concentrate and ask again",
+        "Don't count on it",
+        "My reply is no",
+        "My sources say no",
+        "Outlook not so good",
+        "Very doubtful"
+    ],
+
+    "------- /fun coinflip -------": "",
+
+    "FUN_COIN_SUBCOMMAND": "coinflip",
+    "FUN_COIN_SUBCOMMAND_DESCRIPTION": "Let Bender decide your fate by flipping coins for you. ⛀⛁⛃⛂",
+    "FUN_COIN_OPTION": "coins",
+    "FUN_COIN_OPTION_DESCRIPTION": "Number of coins to flip",
+
+    "FUN_COIN_HEADS": "Heads!",
+    "FUN_COIN_TAILS": "Tails!",
+
+    "FUN_COIN_COUNT": "Flipped **{{count}}** coins:",
+    "FUN_COIN_NUM_HEADS_SINGLE": "**1** was heads.",
+    "FUN_COIN_NUM_HEADS": "**{{count}}** were heads.",
+    "FUN_COIN_NUM_TAILS_SINGLE": "**1** was tails.",
+    "FUN_COIN_NUM_TAILS": "**{{count}}** were tails.",
+    "FUN_COIN_RESULT_TIE": "The overall result is: **a tie!**",
+    "FUN_COIN_RESULT_HEADS": "The overall result is: **Tails!**",
+    "FUN_COIN_RESULT_TAILS": "The overall result is: **Heads!**",
+
+    "------- /fun dice -------": "",
+
+    "FUN_DICE_SUBCOMMAND": "dice",
+    "FUN_DICE_SUBCOMMAND_DESCRIPTION": "Don't have any dice? Let Bender roll for you! ⚀ ⚁ ⚂ ⚃ ⚄ ⚅",
+    "FUN_DICE_OPTION_COUNT": "dice",
+    "FUN_DICE_OPTION_COUNT_DESCRIPTION": "Number of dice to roll",
+    "FUN_DICE_OPTION_SIDES": "sides",
+    "FUN_DICE_OPTION_SIDES_DESCRIPTION": "Number of sides per die",
+
+    "FUN_DICE_SIDES_SINGLE": "Rolled a **{{num}}** on a {{sides}}-sided die.",
+    "FUN_DICE_SIDES": "Rolled **{{count}}** {{sides}}-sided dice:",
+    "FUN_DICE_NORMAL_SINGLE": "Rolled a normal die:",
+    "FUN_DICE_NORMAL": "Rolled **{{count}}** normal die:",
+    "FUN_DICE_DETAIL_SINGLE": "**{{num}}** was rolled **1** time.",
+    "FUN_DICE_DETAIL": "**{{num}}** was rolled **{{count}}** times.",
+    "FUN_DICE_TOTAL": "The total is: **{{sum}}**.",
+
+
+
     "----------- Presences -----------": "",
 
     "STATUS_ONLINE": "Online",

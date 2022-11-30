@@ -4,6 +4,7 @@ import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
 import { PERMISSIONS } from '../types/numberTypes';
+import MiscUtils from './misc';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -16,13 +17,39 @@ export default class LanguageUtils {
         return LOCALE_LIST.includes(locale);
     }
 
-    static get(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string {
+    static _get(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string | string[] {
         if (!this.discordSupportsLocale(locale)) {
             locale = DEFAULT_LANGUAGE;
         }
         // fallback to default if specified language's translation file doesn't exist
         // or if the key doesn't exist in that language's translation file
-        return languages[locale]?.[key] || languages[DEFAULT_LANGUAGE]?.[key] || '';
+        return languages[locale]?.[key] || languages[DEFAULT_LANGUAGE]?.[key];
+    }
+
+    static get(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string {
+        const result = this._get(key, locale);
+        if (Array.isArray(result)) {
+            return result[0] || '';
+        }
+        return result || '';
+    }
+
+    static getArr(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string[] {
+        const result = this._get(key, locale);
+        if (Array.isArray(result)) {
+            return result;
+        } else if (result) {
+            return [result];
+        }
+        return [];
+    }
+
+    static getRandom(key: LangKey, locale: Locale = DEFAULT_LANGUAGE): string {
+        const result = this._get(key, locale);
+        if (Array.isArray(result)) {
+            return MiscUtils.randomItem(result);
+        }
+        return result || '';
     }
 
     static getAndReplace(key: LangKey, replaceMap: ReplaceMap, locale: Locale = DEFAULT_LANGUAGE): string {

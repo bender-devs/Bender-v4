@@ -747,7 +747,7 @@ export const LOCALE_LIST = [
     'ko',	 // Korean	        한국어
 ] as const;
 export type Locale = typeof LOCALE_LIST[number];
-export type LocaleDict = Partial<Record<Locale, string>>;
+export type LocaleDict = Partial<Record<Locale, string | string[]>>;
 
 export type CommandBase = {
     name?: string;
@@ -1106,7 +1106,7 @@ export type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' 
 
 export type LangMap = { [key: string]: Lang };
 
-export type Lang = Record<string, string>;
+export type Lang = Record<string, string | string[]>;
 
 export type ReplaceMap = Record<string, string | number>;
 

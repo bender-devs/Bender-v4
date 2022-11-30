@@ -68,6 +68,17 @@
     "SECURITY_HIGH":      "🔐",
     "SECURITY_VERY_HIGH": "📱",
 
+	"8BALL": "🎱",
+	"HEADS": "⛀",
+	"TAILS": "⛂",
+	"DIE": "🎲",
+	"DIE_1": "⚀",
+	"DIE_2": "⚁",
+	"DIE_3": "⚂",
+	"DIE_4": "⚃",
+	"DIE_5": "⚄",
+	"DIE_6": "⚅",
+
 	"ROTATE":     "<:rotate:539310324717977615>",
 	"SPIN":       "<a:spin:540406081159954432>",
 	"MIRROR":     "<:mirror:540674352119808010>",
