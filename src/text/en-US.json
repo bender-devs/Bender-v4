@@ -314,6 +314,32 @@
     "FUN_DICE_DETAIL": "**{{num}}** was rolled **{{count}}** times.",
     "FUN_DICE_TOTAL": "The total is: **{{sum}}**.",
 
+    "------- /fun rps -------": "",
+
+    "FUN_RPS_SUBCOMMAND": "rps",
+    "FUN_RPS_SUBCOMMAND_DESCRIPTION": "Play rock-paper-scissors with Bender.",
+    "FUN_RPS_OPTION": "show",
+    "FUN_RPS_OPTION_DESCRIPTION": "Your choice: Rock, paper, or scissors?",
+
+    "FUN_RPS_ROCK": "Rock",
+    "FUN_RPS_PAPER": "Paper",
+    "FUN_RPS_SCISSORS": "Scissors",
+    "FUN_RPS_CHOICE": "I chose **{{choice}}**.",
+    "FUN_RPS_TIE": "It's a tie!",
+    "FUN_RPS_WIN": "I win, as bots always do.",
+    "FUN_RPS_LOSS": "You win this round. *Rigged.*",
+
+    "------- /fun choose -------": "",
+
+    "FUN_CHOOSE_SUBCOMMAND": "choose",
+    "FUN_CHOOSE_SUBCOMMAND_DESCRIPTION": "Pick something at random.",
+    "FUN_CHOOSE_OPTION": "options",
+    "FUN_CHOOSE_OPTION_DESCRIPTION": "A list of options, separated by |",
+
+    "FUN_CHOOSE_ONE_CHOICE": "Not much of a choice, is there?",
+    "FUN_CHOOSE_ONE_CHOICE_HINT": "Use a `|` to separate options.",
+    "FUN_CHOOSE_RESULT": "I choose {{choice}}",
+
 
 
     "----------- Presences -----------": "",

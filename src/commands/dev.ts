@@ -172,7 +172,7 @@ export default class DevCommand extends CommandUtils implements ICommand {
             name: 'get',
             description: 'Get values from a shard or all shards.',
             options: [{
-                type: COMMAND_OPTION_TYPES.NUMBER,
+                type: COMMAND_OPTION_TYPES.INTEGER,
                 name: 'shard-id',
                 description: 'The shard ID from which to get values.'
             }, {
