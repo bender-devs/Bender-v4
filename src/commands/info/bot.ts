@@ -100,5 +100,5 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         embed.title = `Bender v${VERSION}`;
     }
 
-    return this.deferredResponse(interaction, embed);
+    return this.deferredResponse(interaction, { embeds: [embed] });
 }

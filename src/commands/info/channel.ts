@@ -139,7 +139,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }, interaction.locale);
     description += `\n\n[${linkTitle}](https://discord.com/channels/${channel.guild_id}/${channel.id})`;
 
-    return this.respond(interaction, {
+    const embed: types.Embed = {
         description,
         author: {
             name: title,
@@ -150,5 +150,6 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         footer: {
             text: `ID: ${channel.id}`
         }
-    });
+    };
+    return this.respond(interaction, { embeds: [embed] });
 }

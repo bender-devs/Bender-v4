@@ -1,5 +1,5 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
-import { CommandOptionValue, Emoji, Interaction, Snowflake } from '../../types/types';
+import { CommandOptionValue, Embed, Emoji, Interaction, Snowflake } from '../../types/types';
 import CDNUtils from '../../utils/cdn';
 import LangUtils from '../../utils/language';
 import TextUtils from '../../utils/text';
@@ -56,10 +56,11 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
 
     description += `\n\n[${linkTitle}](${url})`;
 
-    return this.respond(interaction, {
+    const embed: Embed = {
         color: DEFAULT_COLOR,
         author: { name: title, icon_url: url },
         thumbnail: { url },
         description
-    })
+    };
+    return this.respond(interaction, { embeds: [embed] });
 }

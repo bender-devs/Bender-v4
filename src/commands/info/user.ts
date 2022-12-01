@@ -134,5 +134,5 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     embed.thumbnail = {
         url: avatar
     };
-    return this.respond(interaction, embed);
+    return this.respond(interaction, { embeds: [embed] });
 }

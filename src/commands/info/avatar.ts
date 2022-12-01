@@ -47,13 +47,14 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             avatarEmoji: this.getEmoji('AVATAR', interaction)
         }, interaction.locale);
 
-        return this.respond(interaction, {
+        const embed: types.Embed = {
             description: title,
             color: user.accent_color || DEFAULT_COLOR,
             image: {
                 url: avatarLink
             }
-        });
+        };
+        return this.respond(interaction, { embeds: [embed] });
     }
 
     let guild: types.Guild | CachedGuild | null = null;
@@ -74,11 +75,13 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         avatarEmoji: this.getEmoji('AVATAR', interaction)
     }, interaction.locale);
 
-    return this.respond(interaction, {
+    const embed: types.Embed = {
         description: title,
         color: DEFAULT_COLOR,
         image: {
             url: avatarLink
         }
-    });
+    };
+
+    return this.respond(interaction, { embeds: [embed] });
 }

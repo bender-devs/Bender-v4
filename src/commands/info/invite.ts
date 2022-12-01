@@ -104,5 +104,5 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
         }];
     }
 
-    return this.respond(interaction, embed);
+    return this.respond(interaction, { embeds: [embed] });
 }

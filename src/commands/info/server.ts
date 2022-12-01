@@ -109,5 +109,5 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         embed.title = guild.name;
     }
 
-    return this.respond(interaction, embed);
+    return this.respond(interaction, { embeds: [embed] });
 }

@@ -51,18 +51,21 @@ export class CommandUtils {
         this.name = name;
     }
 
-    #getMessageData(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey): types.MessageData {
-        if (typeof content === 'string') {
-            if (emojiKey) {
-                const emoji = this.getEmoji(emojiKey, interaction);
-                content = `${emoji} ${content}`;
-            }
-            return { content };
+    #getMessageData(interaction: types.Interaction, content: string, emojiKey?: EmojiKey): types.MessageData {
+        if (emojiKey) {
+            const emoji = this.getEmoji(emojiKey, interaction);
+            content = `${emoji} ${content}`;
         }
-        return { embeds: [content] }
+        return { content };
     }
-    #getResponseData(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
-        return this.#getMessageData(interaction, content, emojiKey) as types.InteractionResponseData;
+    #getResponseData(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+        if (typeof msgData === 'string') {
+            return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionResponseData;
+        } else if (emojiKey && msgData.content) {
+            const emoji = this.getEmoji(emojiKey, interaction);
+            msgData.content = `${emoji} ${msgData.content}`;
+        }
+        return msgData as types.InteractionResponseData;
     }
 
     getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
@@ -77,9 +80,9 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async respond(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
+    async respond(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
         const responseType = deferred ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE : INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE;
-        const data = this.#getResponseData(interaction, content, emojiKey);
+        const data = this.#getResponseData(interaction, msgData, emojiKey);
         data.flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
         return this.bot.api.interaction.sendResponse(interaction, {
             type: responseType,
@@ -87,13 +90,13 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async editResponse(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
-        const data = this.#getMessageData(interaction, content, emojiKey);
+    async editResponse(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+        const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
         return this.bot.api.interaction.editResponse(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
-    async deferredResponse(interaction: types.Interaction, content: string | types.Embed, emojiKey?: EmojiKey) {
-        const data = this.#getMessageData(interaction, content, emojiKey);
+    async deferredResponse(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+        const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
