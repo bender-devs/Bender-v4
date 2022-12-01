@@ -25,7 +25,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: '8ball',
+        name: LangUtils.get('FUN_8BALL_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_8BALL_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_8BALL_SUBCOMMAND_DESCRIPTION'),
@@ -45,7 +45,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'coinflip',
+        name: LangUtils.get('FUN_COIN_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_COIN_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_COIN_SUBCOMMAND_DESCRIPTION'),
@@ -66,7 +66,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'dice',
+        name: LangUtils.get('FUN_DICE_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_DICE_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_DICE_SUBCOMMAND_DESCRIPTION'),
@@ -98,7 +98,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'rps',
+        name: LangUtils.get('FUN_RPS_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_RPS_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_RPS_SUBCOMMAND_DESCRIPTION'),
@@ -130,7 +130,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'choose',
+        name: LangUtils.get('FUN_CHOOSE_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_CHOOSE_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_CHOOSE_SUBCOMMAND_DESCRIPTION'),
@@ -150,7 +150,7 @@ export default class FunCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'random',
+        name: LangUtils.get('FUN_RANDOM_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_SUBCOMMAND'),
 
         description: LangUtils.get('FUN_RANDOM_SUBCOMMAND_DESCRIPTION'),
@@ -188,20 +188,20 @@ export default class FunCommand extends CommandUtils implements ICommand {
         const subcommand = args?.[0]?.name;
         const firstArg = args?.[0]?.options?.[0]?.value;
         switch (subcommand) {
-            case '8ball':
+            case LangUtils.get('FUN_8BALL_SUBCOMMAND'):
                 return eightBall.bind(this)(interaction);
-            case 'coinflip':
+            case LangUtils.get('FUN_COIN_SUBCOMMAND'):
                 return coinflip.bind(this)(interaction, firstArg);
-            case 'dice': {
+            case LangUtils.get('FUN_DICE_SUBCOMMAND'): {
                 const numDice = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_DICE_OPTION_COUNT'))?.value;
                 const numSides = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_DICE_OPTION_SIDES'))?.value;
                 return dice.bind(this)(interaction, numDice, numSides);
             }
-            case 'rps':
+            case LangUtils.get('FUN_RPS_SUBCOMMAND'):
                 return rps.bind(this)(interaction, firstArg);
-            case 'choose':
+            case LangUtils.get('FUN_CHOOSE_SUBCOMMAND'):
                 return choose.bind(this)(interaction, firstArg);
-            case 'random': {
+            case LangUtils.get('FUN_RANDOM_SUBCOMMAND'): {
                 const min = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_MIN'))?.value;
                 const max = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_MAX'))?.value;
                 const dec = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_DEC'))?.value;

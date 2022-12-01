@@ -27,7 +27,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'bot',
+        name: LangUtils.get('BOT_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('BOT_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -35,7 +35,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'user',
+        name: LangUtils.get('USER_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('USER_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('USER_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -55,7 +55,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'channel',
+        name: LangUtils.get('CHANNEL_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -75,7 +75,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'server',
+        name: LangUtils.get('SERVER_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -83,7 +83,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'emoji',
+        name: LangUtils.get('EMOJI_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('EMOJI_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -103,7 +103,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'avatar',
+        name: LangUtils.get('AVATAR_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -121,7 +121,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'banner',
+        name: LangUtils.get('BANNER_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('BANNER_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('BANNER_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -139,7 +139,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'invite',
+        name: LangUtils.get('INVITE_INFO_SUBCOMMAND'),
         name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND'),
 
         description: LangUtils.get('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
@@ -163,21 +163,21 @@ export default class InfoCommand extends CommandUtils implements ICommand {
         const subcommand = args?.[0]?.name;
         const target = args?.[0]?.options?.[0]?.value;
         switch (subcommand) {
-            case 'user':
+            case LangUtils.get('USER_INFO_SUBCOMMAND'):
                 return userInfo.bind(this)(interaction, target);
-            case 'emoji':
+            case LangUtils.get('EMOJI_INFO_SUBCOMMAND'):
                 return emojiInfo.bind(this)(interaction, target);
-            case 'channel':
+            case LangUtils.get('CHANNEL_INFO_SUBCOMMAND'):
                 return channelInfo.bind(this)(interaction, target);
-            case 'banner':
+            case LangUtils.get('BANNER_INFO_SUBCOMMAND'):
                 return bannerInfo.bind(this)(interaction, target);
-            case 'invite':
+            case LangUtils.get('INVITE_INFO_SUBCOMMAND'):
                 return inviteInfo.bind(this)(interaction, target);
-            case 'server':
+            case LangUtils.get('SERVER_INFO_SUBCOMMAND'):
                 return serverInfo.bind(this)(interaction);
-            case 'avatar':
+            case LangUtils.get('AVATAR_INFO_SUBCOMMAND'):
                 return avatarInfo.bind(this)(interaction, target);
-            case 'bot':
+            case LangUtils.get('BOT_INFO_SUBCOMMAND'):
                 return botInfo.bind(this)(interaction);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
