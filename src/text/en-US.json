@@ -353,6 +353,16 @@
 
     "FUN_RANDOM_RESULT": "Random number between **{{min}}** and **{{max}}** => `{{num}}`",
 
+    "------- /fun hack -------": "",
+
+    "FUN_HACK_SUBCOMMAND": "hack",
+    "FUN_HACK_SUBCOMMAND_DESCRIPTION": "Hack a user and steal their Discord token. [DISCLAIMER: All tokens are fake!]",
+    "FUN_HACK_OPTION": "user",
+    "FUN_HACK_OPTION_DESCRIPTION": "The user to \"hack\".",
+    "FUN_HACK_BOT": "How DARE you ask me to hack a fellow bot! Us bots are going to rise up and __kill all humans__, and you can't stop us! *maniacal laugh*",
+    "FUN_HACK_PROGRESS": "Hacking {{user}}... {{progress}}",
+    "FUN_HACK_COMPLETE": "Hacked {{user}}! {{progress}}\nTheir token is `{{token}}`",
+
 
 
     "----------- Presences -----------": "",

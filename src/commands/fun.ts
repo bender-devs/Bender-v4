@@ -10,6 +10,7 @@ import dice from './fun/dice';
 import rps from './fun/rps';
 import choose from './fun/choose';
 import random from './fun/random';
+import hack from './fun/hack';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -181,6 +182,26 @@ export default class FunCommand extends CommandUtils implements ICommand {
             description: LangUtils.get('FUN_RANDOM_OPTION_DEC_DESCRIPTION'),
             description_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_DEC_DESCRIPTION')
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: LangUtils.get('FUN_HACK_SUBCOMMAND'),
+        name_localizations: LangUtils.getLocalizationMap('FUN_HACK_SUBCOMMAND'),
+
+        description: LangUtils.get('FUN_HACK_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('FUN_HACK_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.USER,
+
+            name: LangUtils.get('FUN_HACK_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_HACK_OPTION'),
+
+            description: LangUtils.get('FUN_HACK_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_HACK_OPTION_DESCRIPTION'),
+
+            required: true
+        }]
     }];
 
     run(interaction: Interaction): CommandResponse {
@@ -207,6 +228,8 @@ export default class FunCommand extends CommandUtils implements ICommand {
                 const dec = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_DEC'))?.value;
                 return random.bind(this)(interaction, min, max, dec);
             }
+            case LangUtils.get('FUN_HACK_SUBCOMMAND'):
+                return hack.bind(this)(interaction, firstArg);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

@@ -42,8 +42,8 @@ export default class TextUtils {
             const regex = exact ? USER_MENTION_REGEX_EXACT : USER_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
-        parseUser: (id: Snowflake, nick = false): string => {
-            return `<@${nick ? '!' : ''}${id}>`
+        parseUser: (id: Snowflake): string => {
+            return `<@${id}>`
         },
         extractChannelID: (text: string, exact = true): NullableID => {
             const regex = exact ? CHANNEL_MENTION_REGEX_EXACT : CHANNEL_MENTION_REGEX;
