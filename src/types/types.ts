@@ -910,23 +910,23 @@ export type ChannelMention = {
 /****** message component types ******/
 
 // https://canary.discord.com/developers/docs/interactions/message-components#component-object
-export type MessageComponent = {
+export type MessageComponentBase = {
     type: num.MESSAGE_COMPONENT_TYPES;
 };
-export interface MessageComponentRow extends MessageComponent {
+export interface MessageComponentRow extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.ACTION_ROW;
     components: MessageComponent[];
 }
-export interface MessageComponentButton extends MessageComponent {
+export interface MessageComponentButton extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.BUTTON;
     custom_id?: string;
     disabled?: boolean;
-    style?: num.BUTTON_STYLES;
+    style: num.BUTTON_STYLES;
     label?: string;
     emoji?: PartialEmoji;
     url?: URL;
 }
-export interface MessageComponentSelect extends MessageComponent {
+export interface MessageComponentSelect extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.SELECT_MENU;
     custom_id?: string;
     disabled?: boolean;
@@ -935,6 +935,7 @@ export interface MessageComponentSelect extends MessageComponent {
     min_values?: number;
     max_values?: number;
 }
+export type MessageComponent = MessageComponentRow | MessageComponentButton | MessageComponentSelect;
 export type MessageComponentSelectOption = {
     label: string,
     value: string,

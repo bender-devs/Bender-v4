@@ -41,6 +41,9 @@ export interface ICommand extends types.CommandCreateData {
     run(interaction: types.Interaction): types.CommandResponse;
 }
 
+type CommandResponseEditData = string | types.MessageData;
+type CommandResponseCreateData = CommandResponseEditData | types.InteractionResponseData;
+
 export class CommandUtils {
     bot: Bot;
     name: string;
@@ -58,7 +61,7 @@ export class CommandUtils {
         }
         return { content };
     }
-    #getResponseData(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+    #getResponseData(interaction: types.Interaction, msgData: CommandResponseCreateData, emojiKey?: EmojiKey) {
         if (typeof msgData === 'string') {
             return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionResponseData;
         } else if (emojiKey && msgData.content) {
@@ -80,7 +83,7 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async respond(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
+    async respond(interaction: types.Interaction, msgData: CommandResponseCreateData, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
         const responseType = deferred ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE : INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE;
         const data = this.#getResponseData(interaction, msgData, emojiKey);
         data.flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
@@ -90,12 +93,12 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async editResponse(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+    async editResponse(interaction: types.Interaction, msgData: CommandResponseEditData, emojiKey?: EmojiKey) {
         const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
         return this.bot.api.interaction.editResponse(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
-    async deferredResponse(interaction: types.Interaction, msgData: string | types.MessageData, emojiKey?: EmojiKey) {
+    async deferredResponse(interaction: types.Interaction, msgData: CommandResponseEditData, emojiKey?: EmojiKey) {
         const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
