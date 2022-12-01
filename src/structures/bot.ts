@@ -14,6 +14,7 @@ import MiscUtils from '../utils/misc';
 import PermissionUtils from '../utils/permissions';
 import TextUtils from '../utils/text';
 import DatabaseManager from './db';
+import PendingInteractionUtils from '../utils/pendingInteractions';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -25,6 +26,7 @@ export default class Bot extends EventEmitter {
     logger: Logger;
     events: EventManager;
     commandManager: CommandManager;
+    interactionUtils: PendingInteractionUtils;
 
     shard?: Shard;
     user!: User;
@@ -52,6 +54,7 @@ export default class Bot extends EventEmitter {
         this.gateway = new Gateway(this);
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);
+        this.interactionUtils = new PendingInteractionUtils(this);
 
         if (shard_data) {
             this.shard = new Shard(this, shard_data);

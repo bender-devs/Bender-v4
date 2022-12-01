@@ -103,6 +103,8 @@ export const CDN_BASE = 'https://cdn.discordapp.com/';
 
 export const MAX_RATE_LIMIT_DELAY = 2000; // retry rate limited request only when wait time is at or below this number
 
+export const INTERACTION_RESPONSE_TIMEOUT = 1000*60*15; // timeframe in which editing interactions is allowed
+
 /***** database constants *****/
 
 export const DB_WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };

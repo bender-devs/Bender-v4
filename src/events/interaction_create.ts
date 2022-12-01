@@ -82,6 +82,8 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
             } else {
                 this.bot.logger.debug('INTERACTION', `Command not found: /${name}`);
             }
+        } else {
+            return this.bot.interactionUtils.processInteraction(eventData);
         }
     }
 }

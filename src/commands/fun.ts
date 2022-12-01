@@ -11,6 +11,7 @@ import rps from './fun/rps';
 import choose from './fun/choose';
 import random from './fun/random';
 import hack from './fun/hack';
+import tictactoe from './fun/tictactoe';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -202,6 +203,24 @@ export default class FunCommand extends CommandUtils implements ICommand {
 
             required: true
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: LangUtils.get('FUN_TTT_SUBCOMMAND'),
+        name_localizations: LangUtils.getLocalizationMap('FUN_TTT_SUBCOMMAND'),
+
+        description: LangUtils.get('FUN_TTT_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('FUN_TTT_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.USER,
+
+            name: LangUtils.get('FUN_TTT_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_TTT_OPTION'),
+
+            description: LangUtils.get('FUN_TTT_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_TTT_OPTION_DESCRIPTION')
+        }]
     }];
 
     run(interaction: Interaction): CommandResponse {
@@ -230,6 +249,8 @@ export default class FunCommand extends CommandUtils implements ICommand {
             }
             case LangUtils.get('FUN_HACK_SUBCOMMAND'):
                 return hack.bind(this)(interaction, firstArg);
+            case LangUtils.get('FUN_TTT_SUBCOMMAND'):
+                return tictactoe.bind(this)(interaction, firstArg);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

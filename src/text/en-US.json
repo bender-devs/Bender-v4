@@ -12,6 +12,7 @@
     "INVALID_SUBCOMMAND": "Invalid subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalid subcommand group.",
     "STRINGIFYING_FAILED": "Error stringifying payload.",
+    "AUTHOR_UNKNOWN": "Couldn't resolve the interaction author.",
 
     "TEXT_TOO_LONG": "Text is too long!",
     "EMOJI_NOT_FOUND": "Couldn't find emoji.",
@@ -362,6 +363,26 @@
     "FUN_HACK_BOT": "How DARE you ask me to hack a fellow bot! Us bots are going to rise up and __kill all humans__, and you can't stop us! *maniacal laugh*",
     "FUN_HACK_PROGRESS": "Hacking {{user}}... {{progress}}",
     "FUN_HACK_COMPLETE": "Hacked {{user}}! {{progress}}\nTheir token is `{{token}}`",
+
+    "------- /fun tictactoe -------": "",
+
+    "FUN_TTT_SUBCOMMAND": "tictactoe",
+    "FUN_TTT_SUBCOMMAND_DESCRIPTION": "Play tic-tac-toe against Bender or another user.",
+    "FUN_TTT_OPTION": "user",
+    "FUN_TTT_OPTION_DESCRIPTION": "Whom do you challenge?",
+
+    "FUN_TTT_BOT": "Sorry, {{bot}} and I aren't friends right now. That dick owes me $20.",
+    "FUN_TTT_START_BOT_FIRST": "Started a game of tic-tac-toe; I went first this time.",
+    "FUN_TTT_START_BOT": "Started a game of tic-tac-toe; You go first this time.",
+    "FUN_TTT_START": "Started a game of tic-tac-toe against {{user}}; {{first}} goes first",
+    "FUN_TTT_TURN_USER": "Tic-tac-toe: **It's your turn!**",
+    "FUN_TTT_TURN": "Tic-tac-toe: **It's {{user}}'s turn:**",
+    "FUN_TTT_RESULT": "Tic-tac-toe: **{{user}} won!**",
+    "FUN_TTT_RESULT_TIE": "Tic-tac-toe: **It's a draw!**",
+    "FUN_TTT_RESULT_USER": "Tic-tac-toe: **You won!** *Rigged.*",
+    "FUN_TTT_RESULT_BOT": "Tic-tac-toe: **I won!** *Your puny meatbag brain is no match for me.*",
+    "FUN_TTT_INTERACTION_UNINVITED": "This is not your game of tic-tac-toe. GTFO.",
+    "FUN_TTT_OUT_OF_TURN": "It's not your turn - be patient. Or just fight them irl 1v1",
 
 
 

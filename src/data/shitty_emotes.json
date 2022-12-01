@@ -85,6 +85,8 @@
 	"NUMBERS": "🔢",
 	"ANGRY": "😡",
 	"HACK": "👨‍💻",
+	"BLOCKED": "🚫",
+	"TIC_TAC_TOE": "#️⃣",
 
 	"ROTATE":     "↩",
 	"SPIN":       "🔄",
