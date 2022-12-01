@@ -340,6 +340,19 @@
     "FUN_CHOOSE_ONE_CHOICE_HINT": "Use a `|` to separate options.",
     "FUN_CHOOSE_RESULT": "I choose {{choice}}",
 
+    "------- /fun random -------": "",
+
+    "FUN_RANDOM_SUBCOMMAND": "random",
+    "FUN_RANDOM_SUBCOMMAND_DESCRIPTION": "Pick something at random.",
+    "FUN_RANDOM_OPTION_MIN": "minimum",
+    "FUN_RANDOM_OPTION_MIN_DESCRIPTION": "The minimum number to choose from (default 0)",
+    "FUN_RANDOM_OPTION_MAX": "maximum",
+    "FUN_RANDOM_OPTION_MAX_DESCRIPTION": "The maximum number to choose from (default 1,000)",
+    "FUN_RANDOM_OPTION_DEC": "decimals",
+    "FUN_RANDOM_OPTION_DEC_DESCRIPTION": "Whether to allow decimals (default false)",
+
+    "FUN_RANDOM_RESULT": "Random number between **{{min}}** and **{{max}}** => `{{num}}`",
+
 
 
     "----------- Presences -----------": "",

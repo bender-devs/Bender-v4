@@ -94,8 +94,12 @@ export default class MiscUtils {
         return status;
     }
 
+    static randomNumber(max: number, min = 0) {
+		return Math.random() * (max + 1 - min) + min;
+	}
+
     static randomInt(max: number, min = 0) {
-		return Math.floor(Math.random() * (max + 1 - min)) + min;
+		return Math.floor(this.randomNumber(max, min));
 	}
 
     static randomItem<T>(items: T[]) {

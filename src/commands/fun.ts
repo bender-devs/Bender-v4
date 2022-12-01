@@ -9,6 +9,7 @@ import coinflip from './fun/coinflip';
 import dice from './fun/dice';
 import rps from './fun/rps';
 import choose from './fun/choose';
+import random from './fun/random';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -146,6 +147,40 @@ export default class FunCommand extends CommandUtils implements ICommand {
 
             required: true
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: 'random',
+        name_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_SUBCOMMAND'),
+
+        description: LangUtils.get('FUN_RANDOM_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.NUMBER,
+
+            name: LangUtils.get('FUN_RANDOM_OPTION_MIN'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_MIN'),
+
+            description: LangUtils.get('FUN_RANDOM_OPTION_MIN_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_MIN_DESCRIPTION')
+        }, {
+            type: COMMAND_OPTION_TYPES.NUMBER,
+
+            name: LangUtils.get('FUN_RANDOM_OPTION_MAX'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_MAX'),
+
+            description: LangUtils.get('FUN_RANDOM_OPTION_MAX_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_MAX_DESCRIPTION')
+        }, {
+            type: COMMAND_OPTION_TYPES.BOOLEAN,
+
+            name: LangUtils.get('FUN_RANDOM_OPTION_DEC'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_DEC'),
+
+            description: LangUtils.get('FUN_RANDOM_OPTION_DEC_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_RANDOM_OPTION_DEC_DESCRIPTION')
+        }]
     }];
 
     run(interaction: Interaction): CommandResponse {
@@ -166,6 +201,12 @@ export default class FunCommand extends CommandUtils implements ICommand {
                 return rps.bind(this)(interaction, firstArg);
             case 'choose':
                 return choose.bind(this)(interaction, firstArg);
+            case 'random': {
+                const min = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_MIN'))?.value;
+                const max = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_MAX'))?.value;
+                const dec = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RANDOM_OPTION_DEC'))?.value;
+                return random.bind(this)(interaction, min, max, dec);
+            }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }
