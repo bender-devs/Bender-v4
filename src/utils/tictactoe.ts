@@ -48,24 +48,24 @@ export default class TicTacToeUtils {
     }
 
     static checkForWin(board: TicTacToeBoard, score = false): number {
-        if (
+        if (board[0] && (
             (board[0] === board[1] && board[1] === board[2]) || // horizontal - left
             (board[0] === board[3] && board[3] === board[6])    //  vertical  - top
-        ) {
+        )) {
             return score ? (board[0] === 2 ? 10 : -10) : board[0];
         }
-        if (
+        if (board[4] && (
             (board[3] === board[4] && board[4] === board[5]) || // horizontal - center
             (board[1] === board[4] && board[4] === board[7]) || //  vertical  - center
             (board[0] === board[4] && board[4] === board[8]) || //  diagonal  - top left
             (board[2] === board[4] && board[4] === board[6])    //  diagonal  - top right
-        ) {
+        )) {
             return score ? (board[4] === 2 ? 10 : -10) : board[4];
         }
-        if (
+        if (board[8] && (
             (board[6] === board[7] && board[7] === board[8]) || // horizontal - bottom
             (board[2] === board[5] && board[5] === board[8])    //  vertical  - right
-        ) {
+        )) {
             return score ? (board[8] === 2 ? 10 : -10) : board[8];
         }
         return 0;
@@ -84,10 +84,7 @@ export default class TicTacToeUtils {
     static minimax(board: TicTacToeBoard, isMax = false) {
         // if either maximizer or minimizer won, return that score
         const score = this.checkForWin(board, true);
-        if (score == 10) {
-            return score;
-        }
-        if (score == -10) {
+        if (score !== 0) {
             return score;
         }
 

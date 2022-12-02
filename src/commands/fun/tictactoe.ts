@@ -51,13 +51,13 @@ export default async function (this: FunCommand, interaction: Interaction, userS
     return this.respond(interaction, {
         content: startText,
         components: TicTacToeUtils.getComponents(board, interaction.id),
-    }, 'TIC_TAC_TOE', false).then(msg => {
+    }, 'TIC_TAC_TOE', !userID).then(msg => {
         this.bot.interactionUtils.addItem({
             author: authorID,
             interaction,
             target: userID,
             board,
-            targetTurn: botGoesFirst
+            targetTurn: userID ? botGoesFirst : false
         });
         return msg;
     });
