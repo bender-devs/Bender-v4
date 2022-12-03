@@ -20,8 +20,7 @@
         "zlib-sync": "^0.1.7"
     },
     "scripts": {
-        "preinstall": "npm i -g typescript@^4.7.3",
-        "prestart": "tsc && (cmd /c \"copy src\\.env dist 2>nul\" || bash -c \"cp src/.env dist 2>/dev/null\")",
+        "prestart": "npx tsc && (cmd /c \"copy src\\.env dist 2>nul\" || bash -c \"cp src/.env dist 2>/dev/null\")",
         "start": "cd dist && node main.js"
     },
     "devDependencies": {
