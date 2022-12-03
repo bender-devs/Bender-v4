@@ -6,11 +6,13 @@ _**Before running Bender, make sure you have Node.JS & NPM installed**_
 
 ### MongoDB & Redis
 
-You'll need to spin up Redis & MongoDB to run Bender. The easiest way to do this is with [Docker](https://docker.com/).
+You'll need to spin up Redis & MongoDB to run Bender. *MongoDB will require additional setup for access control; details on how to do this may be added later.*
 
 ### Environment
 
-Run the following command:
+Run the following command to create a file for environment variables:
+
+*(On Windows use `copy` instead of `cp`)*
 
 ```bash
 $ cp example.env .env
@@ -20,28 +22,20 @@ And fill in the environment variables. You will only need to supply a token for 
 
 ### Installing Packages
 
-Run the following command **before** installing the application packages:
+All dependencies are included in `package.json` and can be installed with:
 
 ```bash
-$ npm run preinstall
+$ npm i
 ```
 
-The preinstall script will install Typescript on your system, pinned at version `4.7.3`. Then, run the following command to install the required packages:
-
-```bash
-$ npm install
-```
+You may need to configure your code editor to use the local folder's copy of TypeScript; Bender requires version `4.7.3` or higher.
 
 ## Running Bender
 
-Run the following command to compile the application, and copy the `.env` file to the compiled output folder:
+Assuming Redis and MongoDB are running, all you need to do to run Bender is:
 
 ```bash
-$ npm run prestart
+$ npm start
 ```
 
-Then, finally start the application:
-
-```bash
-$ npm run start
-```
+This will automatically run the `prestart` script, which will transpile the code and copy your `.env` file to the `dist` folder.
