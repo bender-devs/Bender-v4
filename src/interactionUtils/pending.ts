@@ -1,6 +1,7 @@
 import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
 import Bot from '../structures/bot';
 import { Interaction, Snowflake } from '../types/types';
+import RPSUtils from './rps';
 import TicTacToeUtils, { TicTacToeBoard } from './tictactoe';
 
 export type PendingInteractionBase = {
@@ -13,17 +14,24 @@ export interface TicTacToeInteraction extends PendingInteractionBase {
     board: TicTacToeBoard,
     targetTurn: boolean
 }
-export type PendingInteraction = TicTacToeInteraction;
+export interface RockPaperScissorsInteraction extends PendingInteractionBase {
+    target: Snowflake,
+    authorChoice?: 'r' | 'p' | 's',
+    targetChoice?: 'r' | 'p' | 's'
+}
+export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
     pendingInteractions: Record<Snowflake, PendingInteraction>;
     tttUtils: TicTacToeUtils;
+    rpsUtils: RPSUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
         this.pendingInteractions = {};
         this.tttUtils = new TicTacToeUtils(bot);
+        this.rpsUtils = new RPSUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -61,7 +69,10 @@ export default class PendingInteractionUtils {
             return;
         }
         if (idPieces[0] === 'ttt') {
-            return this.tttUtils.processPlayerMove(interactionData, interaction);
+            return this.tttUtils.processPlayerMove(interactionData as TicTacToeInteraction, interaction);
+        }
+        if (idPieces[0] === 'rps') {
+            return this.rpsUtils.processPlayerChoice(interactionData as RockPaperScissorsInteraction, interaction);
         }
     }
 }

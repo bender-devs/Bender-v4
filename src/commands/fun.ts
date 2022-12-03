@@ -12,6 +12,7 @@ import choose from './fun/choose';
 import random from './fun/random';
 import hack from './fun/hack';
 import tictactoe from './fun/tictactoe';
+import MiscUtils from '../utils/misc';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -116,18 +117,26 @@ export default class FunCommand extends CommandUtils implements ICommand {
             description_localizations: LangUtils.getLocalizationMap('FUN_RPS_OPTION_DESCRIPTION'),
 
             choices: [{
-                name: LangUtils.get('FUN_RPS_ROCK'),
-                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_ROCK'),
+                name: `${MiscUtils.getDefaultEmoji('ROCK')} ${LangUtils.get('FUN_RPS_ROCK')}`,
+                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_ROCK', 'ROCK'),
                 value: 'r'
             }, {
-                name: LangUtils.get('FUN_RPS_PAPER'),
-                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_PAPER'),
+                name: `${MiscUtils.getDefaultEmoji('PAPER')} ${LangUtils.get('FUN_RPS_PAPER')}`,
+                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_PAPER', 'PAPER'),
                 value: 'p'
             }, {
-                name: LangUtils.get('FUN_RPS_SCISSORS'),
-                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_SCISSORS'),
+                name: `${MiscUtils.getDefaultEmoji('SCISSORS')} ${LangUtils.get('FUN_RPS_SCISSORS')}`,
+                name_localizations: LangUtils.getLocalizationMap('FUN_RPS_SCISSORS', 'SCISSORS'),
                 value: 's'
             }]
+        }, {
+            type: COMMAND_OPTION_TYPES.USER,
+
+            name: LangUtils.get('FUN_RPS_OPTION_USER'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_RPS_OPTION_USER'),
+
+            description: LangUtils.get('FUN_RPS_OPTION_USER_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_RPS_OPTION_USER_DESCRIPTION')
         }]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
@@ -237,8 +246,11 @@ export default class FunCommand extends CommandUtils implements ICommand {
                 const numSides = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_DICE_OPTION_SIDES'))?.value;
                 return dice.bind(this)(interaction, numDice, numSides);
             }
-            case LangUtils.get('FUN_RPS_SUBCOMMAND'):
-                return rps.bind(this)(interaction, firstArg);
+            case LangUtils.get('FUN_RPS_SUBCOMMAND'): {
+                const show = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RPS_OPTION'))?.value;
+                const user = args?.[0]?.options?.find(opt => opt.name === LangUtils.get('FUN_RPS_OPTION_USER'))?.value;
+                return rps.bind(this)(interaction, show, user);
+            }
             case LangUtils.get('FUN_CHOOSE_SUBCOMMAND'):
                 return choose.bind(this)(interaction, firstArg);
             case LangUtils.get('FUN_RANDOM_SUBCOMMAND'): {

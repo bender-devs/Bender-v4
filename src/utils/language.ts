@@ -4,7 +4,7 @@ import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
 import { PERMISSIONS } from '../types/numberTypes';
-import MiscUtils from './misc';
+import MiscUtils, { EmojiKey } from './misc';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -80,14 +80,19 @@ export default class LanguageUtils {
         return num.toLocaleString(locale);
     }
 
-    static getLocalizationMap(key: LangKey) {
+    static getLocalizationMap(key: LangKey, emojiKey?: EmojiKey) {
+        const emoji = emojiKey ? MiscUtils.getDefaultEmoji(emojiKey) : null;
         const dict: LocaleDict = {
-            [DEFAULT_LANGUAGE]: LanguageUtils.get(key)
+            [DEFAULT_LANGUAGE]: emojiKey ? `${emoji} ${LanguageUtils.get(key)}` : LanguageUtils.get(key)
         }
         for (const locale in languages) {
             const lang = languages[locale];
             if (lang && key in lang) {
-                dict[locale as Locale] = lang[key];
+                if (emojiKey) {
+                    dict[locale as Locale] = `${emoji} ${lang[key]}`;
+                } else {
+                    dict[locale as Locale] = lang[key];
+                }
             }
         }
         return dict;

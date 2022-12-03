@@ -1,9 +1,9 @@
 import Bot from '../structures/bot';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
 import { Interaction, MessageComponent, Snowflake } from '../types/types';
-import { TicTacToeInteraction } from './pendingInteractions';
-import LangUtils from './language';
-import TextUtils from './text';
+import { TicTacToeInteraction } from './pending';
+import LangUtils from '../utils/language';
+import TextUtils from '../utils/text';
 
 type Cell = 0 | 1 | 2; // 0 = empty, 1 = player 1, 2 = player 2 (bot or user chosen by player 1)
 export type TicTacToeBoard = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell];
@@ -137,13 +137,13 @@ export default class TicTacToeUtils {
         return bestMove;
     }
 
-    checkWinAndReply(interactionData: TicTacToeInteraction, newInteraction: Interaction, author: Snowflake) {
+    checkWinAndReply(interactionData: TicTacToeInteraction, newInteraction: Interaction) {
         const win = TicTacToeUtils.checkForWin(interactionData.board);
         if (win === 1) {
             let winText = LangUtils.get('FUN_TTT_RESULT_USER', newInteraction.locale);
             if (interactionData.target) {
                 winText = LangUtils.getAndReplace('FUN_TTT_RESULT', {
-                    user: TextUtils.mention.parseUser(author)
+                    user: TextUtils.mention.parseUser(interactionData.author)
                 }, newInteraction.locale);
             }
             winText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} ${winText}`;
@@ -182,7 +182,8 @@ export default class TicTacToeUtils {
             return;
         }
         if (author !== interactionData.author && author !== interactionData.target) {
-            const failResponse = LangUtils.get('FUN_TTT_INTERACTION_UNINVITED', newInteraction.locale);
+            let failResponse = LangUtils.get('FUN_TTT_INTERACTION_UNINVITED', newInteraction.locale);
+            failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
@@ -195,7 +196,8 @@ export default class TicTacToeUtils {
             (interactionData.targetTurn && author !== interactionData.target) ||
             (!interactionData.targetTurn && author !== interactionData.author)
         ) {
-            const failResponse = LangUtils.get('FUN_TTT_OUT_OF_TURN', newInteraction.locale);
+            let failResponse = LangUtils.get('FUN_TTT_OUT_OF_TURN', newInteraction.locale);
+            failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
@@ -226,7 +228,7 @@ export default class TicTacToeUtils {
 
         const id = interactionData.interaction.id;
 
-        let winResult = this.checkWinAndReply(interactionData, newInteraction, author);
+        let winResult = this.checkWinAndReply(interactionData, newInteraction);
         if (winResult) {
             this.bot.interactionUtils.deleteItem(id);
             return winResult;
@@ -237,7 +239,7 @@ export default class TicTacToeUtils {
             const index = TicTacToeUtils.findBestMove(interactionData.board);
             interactionData.board[index] = 2;
 
-            winResult = this.checkWinAndReply(interactionData, newInteraction, author);
+            winResult = this.checkWinAndReply(interactionData, newInteraction);
             if (winResult) {
                 this.bot.interactionUtils.deleteItem(id);
                 return winResult;

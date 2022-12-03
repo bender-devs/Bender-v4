@@ -1,10 +1,64 @@
-import { CommandOptionValue, Interaction } from '../../types/types';
+import RPSUtils from '../../interactionUtils/rps';
+import { CommandOptionValue, Interaction, Snowflake } from '../../types/types';
 import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';
+import TextUtils from '../../utils/text';
 import FunCommand from '../fun';
 
-export default async function (this: FunCommand, interaction: Interaction, show?: CommandOptionValue) {
-    if (!show || typeof show !== 'string' || !['r', 'p', 's'].includes(show)) {
+export default async function (this: FunCommand, interaction: Interaction, show?: CommandOptionValue, userID?: CommandOptionValue) {
+    const authorID = interaction.member?.user.id || interaction.user?.id;
+    if (!authorID) {
+        return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
+    }
+    if (show && userID) {
+        const cheatMsg = LangUtils.getAndReplace('FUN_RPS_NO_CHEAT', {
+            showOpt: LangUtils.get('FUN_RPS_OPTION', interaction.locale),
+            userOpt: LangUtils.get('FUN_RPS_OPTION_USER', interaction.locale)
+        }, interaction.locale)
+        return this.respond(interaction, cheatMsg, 'WARNING')
+            .catch(this.handleAPIError.bind(this));
+    } else if (userID && typeof userID === 'string') {
+        const user = userID ? interaction.data?.resolved?.users?.[userID as Snowflake] || null : null;
+
+        if (userID && !user) {
+            const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);
+            return this.respond(interaction, response, 'WARNING')
+                .catch(this.handleAPIError.bind(this));
+        }
+
+        if (user?.bot) {
+            const response = LangUtils.getAndReplace('FUN_RPS_BOT', {
+                bot: TextUtils.mention.parseUser(user.id)
+            }, interaction.locale);
+            return this.respond(interaction, response, 'BLOCKED')
+                .catch(this.handleAPIError.bind(this));
+        }
+
+        const content = LangUtils.getAndReplace('FUN_RPS_START', {
+            author: TextUtils.mention.parseUser(authorID),
+            user: TextUtils.mention.parseUser(userID as Snowflake)
+        }, interaction.locale);
+        return this.respond(interaction, {
+            content,
+            components: RPSUtils.getComponents(interaction.id)
+        }, undefined, false).then(msg => {
+            this.bot.interactionUtils.addItem({
+                author: authorID,
+                interaction,
+                target: userID as Snowflake
+            });
+            return msg;
+        }).catch(this.handleAPIError.bind(this));
+    }
+
+    if (!show) {
+        const showMsg = LangUtils.getAndReplace('FUN_RPS_NO_SHOW', {
+            showOpt: LangUtils.get('FUN_RPS_OPTION', interaction.locale)
+        }, interaction.locale)
+        return this.respond(interaction, showMsg, 'WARNING')
+            .catch(this.handleAPIError.bind(this));
+    }
+    if (typeof show !== 'string' || !['r', 'p', 's'].includes(show)) {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
 

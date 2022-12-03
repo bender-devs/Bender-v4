@@ -2,7 +2,7 @@ import { CommandOptionValue, Interaction, Snowflake } from '../../types/types';
 import LangUtils from '../../utils/language';
 import MiscUtils from '../../utils/misc';
 import TextUtils from '../../utils/text';
-import TicTacToeUtils, { TicTacToeBoard } from '../../utils/tictactoe';
+import TicTacToeUtils, { TicTacToeBoard } from '../../interactionUtils/tictactoe';
 import FunCommand from '../fun';
 
 export default async function (this: FunCommand, interaction: Interaction, userString?: CommandOptionValue) {
@@ -18,7 +18,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
         userID = null;
     }
 
-    const user = userID ? await this.bot.api.user.fetch(userID).catch(() => null) : null;
+    const user = userID ? interaction.data?.resolved?.users?.[userID] || null : null;
 
     if (userID && !user) {
         const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);

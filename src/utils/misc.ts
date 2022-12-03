@@ -31,6 +31,10 @@ export default class MiscUtils {
         return this.getEmojiText(emojiKey, interaction.guild_id, interaction.channel_id);
     }
 
+    static getDefaultEmoji(emojiKey: EmojiKey) {
+        return SHITTY_EMOTES[emojiKey];
+    }
+
     #getActivityTypeName(type: ACTIVITY_TYPES, locale?: Locale) {
         const stringType = ACTIVITY_TYPES[type] as keyof typeof ACTIVITY_TYPES;
         return LangUtils.get(`PRESENCE_TYPE_${stringType}`, locale);

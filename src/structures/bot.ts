@@ -14,7 +14,7 @@ import MiscUtils from '../utils/misc';
 import PermissionUtils from '../utils/permissions';
 import TextUtils from '../utils/text';
 import DatabaseManager from './db';
-import PendingInteractionUtils from '../utils/pendingInteractions';
+import PendingInteractionUtils from '../interactionUtils/pending';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
