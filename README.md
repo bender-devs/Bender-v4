@@ -1,5 +1,11 @@
 # Bender-v4
-The latest and greatest version of Bender.
+_The latest and greatest version of Bender._
+
+|   |   |
+|---|---|
+| Support Server | https://discord.com/invite/99xaeGn |
+| Website | https://benderbot.co |
+| Developing Bender | [Click here](docs/developing-bender.md) |
 
 ## ⚠ CURRENTLY JUST A FRAMEWORK! ⚠
 
