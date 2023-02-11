@@ -65,7 +65,6 @@ export default class BlackjackUtils {
             } else {
                 sum += value;
             }
-            console.log(`added ${value} for card:`, card);
         }
         return sum;
     }
@@ -260,7 +259,6 @@ export default class BlackjackUtils {
         //const userBjRight = interactionData.authorRightHand && BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
 
         let result = BlackjackUtils.getWinner(interactionData);
-        console.log(result)
 
         let content = '', userStatus = '', botStatus = '';
 
@@ -354,10 +352,8 @@ export default class BlackjackUtils {
     processBotHit(interactionData: BlackjackInteraction, newCard?: Card) {
         let botSum = BlackjackUtils.getSum(interactionData.botHand);
         let newBotCard = newCard || MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
-        console.log(botSum, newBotCard)
         while (botSum < 17) {
             interactionData.botHand.push(newBotCard);
-            console.log('added bot card:', newBotCard)
             botSum = BlackjackUtils.getSum(interactionData.botHand);
             newBotCard = MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
         }
