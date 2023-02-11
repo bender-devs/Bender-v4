@@ -1,7 +1,8 @@
 import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
 import Bot from '../structures/bot';
 import { Interaction, Snowflake } from '../types/types';
-import RPSUtils from './rps';
+import BlackjackUtils, { Card } from './blackjack';
+import RPSUtils, { RPSShow } from './rps';
 import TicTacToeUtils, { TicTacToeBoard } from './tictactoe';
 
 export type PendingInteractionBase = {
@@ -16,22 +17,31 @@ export interface TicTacToeInteraction extends PendingInteractionBase {
 }
 export interface RockPaperScissorsInteraction extends PendingInteractionBase {
     target: Snowflake,
-    authorChoice?: 'r' | 'p' | 's',
-    targetChoice?: 'r' | 'p' | 's'
+    authorChoice?: RPSShow,
+    targetChoice?: RPSShow
 }
-export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction;
+export interface BlackjackInteraction extends PendingInteractionBase {
+    authorHand: Card[],
+    botHand: Card[],
+    authorRightHand?: Card[],
+    authorStand?: boolean,
+    double?: boolean
+}
+export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
     pendingInteractions: Record<Snowflake, PendingInteraction>;
     tttUtils: TicTacToeUtils;
     rpsUtils: RPSUtils;
+    bjUtils: BlackjackUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
         this.pendingInteractions = {};
         this.tttUtils = new TicTacToeUtils(bot);
         this.rpsUtils = new RPSUtils(bot);
+        this.bjUtils = new BlackjackUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -68,11 +78,13 @@ export default class PendingInteractionUtils {
             this.bot.logger.debug('PENDING INTERACTIONS', 'Interaction doesn\'t correspond to pending interaction object:', interaction, this.pendingInteractions);
             return;
         }
-        if (idPieces[0] === 'ttt') {
-            return this.tttUtils.processPlayerMove(interactionData as TicTacToeInteraction, interaction);
-        }
-        if (idPieces[0] === 'rps') {
-            return this.rpsUtils.processPlayerChoice(interactionData as RockPaperScissorsInteraction, interaction);
+        switch (idPieces[0]) {
+            case 'ttt':
+                return this.tttUtils.processPlayerMove(interactionData as TicTacToeInteraction, interaction);
+            case 'rps':
+                return this.rpsUtils.processPlayerChoice(interactionData as RockPaperScissorsInteraction, interaction);
+            case 'bj':
+                return this.bjUtils.processPlayerAction(interactionData as BlackjackInteraction, interaction);
         }
     }
 }

@@ -3,6 +3,7 @@ import Bot from '../structures/bot';
 import { CommandOption, CommandResponse, Interaction } from '../types/types';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
 import LangUtils from '../utils/language';
+import MiscUtils from '../utils/misc';
 
 import eightBall from './fun/8ball';
 import coinflip from './fun/coinflip';
@@ -12,7 +13,7 @@ import choose from './fun/choose';
 import random from './fun/random';
 import hack from './fun/hack';
 import tictactoe from './fun/tictactoe';
-import MiscUtils from '../utils/misc';
+import blackjack from './fun/blackjack';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -230,6 +231,14 @@ export default class FunCommand extends CommandUtils implements ICommand {
             description: LangUtils.get('FUN_TTT_OPTION_DESCRIPTION'),
             description_localizations: LangUtils.getLocalizationMap('FUN_TTT_OPTION_DESCRIPTION')
         }]
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: LangUtils.get('FUN_BJ_SUBCOMMAND'),
+        name_localizations: LangUtils.getLocalizationMap('FUN_BJ_SUBCOMMAND'),
+
+        description: LangUtils.get('FUN_BJ_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('FUN_BJ_SUBCOMMAND_DESCRIPTION')
     }];
 
     run(interaction: Interaction): CommandResponse {
@@ -263,6 +272,8 @@ export default class FunCommand extends CommandUtils implements ICommand {
                 return hack.bind(this)(interaction, firstArg);
             case LangUtils.get('FUN_TTT_SUBCOMMAND'):
                 return tictactoe.bind(this)(interaction, firstArg);
+                case LangUtils.get('FUN_BJ_SUBCOMMAND'):
+                    return blackjack.bind(this)(interaction);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

@@ -395,6 +395,43 @@
     "FUN_TTT_INTERACTION_UNINVITED": "This is not your game of tic-tac-toe. GTFO.",
     "FUN_TTT_OUT_OF_TURN": "It's not your turn - be patient. Or just fight them irl 1v1",
 
+    "------- /fun blackjack -------": "",
+
+    "FUN_BJ_SUBCOMMAND": "blackjack",
+    "FUN_BJ_SUBCOMMAND_DESCRIPTION": "I'm gonna make my own casino. With blackjack. And hookers.",
+
+    "FUN_BJ_TITLE_START": "**__Blackjack started!__**",
+    "FUN_BJ_TITLE": "**__Blackjack__**",
+    "FUN_BJ_TITLE_WIN": "__Blackjack__: **You won!** *Rigged.*",
+    "FUN_BJ_TITLE_WIN_DOUBLE": "__Blackjack__: **You doubled down and won!** *Rigged.*",
+    "FUN_BJ_TITLE_TIE": "__Blackjack__: **It's a push!**",
+    "FUN_BJ_TITLE_LOSS": "__Blackjack__: **I won!** *Get rekt.*",
+    "FUN_BJ_TITLE_LOSS_DOUBLE": "__Blackjack__: **You doubled down and lost!** *Get rekt.*",
+
+    "FUN_BJ_BOT_FIRST": "My first card is:",
+    "FUN_BJ_BOT_HAS": "I have **{{value}}**:",
+    "FUN_BJ_BOT_BJ": "I have a blackjack:",
+    "FUN_BJ_BOT_BUST": "I went bust! (Total: {{value}})",
+    "FUN_BJ_USER_HAS": "You have **{{value}}**:",
+    "FUN_BJ_USER_HAS_LEFT": "You have **{{value}}** in the left hand:",
+    "FUN_BJ_USER_HAS_RIGHT": "You have **{{value}}** in the right hand:",
+    "FUN_BJ_USER_BJ": "You have a blackjack:",
+    "FUN_BJ_USER_BJ_LEFT": "You have a blackjack in the left hand:",
+    "FUN_BJ_USER_BJ_RIGHT": "You have a blackjack in the right hand:",
+    "FUN_BJ_USER_BUST": "You went bust! (Total: {{value}})",
+    "FUN_BJ_USER_BUST_LEFT": "You went bust in the left hand:",
+    "FUN_BJ_USER_BUST_RIGHT": "You went bust in the right hand:",
+
+    "FUN_BJ_HIT": "Hit",
+    "FUN_BJ_STAND": "Stand",
+    "FUN_BJ_SPLIT": "Split",
+    "FUN_BJ_DOUBLE": "Double down",
+
+    "FUN_BJ_HIT_RIGHT": "Hit (Right hand)",
+    "FUN_BJ_STAND_RIGHT": "Stand (Right hand)",
+    "FUN_BJ_SPLIT_RIGHT": "Split (Right hand)",
+    "FUN_BJ_DOUBLE_RIGHT": "Double down (Right hand)",
+
 
 
     "----------- Presences -----------": "",
