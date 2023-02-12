@@ -1,6 +1,6 @@
 import Bot from '../structures/bot';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
-import { Interaction, Locale, MessageComponent, MessageData, Snowflake, User } from '../types/types';
+import { EmbedField, Interaction, Locale, MessageComponent, MessageData, User } from '../types/types';
 import CDNUtils from '../utils/cdn';
 import LangUtils from '../utils/language';
 import MiscUtils from '../utils/misc';
@@ -16,14 +16,15 @@ export type Card = {
 const CARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
 type CardValue = typeof CARD_VALUES[number];
 
-const BJ_ACTIONS = ['hit', 'stand', 'double', 'split', 'hitRight', 'standRight', 'doubleRight'] as const;
+const BJ_ACTIONS = ['hit', 'stand', 'double', 'split', 'hitRight', 'standRight'] as const;
 type BlackjackAction = typeof BJ_ACTIONS[number];
 
 const enum RESULTS {
     PUSH = 0,
     BOT,
     USER,
-    SPLIT
+    SPLIT,
+    SPLIT_PUSH
 }
 
 type WinData = {
@@ -42,9 +43,9 @@ export default class BlackjackUtils {
         this.bot = bot;
     }
 
-    static getValue(card: Card): CardValue | CardValue[] {
-        if (card.num === 1) { // an ace can be treated as a 1 or 11
-            return [1, 11];
+    static getValue(card: Card): CardValue {
+        if (card.num === 1) { // an ace can be treated as a 1 or 11; treat it as 11 for now
+            return 11;
         }
         if (card.num === 11 || card.num === 12 || card.num === 13) { // jack, queen, king all treated as 10
             return 10;
@@ -53,25 +54,28 @@ export default class BlackjackUtils {
     }
 
     static getSum(hand: Card[]): number {
-        let sum = 0;
-        for (const card of hand) {
-            const value = BlackjackUtils.getValue(card);
-            if (Array.isArray(value)) { // only for aces; choose "best" value
-                if (sum <= 10) {
-                    sum += 11;
-                } else {
-                    sum += 1;
+        const values = hand.map(card => BlackjackUtils.getValue(card));
+        let sum = (values as number[]).reduce((prev, current) => prev + current);
+        const aces = values.filter(val => val === 11).length;
+        if (aces && sum > 21) {
+            for (let i = 1; i <= aces; i++) {
+                sum -= 10; // treat this ace as a 1 instead of an 11
+                if (sum <= 21) {
+                    break;
                 }
-            } else {
-                sum += value;
             }
         }
         return sum;
     }
 
-    static getComponents(hand: Card[], id: Snowflake, locale?: Locale, disable = false, rightHand?: Card[]): MessageComponent[] {
-        //const canSplit = !rightHand && hand.length === 2 && hand[0].num === hand[1].num;
-        const canHit = this.getSum(hand) < 21;
+    static getComponents(interactionData: BlackjackInteraction, disable = false): MessageComponent[] {
+        const hand = interactionData.authorHand;
+        const rightHand = interactionData.authorRightHand;
+        const locale = interactionData.interaction.locale;
+        const id = interactionData.interaction.id;
+
+        const canSplit = !rightHand && hand.length === 2 && hand[0].num === hand[1].num;
+        const canHit = !interactionData.stand && this.getSum(hand) < 21;
         const canDouble = canHit && hand.length === 2;
         const perfect = this.getSum(hand) === 21;
 
@@ -88,28 +92,26 @@ export default class BlackjackUtils {
                 custom_id: `bj_${id}_stand`,
                 style: BUTTON_STYLES.SUCCESS,
                 label: LangUtils.get('FUN_BJ_STAND', locale),
-                disabled: perfect || disable
+                disabled: interactionData.stand || perfect || disable
             }, {
                 type: MESSAGE_COMPONENT_TYPES.BUTTON,
                 custom_id: `bj_${id}_double`,
                 style: BUTTON_STYLES.SECONDARY,
                 label: LangUtils.get('FUN_BJ_DOUBLE', locale),
-                disabled: !canDouble || disable
+                disabled: !!rightHand || !canDouble || disable
             }, {
                 type: MESSAGE_COMPONENT_TYPES.BUTTON,
                 custom_id: `bj_${id}_split`,
                 style: BUTTON_STYLES.PRIMARY,
-                label: 'Split [COMING SOON]', //LangUtils.get('FUN_BJ_SPLIT', locale),
-                disabled: true //!canSplit || disable
-            }] // TODO: enable splitting
+                label: LangUtils.get('FUN_BJ_SPLIT', locale),
+                disabled: !!rightHand || !canSplit || disable
+            }]
         }];
 
         if (rightHand) {
-            const canHitRight = this.getSum(rightHand) < 21;
-            const canDoubleRight = canHitRight && rightHand.length === 2;
+            const canHitRight = !interactionData.standRight && this.getSum(rightHand) < 21;
             const perfectRight = this.getSum(rightHand) === 21;
 
-            buttonRows.pop(); // remove split button
             buttonRows.push({
                 type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
                 components: [{
@@ -123,13 +125,7 @@ export default class BlackjackUtils {
                     custom_id: `bj_${id}_standRight`,
                     style: BUTTON_STYLES.SUCCESS,
                     label: LangUtils.get('FUN_BJ_STAND_RIGHT', locale),
-                    disabled: !perfectRight || disable
-                }, {
-                    type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                    custom_id: `bj_${id}_doubleRight`,
-                    style: BUTTON_STYLES.SECONDARY,
-                    label: LangUtils.get('FUN_BJ_DOUBLE_RIGHT', locale),
-                    disabled: !canDoubleRight || disable
+                    disabled: interactionData.standRight || perfectRight || disable
                 }]
             })
         }
@@ -189,6 +185,29 @@ export default class BlackjackUtils {
             const userSumRight = this.getSum(interactionData.authorRightHand);
             const userBjRight = BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
 
+            if (userSum > 21 && userSumRight > 21) { // double bust ( ͡° ͜ʖ ͡°)
+                data.overall = RESULTS.BOT;
+                return data;
+            }
+            if (botSum > 21) { // bot went bust
+                if (userSum > 21 || userSumRight > 21) { // one of user's hands went bust
+                    data.overall = RESULTS.SPLIT;
+                    return data;
+                }
+                data.overall = RESULTS.USER;
+                return data;
+            }
+
+            if (!interactionData.standRight && userSumRight < 21) { // player can still hit on the right hand
+                return null;
+            }
+            if (!interactionData.stand && userSum < 21) { // player can still hit on the left hand
+                return null;
+            }
+            if (botSum < 17) { // bot can still hit; dealer stands on 17
+                return null;
+            }
+
             data.userRight = userSumRight <= 21 && !botBj && userSumRight > botSum
             data.userRightBj = userBjRight;
 
@@ -198,6 +217,10 @@ export default class BlackjackUtils {
             }
             if ((data.userMain && !data.userRight) || (!data.userMain && data.userRight)) {
                 data.overall = RESULTS.SPLIT;
+                return data;
+            }
+            if ((userSum === botSum && !data.userRight) || (!data.userMain && userSumRight === botSum)) {
+                data.overall = RESULTS.SPLIT_PUSH;
                 return data;
             }
             if (!data.userMain && !data.userRight) {
@@ -230,7 +253,7 @@ export default class BlackjackUtils {
             data.overall = RESULTS.USER;
             return data;
         }
-        if (!interactionData.authorStand && userSum < 21) { // player can still hit
+        if (!interactionData.stand && userSum < 21) { // player can still hit
             return null;
         }
         if (botSum < 17) { // bot can still hit; dealer stands on 17
@@ -256,18 +279,18 @@ export default class BlackjackUtils {
     getMessageData(interactionData: BlackjackInteraction, author: User, locale?: Locale): MessageData {
         const userBj = BlackjackUtils.hasBlackjack(interactionData.authorHand);
         const botBj = BlackjackUtils.hasBlackjack(interactionData.botHand);
-        //const userBjRight = interactionData.authorRightHand && BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
+        const userBjRight = interactionData.authorRightHand && BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
 
         let result = BlackjackUtils.getWinner(interactionData);
 
-        let content = '', userStatus = '', botStatus = '';
+        let content = LangUtils.get('FUN_BJ_TITLE_START', locale);
+        let userStatus = '', userStatusRight = '', botStatus = '';
 
-        if (interactionData.authorRightHand) {
-            // TODO: handle split hands
-        }
-
-        if (userBj && botBj) {
-            content = LangUtils.get('FUN_BJ_TITLE_TIE', locale);
+        if (userBj && userBjRight && botBj) {
+            userStatusRight = LangUtils.get('FUN_BJ_USER_BJ_RIGHT', locale);
+            userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
+        } else if (userBj && botBj) {
+            content = LangUtils.get('FUN_BJ_TITLE_PUSH', locale);
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
             botStatus = LangUtils.get('FUN_BJ_BOT_BJ', locale);
         } else if (botBj) {
@@ -290,12 +313,33 @@ export default class BlackjackUtils {
                 botStatus = LangUtils.get('FUN_BJ_BOT_FIRST', locale);
             }
             
+            const sum = BlackjackUtils.getSum(interactionData.authorHand);
             if (interactionData.authorRightHand) {
-                // TODO: handle split hands
+                if (sum > 21) {
+                    userStatus = LangUtils.getAndReplace('FUN_BJ_USER_BUST_LEFT', { value: sum }, locale);
+                } else {
+                    userStatus = LangUtils.getAndReplace('FUN_BJ_USER_HAS_LEFT', { value: sum }, locale);
+                }
+
+                const sumRight = BlackjackUtils.getSum(interactionData.authorRightHand);
+                if (sumRight > 21) {
+                    userStatusRight = LangUtils.getAndReplace('FUN_BJ_USER_BUST_RIGHT', { value: sumRight }, locale);
+                } else {
+                    userStatusRight = LangUtils.getAndReplace('FUN_BJ_USER_HAS_RIGHT', { value: sumRight }, locale);
+                }
+                if (sum === 21) {
+                    interactionData.stand = true;
+                }
+                if (sumRight === 21) {
+                    interactionData.standRight = true;
+                }
+                if (sum === 21 && sumRight === 21) { // automatically stand in both hands
+                    this.processBotHit(interactionData);
+                    result = BlackjackUtils.getWinner(interactionData);
+                }
             } else {
-                const sum = BlackjackUtils.getSum(interactionData.authorHand);
                 if (sum === 21) { // automatically stand
-                    interactionData = this.processBotHit(interactionData);
+                    this.processBotHit(interactionData);
                     result = BlackjackUtils.getWinner(interactionData);
                     userStatus = LangUtils.getAndReplace('FUN_BJ_USER_HAS', { value: sum }, locale);
                 } else if (sum > 21) {
@@ -312,7 +356,11 @@ export default class BlackjackUtils {
                         content = LangUtils.get('FUN_BJ_TITLE_LOSS', locale);
                     }
                 } else if (result.overall === RESULTS.PUSH) {
-                    content = LangUtils.get('FUN_BJ_TITLE_TIE', locale);
+                    content = LangUtils.get('FUN_BJ_TITLE_PUSH', locale);
+                } else if (result.overall === RESULTS.SPLIT) {
+                    content = LangUtils.get('FUN_BJ_TITLE_SPLIT', locale);
+                } else if (result.overall === RESULTS.SPLIT_PUSH) {
+                    content = LangUtils.get('FUN_BJ_TITLE_SPLIT_PUSH', locale);
                 } else if (interactionData.double) {
                     content = LangUtils.get('FUN_BJ_TITLE_WIN_DOUBLE', locale);
                 } else {
@@ -322,7 +370,17 @@ export default class BlackjackUtils {
         }
 
         const inter = interactionData.interaction;
-        const components = BlackjackUtils.getComponents(interactionData.authorHand, inter.id, inter.locale, !!result, interactionData.authorRightHand);
+        const components = BlackjackUtils.getComponents(interactionData, !!result);
+        const authorFields: EmbedField[] = [{
+            name: userStatus,
+            value: interactionData.authorHand.map(card => this.getCardText(card, inter)).join(' | ')
+        }];
+        if (interactionData.authorRightHand) {
+            authorFields.push({
+                name: userStatusRight,
+                value: interactionData.authorRightHand.map(card => this.getCardText(card, inter)).join(' | ')
+            })
+        }
 
         return {
             content,
@@ -331,10 +389,7 @@ export default class BlackjackUtils {
                     name: author.username,
                     icon_url: author.avatar ? CDNUtils.userAvatar(author.id, author.avatar) : undefined
                 },
-                fields: [{
-                    name: userStatus,
-                    value: interactionData.authorHand.map(card => this.getCardText(card, inter)).join(' | ')
-                }]
+                fields: authorFields
             }, {
                 author: {
                     name: this.bot.user.username,
@@ -357,51 +412,68 @@ export default class BlackjackUtils {
             botSum = BlackjackUtils.getSum(interactionData.botHand);
             newBotCard = MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
         }
-        return interactionData;
     }
 
     async processPlayerAction(interactionData: BlackjackInteraction, newInteraction: Interaction) {
         const author = newInteraction.member?.user || newInteraction.user;
         if (!author) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Blackjack interaction has no author:', newInteraction);
+            this.bot.logger.debug('BLACKJACK', 'Interaction has no author:', newInteraction);
             return;
         }
         if (!newInteraction.data?.custom_id) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Blackjack interaction is missing custom ID:', newInteraction);
+            this.bot.logger.debug('BLACKJACK', 'Interaction is missing custom ID:', newInteraction);
             return;
         }
         const action = newInteraction.data.custom_id.split('_')[2] as BlackjackAction;
         if (!action || !BJ_ACTIONS.includes(action)) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Blackjack interaction has an invalid custom ID:', newInteraction);
+            this.bot.logger.debug('BLACKJACK', 'Interaction has an invalid custom ID:', newInteraction);
             return;
         }
 
         // ACK the current interaction
         await this.bot.api.interaction.sendResponse(newInteraction, { type: INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE }).catch(err => {
-            this.bot.logger.handleError('PENDING INTERACTIONS', err, 'Failed to ack interaction');
+            this.bot.logger.handleError('BLACKJACK', err, 'Failed to ack interaction.');
         });
+
+        let leftDone = interactionData.stand || BlackjackUtils.getSum(interactionData.authorHand) >= 21;
+        let rightDone = !interactionData.authorRightHand || interactionData.standRight || BlackjackUtils.getSum(interactionData.authorRightHand) >= 21;
 
         const newCard = MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
         if (action === 'hit') {
             interactionData.authorHand.push(newCard);
+            leftDone = BlackjackUtils.getSum(interactionData.authorHand) >= 21;
+        } else if (action === 'hitRight') {
+            if (interactionData.authorRightHand) {
+                interactionData.authorRightHand.push(newCard);
+                rightDone = BlackjackUtils.getSum(interactionData.authorRightHand) >= 21;
+            } else {
+                this.bot.logger.debug('BLACKJACK', 'Invalid operation: hitRight without authorRightHand', interactionData);
+            }
         } else if (action === 'double') {
             interactionData.authorHand.push(newCard);
-            interactionData = this.processBotHit(interactionData);
-            interactionData.authorStand = true;
+            interactionData.stand = true;
+            leftDone = true;
             interactionData.double = true;
-        } else if (action === 'hitRight' || action === 'doubleRight') {
-            if (!interactionData.authorRightHand) {
-                interactionData.authorRightHand = [newCard];
-            } else {
-                interactionData.authorHand.push(newCard);
-            }
         } else if (action === 'split') {
             const newCard2 = MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
             interactionData.authorRightHand = [interactionData.authorHand[1], newCard2];
             interactionData.authorHand = [interactionData.authorHand[0], newCard];
         } else if (action === 'stand') {
-            interactionData = this.processBotHit(interactionData);
-            interactionData.authorStand = true;
+            interactionData.stand = true;
+            leftDone = true;
+        } else if (action === 'standRight') {
+            interactionData.standRight = true;
+            rightDone = true;
+        }
+
+        const leftBust = BlackjackUtils.getSum(interactionData.authorHand) > 21;
+        if (interactionData.authorRightHand) {
+            const rightBust = BlackjackUtils.getSum(interactionData.authorRightHand) > 21;
+            if (leftDone && rightDone && !(leftBust && rightBust)) {
+                this.processBotHit(interactionData);
+            }
+        } else if (leftDone && !leftBust) {
+            this.processBotHit(interactionData);
         }
 
         const msgData = this.getMessageData(interactionData, author, interactionData.interaction.locale);

@@ -404,7 +404,9 @@
     "FUN_BJ_TITLE": "**__Blackjack__**",
     "FUN_BJ_TITLE_WIN": "__Blackjack__: **You won!** *Rigged.*",
     "FUN_BJ_TITLE_WIN_DOUBLE": "__Blackjack__: **You doubled down and won!** *Rigged.*",
-    "FUN_BJ_TITLE_TIE": "__Blackjack__: **It's a push!**",
+    "FUN_BJ_TITLE_PUSH": "__Blackjack__: **It's a push!**",
+    "FUN_BJ_TITLE_SPLIT_PUSH": "__Blackjack__: **It's a split push!** (You lost half your chips.)",
+    "FUN_BJ_TITLE_SPLIT": "__Blackjack__: **You split and broke even!**",
     "FUN_BJ_TITLE_LOSS": "__Blackjack__: **I won!** *Get rekt.*",
     "FUN_BJ_TITLE_LOSS_DOUBLE": "__Blackjack__: **You doubled down and lost!** *Get rekt.*",
 
@@ -418,9 +420,9 @@
     "FUN_BJ_USER_BJ": "You have a blackjack:",
     "FUN_BJ_USER_BJ_LEFT": "You have a blackjack in the left hand:",
     "FUN_BJ_USER_BJ_RIGHT": "You have a blackjack in the right hand:",
-    "FUN_BJ_USER_BUST": "You went bust! (Total: {{value}})",
-    "FUN_BJ_USER_BUST_LEFT": "You went bust in the left hand:",
-    "FUN_BJ_USER_BUST_RIGHT": "You went bust in the right hand:",
+    "FUN_BJ_USER_BUST": "You went bust! (Total: **{{value}}**)",
+    "FUN_BJ_USER_BUST_LEFT": "You went bust in the left hand: (Total: **{{value}}**)",
+    "FUN_BJ_USER_BUST_RIGHT": "You went bust in the right hand: (Total: **{{value}}**)",
 
     "FUN_BJ_HIT": "Hit",
     "FUN_BJ_STAND": "Stand",
@@ -429,8 +431,6 @@
 
     "FUN_BJ_HIT_RIGHT": "Hit (Right hand)",
     "FUN_BJ_STAND_RIGHT": "Stand (Right hand)",
-    "FUN_BJ_SPLIT_RIGHT": "Split (Right hand)",
-    "FUN_BJ_DOUBLE_RIGHT": "Double down (Right hand)",
 
 
 

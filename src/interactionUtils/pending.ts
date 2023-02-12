@@ -24,8 +24,9 @@ export interface BlackjackInteraction extends PendingInteractionBase {
     authorHand: Card[],
     botHand: Card[],
     authorRightHand?: Card[],
-    authorStand?: boolean,
-    double?: boolean
+    stand?: boolean,
+    double?: boolean,
+    standRight?: boolean
 }
 export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction;
 
