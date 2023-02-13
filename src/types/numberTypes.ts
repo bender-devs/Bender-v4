@@ -246,7 +246,12 @@ export const enum COMMAND_PERMISSION_TYPES {
 export const enum MESSAGE_COMPONENT_TYPES {
     ACTION_ROW = 1,
     BUTTON,
-    SELECT_MENU
+    STRING_SELECT,
+    TEXT_INPUT,
+    USER_SELECT,
+    ROLE_SELECT,
+    MENTIONABLE_SELECT, // users and roles
+    CHANNEL_SELECT
 }
 
 // https://discord.com/developers/docs/interactions/message-components#button-object-button-styles

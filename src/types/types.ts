@@ -927,15 +927,19 @@ export interface MessageComponentButton extends MessageComponentBase {
     url?: URL;
 }
 export interface MessageComponentSelect extends MessageComponentBase {
-    type: num.MESSAGE_COMPONENT_TYPES.SELECT_MENU;
     custom_id?: string;
     disabled?: boolean;
-    options: MessageComponentSelectOption[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
 }
-export type MessageComponent = MessageComponentRow | MessageComponentButton | MessageComponentSelect;
+export interface MessageComponentTextSelect extends MessageComponentSelect {
+    options: MessageComponentSelectOption[];
+}
+export interface MessageComponentChannelSelect extends MessageComponentSelect {
+    channel_types: num.CHANNEL_TYPES[];
+}
+export type MessageComponent = MessageComponentRow | MessageComponentButton | MessageComponentSelect | MessageComponentTextSelect | MessageComponentChannelSelect;
 export type MessageComponentSelectOption = {
     label: string,
     value: string,
