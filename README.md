@@ -7,9 +7,9 @@ _The latest and greatest version of Bender._
 | Website | https://benderbot.co |
 | Developing Bender | [Click here](docs/developing-bender.md) |
 
-## ⚠ CURRENTLY JUST A FRAMEWORK! ⚠
+## ⚠ WORK IN PROGRESS! ⚠
 
-This rewrite is ambitious: A full rewrite using a new language and a custom library. At the moment it's in testing, but most of the hard work is done. We'll be gradually adding commands and features while overhauling the bot's efficiency and user experience.
+This rewrite is ambitious: A full rewrite using a new language and a custom library. The framework seems very stable, having handled more than a million consecutive events without any errors or crashes several times. However, many use cases haven't been tested, so we wouldn't consider any of it production-ready yet. The framework will be improved as needed according to the requirements of the features being added.
 
 ## Translations
 
@@ -17,11 +17,11 @@ As we add features and get closer to completion, we're looking for people to hel
 
 #### A couple things to keep in mind:
 
-- If you're not familiar with JSON formatting, all you need to know for the scope of this project are that the keys, i.e. `"GUILD_ONLY"`, should be left as-is, and the values after them should be translated.
+- If you're not familiar with JSON formatting, the parts in quotations before the colon, i.e. `"GUILD_ONLY"`, are called the keys, and the parts after are called the values.
 
-- The keys with a bunch of dashes (i.e. `"----------- Generic command errors -----------": ""`) are considered comments. You can translate them if you want, but it's just for organization.
+- Only the values should be translated, NOT the keys. This includes the keys with a bunch of dashes (i.e. `"----------- Generic command errors -----------": ""`), since translating these will trigger a warning on startup that the language is incomplete.
 
-- The double bracket format (`{{variable}}`) is used to replace parts of the text with other values; for example, `{{invite}}` would be replaced with `https://discord.gg/99xaeGn`. The variables should be moved around to fit the context, but shouldn't be translated or edited.
+- The double bracket format (`{{variable}}`) is used to replace parts of the text with other values; for example, `{{invite}}` would be replaced with `https://discord.gg/99xaeGn`. The variables should be moved around to fit the context, but shouldn't be translated, edited, or deleted.
 
 To see examples, compare [en_US.json](/src/text/en_US.json) to one of the `.json` files for another language.
 
