@@ -2,15 +2,17 @@ import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
 import Bot from '../structures/bot';
 import { Interaction, Snowflake } from '../types/types';
 import BlackjackUtils, { BlackjackInteraction } from './blackjack';
+import { RestrictEmojiInteraction } from './restrictEmoji';
 import RPSUtils, { RockPaperScissorsInteraction } from './rps';
 import TicTacToeUtils, { TicTacToeInteraction } from './tictactoe';
+import RestrictEmojiUtils from './restrictEmoji';
 
 export type PendingInteractionBase = {
     author: Snowflake,
     interaction: Interaction,
     expireTimeout?: NodeJS.Timeout
 }
-export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction;
+export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction | RestrictEmojiInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
@@ -18,6 +20,7 @@ export default class PendingInteractionUtils {
     tttUtils: TicTacToeUtils;
     rpsUtils: RPSUtils;
     bjUtils: BlackjackUtils;
+    remUtils: RestrictEmojiUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -25,6 +28,7 @@ export default class PendingInteractionUtils {
         this.tttUtils = new TicTacToeUtils(bot);
         this.rpsUtils = new RPSUtils(bot);
         this.bjUtils = new BlackjackUtils(bot);
+        this.remUtils = new RestrictEmojiUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -68,6 +72,8 @@ export default class PendingInteractionUtils {
                 return this.rpsUtils.processPlayerChoice(interactionData as RockPaperScissorsInteraction, interaction);
             case 'bj':
                 return this.bjUtils.processPlayerAction(interactionData as BlackjackInteraction, interaction);
+            case 'rem':
+                return this.remUtils.submitRoles(interactionData as RestrictEmojiInteraction, interaction);
         }
     }
 }

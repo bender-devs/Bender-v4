@@ -20,6 +20,7 @@
     "USER_OR_GUILD_NOT_FOUND": "Couldn't find user or server.",
     "CHANNEL_FETCH_FAILED": "Failed to get channel info.",
     "USER_FETCH_FAILED": "Failed to get user info.",
+    "SEND_PROMPT_FAILED": "Failed to send prompt message.",
 
     "MISSING_PERMISSIONS": "I'm missing the following permissions for {{context}}: {{permissions}}",
     "MISSING_GUILD_PERMISSIONS": "I'm missing the following permissions in this server: {{permissions}}",
@@ -431,6 +432,32 @@
 
     "FUN_BJ_HIT_RIGHT": "Hit (Right hand)",
     "FUN_BJ_STAND_RIGHT": "Stand (Right hand)",
+
+
+
+    "----------- /restrict-emoji -----------": "",
+
+    "REM_NAME": "restrict-emoji",
+    "REM_DESCRIPTION": "Set or view restrictions on which members can use an emoji.",
+
+    "REM_SUBCOMMAND_VIEW": "view",
+    "REM_SUBCOMMAND_VIEW_DESCRIPTION": "View current emoji restrictions, if any.",
+    "REM_SUBCOMMAND_SET": "set",
+    "REM_SUBCOMMAND_SET_DESCRIPTION": "Set which roles are allowed to use the emoji.",
+    "REM_SUBCOMMAND_RESET": "reset",
+    "REM_SUBCOMMAND_RESET_DESCRIPTION": "Reset the emoji restrictions.",
+
+    "REM_OPTION_EMOJI": "emoji",
+    "REM_OPTION_EMOJI_DESCRIPTION": "The emoji to restrict.",
+
+    "REM_UNRESTRICTED": "{{emoji}} is currently unrestricted (can be used by anyone.)",
+    "REM_VIEW_ROLES": "{{emoji}} can be used by the following roles: {{roles}}",
+    "REM_RESET": "Reset restrictions for {{emoji}} - it can now be used by everyone.",
+    "REM_RESET_UNNECESSARY": "Didn't reset restrictions for {{emoji}} - it is already available to everyone.",
+    "REM_SET_PROMPT": "Please choose which roles should be allowed to use {{emoji}}.",
+    "REM_SET_ROLES": "Set restrictions for {{emoji}} - it can be used by members with the following roles: {{roles}}",
+    "REM_SET_ROLES_UNNECESSARY": "Didn't set restrictions for {{emoji}} - it is already set to the same roles you chose.",
+    "REM_EDIT_FAILED": "Failed to edit restrictions for {{emoji}}.",
 
 
 
