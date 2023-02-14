@@ -1,8 +1,8 @@
 import * as CONSTANTS from '../data/constants';
 import { Emoji, Snowflake, UnixTimestampMillis } from '../types/types';
 
-function getRegex(chars: string, exact: boolean, timestamp = false) {
-    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`);
+function getRegex(chars: string, exact: boolean, caseSensitive = false, timestamp = false) {
+    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`, caseSensitive ? undefined : 'i');
 }
 
 export type NullableID = Snowflake | null;
@@ -21,8 +21,8 @@ export const ROLE_MENTION_REGEX_EXACT = getRegex('@&', true);
 export const EMOJI_REGEX = getRegex('(a?):([a-z0-9]{2,32}):', false);
 export const EMOJI_REGEX_EXACT = getRegex('(a?):([a-z0-9]{2,32}):', true);
 
-export const TIMESTAMP_REGEX = getRegex('t:', false, true);
-export const TIMESTAMP_REGEX_EXACT = getRegex('t:', true, true);
+export const TIMESTAMP_REGEX = getRegex('t:', false, true, true);
+export const TIMESTAMP_REGEX_EXACT = getRegex('t:', true, true, true);
 
 export default class TextUtils {
     static #getFirstMatch(text: string, regex: RegExp): string | null {
@@ -74,6 +74,9 @@ export default class TextUtils {
         },
         parse: (emoji: Emoji, addZeroWidth = false): string => {
             return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}${addZeroWidth ? '\u200B' : ''}>`;
+        },
+        parseDisplay: (emoji: Emoji, nameOnly = false) => {
+            return nameOnly ? `:${emoji.name}:` : TextUtils.emoji.parse(emoji);
         }
     }
 
