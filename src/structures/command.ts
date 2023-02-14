@@ -1,7 +1,7 @@
 import Bot from './bot';
 import * as types from '../types/types';
 import APIError from './apiError';
-import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, PERMISSIONS } from '../types/numberTypes';
+import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../types/numberTypes';
 import LangUtils from '../utils/language';
 import { SUPPORT_SERVER } from '../data/constants';
 import { LangKey } from '../text/languageList';
@@ -113,10 +113,10 @@ export class CommandUtils {
         return this.respond(interaction, content, emojiKey);
     }
 
-    async respondMissingPermissions(interaction: types.Interaction, context: string, perms: PERMISSIONS[], forUser = false) {
+    async respondMissingPermissions(interaction: types.Interaction, context: string, perms: types.PermissionName[], forUser = false) {
         const permNames = perms.map(perm => LangUtils.getFriendlyPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
-        return this.respondKeyReplace(interaction, key, { context, permissions: permNames.join(', ') }, 'WARNING');
+        return this.respondKeyReplace(interaction, key, { context, permissions: `\`${permNames.join('`, `')}\`` }, 'WARNING');
     }
 
     async handleAPIError(err: APIError) {

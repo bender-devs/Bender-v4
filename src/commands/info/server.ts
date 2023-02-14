@@ -39,7 +39,7 @@ function getSecurityLevelText(this: InfoCommand, interaction: Interaction, level
 
 export default async function (this: InfoCommand, interaction: Interaction) {
     if (!interaction.guild_id) {
-        return this.respondKey(interaction, 'GUILD_ONLY', 'GUILD');
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD');
     }
 
     const guild = await this.bot.api.guild.fetch(interaction.guild_id, true).catch(() => null);

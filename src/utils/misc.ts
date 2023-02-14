@@ -1,6 +1,6 @@
 import Bot from '../structures/bot';
 import * as EMOTES from '../data/emotes.json';
-import * as SHITTY_EMOTES from '../data/shitty_emotes.json';
+import * as SHITTY_EMOTES from '../data/shittyEmotes.json';
 import { Interaction, Locale, Snowflake, Status } from '../types/types';
 import LangUtils from './language';
 import { ACTIVITY_TYPES } from '../types/numberTypes';

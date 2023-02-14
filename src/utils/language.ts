@@ -3,7 +3,6 @@ import languages, { LangKey } from '../text/languageList';
 import Logger from '../structures/logger';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
 import TimeUtils from './time';
-import { PERMISSIONS } from '../types/numberTypes';
 import MiscUtils, { EmojiKey } from './misc';
 
 if (!languages[DEFAULT_LANGUAGE]) {
@@ -98,9 +97,8 @@ export default class LanguageUtils {
         return dict;
     }
 
-    static getFriendlyPermissionName(perm: PERMISSIONS, locale?: Locale) {
-        const permKey: PermissionName = typeof perm === 'number' ? PERMISSIONS[perm] as PermissionName : perm;
-        return LanguageUtils.get(`PERMISSION_${permKey}`, locale);
+    static getFriendlyPermissionName(perm: PermissionName, locale?: Locale) {
+        return LanguageUtils.get(`PERMISSION_${perm}`, locale);
     }
 
     static logLocalizationSupport(logger: Logger) {

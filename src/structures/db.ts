@@ -1,6 +1,6 @@
 import * as mongodb from 'mongodb';
 import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants';
-import DB_INDEXES from '../data/db_indexes';
+import DB_INDEXES from '../data/dbIndexes';
 import * as dbTypes from '../types/dbTypes';
 import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types';
 import Bot from './bot';
