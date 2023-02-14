@@ -1,32 +1,14 @@
 import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
 import Bot from '../structures/bot';
 import { Interaction, Snowflake } from '../types/types';
-import BlackjackUtils, { Card } from './blackjack';
-import RPSUtils, { RPSShow } from './rps';
-import TicTacToeUtils, { TicTacToeBoard } from './tictactoe';
+import BlackjackUtils, { BlackjackInteraction } from './blackjack';
+import RPSUtils, { RockPaperScissorsInteraction } from './rps';
+import TicTacToeUtils, { TicTacToeInteraction } from './tictactoe';
 
 export type PendingInteractionBase = {
     author: Snowflake,
     interaction: Interaction,
     expireTimeout?: NodeJS.Timeout
-}
-export interface TicTacToeInteraction extends PendingInteractionBase {
-    target: Snowflake | null,
-    board: TicTacToeBoard,
-    targetTurn: boolean
-}
-export interface RockPaperScissorsInteraction extends PendingInteractionBase {
-    target: Snowflake,
-    authorChoice?: RPSShow,
-    targetChoice?: RPSShow
-}
-export interface BlackjackInteraction extends PendingInteractionBase {
-    authorHand: Card[],
-    botHand: Card[],
-    authorRightHand?: Card[],
-    stand?: boolean,
-    double?: boolean,
-    standRight?: boolean
 }
 export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction;
 

@@ -1,5 +1,4 @@
-import BlackjackUtils from '../../interactionUtils/blackjack';
-import { BlackjackInteraction } from '../../interactionUtils/pending';
+import BlackjackUtils, { BlackjackInteraction } from '../../interactionUtils/blackjack';
 import { Interaction } from '../../types/types';
 import MiscUtils from '../../utils/misc';
 import FunCommand from '../fun';

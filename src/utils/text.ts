@@ -32,6 +32,7 @@ export default class TextUtils {
 
     static extractAny(text: string, exact = true): Snowflake | Emoji | number | null {
         return this.mention.extractUserID(text, exact)
+            || this.mention.extractRoleID(text, exact)
             || this.mention.extractChannelID(text, exact)
             || this.emoji.extract(text, exact)
             || this.timestamp.extract(text, exact);
@@ -44,6 +45,13 @@ export default class TextUtils {
         },
         parseUser: (id: Snowflake): string => {
             return `<@${id}>`
+        },
+        extractRoleID: (text: string, exact = true): NullableID => {
+            const regex = exact ? ROLE_MENTION_REGEX_EXACT : ROLE_MENTION_REGEX;
+            return this.#getFirstMatch(text, regex) as NullableID;
+        },
+        parseRole: (id: Snowflake): string => {
+            return `<@&${id}>`
         },
         extractChannelID: (text: string, exact = true): NullableID => {
             const regex = exact ? CHANNEL_MENTION_REGEX_EXACT : CHANNEL_MENTION_REGEX;

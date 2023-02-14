@@ -4,7 +4,16 @@ import { EmbedField, Interaction, Locale, MessageComponent, MessageData, User } 
 import CDNUtils from '../utils/cdn';
 import LangUtils from '../utils/language';
 import MiscUtils from '../utils/misc';
-import { BlackjackInteraction } from './pending';
+import { PendingInteractionBase } from './pending';
+
+export interface BlackjackInteraction extends PendingInteractionBase {
+    authorHand: Card[],
+    botHand: Card[],
+    authorRightHand?: Card[],
+    stand?: boolean,
+    double?: boolean,
+    standRight?: boolean
+}
 
 const SUITS = ['HEARTS', 'SPADES', 'CLUBS', 'DIAMONDS'] as const;
 const VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as const;

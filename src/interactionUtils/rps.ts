@@ -1,10 +1,16 @@
 import Bot from '../structures/bot';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
 import { Interaction, Locale, MessageComponent, Snowflake } from '../types/types';
-import { RockPaperScissorsInteraction } from './pending';
+import { PendingInteractionBase } from './pending';
 import LangUtils from '../utils/language';
 import TextUtils from '../utils/text';
 import MiscUtils from '../utils/misc';
+
+export interface RockPaperScissorsInteraction extends PendingInteractionBase {
+    target: Snowflake,
+    authorChoice?: RPSShow,
+    targetChoice?: RPSShow
+}
 
 export type RPSShow = 'r' | 'p' | 's';
 

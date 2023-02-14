@@ -1,9 +1,15 @@
 import Bot from '../structures/bot';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
 import { Interaction, MessageComponent, Snowflake } from '../types/types';
-import { TicTacToeInteraction } from './pending';
+import { PendingInteractionBase } from './pending';
 import LangUtils from '../utils/language';
 import TextUtils from '../utils/text';
+
+export interface TicTacToeInteraction extends PendingInteractionBase {
+    target: Snowflake | null,
+    board: TicTacToeBoard,
+    targetTurn: boolean
+}
 
 type Cell = 0 | 1 | 2; // 0 = empty, 1 = player 1, 2 = player 2 (bot or user chosen by player 1)
 export type TicTacToeBoard = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell];
