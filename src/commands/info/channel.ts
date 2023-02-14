@@ -30,11 +30,11 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respond(interaction, unavailableMsg, 'GUILD');
     }
     if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
-        return this.respondMissingPermissions(interaction, `<#${channelID}>`, [PERMISSIONS.VIEW_CHANNEL], true);
+        return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL'], true);
     }
     const hasPermissionCached = this.bot.perms.matchesMemberCache(this.bot.user.id, 'VIEW_CHANNEL', interaction.guild_id, channelID as types.Snowflake);
     if (hasPermissionCached === false) {
-        return this.respondMissingPermissions(interaction, `<#${channelID}>`, [PERMISSIONS.VIEW_CHANNEL], true);
+        return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL'], true);
     }
     // catch-22 situation here: if the channel isn't cached, there's no way to tell if the bot has permissions to fetch it, since you can't fetch the channel and its permission overrides
     // see https://github.com/discord/discord-api-docs/discussions/3310
@@ -43,7 +43,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         channel = await this.bot.api.channel.fetch(channelID as types.Snowflake);
     } catch (err) {
         if (err instanceof APIError && err.code === API_ERRORS.MISSING_ACCESS) {
-            return this.respondMissingPermissions(interaction, `<#${channelID}>`, [PERMISSIONS.VIEW_CHANNEL]);
+            return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL']);
         }
         this.bot.logger.handleError('FETCH CHANNEL', err);
         return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR');
