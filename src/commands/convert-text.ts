@@ -50,7 +50,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'base64',
+        name: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BASE64'),
         name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BASE64'),
 
         description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BASE64_DESCRIPTION'),
@@ -60,7 +60,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'binary',
+        name: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BINARY'),
         name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_BINARY'),
 
         description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION'),
@@ -70,7 +70,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: 'hash',
+        name: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_HASH'),
         name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_SUBCOMMAND_HASH'),
 
         description: LangUtils.get('CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION'),
@@ -79,7 +79,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         options: [{
             type: COMMAND_OPTION_TYPES.STRING,
 
-            name: 'algorithm',
+            name: LangUtils.get('CONVERT_TEXT_OPTION_ALGORITHM'),
             name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_ALGORITHM'),
 
             description: LangUtils.get('CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION'),
@@ -97,7 +97,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }, {
             type: COMMAND_OPTION_TYPES.STRING,
 
-            name: 'text',
+            name: LangUtils.get('CONVERT_TEXT_OPTION_HASHTEXT'),
             name_localizations: LangUtils.getLocalizationMap('CONVERT_TEXT_OPTION_HASHTEXT'),
 
             description: LangUtils.get('CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION'),
@@ -116,11 +116,11 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
         switch (subcommand) {
-            case 'base64':
+            case LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BASE64'):
                 return this.#base64(interaction, modeOrAlgorithm, text);
-            case 'binary':
+            case LangUtils.get('CONVERT_TEXT_SUBCOMMAND_BINARY'):
                 return this.#binary(interaction, modeOrAlgorithm, text);
-            case 'hash':
+            case LangUtils.get('CONVERT_TEXT_SUBCOMMAND_HASH'):
                 return this.#hash(interaction, modeOrAlgorithm, text);
         }
 
