@@ -1,8 +1,8 @@
 import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types';
+import { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types';
 import LangUtils from '../utils/language';
-import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
+import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes';
 import { ID_REGEX_EXACT } from '../data/constants';
 import TextUtils, { EMOJI_REGEX_EXACT } from '../utils/text';
 
@@ -27,6 +27,7 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
     readonly description = LangUtils.get('REM_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('REM_DESCRIPTION');
 
+    readonly default_member_permissions = `${PERMISSIONS.MANAGE_EMOJIS_AND_STICKERS}` as Bitfield;
     readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [{
