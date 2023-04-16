@@ -16,6 +16,7 @@ import DevCommand from '../commands/dev';
 
 import getUserCommands from '../commands/nonText/user';
 import getMessageCommands from '../commands/nonText/message';
+import StatsCommand from '../commands/stats';
 
 export default class SlashCommandManager {
     bot: Bot;
@@ -34,6 +35,7 @@ export default class SlashCommandManager {
         this.commands.push(new InfoCommand(this.bot));
         this.commands.push(new FunCommand(this.bot));
         this.commands.push(new RestrictEmojiCommand(this.bot));
+        this.commands.push(new StatsCommand(this.bot));
 
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));

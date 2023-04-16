@@ -435,6 +435,42 @@
 
 
 
+    "------- /stats -------": "",
+
+    "STATS_NAME": "stats",
+    "STATS_DESCRIPTION": "Shows more detailed information about members.",
+    
+    "------- /stats inactive -------": "",
+
+    "STATS_SUBCOMMAND_INACTIVE": "inactive",
+    "STATS_SUBCOMMAND_INACTIVE_DESCRIPTION": "Counts inactive members, with an optional role filter.",
+
+    "STATS_INACTIVE_OPTION_DAYS": "days",
+    "STATS_INACTIVE_OPTION_DAYS_DESCRIPTION": "The number of days of inactivity; default 30.",
+
+    "STATS_INACTIVE_RESULT": "**{{inactive}}** members have been inactive for at least {{days}} days.",
+    "STATS_INACTIVE_RESULT_SINGLE": "**{{inactive}}** members have been inactive for at least 1 day.",
+    "STATS_INACTIVE_FETCH_FAILED": "Failed to fetch inactive member count.",
+    
+    "------- /stats playing -------": "",
+
+    "STATS_SUBCOMMAND_PLAYING": "playing",
+    "STATS_SUBCOMMAND_PLAYING_DESCRIPTION": "Counts members playing a certain game.",
+
+    "STATS_PLAYING_OPTION_GAME": "game",
+    "STATS_PLAYING_OPTION_GAME_DESCRIPTION": "The game or activity name to find. (Use full names, not abbreviations.)",
+    "STATS_PLAYING_OPTION_EXACT": "exact",
+    "STATS_PLAYING_OPTION_EXACT_DESCRIPTION": "Find the exact game name instead of searching.",
+
+    "STATS_PLAYING_RESULT": "**{{playing}}** members are playing `{{game}}`.",
+    "STATS_PLAYING_RESULT_SINGLE": "**1** member is playing `{{game}}`.",
+    "STATS_PLAYING_RESULT_EMPTY": "Couldn't find any members playing `{{game}}`. *If you used an abbreviation, try the full name (i.e. Grand Theft Auto instead of GTA.)*",
+
+    "STATS_PLAYING_RESULT_GENERIC": "**{{playing}}** members are playing games.",
+    "STATS_PLAYING_RESULT_GENERIC_SINGLE": "**1** member is playing a game.",
+    "STATS_PLAYING_RESULT_GENERIC_EMPTY": "Couldn't find any members playing any game.",
+
+
     "----------- /restrict-emoji -----------": "",
 
     "REM_NAME": "restrict-emoji",
