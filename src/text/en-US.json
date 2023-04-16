@@ -530,7 +530,7 @@
     "PERMISSION_MANAGE_NICKNAMES": "Manage Nicknames",
     "PERMISSION_MANAGE_ROLES": "Manage Roles",
     "PERMISSION_MANAGE_WEBHOOKS": "Manage Webhooks",
-    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers",
+    "PERMISSION_MANAGE_EXPRESSIONS": "Manage Expressions",
     "PERMISSION_USE_APPLICATION_COMMANDS": "Use Application Commands",
     "PERMISSION_REQUEST_TO_SPEAK": "Request to Speak",
     "PERMISSION_MANAGE_EVENTS": "Manage Events",

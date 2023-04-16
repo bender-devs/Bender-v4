@@ -169,7 +169,7 @@
     "PERMISSION_MANAGE_NICKNAMES": "Nicknames verwalten",
     "PERMISSION_MANAGE_ROLES": "Rollen verwalten",
     "PERMISSION_MANAGE_WEBHOOKS": "WebHooks verwalten",
-    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Emojis und Sticker verwalten",
+    "PERMISSION_MANAGE_EXPRESSIONS": "Ausdrücke verwalten",
     "PERMISSION_USE_APPLICATION_COMMANDS": "Anwendungsbefehle verwenden",
     "PERMISSION_REQUEST_TO_SPEAK": "Redeanfrage",
     "PERMISSION_MANAGE_EVENTS": "Events verwalten",

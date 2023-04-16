@@ -27,7 +27,7 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
     readonly description = LangUtils.get('REM_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('REM_DESCRIPTION');
 
-    readonly default_member_permissions = `${PERMISSIONS.MANAGE_EMOJIS_AND_STICKERS}` as Bitfield;
+    readonly default_member_permissions = `${PERMISSIONS.MANAGE_EXPRESSIONS}` as Bitfield;
     readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [{
@@ -112,8 +112,8 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
             return this.respond(interaction, { content: respText, allowed_mentions: { parse: [] } });
         }
         
-        if (!this.bot.perms.matchesMemberCache(this.bot.user.id, 'MANAGE_EMOJIS_AND_STICKERS', interaction.guild_id, interaction.channel_id)) {
-			return this.respondMissingPermissions(interaction, interaction.guild_id, ['MANAGE_EMOJIS_AND_STICKERS']);
+        if (!this.bot.perms.matchesMemberCache(this.bot.user.id, 'MANAGE_EXPRESSIONS', interaction.guild_id, interaction.channel_id)) {
+			return this.respondMissingPermissions(interaction, interaction.guild_id, ['MANAGE_EXPRESSIONS']);
 		}
 
         if (subcommand === LangUtils.get('REM_SUBCOMMAND_RESET')) {

@@ -178,7 +178,7 @@
     "PERMISSION_MANAGE_NICKNAMES": "Gebruikersnamen beheren",
     "PERMISSION_MANAGE_ROLES": "Rollen beheren",
     "PERMISSION_MANAGE_WEBHOOKS": "Webhooks beheren",
-    "PERMISSION_MANAGE_EMOJIS_AND_STICKERS": "Emoji's en stickers beheren",
+    "PERMISSION_MANAGE_EXPRESSIONS": "Uitdrukkingen beheren",
     "PERMISSION_USE_APPLICATION_COMMANDS": "Applicatieopdrachten gebruiken",
     "PERMISSION_REQUEST_TO_SPEAK": "Verzoek om te spreken",
     "PERMISSION_MANAGE_EVENTS": "Evenementen beheren",
