@@ -95,11 +95,19 @@ export class CommandUtils {
 
     async editResponse(interaction: types.Interaction, msgData: CommandResponseEditData, emojiKey?: EmojiKey) {
         const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
+        if (typeof msgData !== 'string' && emojiKey && data.content){
+            const emoji = this.getEmoji(emojiKey, interaction);
+            data.content = `${emoji} ${data.content}`;
+        }
         return this.bot.api.interaction.editResponse(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
     async deferredResponse(interaction: types.Interaction, msgData: CommandResponseEditData, emojiKey?: EmojiKey) {
         const data = typeof msgData === 'string' ? this.#getMessageData(interaction, msgData, emojiKey) : msgData;
+        if (typeof msgData !== 'string' && emojiKey && data.content){
+            const emoji = this.getEmoji(emojiKey, interaction);
+            data.content = `${emoji} ${data.content}`;
+        }
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
