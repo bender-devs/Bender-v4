@@ -2,7 +2,8 @@ import { ICommand, CommandUtils } from '../structures/command';
 import Bot from '../structures/bot';
 import { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types';
 import LangUtils from '../utils/language';
-import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, PERMISSIONS } from '../types/numberTypes';
+import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes';
+import { LangKey } from '../text/languageList';
 
 export default class StatsCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {
@@ -65,6 +66,10 @@ export default class StatsCommand extends CommandUtils implements ICommand {
     }]
 
     async run(interaction: Interaction): CommandResponse {
+        const authorID = interaction.member?.user.id || interaction.user?.id;
+        if (!authorID) {
+            return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
+        }
         if (!interaction.guild_id) {
             return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD');
         }
@@ -83,8 +88,25 @@ export default class StatsCommand extends CommandUtils implements ICommand {
                     if (typeof inactive !== 'number') {
                         throw new Error(`fetchPruneCount failed; inactive = ${inactive}`);
                     }
-                    const resultMessage = LangUtils.getAndReplace(`STATS_INACTIVE_RESULT${inactive === 1 ? '_SINGLE' : ''}`, { inactive, days });
-                    return this.deferredResponse(interaction, resultMessage, 'INFO');
+                    const resultKey: LangKey = `STATS_INACTIVE_RESULT${days === 1 ? '_1DAY' : ''}${inactive === 1 ? '_SINGLE' : ''}`;
+                    let resultMessage = LangUtils.getAndReplace(resultKey, { inactive, days }, interaction.locale);
+                    resultMessage += `\n${LangUtils.get('STATS_INACTIVE_INCLUDE_ROLES', interaction.locale)}`;
+
+                    return this.deferredResponse(interaction, {
+                        content: resultMessage,
+                        components: [{
+                            type: 1,
+                            components: [{
+                                type: MESSAGE_COMPONENT_TYPES.ROLE_SELECT,
+                                custom_id: `inactive_${interaction.id}`,
+                                min_values: 1,
+                                max_values: 25
+                            }]
+                        }]
+                    }, 'INFO').then(msg => {
+                        this.bot.interactionUtils.addItem({ interaction, author: authorID, days });
+                        return msg;
+                    });
                 }).catch(err => {
                     this.bot.logger.handleError('/stats inactive', err);
                     const failedMsg = LangUtils.get('STATS_INACTIVE_FETCH_FAILED', interaction.locale);

@@ -2,17 +2,17 @@ import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
 import Bot from '../structures/bot';
 import { Interaction, Snowflake } from '../types/types';
 import BlackjackUtils, { BlackjackInteraction } from './blackjack';
-import { RestrictEmojiInteraction } from './restrictEmoji';
 import RPSUtils, { RockPaperScissorsInteraction } from './rps';
 import TicTacToeUtils, { TicTacToeInteraction } from './tictactoe';
-import RestrictEmojiUtils from './restrictEmoji';
+import RestrictEmojiUtils, { RestrictEmojiInteraction } from './restrictEmoji';
+import InactiveStatsUtils, { InactiveStatsInteraction } from './inactiveStats';
 
 export type PendingInteractionBase = {
     author: Snowflake,
     interaction: Interaction,
     expireTimeout?: NodeJS.Timeout
 }
-export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction | RestrictEmojiInteraction;
+export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction | RestrictEmojiInteraction | InactiveStatsInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
@@ -21,6 +21,7 @@ export default class PendingInteractionUtils {
     rpsUtils: RPSUtils;
     bjUtils: BlackjackUtils;
     remUtils: RestrictEmojiUtils;
+    inactiveUtils: InactiveStatsUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -29,6 +30,7 @@ export default class PendingInteractionUtils {
         this.rpsUtils = new RPSUtils(bot);
         this.bjUtils = new BlackjackUtils(bot);
         this.remUtils = new RestrictEmojiUtils(bot);
+        this.inactiveUtils = new InactiveStatsUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -74,6 +76,8 @@ export default class PendingInteractionUtils {
                 return this.bjUtils.processPlayerAction(interactionData as BlackjackInteraction, interaction);
             case 'rem':
                 return this.remUtils.submitRoles(interactionData as RestrictEmojiInteraction, interaction);
+            case 'inactive':
+                return this.inactiveUtils.submitRoles(interactionData as InactiveStatsInteraction, interaction);
         }
     }
 }

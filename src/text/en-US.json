@@ -449,8 +449,12 @@
     "STATS_INACTIVE_OPTION_DAYS_DESCRIPTION": "The number of days of inactivity; default 30.",
 
     "STATS_INACTIVE_RESULT": "**{{inactive}}** members have been inactive for at least {{days}} days.",
-    "STATS_INACTIVE_RESULT_SINGLE": "**{{inactive}}** members have been inactive for at least 1 day.",
+    "STATS_INACTIVE_RESULT_SINGLE": "**1** member has been inactive for at least {{days}} days.",
+    "STATS_INACTIVE_RESULT_1DAY": "**{{inactive}}** members have been inactive for at least 1 day.",
+    "STATS_INACTIVE_RESULT_1DAY_SINGLE": "**1** member has been inactive for at least 1 day.",
     "STATS_INACTIVE_FETCH_FAILED": "Failed to fetch inactive member count.",
+    "STATS_INACTIVE_INCLUDE_ROLES": "*To include members with certain roles, use the selector below:*",
+    "STATS_INACTIVE_ROLES_INCLUDED": "*Including roles:* {{roles}}",
     
     "------- /stats playing -------": "",
 
