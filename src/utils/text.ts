@@ -1,13 +1,11 @@
 import * as CONSTANTS from '../data/constants';
-import { Emoji, Snowflake, UnixTimestampMillis } from '../types/types';
+import { Emoji, Snowflake, TimestampFormat, TIMESTAMP_FORMATS, UnixTimestampMillis } from '../types/types';
 
 function getRegex(chars: string, exact: boolean, caseSensitive = false, timestamp = false) {
-    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? '(:[tTdDfFR])?' : ''}>${exact ? '$' : ''}`, caseSensitive ? undefined : 'i');
+    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? `(:[${TIMESTAMP_FORMATS.join('')}])?` : ''}>${exact ? '$' : ''}`, caseSensitive ? undefined : 'i');
 }
 
 export type NullableID = Snowflake | null;
-
-export type TimestampFormat = 't' | 'T' | 'd' | 'D' | 'f' | 'F' | 'R';
 
 export const USER_MENTION_REGEX = getRegex('@!?', false);
 export const USER_MENTION_REGEX_EXACT = getRegex('@!?', true);

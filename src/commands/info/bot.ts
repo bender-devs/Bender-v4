@@ -5,6 +5,7 @@ import InfoCommand from '../info';
 import { cpus, totalmem, freemem } from 'os';
 import LangUtils from '../../utils/language';
 import DiscordUtils from '../../utils/discord';
+import TimeUtils from '../../utils/time';
 
 // modified from https://github.com/oscmejia/os-utils
 function getCPUInfo() {
@@ -53,11 +54,14 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         channelCount = this.bot.cache.channels.totalSize();
     }
 
-    const uptime = Date.now() - (process.uptime() * 1000);
+    const uptimeMs = process.uptime() * 1000;
+    const upSince = Date.now() - uptimeMs;
     const cpuLoad = await getCPULoad();
     const memoryUsage = await getMemoryUsage();
 
-    let description = LangUtils.formatDateAgo('BOT_INFO_UPTIME', uptime, interaction.locale);
+    const duration = TimeUtils.formatDuration(uptimeMs, interaction.locale);
+    const date = TimeUtils.formatDate(upSince);
+    let description = LangUtils.getAndReplace('BOT_INFO_UPTIME', { duration, date }, interaction.locale);
     description += `\n${LangUtils.getAndReplace('BOT_INFO_PING', { ping: this.bot.gateway.ping }, interaction.locale)} | `;
     description += LangUtils.getAndReplace('BOT_INFO_CPU', { cpu: cpuLoad }, interaction.locale);
     description += ` | ${LangUtils.getAndReplace('BOT_INFO_MEMORY', { memory: memoryUsage }, interaction.locale)}\n`;

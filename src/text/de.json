@@ -93,9 +93,9 @@
     "USER_INFO_OWNER": "{{ownerEmoji}} Besitzer",
     "USER_INFO_MEMBER": "{{userEmoji}} Member",
     "USER_INFO_UNKNOWN_STATUS": "*unbekannter Status*",
-    "USER_INFO_BOOST_INFO": "**Server Booster** seit {{date}} (vor {{ago}})",
-    "USER_INFO_JOINED_AT": "**Beigetreten am:** {{date}} (vor {{ago}})",
-    "USER_INFO_CREATED_AT": "**Erstellt am:** {{date}} (vor {{ago}})",
+    "USER_INFO_BOOST_INFO": "**Server Booster** seit {{dateRelative}}",
+    "USER_INFO_JOINED_AT": "**Beigetreten am:** {{dateRelative}}",
+    "USER_INFO_CREATED_AT": "**Erstellt am:** {{dateRelative}}",
     "USER_INFO_NO_ROLES": "*Member hat keine Rollen.*",
     "USER_INFO_BANNER": "**Banner:**",
 
@@ -107,7 +107,7 @@
     "EMOJI_INFO_OPTION_DESCRIPTION": "Das Emoji zum Informationen anzeigen",
 
     "EMOJI_INFO_TITLE": "Emoji Info - :{{emojiName}}:",
-    "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{date}} (vor {{ago}})",
+    "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{dateRelative}}",
     "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`\n^ *Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt, z.B. Kanal Themas*",
     "EMOJI_INFO_MANAGED": "{{infoEmoji}} *Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)*",
     "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",

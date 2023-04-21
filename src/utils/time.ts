@@ -1,6 +1,7 @@
-import { Locale, Timestamp, UnixTimestampMillis } from '../types/types';
+import { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types';
 import { LangKey } from '../text/languageList';
 import LangUtils from './language';
+import TextUtils from './text';
 
 const unitMap = {
     MILLISECOND: 1,
@@ -72,21 +73,19 @@ export default class TimeUtils {
         return LangUtils.getAndReplace(langKey, { number }, locale);
     }
 
-    static formatDate(date: Date | Timestamp | UnixTimestampMillis, locale: Locale = 'en-US') {
-        if (typeof date === 'number') {
-            date = new Date(date);
-        } else if (typeof date === 'string') {
+    static formatDate(date: Date | Timestamp | UnixTimestampMillis, format?: TimestampFormat) {
+        // convert date or timestamp to unix timestamp
+        if (typeof date === 'string') {
             date = TimeUtils.parseTimestampMillis(date);
+        } else if (typeof date !== 'number') {
+            date = date.getTime();
         }
-        const formatter = new Intl.DateTimeFormat(locale, {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            timeZoneName: 'short'
-        });
-        return formatter.format(date);
+        const timestamp: UnixTimestampMillis = Math.round(date); // should always be an int but just in case
+        return TextUtils.timestamp.parse(timestamp, format);
+    }
+
+    static relative(date: Date | Timestamp | UnixTimestampMillis) {
+        return this.formatDate(date, 'R')
     }
 
     // TODO: add other time functions as needed

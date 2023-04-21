@@ -102,9 +102,9 @@
     "USER_INFO_OWNER": "{{ownerEmoji}} Server Eigenaar",
     "USER_INFO_MEMBER": "{{userEmoji}} Lid",
     "USER_INFO_UNKNOWN_STATUS": "*Onbekende status*",
-    "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{date}} ({{ago}} geleden)",
-    "USER_INFO_JOINED_AT": "**Lid geworden op:** {{date}} ({{ago}} geleden)",
-    "USER_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} geleden)",
+    "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{dateRelative}}",
+    "USER_INFO_JOINED_AT": "**Lid geworden op:** {{dateRelative}}",
+    "USER_INFO_CREATED_AT": "**Gecreeërd op:** {{dateRelative}}",
     "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
     "USER_INFO_BANNER": "**Banner:**",
 
@@ -116,7 +116,7 @@
     "EMOJI_INFO_OPTION_DESCRIPTION": "De emoji om informatie over te tonen.",
 
     "EMOJI_INFO_TITLE": "Emoji informatie- :{{emojiName}}:",
-    "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{date}} ({{ago}} ago)",
+    "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{dateRelative}}",
     "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`\n^ *kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is, zoals kanaal onderwerpen*",
     "EMOJI_INFO_MANAGED": "{{infoEmoji}} *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
     "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",

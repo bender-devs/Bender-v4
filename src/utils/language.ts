@@ -66,13 +66,9 @@ export default class LanguageUtils {
         if (typeof timestamp === 'string') {
             timestamp = TimeUtils.parseTimestampMillis(timestamp);
         }
-        const duration = TimeUtils.sinceMillis(timestamp);
-        const formattedDate = TimeUtils.formatDate(timestamp, locale);
-        const formattedDuration = TimeUtils.formatDuration(duration, locale);
-        return LanguageUtils.getAndReplace(key, {
-            date: formattedDate,
-            ago: formattedDuration
-        }, locale);
+        const formattedDate = TimeUtils.formatDate(timestamp);
+        const relativeDuration = TimeUtils.relative(timestamp);
+        return LanguageUtils.getAndReplace(key, { dateRelative: `${formattedDate} (${relativeDuration})` }, locale);
     }
 
     static formatNumber(num: number, locale?: Locale) {

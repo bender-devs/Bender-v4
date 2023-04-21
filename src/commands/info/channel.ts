@@ -8,6 +8,7 @@ import DiscordUtils from '../../utils/discord';
 import LangUtils from '../../utils/language';
 import TextUtils from '../../utils/text';
 import InfoCommand from '../info';
+import TimeUtils from '../../utils/time';
 
 const CATEGORY_MAX_CHANNELS = 10;
 
@@ -120,7 +121,9 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         let lastActivityInfo = '';
         if (channel.last_message_id) {
             const lastMessageTimestamp = TextUtils.timestamp.fromSnowflake(channel.last_message_id);
-            lastActivityInfo = LangUtils.formatDateAgo('CHANNEL_INFO_LAST_ACTIVITY', lastMessageTimestamp, interaction.locale);
+            lastActivityInfo = LangUtils.getAndReplace('CHANNEL_INFO_LAST_ACTIVITY', {
+                durationRelative: TimeUtils.relative(lastMessageTimestamp)
+            }, interaction.locale);
         } else {
             lastActivityInfo = LangUtils.get('CHANNEL_INFO_LAST_ACTIVITY_UNKNOWN', interaction.locale);
         }

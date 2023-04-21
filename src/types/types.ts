@@ -1150,6 +1150,10 @@ export type UnixTimestamp = number;
 // Unix timestamp (millis since epoch)
 export type UnixTimestampMillis = number;
 
+// https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+export const TIMESTAMP_FORMATS = ['t', 'T', 'd', 'D', 'f', 'F', 'R'] as const;
+export type TimestampFormat = typeof TIMESTAMP_FORMATS[number];
+
 /* what the run() function in commands can return.
  * may add more types later.
  */
