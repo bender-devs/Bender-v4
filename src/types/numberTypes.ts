@@ -304,9 +304,9 @@ export const enum GUILD_SCHEDULED_EVENT_STATUS {
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types
 export const enum AUTOMOD_TRIGGER_TYPES {
     KEYWORD = 1,
-    HARMFUL_LINK,
-    SPAM,
-    KEYWORD_PRESET
+    SPAM = 3,
+    KEYWORD_PRESET,
+    MENTION_SPAM
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types

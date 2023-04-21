@@ -1068,17 +1068,21 @@ export interface AutoModRule extends AutoModRuleData {
 
 type AutoModTriggerMetadata = {
     keyword_filter: string[];
+    regex_patterns: string[];
     presets: num.AUTOMOD_KEYWORD_PRESET_TYPES;
+    allow_list: string[];
+    mention_total_limit: number;
 }
 
 export type AutoModAction = {
     type: num.AUTOMOD_ACTION_TYPES;
-    metadata: AutoModActionMetadata;
+    metadata?: AutoModActionMetadata;
 }
 
 type AutoModActionMetadata = {
     channel_id?: Snowflake;
     duration_seconds?: number;
+    custom_message?: string;
 }
 
 /************ invite types ************/
