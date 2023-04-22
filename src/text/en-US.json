@@ -243,6 +243,23 @@
     "BOT_INFO_LINKS_TOS": "TOS",
     "BOT_INFO_LINKS_GITHUB": "Source Code",
 
+    "------- /info char -------": "",
+
+    "CHAR_INFO_SUBCOMMAND": "char",
+    "CHAR_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a Unicode character (text or emojis.)",
+    "CHAR_INFO_OPTION": "char",
+    "CHAR_INFO_OPTION_DESCRIPTION": "The text character or emoji to show info about.",
+
+    "CHAR_INFO_NO_DATA": "Couldn't get data about that character.\n*If it's an unsupported character (such as ) there may not be any data for it.\nOtherwise, this may be a bug.*",
+    "CHAR_INFO_TITLE": "Character info - {{char}}",
+    "CHAR_INFO_DISPLAY": "**Default display:** {{char}} | **Raw display:** `{{char}}`",
+    "CHAR_INFO_UTF16": "**UTF-16 Codes:** {{codes}}",
+    "CHAR_INFO_UTF8": "**UTF-8 Codes:** {{codes}}",
+    "CHAR_INFO_GROUP": "**Group:** {{category}} :: {{group}} :: {{subgroup}}",
+    "CHAR_INFO_MORE_INFO": "More info",
+    "CHAR_INFO_IMAGE_LINK": "Image link",
+    "CHAR_INFO_VECTOR_LINK": "Vector image link",
+
 
 
     "----------- /fun -----------": "",
