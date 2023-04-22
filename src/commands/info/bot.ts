@@ -1,11 +1,11 @@
-import { DASHBOARD, DEFAULT_COLOR, GITHUB_LINK, OWNERS, SUPPORT_SERVER, VERSION, WEBSITE } from '../../data/constants';
-import { Embed, Interaction } from '../../types/types';
-import CDNUtils from '../../utils/cdn';
-import InfoCommand from '../info';
+import { DASHBOARD, DEFAULT_COLOR, GITHUB_LINK, OWNERS, SUPPORT_SERVER, VERSION, WEBSITE } from '../../data/constants.js';
+import { Embed, Interaction } from '../../types/types.js';
+import CDNUtils from '../../utils/cdn.js';
+import InfoCommand from '../info.js';
 import { cpus, totalmem, freemem } from 'os';
-import LangUtils from '../../utils/language';
-import DiscordUtils from '../../utils/discord';
-import TimeUtils from '../../utils/time';
+import LangUtils from '../../utils/language.js';
+import DiscordUtils from '../../utils/discord.js';
+import TimeUtils from '../../utils/time.js';
 
 // modified from https://github.com/oscmejia/os-utils
 function getCPUInfo() {

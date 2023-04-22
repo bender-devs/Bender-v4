@@ -1,9 +1,9 @@
-import Bot from '../structures/bot';
-import { Interaction, Snowflake } from '../types/types';
-import { PendingInteractionBase } from './pending';
-import LangUtils from '../utils/language';
-import TextUtils from '../utils/text';
-import { LangKey } from '../text/languageList';
+import Bot from '../structures/bot.js';
+import { Interaction, Snowflake } from '../types/types.js';
+import { PendingInteractionBase } from './pending.js';
+import LangUtils from '../utils/language.js';
+import TextUtils from '../utils/text.js';
+import { LangKey } from '../text/languageList.js';
 
 export interface InactiveStatsInteraction extends PendingInteractionBase {
     days: number

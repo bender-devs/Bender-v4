@@ -1,14 +1,14 @@
-import { DEFAULT_COLOR } from '../../data/constants';
-import { API_ERRORS } from '../../types/numberTypes';
-import IMAGES from '../../data/images';
-import { CHANNEL_TYPES, PERMISSIONS } from '../../types/numberTypes';
-import * as types from '../../types/types';
-import APIError from '../../structures/apiError';
-import DiscordUtils from '../../utils/discord';
-import LangUtils from '../../utils/language';
-import TextUtils from '../../utils/text';
-import InfoCommand from '../info';
-import TimeUtils from '../../utils/time';
+import { DEFAULT_COLOR } from '../../data/constants.js';
+import { API_ERRORS } from '../../types/numberTypes.js';
+import IMAGES from '../../data/images.js';
+import { CHANNEL_TYPES, PERMISSIONS } from '../../types/numberTypes.js';
+import * as types from '../../types/types.js';
+import APIError from '../../structures/apiError.js';
+import DiscordUtils from '../../utils/discord.js';
+import LangUtils from '../../utils/language.js';
+import TextUtils from '../../utils/text.js';
+import InfoCommand from '../info.js';
+import TimeUtils from '../../utils/time.js';
 
 const CATEGORY_MAX_CHANNELS = 10;
 

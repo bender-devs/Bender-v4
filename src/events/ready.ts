@@ -1,16 +1,15 @@
-import { EventHandler } from '../types/types';
-import { ReadyData, LowercaseEventName } from '../types/gatewayTypes';
-import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
-import { VERSION } from '../data/constants';
-import DiscordUtils from '../utils/discord';
+import { EventHandler } from '../types/types.js';
+import { ReadyData } from '../types/gatewayTypes.js';
+import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes.js';
+import Bot from '../structures/bot.js';
+import { VERSION } from '../data/constants.js';
+import DiscordUtils from '../utils/discord.js';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
     requiresReady = false;
 
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('ready', bot);
     }
 
     cacheHandler = (eventData: ReadyData) => {

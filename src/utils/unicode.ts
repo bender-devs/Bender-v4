@@ -1,5 +1,5 @@
 import { BaseEmoji, getEmojis } from 'unicode-emoji';
-import unicodeData from 'cldr-annotations-derived-modern/annotationsDerived/en/annotations.json';
+import unicodeData from 'cldr-annotations-derived-modern/annotationsDerived/en/annotations.json' assert { type: 'json' };
 /*
  * TODO: localization for unicodeData
  * note that is is theoretically possible to manually localize some data from the unicode-emoji module;

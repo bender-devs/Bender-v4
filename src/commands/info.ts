@@ -1,18 +1,18 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Interaction } from '../types/types';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
-import LangUtils from '../utils/language';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import LangUtils from '../utils/language.js';
 
-import userInfo from './info/user';
-import emojiInfo from './info/emoji';
-import channelInfo from './info/channel';
-import bannerInfo from './info/banner';
-import inviteInfo from './info/invite';
-import serverInfo from './info/server';
-import avatarInfo from './info/avatar';
-import botInfo from './info/bot';
-import charInfo from './info/char';
+import userInfo from './info/user.js';
+import emojiInfo from './info/emoji.js';
+import channelInfo from './info/channel.js';
+import bannerInfo from './info/banner.js';
+import inviteInfo from './info/invite.js';
+import serverInfo from './info/server.js';
+import avatarInfo from './info/avatar.js';
+import botInfo from './info/bot.js';
+import charInfo from './info/char.js';
 
 export default class InfoCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {

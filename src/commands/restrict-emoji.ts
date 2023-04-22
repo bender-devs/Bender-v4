@@ -1,10 +1,10 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types';
-import LangUtils from '../utils/language';
-import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes';
-import { ID_REGEX_EXACT } from '../data/constants';
-import TextUtils, { EMOJI_REGEX_EXACT } from '../utils/text';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types.js';
+import LangUtils from '../utils/language.js';
+import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
+import { ID_REGEX_EXACT } from '../data/constants.js';
+import TextUtils, { EMOJI_REGEX_EXACT } from '../utils/text.js';
 
 const emojiOption: CommandOption = {
     type: COMMAND_OPTION_TYPES.STRING,

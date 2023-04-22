@@ -1,7 +1,7 @@
 import * as superagent from 'superagent';
-import Bot from '../structures/bot';
-import { EventData, EventName, LowercaseEventName } from './gatewayTypes';
-import * as num from './numberTypes';
+import Bot from '../structures/bot.js';
+import { EventData, EventName, LowercaseEventName } from './gatewayTypes.js';
+import * as num from './numberTypes.js';
 
 /************ request types ************/
 

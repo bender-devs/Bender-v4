@@ -1,20 +1,20 @@
-import { EventEmitter } from 'stream';
-import { PartialApplication, TimeoutList, User } from '../types/types';
-import { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes';
-import APIInterface from './apiInterface';
-import CacheHandler from './cacheHandler';
-import Gateway from './gateway';
-import Logger from './logger';
-import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, EXIT_CODE_NO_RESTART, USE_CACHE } from '../data/constants';
-import { CLIENT_STATE } from '../types/numberTypes';
-import EventManager from './eventManager';
-import Shard from './shard';
-import CommandManager from './commandManager';
-import MiscUtils from '../utils/misc';
-import PermissionUtils from '../utils/permissions';
-import TextUtils from '../utils/text';
-import DatabaseManager from './db';
-import PendingInteractionUtils from '../interactionUtils/pending';
+import EventEmitter from 'events';
+import { PartialApplication, TimeoutList, User } from '../types/types.js';
+import { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes.js';
+import APIInterface from './apiInterface.js';
+import CacheHandler from './cacheHandler.js';
+import Gateway from './gateway.js';
+import Logger from './logger.js';
+import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, EXIT_CODE_NO_RESTART, USE_CACHE } from '../data/constants.js';
+import { CLIENT_STATE } from '../types/numberTypes.js';
+import EventManager from './eventManager.js';
+import Shard from './shard.js';
+import CommandManager from './commandManager.js';
+import MiscUtils from '../utils/misc.js';
+import PermissionUtils from '../utils/permissions.js';
+import TextUtils from '../utils/text.js';
+import DatabaseManager from './db.js';
+import PendingInteractionUtils from '../interactionUtils/pending.js';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;

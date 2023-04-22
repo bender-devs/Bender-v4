@@ -1,16 +1,16 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Interaction } from '../types/types';
-import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes';
-import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../structures/shardManager';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes.js';
+import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../structures/shardManager.js';
 import { randomUUID } from 'crypto';
-import PermissionUtils from '../utils/permissions';
-import LangUtils from '../utils/language';
-import { GatewayData, GatewayPayload } from '../types/gatewayTypes';
-import { VERSION } from '../data/constants';
+import PermissionUtils from '../utils/permissions.js';
+import LangUtils from '../utils/language.js';
+import { GatewayData, GatewayPayload } from '../types/gatewayTypes.js';
+import { VERSION } from '../data/constants.js';
 import { inspect, promisify } from 'util';
 import { exec } from 'child_process';
-import TextUtils from '../utils/text';
+import TextUtils from '../utils/text.js';
 const execAsync = promisify(exec);
 
 const tokenRegexes: RegExp[] = [];

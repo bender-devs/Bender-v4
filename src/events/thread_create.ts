@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { ThreadUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ThreadUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ThreadCreateHandler extends EventHandler<ThreadUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('thread_create', bot);
     }
 
     cacheHandler = (eventData: ThreadUpdateData) => {

@@ -1,9 +1,9 @@
-import { DEFAULT_COLOR } from '../../data/constants';
-import * as types from '../../types/types';
-import { CachedGuild } from '../../structures/cacheHandler';
-import CDNUtils from '../../utils/cdn';
-import LangUtils from '../../utils/language';
-import InfoCommand from '../info';
+import { DEFAULT_COLOR } from '../../data/constants.js';
+import * as types from '../../types/types.js';
+import { CachedGuild } from '../../structures/cacheHandler.js';
+import CDNUtils from '../../utils/cdn.js';
+import LangUtils from '../../utils/language.js';
+import InfoCommand from '../info.js';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
     let partialUser: types.PartialUser | null = null;

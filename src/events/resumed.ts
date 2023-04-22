@@ -1,14 +1,13 @@
-import { EventHandler } from '../types/types';
-import { ResumedData, LowercaseEventName } from '../types/gatewayTypes';
-import { CLIENT_STATE } from '../types/numberTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ResumedData } from '../types/gatewayTypes.js';
+import { CLIENT_STATE } from '../types/numberTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ResumedHandler extends EventHandler<ResumedData> {
     requiresReady = false;
     
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('resumed', bot);
     }
 
     cacheHandler = (/*eventData: ResumedData*/) => {

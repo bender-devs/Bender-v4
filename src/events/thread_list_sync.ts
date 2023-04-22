@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { ThreadSyncData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ThreadSyncData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ThreadListSyncHandler extends EventHandler<ThreadSyncData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('thread_list_sync', bot);
     }
 
     cacheHandler = (eventData: ThreadSyncData) => {

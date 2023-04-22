@@ -1,7 +1,7 @@
-import { CommandOptionValue, Interaction } from '../../types/types';
-import LangUtils from '../../utils/language';
-import MiscUtils from '../../utils/misc';
-import FunCommand from '../fun';
+import { CommandOptionValue, Interaction } from '../../types/types.js';
+import LangUtils from '../../utils/language.js';
+import MiscUtils from '../../utils/misc.js';
+import FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction, choices?: CommandOptionValue) {
     if (!choices || typeof choices !== 'string') {

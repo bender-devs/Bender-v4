@@ -1,9 +1,9 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Interaction } from '../types/types';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
-import * as textMap from '../data/text.json';
-import LangUtils from '../utils/language';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import textMap from '../data/text.json' assert { type: 'json' };
+import LangUtils from '../utils/language.js';
 
 const replaceRegex = {
     big: /[A-Z 0-9!?+#*-]/gi,

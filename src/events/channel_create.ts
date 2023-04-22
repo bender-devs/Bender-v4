@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { ChannelUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ChannelUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ChannelCreateHandler extends EventHandler<ChannelUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('channel_create', bot);
     }
 
     cacheHandler = (eventData: ChannelUpdateData) => {

@@ -1,10 +1,10 @@
-import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
-import { CommandOptionValue, Embed, Interaction, URL } from '../../types/types';
-import LangUtils from '../../utils/language';
-import { EMOJI_REGEX_EXACT } from '../../utils/text';
-import UnicodeUtils from '../../utils/unicode';
-import InfoCommand from '../info';
-import emojiInfo from './emoji';
+import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants.js';
+import { CommandOptionValue, Embed, Interaction, URL } from '../../types/types.js';
+import LangUtils from '../../utils/language.js';
+import { EMOJI_REGEX_EXACT } from '../../utils/text.js';
+import UnicodeUtils from '../../utils/unicode.js';
+import InfoCommand from '../info.js';
+import emojiInfo from './emoji.js';
 
 export default async function (this: InfoCommand, interaction: Interaction, charString?: CommandOptionValue) {
     if (!charString || typeof charString !== 'string') {

@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { MessageCreateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { MessageCreateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class MessageCreateHandler extends EventHandler<MessageCreateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('message_create', bot);
     }
 
     cacheHandler = (eventData: MessageCreateData) => {

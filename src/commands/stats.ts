@@ -1,9 +1,9 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types';
-import LangUtils from '../utils/language';
-import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes';
-import { LangKey } from '../text/languageList';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import LangUtils from '../utils/language.js';
+import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
+import { LangKey } from '../text/languageList.js';
 
 export default class StatsCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {

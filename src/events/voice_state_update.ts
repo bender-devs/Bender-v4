@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { VoiceStateUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { VoiceStateUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class VoiceStateUpdateHandler extends EventHandler<VoiceStateUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('voice_state_update', bot);
     }
 
     cacheHandler = (/*eventData: VoiceStateUpdateData*/) => {

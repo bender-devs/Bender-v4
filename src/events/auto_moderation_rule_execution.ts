@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { AutoModExecuteData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { AutoModExecuteData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class AutoModExecuteHandler extends EventHandler<AutoModExecuteData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('auto_moderation_rule_execution', bot);
     }
 
     handler = (/*eventData: AutoModExecuteData*/) => {

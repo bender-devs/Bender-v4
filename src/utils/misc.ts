@@ -1,11 +1,11 @@
-import Bot from '../structures/bot';
-import * as EMOTES from '../data/emotes.json';
-import * as SHITTY_EMOTES from '../data/shittyEmotes.json';
-import { Interaction, Locale, Snowflake, Status } from '../types/types';
-import LangUtils from './language';
-import { ACTIVITY_TYPES } from '../types/numberTypes';
-import TextUtils from './text';
-import PermissionUtils from './permissions';
+import Bot from '../structures/bot.js';
+import EMOTES from '../data/emotes.json' assert { type: 'json' };
+import SHITTY_EMOTES from '../data/shittyEmotes.json' assert { type: 'json' };
+import { Interaction, Locale, Snowflake, Status } from '../types/types.js';
+import LangUtils from './language.js';
+import { ACTIVITY_TYPES } from '../types/numberTypes.js';
+import TextUtils from './text.js';
+import PermissionUtils from './permissions.js';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 

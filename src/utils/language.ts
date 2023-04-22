@@ -1,9 +1,9 @@
-import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap } from '../types/types';
-import languages, { LangKey } from '../text/languageList';
-import Logger from '../structures/logger';
-import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants';
-import TimeUtils from './time';
-import MiscUtils, { EmojiKey } from './misc';
+import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap } from '../types/types.js';
+import languages, { LangKey } from '../text/languageList.js';
+import Logger from '../structures/logger.js';
+import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
+import TimeUtils from './time.js';
+import MiscUtils, { EmojiKey } from './misc.js';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);

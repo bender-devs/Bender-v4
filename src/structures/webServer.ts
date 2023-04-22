@@ -1,7 +1,7 @@
-import ShardManager from './shardManager';
+import ShardManager from './shardManager.js';
 import express from 'express';
-import Logger from './logger';
-import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants';
+import Logger from './logger.js';
+import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants.js';
 import * as nacl from 'tweetnacl';
 
 export default class WebServer {

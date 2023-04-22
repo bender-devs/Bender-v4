@@ -5,8 +5,9 @@
     "license": "GNU AGPLv3",
     "private": true,
     "repository": "https://github.com/bender-devs/Bender-v4",
+    "type": "module",
     "dependencies": {
-        "chalk": "4.1.2",
+        "chalk": "^5.2.0",
         "cldr-annotations-derived-modern": "^43.0.0",
         "dotenv": "^16.0.1",
         "express": "^4.18.1",

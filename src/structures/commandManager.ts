@@ -1,22 +1,22 @@
-import Bot from './bot';
-import { ICommand, MessageCommand, UserCommand, UserOrMessageCommand } from './command';
-import { DEV_SERVER } from '../data/constants';
-import { Snowflake } from '../types/types';
-import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes';
-import { COMMAND_TYPES } from '../types/numberTypes';
+import Bot from './bot.js';
+import { ICommand, MessageCommand, UserCommand, UserOrMessageCommand } from './command.js';
+import { DEV_SERVER } from '../data/constants.js';
+import { Snowflake } from '../types/types.js';
+import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes.js';
+import { COMMAND_TYPES } from '../types/numberTypes.js';
 
-import PingCommand from '../commands/ping';
-import TextCommand from '../commands/text';
-import ConvertTextCommand from '../commands/convert-text';
-import InfoCommand from '../commands/info';
-import FunCommand from '../commands/fun';
-import RestrictEmojiCommand from '../commands/restrict-emoji';
+import PingCommand from '../commands/ping.js';
+import TextCommand from '../commands/text.js';
+import ConvertTextCommand from '../commands/convert-text.js';
+import InfoCommand from '../commands/info.js';
+import FunCommand from '../commands/fun.js';
+import RestrictEmojiCommand from '../commands/restrict-emoji.js';
 
-import DevCommand from '../commands/dev';
+import DevCommand from '../commands/dev.js';
 
-import getUserCommands from '../commands/nonText/user';
-import getMessageCommands from '../commands/nonText/message';
-import StatsCommand from '../commands/stats';
+import getUserCommands from '../commands/nonText/user.js';
+import getMessageCommands from '../commands/nonText/message.js';
+import StatsCommand from '../commands/stats.js';
 
 export default class SlashCommandManager {
     bot: Bot;

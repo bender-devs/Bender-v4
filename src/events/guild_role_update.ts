@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { GuildRoleUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { GuildRoleUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class GuildRoleUpdateHandler extends EventHandler<GuildRoleUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('guild_role_update', bot);
     }
 
     cacheHandler = (eventData: GuildRoleUpdateData) => {

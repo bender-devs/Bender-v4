@@ -1,7 +1,7 @@
-import * as en_US from './en-US.json';
-import * as nl_NL from './nl.json';
-import * as de from './de.json';
-import { LangMap } from '../types/types';
+import en_US from './en-US.json' assert { type: 'json' };
+import nl_NL from './nl.json' assert { type: 'json' };
+import de from './de.json' assert { type: 'json' };
+import { LangMap } from '../types/types.js';
 
 export type LangKey = keyof typeof en_US;
 

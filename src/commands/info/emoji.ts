@@ -1,9 +1,9 @@
-import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants';
-import { CommandOptionValue, Embed, Emoji, Interaction, Snowflake } from '../../types/types';
-import CDNUtils from '../../utils/cdn';
-import LangUtils from '../../utils/language';
-import TextUtils from '../../utils/text';
-import InfoCommand from '../info';
+import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants.js';
+import { CommandOptionValue, Embed, Emoji, Interaction, Snowflake } from '../../types/types.js';
+import CDNUtils from '../../utils/cdn.js';
+import LangUtils from '../../utils/language.js';
+import TextUtils from '../../utils/text.js';
+import InfoCommand from '../info.js';
 
 export default async function (this: InfoCommand, interaction: Interaction, emojiString?: CommandOptionValue) {
     if (!emojiString || typeof emojiString !== 'string') {

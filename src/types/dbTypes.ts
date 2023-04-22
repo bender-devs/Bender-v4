@@ -1,5 +1,5 @@
-import { CLIENT_STATE } from './numberTypes';
-import { BenderPermission, Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types';
+import { CLIENT_STATE } from './numberTypes.js';
+import { BenderPermission, Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types.js';
 
 export type DatabaseResult = {
     changes: number;

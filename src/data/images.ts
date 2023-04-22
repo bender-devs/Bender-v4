@@ -1,4 +1,4 @@
-import { URL } from '../types/types';
+import { URL } from '../types/types.js';
 
 const IMAGE_BASE_URL = 'https://benderbot.co/img';
 

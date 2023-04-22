@@ -1,8 +1,8 @@
-import Bot from '../structures/bot';
-import { Emoji, Interaction, Snowflake } from '../types/types';
-import { PendingInteractionBase } from './pending';
-import LangUtils from '../utils/language';
-import TextUtils from '../utils/text';
+import Bot from '../structures/bot.js';
+import { Emoji, Interaction, Snowflake } from '../types/types.js';
+import { PendingInteractionBase } from './pending.js';
+import LangUtils from '../utils/language.js';
+import TextUtils from '../utils/text.js';
 
 export interface RestrictEmojiInteraction extends PendingInteractionBase {
     emoji: Emoji,

@@ -1,11 +1,11 @@
-import * as gatewayTypes from '../types/gatewayTypes';
-import Bot from './bot';
-import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes';
-import { EventEmitter } from 'stream';
-import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants';
-import * as zlib from 'zlib-sync';
+import * as gatewayTypes from '../types/gatewayTypes.js';
+import Bot from './bot.js';
+import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes.js';
+import EventEmitter from 'events';
+import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants.js';
+import zlib from 'zlib-sync';
 import WS from 'ws';
-import TimeUtils from '../utils/time';
+import TimeUtils from '../utils/time.js';
 
 const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
 

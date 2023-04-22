@@ -1,11 +1,11 @@
 import * as mongodb from 'mongodb';
-import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants';
-import DB_INDEXES from '../data/dbIndexes';
-import * as dbTypes from '../types/dbTypes';
-import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types';
-import Bot from './bot';
-import { ICommand } from './command';
-import DatabaseCacheHandler from './dbCache';
+import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants.js';
+import DB_INDEXES from '../data/dbIndexes.js';
+import * as dbTypes from '../types/dbTypes.js';
+import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types.js';
+import Bot from './bot.js';
+import { ICommand } from './command.js';
+import DatabaseCacheHandler from './dbCache.js';
 
 const WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };
 

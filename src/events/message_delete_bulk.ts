@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { MessageDeleteBulkData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { MessageDeleteBulkData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class MessageDeleteBulkHandler extends EventHandler<MessageDeleteBulkData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('message_delete_bulk', bot);
     }
 
     cacheHandler = (eventData: MessageDeleteBulkData) => {

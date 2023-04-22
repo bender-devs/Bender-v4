@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { CommandUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { CommandUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class CommandUpdateHandler extends EventHandler<CommandUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('application_command_update', bot);
     }
 
     cacheHandler = (eventData: CommandUpdateData) => {

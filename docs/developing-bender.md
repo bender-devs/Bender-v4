@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-Before running Bender, make sure you have Node.js v16.0.0 or higher & NPM installed.
+Before running Bender, make sure you have Node.js v16.14.0 or higher & NPM installed.
 
 ### MongoDB & Redis
 

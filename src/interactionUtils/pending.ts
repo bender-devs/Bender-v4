@@ -1,11 +1,11 @@
-import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants';
-import Bot from '../structures/bot';
-import { Interaction, Snowflake } from '../types/types';
-import BlackjackUtils, { BlackjackInteraction } from './blackjack';
-import RPSUtils, { RockPaperScissorsInteraction } from './rps';
-import TicTacToeUtils, { TicTacToeInteraction } from './tictactoe';
-import RestrictEmojiUtils, { RestrictEmojiInteraction } from './restrictEmoji';
-import InactiveStatsUtils, { InactiveStatsInteraction } from './inactiveStats';
+import { INTERACTION_RESPONSE_TIMEOUT } from '../data/constants.js';
+import Bot from '../structures/bot.js';
+import { Interaction, Snowflake } from '../types/types.js';
+import BlackjackUtils, { BlackjackInteraction } from './blackjack.js';
+import RPSUtils, { RockPaperScissorsInteraction } from './rps.js';
+import TicTacToeUtils, { TicTacToeInteraction } from './tictactoe.js';
+import RestrictEmojiUtils, { RestrictEmojiInteraction } from './restrictEmoji.js';
+import InactiveStatsUtils, { InactiveStatsInteraction } from './inactiveStats.js';
 
 export type PendingInteractionBase = {
     author: Snowflake,

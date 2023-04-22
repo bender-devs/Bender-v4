@@ -1,7 +1,7 @@
 
-import * as num from './numberTypes';
-import events from './eventTypes';
-import * as types from './types';
+import * as num from './numberTypes.js';
+import events from './eventTypes.js';
+import * as types from './types.js';
 
 /************ gateway errors ************/
 

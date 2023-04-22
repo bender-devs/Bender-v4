@@ -1,8 +1,8 @@
-import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types';
-import Logger from './logger';
+import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types.js';
+import Logger from './logger.js';
 import { randomUUID } from 'crypto';
 import * as child_process from 'child_process';
-import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE, SHARD_MESSAGE_TIMEOUT } from '../data/constants';
+import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE, SHARD_MESSAGE_TIMEOUT } from '../data/constants.js';
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive

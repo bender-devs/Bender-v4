@@ -1,12 +1,12 @@
-import { DEFAULT_COLOR } from '../../data/constants';
-import { PERMISSIONS } from '../../types/numberTypes';
-import * as types from '../../types/types';
-import { CachedGuild } from '../../structures/cacheHandler';
-import CDNUtils from '../../utils/cdn';
-import DiscordUtils from '../../utils/discord';
-import LangUtils from '../../utils/language';
-import TextUtils from '../../utils/text';
-import InfoCommand from '../info';
+import { DEFAULT_COLOR } from '../../data/constants.js';
+import { PERMISSIONS } from '../../types/numberTypes.js';
+import * as types from '../../types/types.js';
+import { CachedGuild } from '../../structures/cacheHandler.js';
+import CDNUtils from '../../utils/cdn.js';
+import DiscordUtils from '../../utils/discord.js';
+import LangUtils from '../../utils/language.js';
+import TextUtils from '../../utils/text.js';
+import InfoCommand from '../info.js';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
     if (!userID || typeof userID !== 'string') {

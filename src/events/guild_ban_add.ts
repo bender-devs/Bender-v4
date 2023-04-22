@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { GuildBanEventData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { GuildBanEventData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class GuildBanAddHandler extends EventHandler<GuildBanEventData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('guild_ban_add', bot);
     }
 
     cacheHandler = (eventData: GuildBanEventData) => {

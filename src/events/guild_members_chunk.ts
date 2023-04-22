@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { GuildMembersChunkData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { GuildMembersChunkData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class GuildMembersChunkHandler extends EventHandler<GuildMembersChunkData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('guild_members_chunk', bot);
     }
 
     cacheHandler = (eventData: GuildMembersChunkData) => {

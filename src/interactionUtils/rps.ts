@@ -1,10 +1,10 @@
-import Bot from '../structures/bot';
-import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes';
-import { Interaction, Locale, MessageComponent, Snowflake } from '../types/types';
-import { PendingInteractionBase } from './pending';
-import LangUtils from '../utils/language';
-import TextUtils from '../utils/text';
-import MiscUtils from '../utils/misc';
+import Bot from '../structures/bot.js';
+import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
+import { Interaction, Locale, MessageComponent, Snowflake } from '../types/types.js';
+import { PendingInteractionBase } from './pending.js';
+import LangUtils from '../utils/language.js';
+import TextUtils from '../utils/text.js';
+import MiscUtils from '../utils/misc.js';
 
 export interface RockPaperScissorsInteraction extends PendingInteractionBase {
     target: Snowflake,

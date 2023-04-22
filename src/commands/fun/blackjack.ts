@@ -1,7 +1,7 @@
-import BlackjackUtils, { BlackjackInteraction } from '../../interactionUtils/blackjack';
-import { Interaction } from '../../types/types';
-import MiscUtils from '../../utils/misc';
-import FunCommand from '../fun';
+import BlackjackUtils, { BlackjackInteraction } from '../../interactionUtils/blackjack.js';
+import { Interaction } from '../../types/types.js';
+import MiscUtils from '../../utils/misc.js';
+import FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction) {
     const author = interaction.member?.user || interaction.user;

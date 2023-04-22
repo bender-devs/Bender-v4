@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { GuildRoleDeleteData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { GuildRoleDeleteData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class GuildRoleDeleteHandler extends EventHandler<GuildRoleDeleteData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('guild_role_delete', bot);
     }
 
     cacheHandler = (eventData: GuildRoleDeleteData) => {

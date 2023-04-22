@@ -1,7 +1,7 @@
-import { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types';
-import { LangKey } from '../text/languageList';
-import LangUtils from './language';
-import TextUtils from './text';
+import { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import { LangKey } from '../text/languageList.js';
+import LangUtils from './language.js';
+import TextUtils from './text.js';
 
 const unitMap = {
     MILLISECOND: 1,

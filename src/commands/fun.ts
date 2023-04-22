@@ -1,19 +1,19 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Interaction } from '../types/types';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
-import LangUtils from '../utils/language';
-import MiscUtils from '../utils/misc';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import LangUtils from '../utils/language.js';
+import MiscUtils from '../utils/misc.js';
 
-import eightBall from './fun/8ball';
-import coinflip from './fun/coinflip';
-import dice from './fun/dice';
-import rps from './fun/rps';
-import choose from './fun/choose';
-import random from './fun/random';
-import hack from './fun/hack';
-import tictactoe from './fun/tictactoe';
-import blackjack from './fun/blackjack';
+import eightBall from './fun/8ball.js';
+import coinflip from './fun/coinflip.js';
+import dice from './fun/dice.js';
+import rps from './fun/rps.js';
+import choose from './fun/choose.js';
+import random from './fun/random.js';
+import hack from './fun/hack.js';
+import tictactoe from './fun/tictactoe.js';
+import blackjack from './fun/blackjack.js';
 
 export default class FunCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {

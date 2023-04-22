@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { ThreadMemberUpdateData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ThreadMemberUpdateData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ThreadMemberUpdateHandler extends EventHandler<ThreadMemberUpdateData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('thread_member_update', bot);
     }
 
     handler = (/*eventData: ThreadMemberUpdateData*/) => {

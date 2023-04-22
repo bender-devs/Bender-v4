@@ -1,12 +1,12 @@
-import Bot from './bot';
-import * as types from '../types/types';
-import APIError from './apiError';
-import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../types/numberTypes';
-import LangUtils from '../utils/language';
-import { SUPPORT_SERVER } from '../data/constants';
-import { LangKey } from '../text/languageList';
+import Bot from './bot.js';
+import * as types from '../types/types.js';
+import APIError from './apiError.js';
+import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../types/numberTypes.js';
+import LangUtils from '../utils/language.js';
+import { SUPPORT_SERVER } from '../data/constants.js';
+import { LangKey } from '../text/languageList.js';
 import { inspect } from 'util';
-import { EmojiKey } from '../utils/misc';
+import { EmojiKey } from '../utils/misc.js';
 
 // the format in which user/message commands are stored (both in files and in the database.)
 export class UserOrMessageCommand {

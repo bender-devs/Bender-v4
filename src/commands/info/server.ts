@@ -1,12 +1,12 @@
-import { DEFAULT_COLOR } from '../../data/constants';
-import { VERIFICATION_LEVELS } from '../../types/numberTypes';
-import { Embed, Interaction } from '../../types/types';
-import CDNUtils from '../../utils/cdn';
-import DiscordUtils from '../../utils/discord';
-import LangUtils from '../../utils/language';
-import { EmojiKey } from '../../utils/misc';
-import TextUtils from '../../utils/text';
-import InfoCommand from '../info';
+import { DEFAULT_COLOR } from '../../data/constants.js';
+import { VERIFICATION_LEVELS } from '../../types/numberTypes.js';
+import { Embed, Interaction } from '../../types/types.js';
+import CDNUtils from '../../utils/cdn.js';
+import DiscordUtils from '../../utils/discord.js';
+import LangUtils from '../../utils/language.js';
+import { EmojiKey } from '../../utils/misc.js';
+import TextUtils from '../../utils/text.js';
+import InfoCommand from '../info.js';
 
 function getSecurityLevelText(this: InfoCommand, interaction: Interaction, level: VERIFICATION_LEVELS) {
     let key: EmojiKey;

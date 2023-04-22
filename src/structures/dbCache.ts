@@ -1,5 +1,5 @@
-import { GuildSettings, UserSettings, PremiumData, Reminder, UserReminders, GuildKey } from '../types/dbTypes';
-import { Snowflake } from '../types/types';
+import { GuildSettings, UserSettings, PremiumData, Reminder, UserReminders, GuildKey } from '../types/dbTypes.js';
+import { Snowflake } from '../types/types.js';
 import { ObjectId } from 'mongodb';
 
 type WrappedSettings<T> = {

@@ -1,5 +1,5 @@
-import { CHANNEL_TYPES } from '../types/numberTypes';
-import { Channel, Member, PartialMember, Role, User } from '../types/types';
+import { CHANNEL_TYPES } from '../types/numberTypes.js';
+import { Channel, Member, PartialMember, Role, User } from '../types/types.js';
 
 export default class DiscordUtils {
     static member = {

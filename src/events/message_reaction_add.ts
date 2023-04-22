@@ -1,11 +1,10 @@
-import { EventHandler } from '../types/types';
-import { ReactionAddData, LowercaseEventName } from '../types/gatewayTypes';
-import Bot from '../structures/bot';
-import { basename } from 'path';
+import { EventHandler } from '../types/types.js';
+import { ReactionAddData } from '../types/gatewayTypes.js';
+import Bot from '../structures/bot.js';
 
 export default class ReactionAddHandler extends EventHandler<ReactionAddData> {
     constructor(bot: Bot) {
-        super(basename(__filename, '.js') as LowercaseEventName, bot);
+        super('message_reaction_add', bot);
     }
 
     handler = (/*eventData: ReactionAddData*/) => {

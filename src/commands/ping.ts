@@ -1,8 +1,8 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandResponse, Interaction, Locale } from '../types/types';
-import LangUtils from '../utils/language';
-import TimeUtils from '../utils/time';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandResponse, Interaction, Locale } from '../types/types.js';
+import LangUtils from '../utils/language.js';
+import TimeUtils from '../utils/time.js';
 
 export default class PingCommand extends CommandUtils implements ICommand {
     constructor(bot: Bot) {

@@ -1,9 +1,9 @@
-import { ICommand, CommandUtils } from '../structures/command';
-import Bot from '../structures/bot';
-import { CommandOption, CommandResponse, Interaction } from '../types/types';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes';
+import { ICommand, CommandUtils } from '../structures/command.js';
+import Bot from '../structures/bot.js';
+import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 import { createHash } from 'crypto';
-import LangUtils from '../utils/language';
+import LangUtils from '../utils/language.js';
 
 const encodeDecodeMode: CommandOption[] = [{
     type: COMMAND_OPTION_TYPES.STRING,
