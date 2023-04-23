@@ -28,7 +28,7 @@ export default class RestrictEmojiUtils {
             return;
         }
 
-        return this.bot.api.guild.fetchPruneCount(inter.guild_id, interactionData.days).then(result => {
+        return this.bot.api.guild.fetchPruneCount(inter.guild_id, interactionData.days, values).then(result => {
             const inactive = result?.pruned;
             if (typeof inactive !== 'number') {
                 throw new Error(`fetchPruneCount failed; inactive = ${inactive}`);
