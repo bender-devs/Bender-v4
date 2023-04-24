@@ -251,8 +251,9 @@
     "CHAR_INFO_OPTION_DESCRIPTION": "The text character or emoji to show info about.",
 
     "CHAR_INFO_NO_DATA": "Couldn't get data about that character.\n*If it's an unsupported character (such as ) there may not be any data for it.\nOtherwise, this may be a bug.*",
-    "CHAR_INFO_TITLE": "Character info - {{char}}",
+    "CHAR_INFO_TITLE": "Character info",
     "CHAR_INFO_DISPLAY": "**Default display:** {{char}} | **Raw display:** `{{char}}`",
+    "CHAR_INFO_VARIATIONS": "**Variations:** {{variations}}",
     "CHAR_INFO_UTF16": "**UTF-16 Codes:** {{codes}}",
     "CHAR_INFO_UTF8": "**UTF-8 Codes:** {{codes}}",
     "CHAR_INFO_GROUP": "**Group:** {{category}} :: {{group}} :: {{subgroup}}",

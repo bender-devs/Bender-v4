@@ -5,6 +5,7 @@ import { EMOJI_REGEX_EXACT } from '../../utils/text.js';
 import UnicodeUtils from '../../utils/unicode.js';
 import InfoCommand from '../info.js';
 import emojiInfo from './emoji.js';
+import IMAGES from '../../data/images.js';
 
 export default async function (this: InfoCommand, interaction: Interaction, charString?: CommandOptionValue) {
     if (!charString || typeof charString !== 'string') {
@@ -14,55 +15,57 @@ export default async function (this: InfoCommand, interaction: Interaction, char
     if (EMOJI_REGEX_EXACT.test(charString) || ID_REGEX_EXACT.test(charString)) {
         return emojiInfo.bind(this)(interaction, charString);
     }
-    const emojiText = UnicodeUtils.getFirstSequence(charString);
-    if (!emojiText) {
-        // TODO: if unicode char but not an emoji?
-        return this.respond(interaction, 'Couldn\'t detect a Unicode emoji - other chars are WIP', 'WARNING');
-    }
-
-    const emojiData = UnicodeUtils.getCharData(emojiText);
-    if (!emojiData) {
-        // TODO: if unicode char but not an emoji?
+    const firstChar = UnicodeUtils.getFirstSequence(charString);
+    const charData = UnicodeUtils.getCharData(firstChar);
+    if (!charData) {
+        // TODO: show basic data if fetch fails
         return this.respondKey(interaction, 'CHAR_INFO_NO_DATA', 'WARNING');
     }
 
-    const display = LangUtils.getAndReplace('CHAR_INFO_DISPLAY', { char: charString }, interaction.locale);
+    const display = LangUtils.getAndReplace('CHAR_INFO_DISPLAY', { char: firstChar }, interaction.locale);
     const codes8 = LangUtils.getAndReplace('CHAR_INFO_UTF8', { 
-        codes: emojiData.codepoints_utf8.map(code => `\`${code}\``).join(', ')
+        codes: UnicodeUtils.formatCodes(charData.codepoints_utf8, 8)
     }, interaction.locale);
     const codes16 = LangUtils.getAndReplace('CHAR_INFO_UTF16', { 
-        codes: emojiData.codepoints_utf16.map(code => `\`${code}\``).join(', ')
+        codes: UnicodeUtils.formatCodes(charData.codepoints_utf16, 16)
     }, interaction.locale);
-    const groupInfo = emojiData.category && emojiData.group && emojiData.subgroup ? LangUtils.getAndReplace('CHAR_INFO_GROUP', { 
-        category: emojiData.category,
-        group: emojiData.group,
-        subgroup: emojiData.subgroup
+    const groupInfo = charData.category && charData.group && charData.subgroup ? LangUtils.getAndReplace('CHAR_INFO_GROUP', { 
+        category: charData.category,
+        group: charData.group,
+        subgroup: charData.subgroup
+    }, interaction.locale) : '';
+    const variations = charData.variations ? LangUtils.getAndReplace('CHAR_INFO_VARIATIONS', {
+        variations: charData.variations.join('  ')
     }, interaction.locale) : '';
 
     let links = '', imageLink = '';
-    if (emojiData) {
+    if (charData.is_emoji) {
         const infoName = LangUtils.get('CHAR_INFO_MORE_INFO', interaction.locale);
-        const infoLink = `https://emojipedia.org/emoji/${encodeURIComponent(emojiText)}`;
+        const infoLink = `https://emojipedia.org/emoji/${encodeURIComponent(firstChar)}`;
         const imageName = LangUtils.get('CHAR_INFO_IMAGE_LINK', interaction.locale);
-        imageLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/${emojiData.codepoints_utf16.join('-')}.png`;
+        imageLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/${charData.codepoints_utf16.join('-')}.png`;
         const vectorName = LangUtils.get('CHAR_INFO_VECTOR_LINK', interaction.locale);
-        const vectorLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${emojiData.codepoints_utf16.join('-')}.svg`;
+        const vectorLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${charData.codepoints_utf16.join('-')}.svg`;
         links = `[${infoName}](${infoLink}) | [${imageName}](${imageLink}) | [${vectorName}](${vectorLink})`;
     } else {
         const infoName = LangUtils.get('CHAR_INFO_MORE_INFO', interaction.locale);
         // TODO: handle multi-char non-emoji sequences? (if applicable)
-        const infoLink = `https://www.fileformat.info/info/unicode/char/${emojiText.codePointAt(0) || ''}`;
+        const code = firstChar.codePointAt(0)?.toString(16);
+        const infoLink = `https://www.fileformat.info/info/unicode/char/${code || ''}`;
         links = `[${infoName}](${infoLink})`;
     }
 
-    const description = `${display}\n${codes8}\n${codes16}${groupInfo ? `\n${groupInfo}` : ''}\n\n${links}`;
+    const description = `${charData ? `${charData.description}\n\n` : ''}${display}${groupInfo ? `\n${groupInfo}` : ''}${variations ? `\n${variations}` : ''}\n\n${codes8}\n${codes16}\n\n${links}`;
     const embed: Embed = {
-        title: LangUtils.getAndReplace('CHAR_INFO_TITLE', { char: charString }, interaction.locale),
+        author: {
+            name: LangUtils.get('CHAR_INFO_TITLE', interaction.locale),
+            icon_url: IMAGES.info
+        },
         description,
         color: DEFAULT_COLOR
     };
     if (imageLink) {
-        embed.image = { url: imageLink as URL }
+        embed.thumbnail = { url: imageLink as URL }
     }
     return this.respond(interaction, { embeds: [embed] });
 }
