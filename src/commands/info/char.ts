@@ -19,7 +19,7 @@ export default async function (this: InfoCommand, interaction: Interaction, char
     const charData = UnicodeUtils.getCharData(firstChar);
     if (!charData) {
         // TODO: show basic data if fetch fails
-        return this.respondKey(interaction, 'CHAR_INFO_NO_DATA', 'WARNING');
+        return this.respondKey(interaction, 'CHAR_INFO_NO_DATA', 'WARNING', true);
     }
 
     const display = LangUtils.getAndReplace('CHAR_INFO_DISPLAY', { char: firstChar }, interaction.locale);

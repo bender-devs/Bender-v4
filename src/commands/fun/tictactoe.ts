@@ -22,7 +22,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
 
     if (userID && !user) {
         const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);
-        return this.respond(interaction, response, 'WARNING')
+        return this.respond(interaction, response, 'WARNING', true)
             .catch(this.handleAPIError.bind(this));
     }
 

@@ -28,7 +28,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             prefix: '/',
             command: 'info channel'
         }, interaction.locale);
-        return this.respond(interaction, unavailableMsg, 'GUILD');
+        return this.respond(interaction, unavailableMsg, 'GUILD', true);
     }
     if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL'], true);
@@ -47,10 +47,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL']);
         }
         this.bot.logger.handleError('FETCH CHANNEL', err);
-        return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR');
+        return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR', true);
     }
     if (!channel?.guild_id) {
-        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING');
+        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', true);
     }
 
     const createdAt = TextUtils.timestamp.fromSnowflake(channel.id);

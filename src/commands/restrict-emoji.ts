@@ -68,7 +68,7 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD');
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD', true);
         }
 
         const args = interaction.data?.options;
@@ -93,7 +93,7 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
         }
         const emoji = fetchedEmoji || cachedEmoji;
         if (!emoji) {
-            return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING');
+            return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', true);
         }
 
         const currentRoles = emoji.roles || [];
@@ -119,7 +119,7 @@ export default class RestrictEmojiCommand extends CommandUtils implements IComma
         if (subcommand === LangUtils.get('REM_SUBCOMMAND_RESET')) {
             return this.bot.api.emoji.edit(interaction.guild_id, emoji.id, { roles: [] }).then(newEmoji => {
                 if (!newEmoji) {
-                    return this.respondKeyReplace(interaction, 'REM_RESET_UNNECESSARY', { emoji: emojiText }, 'SUCCESS_ALT');
+                    return this.respondKeyReplace(interaction, 'REM_RESET_UNNECESSARY', { emoji: emojiText }, 'SUCCESS_ALT', true);
                 }
                 const respText = LangUtils.getAndReplace('REM_RESET', { emoji: emojiText }, interaction.locale);
                 return this.respond(interaction, respText, 'SUCCESS');

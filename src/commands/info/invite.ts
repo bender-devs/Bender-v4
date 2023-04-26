@@ -18,12 +18,12 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
         inviteCode = TextUtils.inviteLink.extract(inviteString) || '';
     }
     if (!inviteCode) {
-        return this.respondKey(interaction, 'INVITE_INFO_LINK_INVALID', 'WARNING');
+        return this.respondKey(interaction, 'INVITE_INFO_LINK_INVALID', 'WARNING', true);
     }
 
     const invite = await this.bot.api.invite.fetch(inviteCode).catch(() => null);
     if (!invite?.guild) {
-        return this.respondKey(interaction, 'INVITE_INFO_FETCH_FAILED', 'ERROR');
+        return this.respondKey(interaction, 'INVITE_INFO_FETCH_FAILED', 'ERROR', true);
     }
 
     const userID = interaction.member?.user.id;

@@ -18,7 +18,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     }
     const emoji = cachedEmoji || TextUtils.emoji.extract(emojiString);
     if (!emoji) {
-        return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING');
+        return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', true);
     }
 
     const createdAt = TextUtils.timestamp.fromSnowflake(emoji.id);

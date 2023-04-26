@@ -21,7 +21,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }
     const user = await this.bot.api.user.fetch(partialUser.id);
     if (!user) {
-        return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR');
+        return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
     }
 
     let member: types.Member | types.PartialMember | null = null;

@@ -9,7 +9,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     let partialUser: types.PartialUser | null = null;
     if (!userID && !interaction.guild_id) {
         if (!interaction.user) {
-            return this.respondKey(interaction, 'AVATAR_INFO_MISSING_USER', 'WARNING');
+            return this.respondKey(interaction, 'AVATAR_INFO_MISSING_USER', 'WARNING', true);
         }
         userID = interaction.user.id;
         partialUser = interaction.user;
@@ -27,7 +27,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
         user = await this.bot.api.user.fetch(partialUser.id);
         if (!user) {
-            return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR');
+            return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
         }
     }
     let member: types.Member | types.PartialMember | null = null;
@@ -62,7 +62,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     if (!guild) {
-        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND', 'WARNING');
+        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND', 'WARNING', true);
     }
 
     if (!guild.icon) {

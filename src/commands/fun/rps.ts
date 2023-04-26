@@ -15,14 +15,14 @@ export default async function (this: FunCommand, interaction: Interaction, show?
             showOpt: LangUtils.get('FUN_RPS_OPTION', interaction.locale),
             userOpt: LangUtils.get('FUN_RPS_OPTION_USER', interaction.locale)
         }, interaction.locale)
-        return this.respond(interaction, cheatMsg, 'WARNING')
+        return this.respond(interaction, cheatMsg, 'WARNING', true)
             .catch(this.handleAPIError.bind(this));
     } else if (userID && typeof userID === 'string') {
         const user = userID ? interaction.data?.resolved?.users?.[userID as Snowflake] || null : null;
 
         if (userID && !user) {
             const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);
-            return this.respond(interaction, response, 'WARNING')
+            return this.respond(interaction, response, 'WARNING', true)
                 .catch(this.handleAPIError.bind(this));
         }
 

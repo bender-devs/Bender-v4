@@ -83,7 +83,7 @@ export class CommandUtils {
         }).catch(this.handleAPIError.bind(this));
     }
 
-    async respond(interaction: types.Interaction, msgData: CommandResponseCreateData, emojiKey?: EmojiKey, ephemeral = true, deferred = false) {
+    async respond(interaction: types.Interaction, msgData: CommandResponseCreateData, emojiKey?: EmojiKey, ephemeral = false, deferred = false) {
         const responseType = deferred ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE : INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE;
         const data = this.#getResponseData(interaction, msgData, emojiKey);
         data.flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
@@ -111,20 +111,20 @@ export class CommandUtils {
         return this.bot.api.interaction.sendFollowup(interaction, data).catch(this.handleAPIError.bind(this));
     }
 
-    async respondKey(interaction: types.Interaction, messageLangKey: LangKey, emojiKey?: EmojiKey) {
+    async respondKey(interaction: types.Interaction, messageLangKey: LangKey, emojiKey?: EmojiKey, ephemeral = false) {
         const content = LangUtils.get(messageLangKey, interaction.locale);
-        return this.respond(interaction, content, emojiKey);
+        return this.respond(interaction, content, emojiKey, ephemeral);
     }
 
-    async respondKeyReplace(interaction: types.Interaction, messageLangKey: LangKey, replaceMap: types.ReplaceMap, emojiKey?: EmojiKey) {
+    async respondKeyReplace(interaction: types.Interaction, messageLangKey: LangKey, replaceMap: types.ReplaceMap, emojiKey?: EmojiKey, ephemeral = false) {
         const content = LangUtils.getAndReplace(messageLangKey, replaceMap, interaction.locale);
-        return this.respond(interaction, content, emojiKey);
+        return this.respond(interaction, content, emojiKey, ephemeral);
     }
 
     async respondMissingPermissions(interaction: types.Interaction, context: string, perms: types.PermissionName[], forUser = false) {
         const permNames = perms.map(perm => LangUtils.getFriendlyPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
-        return this.respondKeyReplace(interaction, key, { context, permissions: `\`${permNames.join('`, `')}\`` }, 'WARNING');
+        return this.respondKeyReplace(interaction, key, { context, permissions: `\`${permNames.join('`, `')}\`` }, 'WARNING', true);
     }
 
     async handleAPIError(err: APIError) {
@@ -140,6 +140,6 @@ export class CommandUtils {
         });
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
         this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69, true));
-        return this.respond(interaction, `❌ ${message}\n${supportNotice}`);
+        return this.respond(interaction, `${message}\n${supportNotice}`, 'ERROR', true);
     }
 }

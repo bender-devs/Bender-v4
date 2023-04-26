@@ -136,7 +136,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }
         const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BASE64`, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING');
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
         }
         return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
@@ -169,7 +169,7 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
         }
         const modeMessage = LangUtils.get(`CONVERT_TEXT_${mode === 'decode' ? 'DE' : 'EN'}CODED_BINARY`, interaction.locale);
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING');
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
         }
         return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
     }
