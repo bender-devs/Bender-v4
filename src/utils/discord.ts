@@ -1,5 +1,6 @@
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
 import { Channel, Member, PartialMember, Role, User } from '../types/types.js';
+import TimeUtils from './time.js';
 
 export default class DiscordUtils {
     static member = {
@@ -24,6 +25,9 @@ export default class DiscordUtils {
                 }
             }
             return highestWithColor?.color || null;
+        },
+        sortByJoinDate(members: Member[]) {
+            return members.sort((a, b) => TimeUtils.parseTimestampMillis(a.joined_at) - TimeUtils.parseTimestampMillis(b.joined_at));
         }
     }
 

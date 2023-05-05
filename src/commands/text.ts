@@ -60,7 +60,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
         name: 'big',
-        description: 'Converts text to 🇪🇲🇴🇯🇮🇸.',
+        description: 'Converts text to 🇪 🇲 🇴 🇯 🇮 🇸.',
         options: [textOpt]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
@@ -159,6 +159,9 @@ export default class TextCommand extends CommandUtils implements ICommand {
         });
         if (effect === 'flip') {
             newText = `(ノಠ _ ಠ)ノ︵ ${newText}`;
+        }
+        if (effect === 'big' && newText.endsWith('\uFEFF')) {
+            newText = newText.substring(0, newText.length-1); // remove trailing \uFEFF
         }
         if (Array.from(newText).length > 2000) {
             return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);

@@ -177,6 +177,8 @@ export type Guild = {
     approximate_presence_count?: number;
     welcome_screen?: WelcomeScreen;
     nsfw_level: num.NSFW_LEVELS;
+    stickers?: Sticker[];
+    premium_progress_bar_enabled: boolean;
 };
 
 export interface PartialGuild extends Pick<Guild, 'id' | 'name' | 'splash' | 'banner' | 'description' | 'icon' | 'features' | 'verification_level' | 'vanity_url_code' | 'premium_subscription_count' | 'welcome_screen' | 'nsfw_level'> {

@@ -146,8 +146,12 @@ export default class APIInterface {
             return member;
         },
         list: async (guild_id: types.Snowflake, limit = 1000, after?: types.Snowflake) => {
-            return APIWrapper.member.list(guild_id, limit, after)
+            const memberList = await APIWrapper.member.list(guild_id, limit, after)
                 .then(res => res.body).catch(this.handleError.bind(this));
+            if (memberList && this.cacheEnabled) {
+                this.bot.cache.members.addChunk(guild_id, memberList);
+            }
+            return memberList;
         },
         addRole: async (guild_id: types.Snowflake, user_id: types.Snowflake, role_id: types.Snowflake, reason?: string) => {
             return APIWrapper.member.addRole(guild_id, user_id, role_id, reason)
