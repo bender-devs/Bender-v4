@@ -108,8 +108,10 @@
     "USER_INFO_JOINED_AT": "**Joined at:** {{dateRelative}}",
     "USER_INFO_CREATED_AT": "**Created at:** {{dateRelative}}",
     "USER_INFO_NO_ROLES": "*Member has no roles.*",
-    "USER_INFO_ROLES": "**Roles:** {{roles}}",
+    "USER_INFO_ROLES": "**Roles ({{count}}):** {{roles}}",
     "USER_INFO_BANNER": "**Banner:**",
+    "USER_INFO_ID": "User ID: {{id}}",
+    "USER_INFO_MEMBER_NUMBER": "Member #{{num}}",
 
     "------- /info emoji -------": "",
 

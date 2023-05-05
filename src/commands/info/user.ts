@@ -24,6 +24,8 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
     }
 
+    let footer = LangUtils.getAndReplace('USER_INFO_ID', { id: userID }, interaction.locale);
+
     let member: types.Member | types.PartialMember | null = null;
     if (interaction.data?.resolved?.members && userID in interaction.data.resolved.members) {
         member = interaction.data.resolved.members[userID as types.Snowflake];
@@ -34,10 +36,32 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             member = await this.bot.api.member.fetch(interaction.guild_id, user.id);
         }
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
+        if (guild) {
+            const count = ('member_count' in guild) ? guild.member_count : guild.approximate_member_count;
+            if (count) {
+                let memIndex = -1;
+                const cached = this.bot.cache.guilds.get(interaction.guild_id)?.members;
+                const cacheCount = cached ? Object.keys(cached).length : 0;
+                if (cached && count === cacheCount) {
+                    const members = DiscordUtils.member.sortByJoinDate(Object.values(cached));
+                    memIndex = members.findIndex(mem => mem.user.id === userID);
+                } else if (count <= 1000) {
+                    let members = await this.bot.api.member.list(interaction.guild_id, 1000);
+                    if (members) {
+                        members = DiscordUtils.member.sortByJoinDate(members);
+                        memIndex = members.findIndex(mem => mem.user.id === userID); 
+                    }
+                }
+                if (memIndex > -1) {
+                    const memNumberText = LangUtils.getAndReplace('USER_INFO_MEMBER_NUMBER', { num: memIndex+1 }, interaction.locale);
+                    footer = `${memNumberText} | ${footer}`;
+                }
+            }
+        }
     }
     const embed: types.Embed = {
         color: user.accent_color || DEFAULT_COLOR,
-        footer: { text: `ID: ${user.id}` }
+        footer: { text: footer }
     };
     let userRank = LangUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {
         botEmoji: this.getEmoji('BOT', interaction),
@@ -55,7 +79,8 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         if (member) {
             const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
             roles = `\n\n${member.roles.length ? LangUtils.getAndReplace('USER_INFO_ROLES', {
-                roles: member.roles.map(id => `<@&${id}>`).join(', ')
+                roles: member.roles.map(id => `<@&${id}>`).join(', '),
+                count: member.roles.length
             }, interaction.locale) : noRolesText}`;
             joinDate = `\n${LangUtils.formatDateAgo('USER_INFO_JOINED_AT', member.joined_at, interaction.locale)}`;
 
@@ -79,7 +104,8 @@ export default async function (this: InfoCommand, interaction: types.Interaction
                 const sortedRoles = DiscordUtils.member.getSortedRoles(member, roleList);
                 if (sortedRoles.length) {
                     roles = `\n\n${LangUtils.getAndReplace('USER_INFO_ROLES', {
-                        roles: sortedRoles.map(role => `<@&${role.id}>`).join(', ')
+                        roles: sortedRoles.map(role => `<@&${role.id}>`).join(', '),
+                        count: sortedRoles.length
                     }, interaction.locale)}`;
                 }
             } else if (!isOwner) {
