@@ -137,7 +137,7 @@ export default class DatabaseManager {
 
             const uncachedFields = Object.assign({}, fields); // make a copy so we keep the original query intact
             const cached: dbTypes.GuildSettings = Object.assign({}, idObj);
-            if (this.cacheEnabled) {
+            if (this.cacheEnabled && this.cache.guilds.get(guildID)) {
                 const cachedGuild = this.cache.guilds.get(guildID);
                 for (const key in fields) {
                     if (key === '_id') {

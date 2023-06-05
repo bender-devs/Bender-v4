@@ -179,7 +179,7 @@ export type GuildSubSubkey = SubkeysNested<GuildObjectTypes>;
 
 export type GuildDotFormatKey = GuildKey | DotFormatKeys<GuildObjectTypes> | DotFormatKeysNested<GuildObjectTypes>;
 
-export const ALL_GUILD_KEYS: GuildKey[] = ['agreement', 'automod', 'autorole', 'config', 'customcommands', 'filter', 'ignore', 'joinables', 'logging', 'memberLog', 'mutes', 'namefilter', 'reactionRoles', 'starboard', 'tags', 'temproles', 'timezone'];
+export const ALL_GUILD_KEYS: GuildKey[] = ['agreement', 'automod', 'autorole', 'config', 'customcommands', 'filter', 'ignore', 'joinables', 'logging', 'memberLog', 'minage', 'mutes', 'namefilter', 'reactionRoles', 'starboard', 'tags', 'temproles', 'timezone'];
 
 // technically MongoDB would also support exclusive queries ({key: 0})
 // but this ensures the amount of data returned is limited
@@ -205,6 +205,7 @@ export type GuildSettings = {
     logging?: Logging;
     memberLog?: MemberLog;
     mentionables?: Mentionables;
+    minage?: MinAge;
     modlog?: ModlogEntry[];
     mutes?: Mutes;
     namefilter?: Namefilter;
@@ -375,6 +376,13 @@ type MentionableCount = MentionableBase & {
 type MentionableTime = MentionableBase & {
     type: 'time';
     timestamp: UnixTimestampMillis;
+}
+
+type MinAge = {
+    duration?: number,
+    enabled?: boolean,
+    action?: 'kick' | 'ban',
+    message?: string
 }
 
 type Mutes = {

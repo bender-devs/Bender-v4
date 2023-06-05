@@ -17,6 +17,7 @@ import DevCommand from '../commands/dev.js';
 import getUserCommands from '../commands/nonText/user.js';
 import getMessageCommands from '../commands/nonText/message.js';
 import StatsCommand from '../commands/stats.js';
+import MinAgeCommand from '../commands/min-age.js';
 
 export default class SlashCommandManager {
     bot: Bot;
@@ -36,6 +37,7 @@ export default class SlashCommandManager {
         this.commands.push(new FunCommand(this.bot));
         this.commands.push(new RestrictEmojiCommand(this.bot));
         this.commands.push(new StatsCommand(this.bot));
+        this.commands.push(new MinAgeCommand(this.bot));
 
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
