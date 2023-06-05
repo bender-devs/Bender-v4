@@ -1,6 +1,7 @@
 import { BaseEmoji, getEmojis } from 'unicode-emoji';
 import unicodeData from 'cldr-annotations-modern/annotations/en/annotations.json' assert { type: 'json' };
 import unicodeDerivedData from 'cldr-annotations-derived-modern/annotationsDerived/en/annotations.json' assert { type: 'json' };
+import { URL } from '../types/types.js';
 /*
  * TODO: localization for unicodeData
  * note that is is theoretically possible to manually localize some data from the unicode-emoji module;
@@ -114,5 +115,8 @@ export default class UnicodeUtils {
             Object.assign(data, extraData);
         }
         return data;
+    }
+    static getImageFromCodes(utf16_codes: string[], vector = false): URL {
+        return `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/${vector ? 'svg' : '72x72'}/${utf16_codes.join('-')}.${vector ? 'svg' : 'png'}`
     }
 }

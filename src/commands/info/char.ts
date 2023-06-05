@@ -43,9 +43,9 @@ export default async function (this: InfoCommand, interaction: Interaction, char
         const infoName = LangUtils.get('CHAR_INFO_MORE_INFO', interaction.locale);
         const infoLink = `https://emojipedia.org/emoji/${encodeURIComponent(firstChar)}`;
         const imageName = LangUtils.get('CHAR_INFO_IMAGE_LINK', interaction.locale);
-        imageLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/${charData.codepoints_utf16.join('-')}.png`;
+        imageLink = UnicodeUtils.getImageFromCodes(charData.codepoints_utf16);
         const vectorName = LangUtils.get('CHAR_INFO_VECTOR_LINK', interaction.locale);
-        const vectorLink = `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${charData.codepoints_utf16.join('-')}.svg`;
+        const vectorLink = UnicodeUtils.getImageFromCodes(charData.codepoints_utf16, true);
         links = `[${infoName}](${infoLink}) | [${imageName}](${imageLink}) | [${vectorName}](${vectorLink})`;
     } else {
         const infoName = LangUtils.get('CHAR_INFO_MORE_INFO', interaction.locale);
