@@ -121,6 +121,12 @@ export default class APIWrapper {
             return APIWrapper.makeRequest<types.ExtendedInvite[]>('GET', `/guilds/${guild_id}/invites`, {
                 headers: AUTH_HEADER
             });
+        },
+        // WARNING: experimental feature
+        async fetchChannelEmojis(guild_id: types.Snowflake) {
+            return APIWrapper.makeRequest<types.ChannelEmojiData>('GET', `/guilds/${guild_id}/get-channel-name-emojis`, {
+                headers: AUTH_HEADER
+            });
         }
     }
 

@@ -86,6 +86,21 @@ export default class APIInterface {
         unban: async (guild_id: types.Snowflake, user_id: types.Snowflake, reason?: string) => {
             return APIWrapper.ban.delete(guild_id, user_id, reason)
                 .then(res => res.body).catch(this.handleError.bind(this));
+        },
+        // WARNING: experimental feature
+        fetchChannelEmojis: async (guild_id: types.Snowflake) => {
+            let emojiData: types.ChannelEmojiData| null = null;
+            if (this.cacheEnabled) {
+                emojiData = this.bot.cache.channelEmojis.get(guild_id);
+            }
+            if (!emojiData) {
+                emojiData = await APIWrapper.guild.fetchChannelEmojis(guild_id)
+                    .then(res => res.body).catch(this.handleError.bind(this));
+                if (emojiData && this.cacheEnabled) {
+                    this.bot.cache.channelEmojis.set(guild_id, emojiData);
+                }
+            }
+            return emojiData;
         }
     }
 

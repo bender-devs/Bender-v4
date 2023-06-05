@@ -142,6 +142,14 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     }, interaction.locale);
     description += `\n\n[${linkTitle}](https://discord.com/channels/${channel.guild_id}/${channel.id})`;
 
+    // WARNING: based on experimental endpoint
+    if (channel.name) {
+        const aiIconURL = await this.bot.utils.getChannelEmojiImage(interaction.guild_id, channel.name);
+        if (aiIconURL) {
+            iconURL = aiIconURL;
+        }
+    }
+
     const embed: types.Embed = {
         description,
         author: {

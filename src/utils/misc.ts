@@ -6,6 +6,7 @@ import LangUtils from './language.js';
 import { ACTIVITY_TYPES } from '../types/numberTypes.js';
 import TextUtils from './text.js';
 import PermissionUtils from './permissions.js';
+import UnicodeUtils from './unicode.js';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 
@@ -33,6 +34,19 @@ export default class MiscUtils {
 
     static getDefaultEmoji(emojiKey: EmojiKey) {
         return SHITTY_EMOTES[emojiKey];
+    }
+
+    // WARNING: based on experimental endpoint
+    async getChannelEmoji(guildID: Snowflake, channelName: string) {
+        const emojiMap = await this.bot.api.guild.fetchChannelEmojis(guildID);
+        return emojiMap?.[channelName] || null;
+    }
+    async getChannelEmojiImage(guildID: Snowflake, channelName: string) {
+        const emoji = await this.getChannelEmoji(guildID, channelName);
+        const charData = emoji ? UnicodeUtils.getCharData(emoji) : null;
+        if (charData) {
+            return UnicodeUtils.getImageFromCodes(charData.codepoints_utf16);
+        }
     }
 
     #getActivityTypeName(type: ACTIVITY_TYPES, locale?: Locale) {

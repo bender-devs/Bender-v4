@@ -36,6 +36,7 @@ type CachedGuildMap = Record<types.Snowflake, CachedGuild>;
 type UserMap = Record<types.Snowflake, types.User>;
 type MessageMap = Record<types.Snowflake, types.Message>;
 type CommandsMap = Record<types.Snowflake, types.Command[]>;
+type ChannelEmojiDataMap = Record<types.Snowflake, types.ChannelEmojiData>;
 type MessageMapMap = Record<types.Snowflake, MessageMap>;
 type StringMapMap = Record<string, types.StringMap>;
 
@@ -63,6 +64,7 @@ export default class CacheHandler {
     #commands: types.Command[];
     #guildCommands: CommandsMap;
     #presences: PresenceMap;
+    #channelEmojis: ChannelEmojiDataMap;
     #connected = false;
     #startTimestamp: number;
 
@@ -74,6 +76,7 @@ export default class CacheHandler {
         this.#commands = [];
         this.#guildCommands = {};
         this.#presences = {};
+        this.#channelEmojis = {};
         this.#startTimestamp = Date.now();
     }
 
@@ -248,6 +251,16 @@ export default class CacheHandler {
         },
         listIDs: (): types.Snowflake[] => {
             return Object.keys(this.#guilds) as types.Snowflake[];
+        }
+    }
+
+    // WARNING: experimental feature
+    channelEmojis = {
+        get: (guild_id: types.Snowflake): types.ChannelEmojiData | null => {
+            return this.#channelEmojis[guild_id] || null;
+        },
+        set: (guild_id: types.Snowflake, newData: types.ChannelEmojiData): void => {
+            this.#channelEmojis[guild_id] = newData;
         }
     }
 

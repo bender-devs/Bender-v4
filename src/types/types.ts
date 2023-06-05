@@ -609,6 +609,9 @@ export type ChannelPositionData = {
     parent_id?: Snowflake | null;
 }
 
+// WARNING: channel emojis are an experimental feature
+export type ChannelEmojiData = Record<GuildChannel['name'], string>;
+
 /************ integration types ************/
 
 export type Integration = {
@@ -717,6 +720,7 @@ export type MessageInteraction = {
 /****** application command types ******/
 
 export const LOCALE_LIST = [
+    'id',    // Indonesian      Bahasa Indonesia
     'da',    // Danish          Dansk
     'de',    // German          Deutsch
     'en-GB', // English, UK
