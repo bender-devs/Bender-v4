@@ -376,6 +376,8 @@ export type Role = {
     name: string;
     color: number;
     hoist: boolean;
+    icon?: string | null;
+    unicode_emoji?: string | null;
     position: number;
     permissions: Bitfield;
     managed: boolean;

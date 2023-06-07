@@ -93,7 +93,7 @@ export default class LanguageUtils {
         return dict;
     }
 
-    static getFriendlyPermissionName(perm: PermissionName, locale?: Locale) {
+    static getPermissionName(perm: PermissionName, locale?: Locale) {
         return LanguageUtils.get(`PERMISSION_${perm}`, locale);
     }
 

@@ -38,7 +38,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     }
     if (emoji.roles?.length) {
         description += `\n${LangUtils.getAndReplace('EMOJI_INFO_RESTRICTED', {
-            roles: emoji.roles.map(id => `<@&${id}>`).join(', ')
+            roles: emoji.roles.map(TextUtils.mention.parseRole).join(', ')
         }, interaction.locale)}`;
     }
 

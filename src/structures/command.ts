@@ -122,7 +122,7 @@ export class CommandUtils {
     }
 
     async respondMissingPermissions(interaction: types.Interaction, context: string, perms: types.PermissionName[], forUser = false) {
-        const permNames = perms.map(perm => LangUtils.getFriendlyPermissionName(perm, interaction.locale));
+        const permNames = perms.map(perm => LangUtils.getPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
         return this.respondKeyReplace(interaction, key, { context, permissions: `\`${permNames.join('`, `')}\`` }, 'WARNING', true);
     }

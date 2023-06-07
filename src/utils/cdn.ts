@@ -67,6 +67,10 @@ export default class CDNUtils {
         return this.#getGeneric('avatars', userID, avatarHash, format, size);
     }
 
+    static memberAvatar(guildID: Snowflake, userID: Snowflake, iconHash: string, format: ImageFormat = 'png', size?: ImageSize): URL {
+        return `${CDN_BASE}guilds/${guildID}/users/${userID}/avatars/${iconHash}.${this.#formatAndSize(format, size)}`;
+    }
+
     static applicationIcon(applicationID: Snowflake, iconHash: string, format: ImageFormat = 'png', size?: ImageSize): URL {
         return this.#getGeneric('app-icons', applicationID, iconHash, format, size);
     }
@@ -93,5 +97,9 @@ export default class CDNUtils {
 
     static sticker(stickerID: Snowflake, format: StickerFormat): URL {
         return `${CDN_BASE}stickers/${stickerID}.${format}`;
+    }
+
+    static roleIcon(roleID: Snowflake, iconHash: string, format: ImageFormat = 'png'): URL {
+        return this.#getGeneric('role-icons', roleID, iconHash, format);
     }
 }

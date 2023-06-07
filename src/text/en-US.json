@@ -112,6 +112,7 @@
     "USER_INFO_BANNER": "**Banner:**",
     "USER_INFO_ID": "User ID: {{id}}",
     "USER_INFO_MEMBER_NUMBER": "Member #{{num}}",
+    "USER_INFO_NON_MEMBER": "*This user is not a member of the server. No additional info is available.*",
 
     "------- /info emoji -------": "",
 
@@ -349,12 +350,12 @@
     "FUN_RPS_PAPER": "Paper",
     "FUN_RPS_SCISSORS": "Scissors",
     "FUN_RPS_CHOICE": "I chose **{{choice}}**.",
-    "FUN_RPS_NO_SHOW": "The `{{showOpt}}` option is required when playing against Bender!",
-    "FUN_RPS_NO_CHEAT": "Can't use the `{{showOpt}}` option with the `{{userOpt}}` option as it would allow them to cheat!",
+    "FUN_RPS_NO_SHOW": "How am I supposed to play when you won't show me your hand, meatbag?\n(The`{{showOpt}}` option is required when playing against Bender.)",
+    "FUN_RPS_NO_CHEAT": "You can't use the `{{showOpt}}` option with the `{{userOpt}}` option - that would let the other meatbag cheat!",
     "FUN_RPS_BOT": "Sorry, I don't think {{bot}} is smart enough to play rock-paper-scissors.",
     "FUN_RPS_START": "Rock-paper-scissors: **{{author}} has challenged {{user}}!**",
     "FUN_RPS_TURN": "Rock-paper-scissors: **Waiting on {{user}}!**",
-    "FUN_RPS_INTERACTION_UNINVITED": "This is not your game of rock-paper-scissors. GTFO.",
+    "FUN_RPS_INTERACTION_UNINVITED": "This is not your game of rock-paper-scissors. Beat it, meatbag.",
     "FUN_RPS_ALREADY_CHOSE": "You already made your choice!",
     "FUN_RPS_TIE_USER": "You both chose {{choice}} - **It's a tie!**",
     "FUN_RPS_TIE": "It's a tie!",
@@ -413,7 +414,7 @@
     "FUN_TTT_RESULT_TIE": "Tic-tac-toe: **It's a draw!**",
     "FUN_TTT_RESULT_USER": "Tic-tac-toe: **You won!** *Rigged.*",
     "FUN_TTT_RESULT_BOT": "Tic-tac-toe: **I won!** *Your puny meatbag brain is no match for me.*",
-    "FUN_TTT_INTERACTION_UNINVITED": "This is not your game of tic-tac-toe. GTFO.",
+    "FUN_TTT_INTERACTION_UNINVITED": "This is not your game of tic-tac-toe. Beat it, meatbag.",
     "FUN_TTT_OUT_OF_TURN": "It's not your turn - be patient. Or just fight them irl 1v1",
 
     "------- /fun blackjack -------": "",

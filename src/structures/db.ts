@@ -109,16 +109,16 @@ export default class DatabaseManager {
         if (this.cacheEnabled) {
             const guildSettings = this.bender.collection('bot_settings');
             this.#guildSettingsWatcher = guildSettings.watch(undefined, WATCHER_OPTIONS);
-            this.#guildSettingsWatcher.on('change', this.processGuildChange);
+            this.#guildSettingsWatcher.on('change', this.processGuildChange.bind(this));
             const userSettings = this.bender.collection('user_settings');
             this.#userSettingsWatcher = userSettings.watch(undefined, WATCHER_OPTIONS);
-            this.#userSettingsWatcher.on('change', this.processUserChange);
+            this.#userSettingsWatcher.on('change', this.processUserChange.bind(this));
             const userReminders = this.bender.collection('user_reminders');
             this.#userRemindersWatcher = userReminders.watch(undefined, WATCHER_OPTIONS);
-            this.#userRemindersWatcher.on('change', event => this.processUserChange(event, true));
+            this.#userRemindersWatcher.on('change', event => this.processUserChange.bind(this)(event, true));
             const premiumSettings = this.bender.collection('premium');
             this.#premiumWatcher = premiumSettings.watch(undefined, WATCHER_OPTIONS);
-            this.#premiumWatcher.on('change', this.processPremiumChange);
+            this.#premiumWatcher.on('change', this.processPremiumChange.bind(this));
         }
         return this.client;
     }

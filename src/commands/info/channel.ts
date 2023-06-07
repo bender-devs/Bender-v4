@@ -16,9 +16,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
     if (!channelID || typeof channelID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
+    const chanID = channelID as types.Snowflake;
     let partialChannel: types.PartialChannel | null = null;
     if (interaction.data?.resolved?.channels && channelID in interaction.data.resolved.channels) {
-        partialChannel = interaction.data.resolved.channels[channelID as types.Snowflake];
+        partialChannel = interaction.data.resolved.channels[chanID];
     }
     if (!partialChannel) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
@@ -31,20 +32,20 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respond(interaction, unavailableMsg, 'GUILD', true);
     }
     if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
-        return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL'], true);
+        return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(chanID), ['VIEW_CHANNEL'], true);
     }
-    const hasPermissionCached = this.bot.perms.matchesMemberCache(this.bot.user.id, 'VIEW_CHANNEL', interaction.guild_id, channelID as types.Snowflake);
+    const hasPermissionCached = this.bot.perms.matchesMemberCache(this.bot.user.id, 'VIEW_CHANNEL', interaction.guild_id, chanID);
     if (hasPermissionCached === false) {
-        return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL'], true);
+        return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(chanID), ['VIEW_CHANNEL'], true);
     }
     // catch-22 situation here: if the channel isn't cached, there's no way to tell if the bot has permissions to fetch it, since you can't fetch the channel and its permission overrides
     // see https://github.com/discord/discord-api-docs/discussions/3310
     let channel: types.Channel | null = null;
     try {
-        channel = await this.bot.api.channel.fetch(channelID as types.Snowflake);
+        channel = await this.bot.api.channel.fetch(chanID);
     } catch (err) {
         if (err instanceof APIError && err.code === API_ERRORS.MISSING_ACCESS) {
-            return this.respondMissingPermissions(interaction, `<#${channelID}>`, ['VIEW_CHANNEL']);
+            return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(chanID), ['VIEW_CHANNEL']);
         }
         this.bot.logger.handleError('FETCH CHANNEL', err);
         return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR', true);
@@ -83,7 +84,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         title = LangUtils.getAndReplace('CHANNEL_INFO_TITLE_CATEGORY', { channelName: category.name }, interaction.locale);
         iconURL = IMAGES.category;
 
-        let channels = this.bot.cache.channels.listCategory(channel.guild_id, channel.id)?.map(chan => `<#${chan.id}>`);
+        let channels = this.bot.cache.channels.listCategory(channel.guild_id, channel.id)?.map(chan => TextUtils.mention.parseChannel(chan.id));
         if (channels && channels.length > CATEGORY_MAX_CHANNELS) {
             const remainder = channels.length - CATEGORY_MAX_CHANNELS;
             channels = channels.slice(0, CATEGORY_MAX_CHANNELS);

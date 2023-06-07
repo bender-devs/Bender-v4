@@ -45,7 +45,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
         }
         const isVoice = cachedChannel && DiscordUtils.channel.isVoice(cachedChannel);
         description += `\n${LangUtils.getAndReplace(`INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`, {
-            channel: invite.guild.id === interaction.guild_id ? `<#${invite.channel.id}>` : `#${invite.channel.name}`
+            channel: invite.guild.id === interaction.guild_id ? TextUtils.mention.parseChannel(invite.channel.id) : `#${invite.channel.name}`
         }, interaction.locale)}`;
     }
 
