@@ -10,6 +10,7 @@ import channelInfo from './info/channel.js';
 import bannerInfo from './info/banner.js';
 import inviteInfo from './info/invite.js';
 import serverInfo from './info/server.js';
+import roleInfo from './info/role.js';
 import avatarInfo from './info/avatar.js';
 import botInfo from './info/bot.js';
 import charInfo from './info/char.js';
@@ -81,6 +82,26 @@ export default class InfoCommand extends CommandUtils implements ICommand {
 
         description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
         description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
+    }, {
+        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+        name: LangUtils.get('ROLE_INFO_SUBCOMMAND'),
+        name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND'),
+
+        description: LangUtils.get('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
+        description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
+
+        options: [{
+            type: COMMAND_OPTION_TYPES.ROLE,
+
+            name: LangUtils.get('ROLE_INFO_OPTION'),
+            name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION'),
+
+            description: LangUtils.get('ROLE_INFO_OPTION_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION_DESCRIPTION'),
+
+            required: true
+        }]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
@@ -196,6 +217,8 @@ export default class InfoCommand extends CommandUtils implements ICommand {
                 return inviteInfo.bind(this)(interaction, target);
             case LangUtils.get('SERVER_INFO_SUBCOMMAND'):
                 return serverInfo.bind(this)(interaction);
+            case LangUtils.get('ROLE_INFO_SUBCOMMAND'):
+                return roleInfo.bind(this)(interaction, target);
             case LangUtils.get('AVATAR_INFO_SUBCOMMAND'):
                 return avatarInfo.bind(this)(interaction, target);
             case LangUtils.get('BOT_INFO_SUBCOMMAND'):

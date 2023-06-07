@@ -209,6 +209,27 @@
     "SERVER_INFO_EMOJI_COUNT": "**{{count}}** emojis",
     "SERVER_INFO_EMOJI_SINGLE": "**1** emoji",
 
+    "------- /info role -------": "",
+
+    "ROLE_INFO_SUBCOMMAND": "role",
+    "ROLE_INFO_SUBCOMMAND_DESCRIPTION": "Show information about a role.",
+    "ROLE_INFO_OPTION": "role",
+    "ROLE_INFO_OPTION_DESCRIPTION": "The role to show info about.",
+
+    "ROLE_INFO_TITLE": "Role: @{{roleName}}",
+
+    "ROLE_INFO_POSITION": "**Position**: {{position}}/{{total}}",
+    "ROLE_INFO_COLOR": "**Color:** #{{hexColor}}",
+    "ROLE_INFO_MEMBERS": "**{{total}} members** | {{onlineEmoji}} **{{online}}** online",
+    "ROLE_INFO_MEMBERS_ONLINE": "{{onlineEmoji}} **{{online}}** members online",
+    "ROLE_INFO_CREATED_AT": "**Created:** {{dateRelative}}",
+    "ROLE_INFO_PERMISSIONS": "**Key permissions:** {{keyPerms}}",
+    "ROLE_INFO_HOISTED": "*Members shown separately (hoisted) in user list*",
+    "ROLE_INFO_NOT_HOISTED": "*Members not shown separately (hoisted) in user list*",
+    "ROLE_INFO_MENTIONABLE": "*Can be mentioned by everyone*",
+    "ROLE_INFO_NOT_MENTIONABLE": "*Can only be mentioned with `Mention Everyone` perm*",
+    "ROLE_INFO_MANAGED": "*Managed by an integration (such as Twitch)*",
+
     "------- /info avatar -------": "",
 
     "AVATAR_INFO_SUBCOMMAND": "avatar",
