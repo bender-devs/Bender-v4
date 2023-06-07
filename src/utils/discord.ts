@@ -71,6 +71,15 @@ export default class DiscordUtils {
     }
 
     static user = {
-        getTag: (user: User) => `${user.username}#${user.discriminator}`
+        getTag: (user: User) => {
+            const discrimInt = parseInt(user.discriminator);
+            if (discrimInt) { // bot or user that hasn't migrated
+                return `${user.username}#${user.discriminator}`;
+            } else if (user.discriminator === '0000') { // webhook/system message author
+                return user.username;
+            } else { // user on new username system
+                return `@${user.username}`;
+            }
+        }
     }
 }
