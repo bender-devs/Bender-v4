@@ -149,8 +149,17 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         };
     }
 
-    const unknownStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
-    const userStatus = this.bot.utils.getStatus(user.id, interaction) || unknownStatus;
+    let userStatus: string | null = null;
+    if (member) {
+        userStatus = this.bot.utils.getStatus(user.id, interaction);
+        if (!userStatus) {
+            const statusEmoji = this.getEmoji('OFFLINE', interaction);
+            const statusText = LangUtils.get(`STATUS_OFFLINE`, interaction.locale);
+            userStatus = `${statusEmoji} ${statusText}`;
+        }
+    } else { // if not a member, don't show status (sandboxing)
+        userStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
+    }
 
     const description = TextUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = `${description}${memberNote}${bannerNote}`;
