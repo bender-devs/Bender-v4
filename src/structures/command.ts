@@ -75,6 +75,14 @@ export class CommandUtils {
         return this.bot.utils.getEmoji(emojiKey, interaction);
     }
 
+    async getLink(commandKeys: LangKey[], locale?: types.Locale) {
+        const cachedCommand = await this.bot.db.command.getByName(this.name);
+        if (cachedCommand) {
+            return LangUtils.getCommandLink(commandKeys, cachedCommand.id);
+        }
+        return LangUtils.getCommandText(commandKeys, locale);
+    }
+
     async ack(interaction: types.Interaction, ephemeral = true) {
         const flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
         return this.bot.api.interaction.sendResponse(interaction, {

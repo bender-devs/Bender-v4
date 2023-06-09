@@ -132,6 +132,7 @@ export default class DatabaseManager {
             const bs = this.bender.collection('bot_settings');
             const exists = await bs.countDocuments(idObj);
             if (!exists) {
+                this.bot.logger.debug('DATABASE', '!exists: returning idObj:', idObj);
                 return bs.insertOne(idObj).then(() => idObj);
             }
 
@@ -154,11 +155,13 @@ export default class DatabaseManager {
                     Object.assign(cached, addToCache);
 
                     delete uncachedFields[key as dbTypes.GuildDotFormatKey]; // don't fetch this from the db
+                    this.bot.logger.debug('DATABASE', 'found key in cache:', key);
                 }
             }
 
-            const cacheOnly = this.cacheEnabled && Object.keys(fields).length <= 1;
+            const cacheOnly = this.cacheEnabled && !Object.keys(uncachedFields).length;
             if (cacheOnly) {
+                this.bot.logger.debug('DATABASE', 'cacheOnly: returning cached:', cached);
                 return cached;
             }
             const freshData = await bs.findOne(idObj, { projection: fields });
@@ -175,14 +178,19 @@ export default class DatabaseManager {
                     }
                 }
             } else if (freshData) {
+                this.bot.logger.debug('DATABASE', 'returning freshData + idObj:', {freshData, idObj});
                 return Object.assign(freshData, idObj);
             } else {
+                this.bot.logger.debug('DATABASE', 'returning idObj:', idObj);
                 return idObj;
             }
 
+            
             if (freshData) {
+                this.bot.logger.debug('DATABASE', 'returning freshData + cached:', {freshData, cached});
                 return Object.assign(freshData, cached);
             }
+            this.bot.logger.debug('DATABASE', 'returning cached:', cached);
             return cached;
         },
 

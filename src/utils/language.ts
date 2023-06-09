@@ -1,9 +1,10 @@
-import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap } from '../types/types.js';
+import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake } from '../types/types.js';
 import languages, { LangKey } from '../text/languageList.js';
 import Logger from '../structures/logger.js';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
 import TimeUtils from './time.js';
 import MiscUtils, { EmojiKey } from './misc.js';
+import TextUtils from './text.js';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -91,6 +92,19 @@ export default class LanguageUtils {
             }
         }
         return dict;
+    }
+
+    static getCommandLink(langKeys: LangKey[], commandID: Snowflake) {
+        // TODO: command links cannot be localized, see:
+        // https://github.com/discord/discord-api-docs/issues/5518
+        // for now this line will force the default language
+        const cmdNames = langKeys.map(key => this.get(key));
+        return TextUtils.mention.parseCommand(cmdNames.join(' '), commandID);
+    }
+    static getCommandText(langKeys: LangKey[], locale?: Locale) {
+        // create a localized text version of a command link; used when a command isn't cached
+        const cmdNames = langKeys.map(key => this.get(key, locale));
+        return `\`/${cmdNames.join(' ')}\``;
     }
 
     static getPermissionName(perm: PermissionName, locale?: Locale) {

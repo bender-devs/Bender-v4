@@ -106,6 +106,9 @@ export default class StatsCommand extends CommandUtils implements ICommand {
                     }, 'INFO').then(msg => {
                         this.bot.interactionUtils.addItem({ interaction, author: authorID, days });
                         return msg;
+                    }).catch(err => {
+                        this.bot.logger.handleError('/stats inactive', err);
+                        return this.respondKey(interaction, 'SEND_PROMPT_FAILED', 'WARNING');
                     });
                 }).catch(err => {
                     this.bot.logger.handleError('/stats inactive', err);
