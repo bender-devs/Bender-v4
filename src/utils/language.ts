@@ -5,6 +5,7 @@ import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
 import TimeUtils from './time.js';
 import MiscUtils, { EmojiKey } from './misc.js';
 import TextUtils from './text.js';
+import Replacers from './replacers.js';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -53,14 +54,8 @@ export default class LanguageUtils {
     }
 
     static getAndReplace(key: LangKey, replaceMap: ReplaceMap, locale: Locale = DEFAULT_LANGUAGE): string {
-        let text = LanguageUtils.get(key, locale);
-        for (const key in replaceMap) {
-            const replaceRegex = new RegExp(`{{${key}}}`, 'g');
-            const replacement = replaceMap[key];
-            const replaceText = typeof replacement === 'number' ? LanguageUtils.formatNumber(replacement, locale) : replacement;
-            text = text.replace(replaceRegex, replaceText);
-        }
-        return text;
+        const text = LanguageUtils.get(key, locale);
+        return Replacers.replace(text, replaceMap, locale);
     }
 
     static formatDateAgo(key: LangKey, timestamp: Timestamp | UnixTimestampMillis, locale?: Locale) {
