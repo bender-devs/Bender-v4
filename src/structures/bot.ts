@@ -73,8 +73,8 @@ export default class Bot extends EventEmitter {
         }
     }
 
-    async init() {
-        await this.cache.init().catch(err => this.logger.handleError('REDIS ERROR', err));
+    async init(flushCache = false) {
+        await this.cache.init(flushCache).catch(err => this.logger.handleError('REDIS ERROR', err));
         let dbError: unknown;
         await this.db.connect().catch(err => {
             dbError = err;

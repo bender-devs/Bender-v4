@@ -79,15 +79,17 @@ export default class ShardManager {
 
     spawnProcesses() {
         for (let i = 0; i < this.shardCount; i++) {
-            this.spawnProcess(i);
+            // flush cache on first boot for first shard
+            this.spawnProcess(i, i === 0);
         }
     }
 
-    spawnProcess(shardID: number): child_process.ChildProcess {
+    spawnProcess(shardID: number, flushCache = false): child_process.ChildProcess {
         const shardProcess = child_process.spawn(SHARD_SPAWN_COMMAND, [SHARD_SPAWN_FILE], {
             env: Object.assign({}, process.env, {
                 SHARD_ID: shardID,
-                SHARD_COUNT: this.shardCount
+                SHARD_COUNT: this.shardCount,
+                FLUSH_CACHE: flushCache
             }),
             stdio: ['inherit', 'inherit', 'inherit', 'ipc']
         });

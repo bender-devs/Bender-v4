@@ -77,7 +77,7 @@ export default class CacheHandler {
         this.#startTimestamp = Date.now();
     }
 
-    async init() {
+    async init(flush = false) {
         this.redisClient = redis.createClient({
             socket: {
                 host: process.env.REDIS_HOST,
@@ -92,6 +92,9 @@ export default class CacheHandler {
             this.#connected = true;
             const latency = TimeUtils.sinceMillis(this.#startTimestamp);
             this.bot.logger.debug('REDIS', `Connected in ${latency}ms`);
+            if (flush) {
+                this.flush().then(result => this.bot.logger.debug('REDIS', `Flush on boot: ${result}`));
+            }
         });
         this.redisClient.on('error', err => this.bot.logger.handleError('REDIS ERROR', err));
         this.redisClient.on('end', () => {
@@ -191,6 +194,10 @@ export default class CacheHandler {
         return this.redisClient.dbSize();
     }
 
+
+    async flush() {
+        return this.redisClient.flushDb();
+    }
 
     guilds = {
         get: (guild_id: types.Snowflake): CachedGuild | null => {
@@ -671,6 +678,9 @@ export default class CacheHandler {
         },
         // TODO: decache users under certain circumstances?
         _serialize: (user: types.User): types.StringMap => {
+            if (user.username === 'joe.69') {
+                this.bot.logger.debug('USER _serialize', user);
+            }
             const obj: types.UserHash = {
                 id: user.id,
                 username: user.username,

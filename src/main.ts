@@ -22,8 +22,10 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     const id = parseInt(process.env.SHARD_ID);
     const count = parseInt(process.env.SHARD_COUNT);
     const bot = new Bot([id, count]);
+    const flushCache = !!process.env.FLUSH_CACHE;
+    delete process.env.FLUSH_CACHE;
 
-    bot.init().then(() => {
+    bot.init(flushCache).then(() => {
         bot.connect(connectionData);
     });
 } else if (SHARDED) {
@@ -39,7 +41,7 @@ if (process.env.SHARD_ID && process.env.SHARD_COUNT) {
     console.log(`Starting Bender with mode: ${process.env.RUNTIME_MODE}`);
     LanguageUtils.logLocalizationSupport(bot.logger);
 
-    bot.init().then(() => {
+    bot.init(true).then(() => {
         bot.connect(connectionData);
     });
 }
