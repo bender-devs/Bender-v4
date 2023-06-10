@@ -675,7 +675,8 @@ export default class CacheHandler {
                 id: user.id,
                 username: user.username,
                 discriminator: user.discriminator,
-                avatar: user.avatar || 'null'
+                global_name: user.global_name || '',
+                avatar: user.avatar || ''
             }
             if (user.bot) {
                 obj.bot = 'true';
@@ -714,7 +715,8 @@ export default class CacheHandler {
                 id: user_hash.id,
                 username: user_hash.username,
                 discriminator: user_hash.discriminator,
-                avatar: user_hash.avatar === 'null' ? null : user_hash.avatar
+                global_name: user_hash.global_name || null,
+                avatar: user_hash.avatar || null
             }
             if (user_hash.bot) {
                 obj.bot = true;

@@ -13,7 +13,8 @@ export const enum USER_FLAGS {
     VERIFIED_BOT = 1 << 16,
     VERIFIED_DEVELOPER = 1 << 17,
     CERTIFIED_MODERATOR = 1 << 18,
-    BOT_HTTP_INTERACTIONS = 1 << 19
+    BOT_HTTP_INTERACTIONS = 1 << 19,
+    ACTIVE_DEVELOPER = 1 << 22
 }
 
 // https://discord.com/developers/docs/resources/user#user-object-premium-types

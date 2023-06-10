@@ -643,8 +643,11 @@ export default class DatabaseManager {
             return c.insertOne(savedCommand).then(DatabaseManager.fixShittyReturnTypes);
         },
 
-        update: async (id: Snowflake, commandData: CommandCreateData) => {
+        update: async (id: Snowflake, commandData: Partial<Command>) => {
             const c = this.bender.collection('commands');
+            // remove unique keys to prevent duplicate key errors
+            delete commandData.id;
+            delete commandData.name;
             return c.updateOne({ id }, { $set: commandData }).then(DatabaseManager.reformat);
         },
 

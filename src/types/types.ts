@@ -35,6 +35,7 @@ export type PartialUser = {
     id: Snowflake;
     username: string;
     discriminator: StringNum;
+    global_name: string | null;
     avatar: string | null;
 }
 
@@ -58,6 +59,7 @@ export interface UserBaseHash extends DynamicStringMap {
     id: Snowflake;
     username: string;
     discriminator: StringNum;
+    global_name: string;
     avatar: string;
 }
 

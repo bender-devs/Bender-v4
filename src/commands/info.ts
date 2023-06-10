@@ -50,9 +50,7 @@ export default class InfoCommand extends CommandUtils implements ICommand {
             name_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION'),
 
             description: LangUtils.get('USER_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION_DESCRIPTION'),
-
-            required: true
+            description_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION_DESCRIPTION')
         }]
     }, {
         type: COMMAND_OPTION_TYPES.SUB_COMMAND,

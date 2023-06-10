@@ -9,12 +9,16 @@ import TextUtils from '../../utils/text.js';
 import InfoCommand from '../info.js';
 
 export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
-    if (!userID || typeof userID !== 'string') {
+    if (userID && typeof userID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
     let partialUser: types.PartialUser | null = null;
-    if (interaction.data?.resolved?.users && userID in interaction.data.resolved.users) {
-        partialUser = interaction.data.resolved.users[userID as types.Snowflake];
+    if (userID) {
+        if (interaction.data?.resolved?.users && userID in interaction.data.resolved.users) {
+            partialUser = interaction.data.resolved.users[userID as types.Snowflake];
+        }
+    } else {
+        partialUser = interaction.member?.user || interaction.user || null;
     }
     if (!partialUser) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
@@ -24,10 +28,10 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
     }
 
-    let footer = LangUtils.getAndReplace('USER_INFO_ID', { id: userID }, interaction.locale);
+    let footer = LangUtils.getAndReplace('USER_INFO_ID', { id: partialUser.id }, interaction.locale);
 
     let member: types.Member | types.PartialMember | null = null;
-    if (interaction.data?.resolved?.members && userID in interaction.data.resolved.members) {
+    if (interaction.data?.resolved?.members && partialUser.id in interaction.data.resolved.members) {
         member = interaction.data.resolved.members[userID as types.Snowflake];
     }
     let guild: types.Guild | CachedGuild | null = null;
@@ -59,15 +63,22 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
         }
     }
+
     const embed: types.Embed = {
         color: user.accent_color || DEFAULT_COLOR,
         footer: { text: footer }
     };
+
+    let userNames = DiscordUtils.user.getTag(user);
+    if (user.global_name) {
+        userNames = `${user.global_name} | ${userNames}`
+    }
+
     let userRank = LangUtils.getAndReplace(`USER_INFO_${user.bot ? 'BOT' : 'HUMAN'}`, {
         botEmoji: this.getEmoji('BOT', interaction),
         userEmoji: this.getEmoji('USER', interaction)
     }, interaction.locale);
-    let boostStatus = '', joinDate = '', roles = '', nickInfo = '', memberNote = '';
+    let boostStatus = '', joinDate = '', roles = '', memberNote = '';
     let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
     if (guild) {
         const isOwner = user.id === guild.owner_id;
@@ -128,7 +139,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             }
 
             if (member.nick) {
-                nickInfo = ` ~ ${member.nick}`;
+                userNames += ` | ${member.nick}`;
             }
 
             if (member.avatar) {
@@ -163,9 +174,8 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     const description = TextUtils.truncate(`${userRank} | ${userStatus}\n${joinDate}\n${creationInfo}${boostStatus}${roles}`, 1500).replace(/, <@?&?\d*\.\.\.$/, ' ...');
     embed.description = `${description}${memberNote}${bannerNote}`;
-    const userTag = DiscordUtils.user.getTag(user);
     embed.author = {
-        name: `${userTag}${nickInfo}`,
+        name: userNames,
         icon_url: avatar
     };
     embed.thumbnail = {
