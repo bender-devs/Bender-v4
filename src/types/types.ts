@@ -707,7 +707,7 @@ export type InteractionResponseData = {
     content?: string;
     embeds?: Embed[];
     allowed_mentions?: AllowedMentions;
-    flags?: num.INTERACTION_CALLBACK_FLAGS;
+    flags?: num.INTERACTION_CALLBACK_FLAGS | 0;
     components?: MessageComponent[];
 }
 

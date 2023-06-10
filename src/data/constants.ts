@@ -125,3 +125,5 @@ export const INVITE_CODE_REGEX = /^[a-z0-9-]{2,32}$/i;
 export const INVITE_REGEX = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/i;
 export const INVITE_REGEX_EXACT = /^(?:https?:\/\/)?discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})$/i;
 export const INVITE_REGEX_GLOBAL = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/gi;
+
+export const EXAMPLE_TIMESTAMP = 3133702800000;

@@ -38,6 +38,8 @@ export interface ICommand extends types.CommandCreateData {
     bot: Bot;
     dm_permission: boolean;
 
+    hideSubcommands?: boolean; // whether to hide subcommands in /help
+    getDetails?(locale?: types.Locale): Promise<string>;
     run(interaction: types.Interaction): types.CommandResponse;
 }
 

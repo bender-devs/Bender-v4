@@ -21,6 +21,7 @@
     "CHANNEL_FETCH_FAILED": "Failed to get channel info.",
     "USER_FETCH_FAILED": "Failed to get user info.",
     "SEND_PROMPT_FAILED": "Failed to send prompt message.",
+    "MESSAGE_TOO_LONG": "Message is too long! Please shorten it to {{chars}} or fewer characters.",
 
     "MISSING_PERMISSIONS": "I'm missing the following permissions for {{context}}: {{permissions}}",
     "MISSING_GUILD_PERMISSIONS": "I'm missing the following permissions in this server: {{permissions}}",
@@ -548,6 +549,12 @@
 
     "MINAGE_NAME": "min-age",
     "MINAGE_DESCRIPTION": "Set or view the minimum account age for the server.",
+    "MINAGE_DETAILS": "Configuring a minimum account age can prevent spammers, raiders, and trolls from joining your server. To start, set the minimum age with{{cmdSet}}, then set {{cmdAction}} and {{cmdMessage}} if you'd like, then use {{cmdEnable}} to enable it. If you need to disable it, use {{cmdDisable}}.",
+
+    "MINAGE_VARIABLES": "You can use some variables in the {{cmdMessage}}:",
+    "MINAGE_VARIABLE_DURATION": "The minimum account age. Example: 3 days",
+    "MINAGE_VARIABLE_TIMESTAMP": "The date and time when the user can rejoin. Example: {{exampleTimestamp}}",
+    "MINAGE_VARIABLE_RELATIVE": "The relative time when the user can rejoin. Example: {{exampleRelative}}",
 
     "MINAGE_SUBCOMMAND_VIEW": "view",
     "MINAGE_SUBCOMMAND_VIEW_DESCRIPTION": "View current settings, including minimum account age, action, and message.",
@@ -573,18 +580,39 @@
     "MINAGE_SUBCOMMAND_MESSAGE": "message",
     "MINAGE_SUBCOMMAND_MESSAGE_DESCRIPTION": "Change the message users are sent before being kicked or banned.",
     "MINAGE_OPTION_MESSAGE": "message",
-    "MINAGE_OPTION_MESSAGE_DESCRIPTION": "The message to send when kicking or banning a user.",
+    "MINAGE_OPTION_MESSAGE_DESCRIPTION": "The message to send. Can include variables; see /help for more info.",
 
     "MINAGE_TITLE": "__Minimum account age settings__",
-    "MINAGE_ENABLED": "Status: **enabled**.",
-    "MINAGE_DISABLED": "Status: **disabled**.",
-    "MINAGE_DURATION": "Minimum account age: {{duration}}",
-    "MINAGE_DURATION_NONE": "Minimum account age: *Not configured*",
-    "MINAGE_ACTION": "Action (when account is too new:) {{action}}",
-    "MINAGE_MESSAGE": "Message to send before taking action:\n{{message}}",
 
-    "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later.",
-    "MINAGE_EXAMPLE_DURATION": "[x] days",
+    "MINAGE_ENABLED": "Status: **enabled**",
+    "MINAGE_ENABLED_SET": "Enabled minimum account age.",
+    "MINAGE_ENABLED_SET_ALREADY": "Minimum account age is already enabled.",
+    "MINAGE_ENABLED_SET_FAILED": "Failed to enable minimum account age.",
+    "MINAGE_ENABLED_SET_INVALID": "Please set a duration (via {{commandLink}}) before enabling minimum account age.",
+    
+    "MINAGE_DISABLED": "Status: **disabled**",
+    "MINAGE_DISABLED_SET": "Disabled minimum account age.",
+    "MINAGE_DISABLED_SET_ALREADY": "Minimum account age is already disabled.",
+    "MINAGE_DISABLED_SET_FAILED": "Failed to disable minimum account age.",
+
+    "MINAGE_DURATION": "Minimum account age: **{{duration}}**",
+    "MINAGE_DURATION_NONE": "Minimum account age: *Not configured*",
+    "MINAGE_DURATION_SET": "Set minimum account age to **{{duration}}**.",
+    "MINAGE_DURATION_SET_ALREADY": "Minimum account age is already set to **{{duration}}**.",
+    "MINAGE_DURATION_SET_FAILED": "Failed to set minimum account age.",
+    "MINAGE_DURATION_SET_INVALID": "Minimum account age must be between 1 minute and 1 year.",
+
+    "MINAGE_ACTION": "Action (when account is too new): **{{action}}**",
+    "MINAGE_ACTION_SET": "Set min-age action to: **{{action}}**.",
+    "MINAGE_ACTION_SET_ALREADY": "Min-age action was already set to: **{{action}}**.",
+    "MINAGE_ACTION_SET_FAILED": "Failed to update min-age action.",
+
+    "MINAGE_MESSAGE": "Message (to send before taking action):\n{{message}}",
+    "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later ({{timestampRelative}}.)",
+    "MINAGE_EXAMPLE_DURATION": "`69 years`",
+    "MINAGE_MESSAGE_SET": "Updated min-age message.",
+    "MINAGE_MESSAGE_SET_ALREADY": "No changes made; that's the current min-age message.",
+    "MINAGE_MESSAGE_SET_FAILED": "Failed to update min-age message.",
 
 
 

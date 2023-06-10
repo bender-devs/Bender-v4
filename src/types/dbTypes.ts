@@ -378,10 +378,12 @@ type MentionableTime = MentionableBase & {
     timestamp: UnixTimestampMillis;
 }
 
+export const MINAGE_ACTIONS = ['kick', 'ban'] as const;
+export type MinAgeAction = typeof MINAGE_ACTIONS[number];
 type MinAge = {
     duration?: number,
     enabled?: boolean,
-    action?: 'kick' | 'ban',
+    action?: MinAgeAction,
     message?: string
 }
 
