@@ -35,7 +35,6 @@ const IMAGES = {
     ud: `${IMAGE_BASE_URL}/ud.png` as URL,
     wikihow_rps: `${IMAGE_BASE_URL}/rps.jpg` as URL,
     pornhub: `${IMAGE_BASE_URL}/ph.jpg` as URL,
-    youtube: `${IMAGE_BASE_URL}/yt.png` as URL,
     games: `${IMAGE_BASE_URL}/games.png` as URL,
     record: `${IMAGE_BASE_URL}/record.png` as URL,
     ghost: `${IMAGE_BASE_URL}/ghost.png` as URL,
