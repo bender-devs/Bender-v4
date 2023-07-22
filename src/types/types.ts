@@ -51,6 +51,7 @@ export interface User extends PartialUser {
     public_flags?: num.USER_FLAGS;
     banner?: string | null;
     accent_color?: number;
+    avatar_decoration?: string | null;
 }
 
 export type StringPremiumTypes = `${num.PREMIUM_TYPES}`;
@@ -271,6 +272,35 @@ export type ReactionFetchData = {
     after?: Snowflake;
 }
 
+/*** onboarding types ***/
+
+export type Onboarding = {
+    guild_id: Snowflake;
+    prompts: OnboardingPrompt[];
+    default_channel_ids: Snowflake[];
+    enabled: boolean;
+    mode: num.ONBOARDING_MODES;
+}
+
+export type OnboardingPrompt = {
+    id: Snowflake;
+    type: num.ONBOARDING_PROMPT_TYPES;
+    options: OnboardingPromptOption[];
+    title: string;
+    single_select: boolean;
+    required: boolean;
+    in_onboarding: boolean;
+}
+
+export type OnboardingPromptOption = {
+    id: Snowflake;
+    channel_ids: Snowflake[];
+    role_ids: Snowflake[];
+    emoji: PartialEmoji;
+    title: string;
+    description: string | null;
+}
+
 /****** scheduled event types ******/
 
 export type GuildScheduledEvent = {
@@ -385,6 +415,7 @@ export type Role = {
     managed: boolean;
     mentionable: boolean;
     tags?: RoleTags;
+    flags?: num.ROLE_FLAGS
 }
 
 export type RoleData = {
@@ -489,6 +520,12 @@ export interface Channel extends Omit<PartialChannel, 'permissions'> {
     member?: ThreadMember;
     message_count?: number;
     member_count?: number;
+
+    // forum fields
+    default_reaction_emoji?: DefaultReaction;
+    available_tags?: ForumTag[];
+    default_sort_order?: number;
+    default_forum_layout?: number;
 }
 
 export interface GuildChannel extends Channel {
@@ -611,6 +648,21 @@ export type ChannelPositionData = {
     position: number | null;
     lock_permissions?: boolean | null;
     parent_id?: Snowflake | null;
+}
+
+// https://discord.com/developers/docs/resources/channel#default-reaction-object
+export type DefaultReaction = {
+    emoji_id: Snowflake
+} | {
+    emoji_name: string
+}
+
+export type ForumTag = {
+    id: Snowflake;
+    name: string;
+    moderated: boolean;
+    emoji_id: Snowflake | null;
+    emoji_name: string | null;
 }
 
 /************ integration types ************/
@@ -904,6 +956,9 @@ export type Attachment = {
     height?: number | null;
     width?: number | null;
     ephemeral?: boolean;
+    duration_secs?: number; // voice messages only
+    waveform?: string; // voice messages only
+    flags?: num.ATTACHMENT_FLAGS
 }
 
 export type ChannelMention = {
@@ -1012,7 +1067,6 @@ export type Application = {
     terms_of_service_url?: string;
     privacy_policy_url?: string;
     owner?: PartialUser;
-    summary?: string;
     verify_key: string;
     team: ApplicationTeam | null;
     guild_id?: Snowflake;
@@ -1020,9 +1074,11 @@ export type Application = {
     slug?: string;
     cover_image?: string;
     flags?: num.APPLICATION_FLAGS;
+    approximate_guild_count?: number;
     tags?: string[];
     install_params?: ApplicationInstallParams;
-    custom_install_url?: string;
+    custom_install_url?: URL;
+    role_connections_verification_url?: URL;
 }
 
 export type PartialApplication = Pick<Application, 'id' | 'flags'>

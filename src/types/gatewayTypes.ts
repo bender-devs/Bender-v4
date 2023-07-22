@@ -365,6 +365,7 @@ export type ReactionAddData = {
     guild_id?: types.Snowflake;
     member?: types.Member;
     emoji: types.Emoji;
+    message_author_id?: types.Snowflake;
 }
 
 export interface ReactionRemovePayload extends EventPayload {

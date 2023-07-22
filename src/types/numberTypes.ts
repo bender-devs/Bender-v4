@@ -34,6 +34,28 @@ export enum ACTIVITY_TYPES {
     COMPETING
 }
 
+// https://discord.com/developers/docs/topics/permissions#role-object-role-flags
+export const enum ROLE_FLAGS {
+    IN_PROMPT = 1 << 0
+}
+
+// https://discord.com/developers/docs/resources/channel#attachment-object-attachment-flags
+export const enum ATTACHMENT_FLAGS {
+    IS_REMIX = 1 << 2
+}
+
+// https://discord.com/developers/docs/resources/guild#guild-onboarding-object-onboarding-mode
+export const enum ONBOARDING_MODES {
+    DEFAULT,
+    ADVANCED
+}
+
+// https://discord.com/developers/docs/resources/guild#guild-onboarding-object-prompt-types
+export const enum ONBOARDING_PROMPT_TYPES {
+    MULTIPLE_CHOICE,
+    DROPDOWN
+}
+
 // https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level
 export const enum MESSAGE_NOTIFICATION_LEVELS {
     ALL_MESSAGES,
@@ -266,6 +288,7 @@ export const enum BUTTON_STYLES {
 
 // https://discord.com/developers/docs/resources/application#application-object-application-flags
 export const enum APPLICATION_FLAGS {
+    APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE = 1 << 6,
     GATEWAY_PRESENCE = 1 << 12,
     GATEWAY_PRESENCE_LIMITED = 1 << 13,
     GATEWAY_GUILD_MEMBERS = 1 << 14,
@@ -273,7 +296,8 @@ export const enum APPLICATION_FLAGS {
     VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16,
     EMBEDDED = 1 << 17,
     GATEWAY_MESSAGE_CONTENT = 1 << 18,
-    GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19
+    GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19,
+    APPLICATION_COMMAND_BADGE = 1 << 23
 }
 
 // https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum
