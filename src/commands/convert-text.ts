@@ -110,8 +110,14 @@ export default class ConvertTextCommand extends CommandUtils implements ICommand
     async run(interaction: Interaction): CommandResponse {
         const args = interaction.data?.options;
         const subcommand = args?.[0]?.name;
-        const modeOrAlgorithm = args?.[0]?.options?.[0]?.value;
-        const text = args?.[0]?.options?.[1]?.value;
+        const modeOrAlgorithm = args?.[0]?.options?.find(opt => 
+            opt.name === LangUtils.get('CONVERT_TEXT_OPTION_MODE') ||
+            opt.name === LangUtils.get('CONVERT_TEXT_OPTION_ALGORITHM')
+        )?.value;
+        const text = args?.[0]?.options?.find(opt => 
+            opt.name === LangUtils.get('CONVERT_TEXT_OPTION_TEXT') ||
+            opt.name === LangUtils.get('CONVERT_TEXT_OPTION_HASHTEXT')
+        )?.value;
         if (!subcommand || !modeOrAlgorithm || typeof modeOrAlgorithm !== 'string' || !text || typeof text !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }

@@ -199,12 +199,12 @@ export default class DevCommand extends CommandUtils implements ICommand {
                     return this.respond(interaction, 'This bot isn\'t sharded; can\'t send shard messages.', 'ERROR', true);
                 }
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
-                const operation = args[0].options?.[0]?.options?.[0]?.value;
+                const operation = args[0].options?.[0]?.options?.find(opt => opt.name === 'operation')?.value;
                 if (!destination || !operation) {
                     return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
                 }
-                const data = args[0].options?.[0]?.options?.[1]?.value;
-                const nonce = args[0].options?.[0]?.options?.[2]?.value;
+                const data = args[0].options?.[0]?.options?.find(opt => opt.name === 'data')?.value;
+                const nonce = args[0].options?.[0]?.options?.find(opt => opt.name === 'nonce')?.value;
                 this.bot.shard.sendMessage({
                     operation: operation as ShardOperation,
                     toShards: destination as ShardDestination,
@@ -215,9 +215,9 @@ export default class DevCommand extends CommandUtils implements ICommand {
                 return this.respond(interaction, 'Message sent.', 'MSG_SENT', true);
             }
             case 'gateway': {
-                const rawOpcode = args[0].options?.[0]?.options?.[0]?.value;
+                const rawOpcode = args[0].options?.[0]?.options?.find(opt => opt.name === 'opcode')?.value;
                 const opcode = typeof rawOpcode === 'number' ? rawOpcode : null;
-                const rawData = args[0].options?.[0]?.options?.[1]?.value;
+                const rawData = args[0].options?.[0]?.options?.find(opt => opt.name === 'data')?.value;
                 let data: string | null = null;
                 if (typeof rawData === 'string') {
                     data = rawData || null;

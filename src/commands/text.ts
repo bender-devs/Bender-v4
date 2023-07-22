@@ -126,7 +126,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
 
     async run(interaction: Interaction): CommandResponse {
         const effect = interaction.data?.options?.[0]?.name;
-        let text = interaction.data?.options?.[0]?.options?.[0]?.value;
+        let text = interaction.data?.options?.[0]?.options?.find(opt => opt.name === 'text')?.value;
         if (!effect || !text || typeof text !== 'string') {
             return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
         }
@@ -170,7 +170,7 @@ export default class TextCommand extends CommandUtils implements ICommand {
     }
 
     async #doTextCase(interaction: Interaction, mode: string) {
-        const text = interaction.data?.options?.[0]?.options?.[1]?.value;
+        const text = interaction.data?.options?.[0]?.options?.find(opt => opt.name === 'mode')?.value;
         if (!text || typeof text !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
