@@ -1,4 +1,4 @@
-import { Snowflake, URL } from '../types/types.js';
+import { Snowflake, URL, User } from '../types/types.js';
 import { CDN_BASE } from '../data/constants.js';
 
 export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';
@@ -55,16 +55,34 @@ export default class CDNUtils {
         return this.#getGeneric('banners', userID, bannerHash, format, size);
     }
 
-    static userDefaultAvatar(discriminator: number | `${number}`): URL {
-        if (typeof discriminator === 'string') {
-            discriminator = parseInt(discriminator);
+    static resolveUserAvatar(user: User, format: ImageFormatAnimated = 'png', size?: ImageSize) {
+        if (user.avatar) {
+            return this.userAvatar(user.id, user.avatar, format, size)
         }
-        return `${CDN_BASE}embed/avatars/${discriminator % 5}.png`;
+        return this.userDefaultAvatar(user.id, user.discriminator);
+    }
+
+    static userDefaultAvatar(userID: Snowflake, discriminator: number | `${number}`): URL {
+        let slug = 0;
+        if (discriminator === '0') {
+            slug = Number(BigInt(userID) >> BigInt(22)) % 6;
+        }
+        else if (typeof discriminator === 'string') {
+            slug = parseInt(discriminator) % 5;
+        }
+        else {
+            slug = discriminator % 5;
+        }
+        return `${CDN_BASE}embed/avatars/${slug}.png`;
     }
 
     static userAvatar(userID: Snowflake, avatarHash: string, format: ImageFormatAnimated = 'png', size?: ImageSize): URL {
         format = this.#fixAnimatedFormat(format, avatarHash);
         return this.#getGeneric('avatars', userID, avatarHash, format, size);
+    }
+
+    static userAvatarDecoration(userID: Snowflake, decorationHash: string): URL {
+        return this.#getGeneric('avatar-decorations', userID, decorationHash, 'png');
     }
 
     static memberAvatar(guildID: Snowflake, userID: Snowflake, iconHash: string, format: ImageFormat = 'png', size?: ImageSize): URL {

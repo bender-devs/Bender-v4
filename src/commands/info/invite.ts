@@ -1,5 +1,5 @@
 import { DEFAULT_COLOR, INVITE_CODE_REGEX } from '../../data/constants.js';
-import { Channel, CommandOptionValue, Embed, ExtendedInvite, Interaction, URL } from '../../types/types.js';
+import { Channel, CommandOptionValue, Embed, ExtendedInvite, Interaction } from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
 import DiscordUtils from '../../utils/discord.js';
 import LangUtils from '../../utils/language.js';
@@ -70,13 +70,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
     if (invite.inviter) {
         const userTag = DiscordUtils.user.getTag(invite.inviter);
         const userText = LangUtils.getAndReplace('INVITE_INFO_CREATED_BY', { user: userTag }, interaction.locale);
-
-        let userAvatar: URL | null = null;
-        if (invite.inviter.avatar) {
-            userAvatar = CDNUtils.userAvatar(invite.inviter.id, invite.inviter.avatar);
-        } else {
-            userAvatar = CDNUtils.userDefaultAvatar(invite.inviter.discriminator);
-        }
+        const userAvatar = CDNUtils.resolveUserAvatar(invite.inviter);
 
         embed.footer = {
             text: userText,

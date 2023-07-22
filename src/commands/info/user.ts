@@ -79,7 +79,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         userEmoji: this.getEmoji('USER', interaction)
     }, interaction.locale);
     let boostStatus = '', joinDate = '', roles = '', memberNote = '';
-    let avatar = user.avatar ? CDNUtils.userAvatar(user.id, user.avatar) : CDNUtils.userDefaultAvatar(user.discriminator);
+    let avatar = CDNUtils.resolveUserAvatar(user);
     if (guild) {
         const isOwner = user.id === guild.owner_id;
         if (isOwner) {
