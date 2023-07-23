@@ -4,7 +4,7 @@ import DB_INDEXES from '../data/dbIndexes.js';
 import * as dbTypes from '../types/dbTypes.js';
 import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types.js';
 import Bot from './bot.js';
-import { ICommand } from './command.js';
+import { SlashCommand } from './command.js';
 import DatabaseCacheHandler from './dbCache.js';
 
 const WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };
@@ -820,7 +820,7 @@ export default class DatabaseManager {
     /********************** Utility functions **********************/
     /***************************************************************/
 
-    static convertCommand(command: Command | ICommand): dbTypes.SavedCommand {
+    static convertCommand(command: Command | SlashCommand): dbTypes.SavedCommand {
         const savedCommand: dbTypes.SavedCommand = Object.assign({}, command, {
             application_id: undefined,
             version: undefined,

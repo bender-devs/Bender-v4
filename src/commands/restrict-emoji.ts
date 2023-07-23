@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types.js';
 import LangUtils from '../utils/language.js';
@@ -18,7 +18,7 @@ const emojiOption: CommandOption = {
     required: true
 }
 
-export default class RestrictEmojiCommand extends CommandUtils implements ICommand {
+export default class RestrictEmojiCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('REM_NAME'));
     }

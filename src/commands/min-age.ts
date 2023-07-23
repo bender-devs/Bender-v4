@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { Bitfield, CommandOption, CommandResponse, Interaction, Locale } from '../types/types.js';
 import LangUtils from '../utils/language.js';
@@ -9,7 +9,7 @@ import { MinAgeAction, MINAGE_ACTIONS } from '../types/dbTypes.js';
 import Replacers from '../utils/replacers.js';
 import { EXAMPLE_TIMESTAMP } from '../data/constants.js';
 
-export default class MinAgeCommand extends CommandUtils implements ICommand {
+export default class MinAgeCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('MINAGE_NAME'));
     }

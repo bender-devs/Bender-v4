@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes.js';
@@ -36,7 +36,7 @@ function replaceTokens(text: string) {
 
 // this command not localized as it's only developer-only
 
-export default class DevCommand extends CommandUtils implements ICommand {
+export default class DevCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('DEV_NAME'));
     }

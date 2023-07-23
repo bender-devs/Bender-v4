@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
@@ -36,7 +36,7 @@ const encodeDecodeMode: CommandOption[] = [{
     required: true
 }];
 
-export default class ConvertTextCommand extends CommandUtils implements ICommand {
+export default class ConvertTextCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('CONVERT_TEXT_NAME'));
     }

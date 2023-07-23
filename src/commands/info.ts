@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
@@ -15,7 +15,7 @@ import avatarInfo from './info/avatar.js';
 import botInfo from './info/bot.js';
 import charInfo from './info/char.js';
 
-export default class InfoCommand extends CommandUtils implements ICommand {
+export default class InfoCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('INFO_NAME'));
     }

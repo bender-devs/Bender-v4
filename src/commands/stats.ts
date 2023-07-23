@@ -1,11 +1,11 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
 import { LangKey } from '../text/languageList.js';
 
-export default class StatsCommand extends CommandUtils implements ICommand {
+export default class StatsCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('STATS_NAME'));
     }

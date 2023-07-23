@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
@@ -15,7 +15,7 @@ import hack from './fun/hack.js';
 import tictactoe from './fun/tictactoe.js';
 import blackjack from './fun/blackjack.js';
 
-export default class FunCommand extends CommandUtils implements ICommand {
+export default class FunCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('FUN_NAME'));
     }

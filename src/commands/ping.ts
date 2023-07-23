@@ -1,10 +1,10 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandResponse, Interaction, Locale } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import TimeUtils from '../utils/time.js';
 
-export default class PingCommand extends CommandUtils implements ICommand {
+export default class PingCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('PING_NAME'));
     }

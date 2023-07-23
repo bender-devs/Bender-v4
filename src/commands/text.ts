@@ -1,4 +1,4 @@
-import { ICommand, CommandUtils } from '../structures/command.js';
+import { SlashCommand } from '../structures/command.js';
 import Bot from '../structures/bot.js';
 import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
@@ -28,7 +28,7 @@ const textOpt: CommandOption = {
 
 // this command not localized as it only supports English characters
 
-export default class TextCommand extends CommandUtils implements ICommand {
+export default class TextCommand extends SlashCommand {
     constructor(bot: Bot) {
         super(bot, LangUtils.get('TEXT_NAME'));
     }

@@ -34,15 +34,6 @@ export class MessageCommand extends UserOrMessageCommand {
     }
 }
 
-export interface ICommand extends types.CommandCreateData {
-    bot: Bot;
-    dm_permission: boolean;
-
-    hideSubcommands?: boolean; // whether to hide subcommands in /help
-    getDetails?(locale?: types.Locale): Promise<string>;
-    run(interaction: types.Interaction): types.CommandResponse;
-}
-
 type CommandResponseEditData = string | types.MessageData;
 type CommandResponseCreateData = CommandResponseEditData | types.InteractionResponseData;
 
@@ -153,3 +144,18 @@ export class CommandUtils {
         return this.respond(interaction, `${message}\n${supportNotice}`, 'ERROR', true);
     }
 }
+
+export interface SlashCommand extends types.CommandBase {
+    bot: Bot;
+    type: COMMAND_TYPES.CHAT_INPUT;
+    name: string;
+    description: string;
+    dm_permission: boolean;
+
+    hideSubcommands?: boolean; // whether to hide subcommands in /help
+    getDetails?(locale?: types.Locale): Promise<string>;
+    run(interaction: types.Interaction): types.CommandResponse;
+}
+
+// merge CommandUtils class and SlashCommand interface to create a class that can be extended
+export abstract class SlashCommand extends CommandUtils {}

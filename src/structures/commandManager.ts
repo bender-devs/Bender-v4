@@ -1,9 +1,14 @@
 import Bot from './bot.js';
-import { ICommand, MessageCommand, UserCommand, UserOrMessageCommand } from './command.js';
+import { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
 import { DEV_SERVER } from '../data/constants.js';
 import { Snowflake } from '../types/types.js';
 import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes.js';
 import { COMMAND_TYPES } from '../types/numberTypes.js';
+
+import getUserCommands from '../commands/nonText/user.js';
+import getMessageCommands from '../commands/nonText/message.js';
+
+import DevCommand from '../commands/dev.js';
 
 import PingCommand from '../commands/ping.js';
 import TextCommand from '../commands/text.js';
@@ -11,18 +16,13 @@ import ConvertTextCommand from '../commands/convert-text.js';
 import InfoCommand from '../commands/info.js';
 import FunCommand from '../commands/fun.js';
 import RestrictEmojiCommand from '../commands/restrict-emoji.js';
-
-import DevCommand from '../commands/dev.js';
-
-import getUserCommands from '../commands/nonText/user.js';
-import getMessageCommands from '../commands/nonText/message.js';
 import StatsCommand from '../commands/stats.js';
 import MinAgeCommand from '../commands/min-age.js';
 
 export default class SlashCommandManager {
     bot: Bot;
-    commands: ICommand[];
-    developer_commands: ICommand[];
+    commands: SlashCommand[];
+    developer_commands: SlashCommand[];
     user_commands: UserCommand[];
     message_commands: MessageCommand[];
 
@@ -51,7 +51,7 @@ export default class SlashCommandManager {
         await this.updateCommandList(this.developer_commands, DEV_SERVER);
     }
 
-    async updateCommandList(commandList: (ICommand | UserOrMessageCommand)[], guildID?: Snowflake) {
+    async updateCommandList(commandList: (SlashCommand | UserOrMessageCommand)[], guildID?: Snowflake) {
         const listTypeInfo = `[${guildID ? `GUILD ${guildID}` : 'GLOBAL'}]`;
         this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updating command list...');
 
@@ -62,8 +62,8 @@ export default class SlashCommandManager {
             }).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
             return true;
         }
-        const newCommands: (ICommand | UserOrMessageCommand)[] = [];
-        const editedCommands: Record<Snowflake, ICommand | UserOrMessageCommand> = {};
+        const newCommands: (SlashCommand | UserOrMessageCommand)[] = [];
+        const editedCommands: Record<Snowflake, SlashCommand | UserOrMessageCommand> = {};
         const deletedCommands: SavedCommand[] = [];
         for (const command of currentCommands) {
             const loadedCommand = commandList.find(cmd => cmd.name === command.name);
@@ -99,8 +99,12 @@ export default class SlashCommandManager {
         if (newCommands.length) {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands.map(cmd => cmd.name));
             await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ?
-                this.bot.api.guildCommand.create(guildID, cmd).then(command => command ? this.bot.db.guildCommand.create(guildID, command) : null) :
-                this.bot.api.command.create(cmd).then(command => command ? this.bot.db.command.create(command) : null)
+                this.bot.api.guildCommand.create(guildID, cmd).then(command =>
+                    command ? this.bot.db.guildCommand.create(guildID, command) : null
+                ) :
+                this.bot.api.command.create(cmd).then(command => 
+                    command ? this.bot.db.command.create(command) : null
+                )
             )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         if (Object.keys(editedCommands).length) {
@@ -110,8 +114,12 @@ export default class SlashCommandManager {
             for (id in editedCommands) {
                 const cmd = this.#stripBotValue(editedCommands[id]);
                 promises.push(guildID ?
-                    this.bot.api.guildCommand.edit(guildID, id, cmd).then(command => command ? this.bot.db.guildCommand.update(guildID, id, command) : null) :
-                    this.bot.api.command.edit(id, cmd).then(command => command ? this.bot.db.command.update(id, command) : null)
+                    this.bot.api.guildCommand.edit(guildID, id, cmd).then(command =>
+                        command ? this.bot.db.guildCommand.update(guildID, id, command) : null
+                    ) :
+                    this.bot.api.command.edit(id, cmd).then(command => 
+                        command ? this.bot.db.command.update(id, command) : null
+                    )
                 );
             }
             await Promise.all(promises).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
@@ -119,14 +127,16 @@ export default class SlashCommandManager {
         if (deletedCommands.length) {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Deleted commands:', deletedCommands.map(cmd => cmd.name));
             await Promise.all(deletedCommands.map(cmd => guildID ?
-                this.bot.api.guildCommand.delete(guildID, cmd.id).then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
-                this.bot.api.command.delete(cmd.id).then(() => this.bot.db.command.delete(cmd.id))
+                this.bot.api.guildCommand.delete(guildID, cmd.id)
+                    .then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
+                this.bot.api.command.delete(cmd.id)
+                    .then(() => this.bot.db.command.delete(cmd.id))
             )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         return true;
     }
 
-    #stripBotValue(cmd: ICommand | UserOrMessageCommand) {
+    #stripBotValue(cmd: SlashCommand | UserOrMessageCommand) {
         if (cmd.type !== COMMAND_TYPES.CHAT_INPUT) {
             const newCmd: UserOrMessageCommand & {
                 bot: never;
@@ -136,7 +146,7 @@ export default class SlashCommandManager {
             delete newCmd.description;
             return newCmd;
         }
-        const newCmd: ICommand & { bot: never } = Object.assign({}, cmd, { bot: undefined });
+        const newCmd: SlashCommand & { bot: never } = Object.assign({}, cmd, { bot: undefined });
         delete newCmd.bot;
         return newCmd;
     }
@@ -164,7 +174,9 @@ export default class SlashCommandManager {
             return true;
         }
         if (typeof value1 === 'object' && value1 !== null && typeof value2 === 'object' && value2 !== null) {
-            // skip Object.keys() length and key list comparison, since we want to consider 'key: null' and the absence of a key (undefined) the same in this case
+            /* skip Object.keys() length and key list comparison, since we want to consider
+             * 'key: null' and the absence of a key (undefined) the same in this case
+             */
             const val1 = value1 as Record<string, unknown>;
             const val2 = value2 as Record<string, unknown>;
             for (const key of Object.keys(val1)) {
@@ -177,7 +189,7 @@ export default class SlashCommandManager {
         return false;
     }
 
-    #compareCommands(savedCommand: SavedCommand, loadedCommand: ICommand | UserOrMessageCommand) {
+    #compareCommands(savedCommand: SavedCommand, loadedCommand: SlashCommand | UserOrMessageCommand) {
         if (loadedCommand.type !== COMMAND_TYPES.CHAT_INPUT) {
             // TODO: this will need updating when user/message commands support name_localizations
             return savedCommand.name === loadedCommand.name && savedCommand.type === loadedCommand.type;
@@ -187,7 +199,8 @@ export default class SlashCommandManager {
             const actualValue = loadedCommand[key];
             if (key === 'dm_permission') {
                 // for this case, setting it to true makes discord return undefined. therefore only compare false
-                if ((expectedValue === false && actualValue !== false) || (expectedValue !== false && actualValue === false)) {
+                if ((expectedValue === false && actualValue !== false) || 
+                    (expectedValue !== false && actualValue === false)) {
                     return false;
                 }
             }
