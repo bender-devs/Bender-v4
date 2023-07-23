@@ -1,7 +1,7 @@
 import Bot from './bot.js';
 import { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
 import { DEV_SERVER } from '../data/constants.js';
-import { Snowflake } from '../types/types.js';
+import { Interaction, Locale, Snowflake } from '../types/types.js';
 import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes.js';
 import { COMMAND_TYPES } from '../types/numberTypes.js';
 
@@ -18,6 +18,7 @@ import FunCommand from '../commands/fun.js';
 import RestrictEmojiCommand from '../commands/restrict-emoji.js';
 import StatsCommand from '../commands/stats.js';
 import MinAgeCommand from '../commands/min-age.js';
+import HelpCommand from '../commands/help.js';
 
 export default class SlashCommandManager {
     bot: Bot;
@@ -38,6 +39,7 @@ export default class SlashCommandManager {
         this.commands.push(new RestrictEmojiCommand(this.bot));
         this.commands.push(new StatsCommand(this.bot));
         this.commands.push(new MinAgeCommand(this.bot));
+        this.commands.push(new HelpCommand(this.bot));
 
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
@@ -209,5 +211,28 @@ export default class SlashCommandManager {
             }
         }
         return true;
+    }
+
+    #findCommandLocalized(name: string, locale: Locale) {
+        return this.commands.find(cmd =>
+            cmd.name_localizations && cmd.name_localizations[locale] === name
+        ) || null;
+    }
+    findCommand(name: string, interaction: Interaction) {
+        const exactMatch = this.commands.find(cmd => cmd.name === name);
+        if (exactMatch) {
+            return exactMatch;
+        }
+        let localizedMatch: SlashCommand | null = null;
+        if (interaction.locale) {
+            localizedMatch = this.#findCommandLocalized(name, interaction.locale);
+        }
+        if (!localizedMatch && interaction.guild_locale) {
+            localizedMatch = this.#findCommandLocalized(name, interaction.guild_locale); 
+        }
+        if (localizedMatch) {
+            return localizedMatch;
+        }
+        return null;
     }
 }

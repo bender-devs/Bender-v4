@@ -1,8 +1,9 @@
 import { ID_REGEX_EXACT, OWNERS } from '../data/constants.js';
 import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes.js';
-import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types.js';
+import { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Locale, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types.js';
 import { CachedGuild } from '../structures/cacheHandler.js';
 import Bot from '../structures/bot.js';
+import LanguageUtils from './language.js';
 
 type PermBitfield = Bitfield | Flags | bigint;
 type SimplifiedOverwrites = {
@@ -174,5 +175,23 @@ export default class PermissionUtils {
         }
         const id = typeof user === 'string' ? user : user.id;
         return OWNERS.includes(id);
+    }
+
+    static getPermissionName(perm: PermissionName, locale?: Locale) {
+        return LanguageUtils.get(`PERMISSION_${perm}`, locale);
+    }
+
+    static getPermNamesFromBitfield(bitfield: PermBitfield, locale?: Locale) {
+        if (this.has(bitfield, 'ADMINISTRATOR')) {
+            return [this.getPermissionName('ADMINISTRATOR')];
+        }
+        const names: string[] = [];
+        let permName: PermissionName;
+        for (permName in PERMISSIONS) {
+            if (this.has(bitfield, permName)) {
+                names.push(this.getPermissionName(permName, locale));
+            }
+        }
+        return names;
     }
 }

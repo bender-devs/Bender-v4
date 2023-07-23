@@ -1,4 +1,4 @@
-import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake } from '../types/types.js';
+import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake, CommandOption } from '../types/types.js';
 import languages, { LangKey } from '../text/languageList.js';
 import Logger from '../structures/logger.js';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
@@ -6,6 +6,7 @@ import TimeUtils from './time.js';
 import MiscUtils, { EmojiKey } from './misc.js';
 import TextUtils from './text.js';
 import Replacers from './replacers.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -58,6 +59,20 @@ export default class LanguageUtils {
         return Replacers.replace(text, replaceMap, locale);
     }
 
+    static getFromMap(fallback: string, localizationMap?: LocaleDict, locale?: Locale): string {
+        if (!localizationMap) {
+            return fallback;
+        }
+        if (!locale) {
+            locale = DEFAULT_LANGUAGE;
+        }
+        const result = localizationMap[locale] || localizationMap[DEFAULT_LANGUAGE];
+        if (Array.isArray(result)) {
+            return result[0] || fallback;
+        }
+        return result || fallback;
+    }
+
     static formatDateAgo(key: LangKey, timestamp: Timestamp | UnixTimestampMillis, locale?: Locale) {
         if (typeof timestamp === 'string') {
             timestamp = TimeUtils.parseTimestampMillis(timestamp);
@@ -100,6 +115,38 @@ export default class LanguageUtils {
         // create a localized text version of a command link; used when a command isn't cached
         const cmdNames = langKeys.map(key => this.get(key, locale));
         return `\`/${cmdNames.join(' ')}\``;
+    }
+    static getCommandFormat(options?: CommandOption[], locale?: Locale) {
+        if (!options?.length) {
+            return null;
+        }
+        // don't show format for top-level command with subcommands
+        if (options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND ||
+            options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP) {
+            return false;
+        }
+        return options.map(opt => {
+            const name = this.getFromMap(opt.name, opt.name_localizations, locale);
+            return opt.required ? `<${name}>` : `[${name}]`;
+        }).join(' ');
+    }
+    static getSubcommandList(options?: CommandOption[], locale?: Locale) {
+        if (!options?.length) {
+            return null;
+        }
+        let subcommands: string[] = [];
+        for (const opt of options) {
+            if (opt.type === COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP) {
+                const groupName = this.getFromMap(opt.name, opt.name_localizations, locale);
+                const cmds = this.getSubcommandList(opt.options);
+                if (cmds) {
+                    subcommands = subcommands.concat(cmds.map(cmd => `${groupName} ${cmd}`));
+                }
+            } else if (opt.type === COMMAND_OPTION_TYPES.SUB_COMMAND) {
+                subcommands.push(this.getFromMap(opt.name, opt.name_localizations, locale));
+            }
+        }
+        return subcommands;
     }
 
     static getPermissionName(perm: PermissionName, locale?: Locale) {

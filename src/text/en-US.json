@@ -39,6 +39,26 @@
 
 
 
+    "----------- /help -----------": "",
+
+    "HELP_NAME": "help",
+    "HELP_DESCRIPTION": "Get information about Bender's commands and how to use them.",
+
+    "HELP_OPTION_COMMAND": "command",
+    "HELP_OPTION_COMMAND_DESCRIPTION": "The command to show information about.",
+
+    "HELP_OPTION_PERM_ONLY": "perm_only",
+    "HELP_OPTION_PERM_ONLY_DESCRIPTION": "Only show commands you have permission to use in this server/DM.",
+
+    "HELP_COMMAND_NOT_FOUND": "Couldn't find that command. Please use the exact name.",
+
+    "HELP_FORMAT": "**Format:** {{format}}",
+    "HELP_DEFAULT_PERMS": "**Default permissions:** {{perms}}",
+    "HELP_SUBCOMMANDS_TITLE": "Subcommands",
+    "HELP_COMMAND_LINK": "🔗 View details",
+
+
+
     "----------- /dev -----------": "",
 
     "DEV_NAME": "dev",
