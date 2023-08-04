@@ -1,5 +1,5 @@
 import { CLIENT_STATE } from './numberTypes.js';
-import { BenderPermission, Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types.js';
+import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types.js';
 
 export type DatabaseResult = {
     changes: number;
@@ -179,7 +179,7 @@ export type GuildSubSubkey = SubkeysNested<GuildObjectTypes>;
 
 export type GuildDotFormatKey = GuildKey | DotFormatKeys<GuildObjectTypes> | DotFormatKeysNested<GuildObjectTypes>;
 
-export const ALL_GUILD_KEYS: GuildKey[] = ['agreement', 'automod', 'autorole', 'config', 'customcommands', 'filter', 'ignore', 'joinables', 'logging', 'memberLog', 'minage', 'mutes', 'namefilter', 'reactionRoles', 'starboard', 'tags', 'temproles', 'timezone'];
+export const ALL_GUILD_KEYS: GuildKey[] = ['autorole', 'config', 'customcommands', 'joinables', 'logging', 'memberLog', 'minage', 'reactionRoles', 'starboard', 'temproles'];
 
 // technically MongoDB would also support exclusive queries ({key: 0})
 // but this ensures the amount of data returned is limited
@@ -189,17 +189,13 @@ export interface ProjectionObject extends Partial<Record<GuildDotFormatKey, 1>> 
 
 export type GuildSettings = {
     guild: Snowflake;
-    agreement?: Agreement;
     antiadv?: AntiAdvertising;
-    automod?: Automod;
     autopurge?: Autopurge;
     autorole?: Autorole;
     config?: Config;
     customcommands?: CustomCommands;
-    filter?: Filter;
     gamenews?: GameNewsEntry[];
     giveaways?: Giveaways;
-    ignore?: Ignore;
     joinables?: Joinables;
     lockdowns?: Lockdowns;
     logging?: Logging;
@@ -207,56 +203,16 @@ export type GuildSettings = {
     mentionables?: Mentionables;
     minage?: MinAge;
     modlog?: ModlogEntry[];
-    mutes?: Mutes;
-    namefilter?: Namefilter;
     nicknames?: Nicknames;
     reactionRoles?: ReactionRoles;
     starboard?: Starboard;
-    tags?: Tags;
     temproles?: TempRoles;
-    timezone?: Timezone;
 };
 
-type Agreement = {
-    enabled?: boolean;
-    channel?: Snowflake | null;
-    role?: Snowflake | null;
-    noLogs?: boolean;
-    message?: string;
-    wait?: number; // duration users must wait
-    warn?: number; // duration until users are warned they need to agree
-    kick?: number; // duration until users are kicked for not agreeing
-    preMsg?: string;
-    postMsg?: string;
-    emoji?: string; // snowflake or unicode emoji
-    emojiMsg?: {
-        msgID?: Snowflake;
-        chanID?: Snowflake;
-    }
-}
-
 type AntiAdvertising = {
-    'no-invite'?: boolean;
-    'no-links'?: boolean;
+    noInvites?: boolean;
+    noLinks?: boolean;
     action?: 'kick' | 'ban';
-}
-
-type Automod = {
-    enabled?: boolean;
-    invite_whitelist: string[]; // invite code or Snowflake
-    'no-invite'?: boolean;
-    'no-links'?: boolean;
-    mentions?: number;
-    'mention-ban'?: number;
-    muteTime?: number; // default mute duration
-    muteViolations?: number;
-    spamCount?: number;
-    spamTime?: number; // max duration between 'spam' messages
-    ignore?: BenderPermission;
-    'ignore-ch'?: Snowflake[];
-    minAge?: number; // minimum "age" (duration since creation) of user account
-    minAgeMsg?: string;
-    minAgeAction?: 'kick' | 'ban';
 }
 
 type Autopurge = {
@@ -270,10 +226,6 @@ type Autorole = Snowflake | Snowflake[] | null;
 type Config = {
     confirmBans?: boolean;
     maxWarnings?: number;
-    banDM?: string;
-    kickDM?: string;
-    muteDM?: string;
-    unmuteDM?: string;
 }
 
 type CustomCommands = Record<string, CustomCommand>;
@@ -289,21 +241,6 @@ type CustomCommandAction = {
     cmd: string; // TODO: replace with list of possible commands
     args: string;
 }
-
-type Filter = {
-    action1?: FilterAction;
-    action2?: FilterAction;
-    action3?: FilterAction;
-    enabled?: boolean;
-    message?: string;
-    patterns?: string[];
-    flags?: string;
-    warnlist?: {
-        [userID: Snowflake]: number; // number of violations per user
-    },
-    msgTimeout: number; // duration until filter message is deleted
-}
-type FilterAction = 'warn' | 'mute' | 'kick' | 'ban';
 
 type GameNewsEntry = {
     channel: Snowflake;
@@ -323,10 +260,6 @@ type Giveaway = {
     nextUpdate: UnixTimestampMillis;
 }
 
-type Ignore = Partial<Record<IgnoreSetting, BenderPermission> & Record<IgnoreChannelsSetting, Snowflake[]>>;
-type IgnoreSetting = 'invites' | 'filter' | 'mentions' | 'spam' | 'names' | 'nolinks';
-type IgnoreChannelsSetting = `${IgnoreSetting}-ch`;
-
 type Joinables = {
     [roleID: Snowflake]: 'J' | 'L' | boolean;
 }
@@ -342,12 +275,12 @@ type Lockdown = {
     message: Snowflake;
 }
 
-type LoggingSettingMessageBased = 'deleted' | 'edited' | 'commands' | 'automod' | 'customCommands';
+type LoggingSettingMessageBased = 'Deleted' | 'Edited' | 'Commands' | 'Automod' | 'CustomCommands';
 type LoggingSettingChannel = LoggingSettingMessageBased | 'welcome' | 'accChanges';
 type Logging = Partial<
     Record<ModlogAction, boolean> &
     Record<LoggingSettingChannel, Snowflake | boolean> &
-    Record<`exclude_${LoggingSettingMessageBased}`, Snowflake[]>
+    Record<`exclude${LoggingSettingMessageBased}`, Snowflake[]>
 > & {
     channel?: Snowflake | null;
     cases?: boolean;
@@ -355,10 +288,12 @@ type Logging = Partial<
 
 type MemberLog = {
     channel?: Snowflake | null;
-    'join-dm'?: string | null;
-    join?: string;
-    leave?: string;
-    ban?: string;
+    join?: string | null;
+    leave?: string | null;
+    ban?: string | null;
+    joinDM?: string | null;
+    banDM?: string | null;
+    kickDM?: string | null;
 }
 
 type Mentionables = {
@@ -385,26 +320,6 @@ type MinAge = {
     enabled?: boolean,
     action?: MinAgeAction,
     message?: string
-}
-
-type Mutes = {
-    default?: number; // default mute duration
-    role?: Snowflake | null;
-    [userID: Snowflake]: Mute;
-}
-type Mute = {
-    timestamp: UnixTimestampMillis;
-    issuer: Snowflake,
-    reason?: string | null;
-    case?: number | null;
-    message: Snowflake;
-}
-
-type Namefilter = {
-    enabled?: boolean;
-    del_welcome?: boolean;
-    patterns?: string[];
-    flags?: string;
 }
 
 type Nicknames = {
@@ -437,8 +352,6 @@ type Starboard = {
     messages?: Record<Snowflake, Snowflake>; // map user message id => starboard message id
 }
 
-type Tags = Record<string, string>;
-
 type TempRoles = {
     [roleID: Snowflake]: {
         [userID: Snowflake]: TempRoleEntry;
@@ -449,5 +362,3 @@ type TempRoleEntry = {
     issuer: Snowflake;
     startTime: UnixTimestampMillis;
 }
-
-type Timezone = string | null; // TODO: replace with real list of IANA timezones?
