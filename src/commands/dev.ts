@@ -45,7 +45,7 @@ export default class DevCommand extends SlashCommand {
     readonly description = LangUtils.get('DEV_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('DEV_DESCRIPTION');
 
-    readonly dm_permission: boolean = true;
+    readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [{
         type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
