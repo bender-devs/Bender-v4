@@ -37,10 +37,15 @@ export default async function (this: InfoCommand, interaction: types.Interaction
 
     if (user) {
         const name = member?.nick ?? user.username;
-        if (!user.avatar) {
+
+        let avatarLink: types.URL;
+        if (member?.avatar && interaction.guild_id) {
+            avatarLink = CDNUtils.memberAvatar(interaction.guild_id, user.id, member.avatar, undefined, 2048);
+        } else if (user.avatar) {
+            avatarLink = CDNUtils.userAvatar(user.id, user.avatar, undefined, 2048);
+        } else {
             return this.respondKeyReplace(interaction, 'AVATAR_INFO_USER_NO_AVATAR', { name }, 'INFO');
         }
-        const avatarLink = CDNUtils.userAvatar(user.id, user.avatar, undefined, 2048);
         const title = LangUtils.getAndReplace('AVATAR_INFO_USER_TITLE', {
             name,
             avatarLink,
