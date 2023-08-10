@@ -299,16 +299,19 @@ export default class BlackjackUtils {
             userStatusRight = LangUtils.get('FUN_BJ_USER_BJ_RIGHT', locale);
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
         } else if (userBj && botBj) {
-            content = LangUtils.get('FUN_BJ_TITLE_PUSH', locale);
+            content = LangUtils.get('FUN_BJ_TITLE', locale);
+            content += `\n${LangUtils.get('FUN_BJ_PUSH', locale)}`;
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
             botStatus = LangUtils.get('FUN_BJ_BOT_BJ', locale);
         } else if (botBj) {
-            content = LangUtils.get('FUN_BJ_TITLE_LOSS', locale);
+            content = LangUtils.get('FUN_BJ_TITLE', locale);
+            content += `\n${LangUtils.get('FUN_BJ_LOSS', locale)}`;
             botStatus = LangUtils.get('FUN_BJ_BOT_BJ', locale);
             const userSum = BlackjackUtils.getSum(interactionData.authorHand);
             userStatus = LangUtils.getAndReplace('FUN_BJ_USER_HAS', { value: userSum }, locale);
         } else if (userBj) {
-            content = LangUtils.get('FUN_BJ_TITLE_WIN', locale);
+            content = LangUtils.get('FUN_BJ_TITLE', locale);
+            content += `\n${LangUtils.get('FUN_BJ_WIN', locale)}`;
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
             const botSum = BlackjackUtils.getSum(interactionData.botHand);
             botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_HAS', { value: botSum }, locale);
@@ -358,22 +361,23 @@ export default class BlackjackUtils {
                 }
             }
             if (result) {
+                content = `${LangUtils.get('FUN_BJ_PUSH', locale)}\n`;
                 if (result.overall === RESULTS.BOT) {
                     if (interactionData.double) {
-                        content = LangUtils.get('FUN_BJ_TITLE_LOSS_DOUBLE', locale);
+                        content += LangUtils.get('FUN_BJ_LOSS_DOUBLE', locale);
                     } else {
-                        content = LangUtils.get('FUN_BJ_TITLE_LOSS', locale);
+                        content += LangUtils.get('FUN_BJ_LOSS', locale);
                     }
                 } else if (result.overall === RESULTS.PUSH) {
-                    content = LangUtils.get('FUN_BJ_TITLE_PUSH', locale);
+                    content += LangUtils.get('FUN_BJ_PUSH', locale);
                 } else if (result.overall === RESULTS.SPLIT) {
-                    content = LangUtils.get('FUN_BJ_TITLE_SPLIT', locale);
+                    content += LangUtils.get('FUN_BJ_SPLIT', locale);
                 } else if (result.overall === RESULTS.SPLIT_PUSH) {
-                    content = LangUtils.get('FUN_BJ_TITLE_SPLIT_PUSH', locale);
+                    content += LangUtils.get('FUN_BJ_SPLIT_PUSH', locale);
                 } else if (interactionData.double) {
-                    content = LangUtils.get('FUN_BJ_TITLE_WIN_DOUBLE', locale);
+                    content += LangUtils.get('FUN_BJ_WIN_DOUBLE', locale);
                 } else {
-                    content = LangUtils.get('FUN_BJ_TITLE_WIN', locale);
+                    content += LangUtils.get('FUN_BJ_WIN', locale);
                 }
             }
         }
