@@ -25,11 +25,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
     }
     if (!interaction.guild_id) {
-        const unavailableMsg = LangUtils.getAndReplace('GUILD_ONLY', {
-            prefix: '/',
-            command: 'info channel'
-        }, interaction.locale);
-        return this.respond(interaction, unavailableMsg, 'GUILD', true);
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: 'info channel' }, 'GUILD', true);
     }
     if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(chanID), ['VIEW_CHANNEL'], true);

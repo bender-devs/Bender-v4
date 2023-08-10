@@ -36,7 +36,7 @@ function getKeyPermNames(role: Role, locale?: Locale): string[] {
 
 export default async function (this: InfoCommand, interaction: Interaction, roleID?: CommandOptionValue) {
     if (!interaction.guild_id) {
-        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD', true);
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
     }
     if (!roleID || typeof roleID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');

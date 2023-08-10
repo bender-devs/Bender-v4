@@ -68,7 +68,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
         }
 
         const args = interaction.data?.options;

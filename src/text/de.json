@@ -1,7 +1,7 @@
 {
     "----------- Generic command errors -----------": "",
 
-    "GUILD_ONLY": "`{{prefix}}{{command}}` ",
+    "GUILD_ONLY": "`/{{command}}` ",
     "COMMAND_UNAUTHORIZED": "du bist nicht berechtigt um diesen Kommand zu benutzen",
     "INTERACTION_ERROR_NOTICE": "*Fehler wie dieser sollten nicht passieren, sollte er bestehen bleiben, melde Ihn bitte in dem Support Server:* {{invite}}",
     "ARGS_MISSING": "Keine der erforderlichen Argumente angegeben.",

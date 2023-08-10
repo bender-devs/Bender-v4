@@ -1,7 +1,7 @@
 {
     "----------- Generic command errors -----------": "",
 
-    "GUILD_ONLY": "`{{prefix}}{{command}}` kan alleen in een server worden gebruikt, niet in DMs.",
+    "GUILD_ONLY": "`/{{command}}` kan alleen in een server worden gebruikt, niet in DMs.",
     "COMMAND_UNAUTHORIZED": "Je hebt geen rechten om dit commando te gebruiken.",
     "INTERACTION_ERROR_NOTICE": "*Foutmeldingen zoals deze zouden niet mogen voorkomen; Als dit blijft gebeuren, meld dit dan alsjeblieft in onze server:* {{invite}}",
     "ARGS_MISSING": "Geen vereiste argumenten opgegeven.",

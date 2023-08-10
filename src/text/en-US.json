@@ -1,7 +1,7 @@
 {
     "----------- Generic command errors -----------": "",
 
-    "GUILD_ONLY": "`{{prefix}}{{command}}` is only available in servers, not DMs.",
+    "GUILD_ONLY": "`/{{command}}` is only available in servers, not DMs.",
     "COMMAND_UNAUTHORIZED": "You aren't authorized to use this command.",
     "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
     "ARGS_MISSING": "No required arguments supplied.",

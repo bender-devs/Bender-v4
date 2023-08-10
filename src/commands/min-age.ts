@@ -146,7 +146,7 @@ export default class MinAgeCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { prefix: '/', command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
         }
 
         const current = await this.bot.db.guild.get(interaction.guild_id, { minage: 1 });
