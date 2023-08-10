@@ -335,13 +335,6 @@ export default class DatabaseManager {
                 [key]: { $type: 'object' },
                 guild: { $in: id_array }
             };
-            if (key === 'agreement') {
-                Object.assign(findObject, {
-                    ['agreement.enabled']: true,
-                    ['agreement.role']: { $type: 'string' },
-                    ['agreement.channel']: { $type: 'string' }
-                });
-            }
             return bs.find(findObject).project({ _id: 0, guild: 1, [key]: 1 }).toArray().then(DatabaseManager.asTypeArrayFiltered<dbTypes.GuildSettings>);
         }
     }

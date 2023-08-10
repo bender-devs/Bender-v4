@@ -8,23 +8,16 @@ type ComplexIndex = {
     options: CreateIndexesOptions;
 };
 
-type Indexes = Record<'premium' | 'user_settings' | 'user_reminders' | 'bot_status' | 'oauth_keys' | 'commands' | 'guild_commands', (string | ComplexIndex)[]> & {
+type CollectionName = 'premium' | 'user_settings' | 'user_reminders' | 'bot_status' | 'oauth_keys' | 'commands' | 'guild_commands'; // don't export, as this is missing bot_settings
+type Indexes = Record<CollectionName, (string | ComplexIndex)[]> & {
     bot_settings: (GuildDotFormatKey | ComplexIndex)[];
 };
 
 const DB_INDEXES: Indexes = {
     bot_settings: [
         { name: 'guild', options: { unique: true } },
-        // agreement checkup
-        'agreement.channel',
-        'agreement.enabled',
-        'agreement.message',
-        'agreement.role',
-        'agreement.warn',
-        'agreement.kick',
         // guildMemberAdd
-        'automod.minAge',
-        'automod.minAgeAction',
+        'minage',
         // autopurge checkup
         'autopurge',
         // postAllNews checkup
@@ -33,10 +26,8 @@ const DB_INDEXES: Indexes = {
         'giveaways',
         // lockdowns checkup
         'lockdowns',
-        // mutes checkup
-        'mutes',
         // temproles checkup
-        'temproles',
+        'temproles'
     ],
     commands: [
         { name: 'id', options: { unique: true } },
