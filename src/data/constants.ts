@@ -17,7 +17,7 @@ function getOSType() {
 
 /***** bot options *****/
 
-export const DEFAULT_LANGUAGE = 'en-US'; // this does not change default subcommand names due to additional code complexity
+export const DEFAULT_LANGUAGE = 'en-US';
 
 export const DEBUG = true;
 
@@ -41,6 +41,8 @@ export const GITHUB_LINK = 'https://github.com/bender-devs/Bender-v4';
 export const DEFAULT_COLOR = 0xCC1616;
 
 export const PUBLIC_KEY = ''; // TODO: fill this in
+
+export const BOT_ACTIVITY_NAME = '❓ /help │ 🌐 benderbot.co';
 
 /***** shard options *****/
 
@@ -75,8 +77,8 @@ export const CONNECT_DATA: IdentifyData = {
     token: '', // assigned later
     properties: {
         os: getOSType(),
-        browser: 'Custom (https://benderbot.co)',
-        device: 'Custom (https://benderbot.co)'
+        browser: `Custom (${WEBSITE})`,
+        device: `Custom (${WEBSITE})`
     },
     presence: {
         since: null,

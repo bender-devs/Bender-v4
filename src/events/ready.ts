@@ -2,7 +2,7 @@ import { EventHandler } from '../types/types.js';
 import { ReadyData } from '../types/gatewayTypes.js';
 import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes.js';
 import Bot from '../structures/bot.js';
-import { VERSION } from '../data/constants.js';
+import { BOT_ACTIVITY_NAME, VERSION } from '../data/constants.js';
 import DiscordUtils from '../utils/discord.js';
 
 export default class ReadyHandler extends EventHandler<ReadyData> {
@@ -38,8 +38,9 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
             status: 'online',
             afk: false,
             activities: [{
-                name: '/help | benderbot.co',
-                type: ACTIVITY_TYPES.WATCHING,
+                name: BOT_ACTIVITY_NAME,
+                state: BOT_ACTIVITY_NAME,
+                type: ACTIVITY_TYPES.CUSTOM,
                 created_at: Date.now()
             }]
         });
