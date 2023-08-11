@@ -1,13 +1,12 @@
 import * as mongodb from 'mongodb';
-import { DB_RECONNECT_DELAY, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants.js';
+import { DB_RECONNECT_DELAY, DB_WATCHER_OPTIONS, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants.js';
 import DB_INDEXES from '../data/dbIndexes.js';
 import * as dbTypes from '../types/dbTypes.js';
 import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types.js';
 import Bot from './bot.js';
 import { SlashCommand } from './command.js';
 import DatabaseCacheHandler from './dbCache.js';
-
-const WATCHER_OPTIONS = { maxAwaitTimeMS: 5000, batchSize: 69 };
+import { DURATION_UNITS } from '../utils/time.js';
 
 export default class DatabaseManager {
     bot: Bot;
@@ -108,16 +107,16 @@ export default class DatabaseManager {
 
         if (this.cacheEnabled) {
             const guildSettings = this.bender.collection('bot_settings');
-            this.#guildSettingsWatcher = guildSettings.watch(undefined, WATCHER_OPTIONS);
+            this.#guildSettingsWatcher = guildSettings.watch(undefined, DB_WATCHER_OPTIONS);
             this.#guildSettingsWatcher.on('change', this.processGuildChange.bind(this));
             const userSettings = this.bender.collection('user_settings');
-            this.#userSettingsWatcher = userSettings.watch(undefined, WATCHER_OPTIONS);
+            this.#userSettingsWatcher = userSettings.watch(undefined, DB_WATCHER_OPTIONS);
             this.#userSettingsWatcher.on('change', this.processUserChange.bind(this));
             const userReminders = this.bender.collection('user_reminders');
-            this.#userRemindersWatcher = userReminders.watch(undefined, WATCHER_OPTIONS);
+            this.#userRemindersWatcher = userReminders.watch(undefined, DB_WATCHER_OPTIONS);
             this.#userRemindersWatcher.on('change', event => this.processUserChange.bind(this)(event, true));
             const premiumSettings = this.bender.collection('premium');
-            this.#premiumWatcher = premiumSettings.watch(undefined, WATCHER_OPTIONS);
+            this.#premiumWatcher = premiumSettings.watch(undefined, DB_WATCHER_OPTIONS);
             this.#premiumWatcher.on('change', this.processPremiumChange.bind(this));
         }
         return this.client;
@@ -324,7 +323,7 @@ export default class DatabaseManager {
             }
             const bs = this.bender.collection('bot_settings');
             // TODO: !!!IMPORTANT!!! check that timestamps work properly here
-            return bs.deleteMany({ lastModified: { $lt: Date.now() - 1000 * 60 * 60 * 24 * 30 }, guild: { $nin: guildIDArray } }).then(DatabaseManager.#reformat);
+            return bs.deleteMany({ lastModified: { $lt: Date.now() - DURATION_UNITS.MONTH }, guild: { $nin: guildIDArray } }).then(DatabaseManager.#reformat);
         },*/
 
         needsCheckup: async (key: dbTypes.GuildKey): Promise<dbTypes.GuildSettings[]> => {
@@ -477,7 +476,7 @@ export default class DatabaseManager {
             const rs = this.bender.collection('user_reminders');
             return rs.find({
                 reminders: { $type: 'array', $not: { $size: 0 } },
-                ['reminders.endsAt']: { $lte: Date.now() + 1000 * 60 }
+                ['reminders.endsAt']: { $lte: Date.now() + DURATION_UNITS.MINUTE }
             }, { projection: { reminders: 1, user_id: 1, _id: 0 } }).toArray();
         },
 
@@ -780,7 +779,7 @@ export default class DatabaseManager {
     shard = {
         getDead: async () => { // shards that haven't posted stats in 10 minutes
             const s = this.bender.collection('bot_status');
-            return s.find({ lastUpdated: { $lt: Date.now() - 1000 * 60 * 10 } }).project({}).toArray();
+            return s.find({ lastUpdated: { $lt: Date.now() - DURATION_UNITS.MINUTE * 10 } }).project({}).toArray();
         },
 
         update: async (data: dbTypes.ShardData): Promise<dbTypes.DatabaseResult> => {
