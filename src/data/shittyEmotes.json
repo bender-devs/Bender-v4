@@ -15,18 +15,11 @@
 	"DISCORD":     "💩",
 	"NITRO":       "🏳️‍🌈",
 	"NODEJS":      "🛠",
-	"REDDIT":      "👀",
 	"GITHUB":      "👩‍💻",
 
 	"JOE":  "👤",
 	"MARK": "👤",
 	"LUCY": "👤",
-
-	"FILTER":    "🛑",
-	"PING_WARN": "🏓",
-	"PING_BAN":  "🔨",
-	"SPAM":      "🚀",
-	"BANNED":    "🚫",
 
 	"THAT":        "⏫",
 	"SUCCESS":     "✅",
@@ -175,7 +168,7 @@
 
 	"CHANNEL_TEXT":          "#️⃣ ",
 	"CHANNEL_TEXT_PRIVATE":  "#️⃣🔒 ",
-	"CHANNEL_NSFW":     "#️⃣🔞 ",
+	"CHANNEL_NSFW":          "#️⃣🔞 ",
 	"CHANNEL_VOICE":         "🔊 ",
 	"CHANNEL_VOICE_PRIVATE": "🔊🔒 ",
 	"CATEGORY":              "▤ "

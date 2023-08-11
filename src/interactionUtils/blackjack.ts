@@ -1,6 +1,6 @@
 import Bot from '../structures/bot.js';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
-import { EmbedField, Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
+import { Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
 import CDNUtils from '../utils/cdn.js';
 import LangUtils from '../utils/language.js';
 import MiscUtils from '../utils/misc.js';
@@ -285,6 +285,19 @@ export default class BlackjackUtils {
         return this.bot.utils.getEmoji(`${card.suit}_${card.num}`, interaction);
     }
 
+    getLargeCards(cards: Card[], interaction: Interaction) {
+        if (!cards.length) {
+            return '';
+        }
+        const cardsText = cards.map(card => this.getCardText(card, interaction));
+
+        if (cardsText[0].startsWith('<:')) { // using "real" emojis
+            return `# ${cardsText.join('')}`;
+        } else { // using fallback emojis; reduce size and add |
+            return `## ${cardsText.join(' | ')}`;
+        }
+    }
+
     getMessageData(interactionData: BlackjackInteraction, author: User, locale?: Locale): MessageData {
         const userBj = BlackjackUtils.hasBlackjack(interactionData.authorHand);
         const botBj = BlackjackUtils.hasBlackjack(interactionData.botHand);
@@ -316,6 +329,10 @@ export default class BlackjackUtils {
             const botSum = BlackjackUtils.getSum(interactionData.botHand);
             botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_HAS', { value: botSum }, locale);
         } else {
+            if (interactionData.authorRightHand || interactionData.authorHand.length > 2) {
+                // user has performed an action, don't show "Blackjack started" title
+                content = LangUtils.get('FUN_BJ_TITLE', locale);
+            }
             const botSum = BlackjackUtils.getSum(interactionData.botHand);
             if (botSum > 21) {
                 botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_BUST', { value: botSum }, locale);
@@ -361,7 +378,7 @@ export default class BlackjackUtils {
                 }
             }
             if (result) {
-                content = `${LangUtils.get('FUN_BJ_PUSH', locale)}\n`;
+                content = `${LangUtils.get('FUN_BJ_TITLE', locale)}\n`;
                 if (result.overall === RESULTS.BOT) {
                     if (interactionData.double) {
                         content += LangUtils.get('FUN_BJ_LOSS_DOUBLE', locale);
@@ -384,16 +401,16 @@ export default class BlackjackUtils {
 
         const inter = interactionData.interaction;
         const components = BlackjackUtils.getComponents(interactionData, !!result);
-        const authorFields: EmbedField[] = [{
-            name: userStatus,
-            value: interactionData.authorHand.map(card => this.getCardText(card, inter)).join(' | ')
-        }];
+
+        const authorCards = this.getLargeCards(interactionData.authorHand, inter);
+        let authorDescription = `${userStatus}\n${authorCards}`;
         if (interactionData.authorRightHand) {
-            authorFields.push({
-                name: userStatusRight,
-                value: interactionData.authorRightHand.map(card => this.getCardText(card, inter)).join(' | ')
-            })
+            const authorCardsRight = this.getLargeCards(interactionData.authorRightHand, inter);
+            authorDescription += `\n\n${userStatusRight}\n${authorCardsRight}`;
         }
+
+        const botCards = this.getLargeCards(result ? interactionData.botHand : [interactionData.botHand[0]], inter);
+        const botDescription = `${botStatus}\n${botCards}`;
 
         return {
             content,
@@ -402,16 +419,13 @@ export default class BlackjackUtils {
                     name: author.username,
                     icon_url: author.avatar ? CDNUtils.userAvatar(author.id, author.avatar) : undefined
                 },
-                fields: authorFields
+                description: authorDescription
             }, {
                 author: {
                     name: this.bot.user.username,
                     icon_url: this.bot.user.avatar ? CDNUtils.userAvatar(this.bot.user.id, this.bot.user.avatar) : undefined
                 },
-                fields: [{
-                    name: botStatus,
-                    value: result ? interactionData.botHand.map(card => this.getCardText(card, inter)).join(' | ') : this.getCardText(interactionData.botHand[0], inter)
-                }]
+                description: botDescription
             }],
             components
         }
