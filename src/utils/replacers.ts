@@ -1,4 +1,4 @@
-import { EXAMPLE_TIMESTAMP } from '../data/constants.js';
+import { EXAMPLE_DURATION, EXAMPLE_TIMESTAMP } from '../data/constants.js';
 import { Locale, ReplaceMap } from '../types/types.js';
 import LangUtils from './language.js';
 import TimeUtils from './time.js';
@@ -15,10 +15,7 @@ export default class Replacers {
     }
 
     static minage(duration?: number, message?: string, locale?: Locale) {
-        let durationText = LangUtils.get('MINAGE_EXAMPLE_DURATION', locale);
-        if (duration) {
-            durationText = TimeUtils.formatDuration(duration, locale);
-        }
+        const durationText = TimeUtils.formatDuration(EXAMPLE_DURATION, locale);
         const timestamp = duration ? (Date.now() + duration) : EXAMPLE_TIMESTAMP;
 
         const replacements: ReplaceMap = {

@@ -83,6 +83,12 @@
 	"TIC_TAC_TOE": "#️⃣",
 	"WAITING":     "⏳",
 
+	"ENABLED":  "<:online:681561477706154029>",
+	"DISABLED": "<:offline:681561593011503157>",
+	"TIME":	    "🕓",
+	"ACTION":   "💠",
+	"MESSAGE":  "💬",
+
 	"SPADES_1":  "♠A",
 	"SPADES_2":  "♠2",
 	"SPADES_3":  "♠3",

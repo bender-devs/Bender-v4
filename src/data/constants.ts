@@ -133,3 +133,4 @@ export const INVITE_REGEX_GLOBAL = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/i
 export const DURATION_REGEX = /([\d,.]+)\s*(s|secs?|seconds?|m|mins?|minutes?|h|hrs?|hours?|d|days?|w|wks?|weeks?|mos?|months?|y|yrs?|years?)/g;
 
 export const EXAMPLE_TIMESTAMP = 3133702800000;
+export const EXAMPLE_DURATION = DURATION_UNITS.YEAR * 69;
