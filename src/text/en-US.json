@@ -601,6 +601,8 @@
     "MINAGE_SUBCOMMAND_MESSAGE_DESCRIPTION": "Change the message users are sent before being kicked or banned.",
     "MINAGE_OPTION_MESSAGE": "message",
     "MINAGE_OPTION_MESSAGE_DESCRIPTION": "The message to send. Can include variables; see /help for more info.",
+    "MINAGE_OPTION_RESET": "reset",
+    "MINAGE_OPTION_RESET_DESCRIPTION": "Reset the message to default.",
 
     "MINAGE_TITLE": "## Minimum account age settings",
 
@@ -627,11 +629,17 @@
     "MINAGE_ACTION_SET_ALREADY": "Min-age action was already set to: **{{action}}**.",
     "MINAGE_ACTION_SET_FAILED": "Failed to update min-age action.",
 
-    "MINAGE_MESSAGE": "Message (to send before taking action):\n{{message}}",
+    "MINAGE_MESSAGE": "**Message** (to send before taking action):\n> {{message}}",
     "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later ({{timestampRelative}}.)",
     "MINAGE_MESSAGE_SET": "Updated min-age message.",
     "MINAGE_MESSAGE_SET_ALREADY": "No changes made; that's the current min-age message.",
     "MINAGE_MESSAGE_SET_FAILED": "Failed to update min-age message.",
+    "MINAGE_MESSAGE_SET_INVALID": "You need to either provide a message or use the `reset` option.",
+
+    "MINAGE_MESSAGE_RESET_INVALID": "You can't use the `reset` option with a message - please pick one.",
+    "MINAGE_MESSAGE_RESET": "Reset min-age message.",
+    "MINAGE_MESSAGE_RESET_ALREADY": "No changes made; min-age message was already set to the default.",
+    "MINAGE_MESSAGE_RESET_FAILED": "Failed to reset min-age message.",
 
 
 

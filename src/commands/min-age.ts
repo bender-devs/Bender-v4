@@ -4,7 +4,7 @@ import { Bitfield, CommandOption, CommandResponse, Interaction, Locale } from '.
 import LangUtils from '../utils/language.js';
 import { COMMAND_OPTION_TYPES, PERMISSIONS } from '../types/numberTypes.js';
 import TimeUtils from '../utils/time.js';
-import { MINAGE_DURATION_MAXIMUM, MINAGE_DURATION_MINIMUM, MINAGE_MESSAGE_LENGTH } from '../data/dbLimits.js';
+import { MINAGE_DURATION_MAXIMUM, MINAGE_DURATION_MINIMUM, MINAGE_MESSAGE_LENGTH_MAXIMUM } from '../data/dbLimits.js';
 import { MinAgeAction, MINAGE_ACTIONS } from '../types/dbTypes.js';
 import Replacers from '../utils/replacers.js';
 import { EXAMPLE_DURATION, EXAMPLE_TIMESTAMP } from '../data/constants.js';
@@ -110,9 +110,15 @@ export default class MinAgeCommand extends SlashCommand {
             name_localizations: LangUtils.getLocalizationMap('MINAGE_OPTION_MESSAGE'),
 
             description: LangUtils.get('MINAGE_OPTION_MESSAGE_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('MINAGE_OPTION_MESSAGE_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('MINAGE_OPTION_MESSAGE_DESCRIPTION')
+        }, {
+            type: COMMAND_OPTION_TYPES.BOOLEAN,
 
-            required: true
+            name: LangUtils.get('MINAGE_OPTION_RESET'),
+            name_localizations: LangUtils.getLocalizationMap('MINAGE_OPTION_RESET'),
+
+            description: LangUtils.get('MINAGE_OPTION_RESET_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('MINAGE_OPTION_RESET_DESCRIPTION')
         }]
     }]
 
@@ -152,9 +158,8 @@ export default class MinAgeCommand extends SlashCommand {
         const current = await this.bot.db.guild.get(interaction.guild_id, { minage: 1 });
         const min = current?.minage;
 
-        const args = interaction.data?.options;
-        const subcommand = args?.[0]?.name;
-        switch (subcommand) {
+        const subcommand = interaction.data?.options?.[0];
+        switch (subcommand?.name) {
             case LangUtils.get('MINAGE_SUBCOMMAND_VIEW'): {
                 let replyText = LangUtils.get('MINAGE_TITLE', interaction.locale);
                 const emojiKey = min?.enabled ? 'ENABLED' : 'DISABLED';
@@ -181,7 +186,7 @@ export default class MinAgeCommand extends SlashCommand {
                 return this.respond(interaction, replyText);
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_SET'): {
-                const durationText = interaction.data?.options?.[0]?.options?.[0].value;
+                const durationText = subcommand.options?.[0].value;
                 if (!durationText || typeof durationText !== 'string') {
                     return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
                 }
@@ -225,7 +230,7 @@ export default class MinAgeCommand extends SlashCommand {
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_ACTION'): {
-                const action = interaction.data?.options?.[0]?.options?.[0].value;
+                const action = subcommand.options?.[0].value;
                 if (!action || typeof action !== 'string' || !MINAGE_ACTIONS.includes(action as MinAgeAction)) {
                     return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
                 }
@@ -243,15 +248,30 @@ export default class MinAgeCommand extends SlashCommand {
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_MESSAGE'): {
-                const message = interaction.data?.options?.[0]?.options?.[0].value;
-                if (!message || typeof message !== 'string') {
+                const message = subcommand.options?.find(opt => opt.name === LangUtils.get('MINAGE_OPTION_MESSAGE'))?.value;
+                const reset = subcommand.options?.find(opt => opt.name === LangUtils.get('MINAGE_OPTION_RESET'))?.value;
+                if (reset && message) {
+                    return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_INVALID', 'WARNING', true);
+                } else if (reset) {
+                    return this.bot.db.guild.deleteValue(interaction.guild_id, 'minage.message').then(result => {
+                        const replyText = LangUtils.get(`MINAGE_MESSAGE_RESET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
+                        return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
+                    }).catch(err => {
+                        this.bot.logger.handleError('/min-age message', err);
+                        return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_FAILED', 'ERROR', true);
+                    });
+                }
+                if (!message) {
+                    return this.respondKey(interaction, 'MINAGE_MESSAGE_SET_INVALID', 'WARNING', true);
+                }
+                if (typeof message !== 'string') {
                     return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
                 }
 
-                if (message.length > MINAGE_MESSAGE_LENGTH) {
+                if (message.length > MINAGE_MESSAGE_LENGTH_MAXIMUM) {
                     return this.respondKeyReplace(interaction, 'MESSAGE_TOO_LONG', {
-                        chars: MINAGE_MESSAGE_LENGTH
-                    }, 'WARNING');
+                        chars: MINAGE_MESSAGE_LENGTH_MAXIMUM
+                    }, 'WARNING', true);
                 }
 
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.message', message).then(result => {
