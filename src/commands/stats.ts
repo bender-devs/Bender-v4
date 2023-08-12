@@ -107,11 +107,11 @@ export default class StatsCommand extends SlashCommand {
                         this.bot.interactionUtils.addItem({ interaction, author: authorID, days });
                         return msg;
                     }).catch(err => {
-                        this.bot.logger.handleError('/stats inactive', err);
+                        this.bot.logger.handleError(`/${this.name} inactive`, err);
                         return this.respondKey(interaction, 'SEND_PROMPT_FAILED', 'WARNING');
                     });
                 }).catch(err => {
-                    this.bot.logger.handleError('/stats inactive', err);
+                    this.bot.logger.handleError(`/${this.name} inactive`, err);
                     const failedMsg = LangUtils.get('STATS_INACTIVE_FETCH_FAILED', interaction.locale);
                     return this.deferredResponse(interaction, failedMsg, 'WARNING');
                 })

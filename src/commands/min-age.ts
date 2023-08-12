@@ -203,7 +203,7 @@ export default class MinAgeCommand extends SlashCommand {
                     const replyText = LangUtils.get(`MINAGE_DURATION_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
-                    this.bot.logger.handleError('/min-age set', err);
+                    this.bot.logger.handleError(`/${this.name} set`, err);
                     return this.respondKey(interaction, 'MINAGE_DURATION_SET_FAILED', 'ERROR', true);
                 });
             }
@@ -216,7 +216,7 @@ export default class MinAgeCommand extends SlashCommand {
                     const replyText = LangUtils.get(`MINAGE_ENABLED_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
-                    this.bot.logger.handleError('/min-age enable', err);
+                    this.bot.logger.handleError(`/${this.name} enable`, err);
                     return this.respondKey(interaction, 'MINAGE_ENABLED_SET_FAILED', 'ERROR', true);
                 });
             }
@@ -225,7 +225,7 @@ export default class MinAgeCommand extends SlashCommand {
                     const replyText = LangUtils.get(`MINAGE_DISABLED_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
-                    this.bot.logger.handleError('/min-age disable', err);
+                    this.bot.logger.handleError(`/${this.name} disable`, err);
                     return this.respondKey(interaction, 'MINAGE_DISABLED_SET_FAILED', 'ERROR', true);
                 });
             }
@@ -243,7 +243,7 @@ export default class MinAgeCommand extends SlashCommand {
                     }, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
-                    this.bot.logger.handleError('/min-age action', err);
+                    this.bot.logger.handleError(`/${this.name} action`, err);
                     return this.respondKey(interaction, 'MINAGE_ACTION_SET_FAILED', 'ERROR', true);
                 });
             }
@@ -257,7 +257,7 @@ export default class MinAgeCommand extends SlashCommand {
                         const replyText = LangUtils.get(`MINAGE_MESSAGE_RESET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
                         return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                     }).catch(err => {
-                        this.bot.logger.handleError('/min-age message', err);
+                        this.bot.logger.handleError(`/${this.name} message`, err);
                         return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_FAILED', 'ERROR', true);
                     });
                 }
@@ -278,7 +278,7 @@ export default class MinAgeCommand extends SlashCommand {
                     const replyText = LangUtils.get(`MINAGE_MESSAGE_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
-                    this.bot.logger.handleError('/min-age message', err);
+                    this.bot.logger.handleError(`/${this.name} message`, err);
                     return this.respondKey(interaction, 'MINAGE_MESSAGE_SET_FAILED', 'ERROR', true);
                 });
             }

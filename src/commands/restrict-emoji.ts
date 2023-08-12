@@ -124,7 +124,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
                 const respText = LangUtils.getAndReplace('REM_RESET', { emoji: emojiText }, interaction.locale);
                 return this.respond(interaction, respText, 'SUCCESS');
             }).catch(err => {
-                this.bot.logger.handleError('/restrict-emoji', err);
+                this.bot.logger.handleError(`/${this.name}`, err);
                 return this.respondKeyReplace(interaction, 'REM_EDIT_FAILED', { emoji: emojiText }, 'WARNING');
             })
         }
