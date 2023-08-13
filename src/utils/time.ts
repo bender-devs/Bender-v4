@@ -3,16 +3,8 @@ import type { LangKey } from '../text/languageList.js';
 import LangUtils from './language.js';
 import TextUtils from './text.js';
 import { DURATION_REGEX } from '../data/constants.js';
+import { DURATION_UNITS } from '../types/numberTypes.js';
 
-export const DURATION_UNITS = {
-    SECOND: 1000,
-    MINUTE: 1000 * 60,
-    HOUR:   1000 * 60 * 60,
-    DAY:    1000 * 60 * 60 * 24,
-    WEEK:   1000 * 60 * 60 * 24 * 7,
-    MONTH:  1000 * 60 * 60 * 24 * 30,
-    YEAR:   1000 * 60 * 60 * 24 * 365
-}
 type UnitName = keyof typeof DURATION_UNITS;
 
 export default class TimeUtils {

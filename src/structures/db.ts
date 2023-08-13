@@ -6,7 +6,7 @@ import type { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from 
 import type Bot from './bot.js';
 import type { SlashCommand } from './command.js';
 import DatabaseCacheHandler from './dbCache.js';
-import { DURATION_UNITS } from '../utils/time.js';
+import { DURATION_UNITS } from '../types/numberTypes.js';
 
 export default class DatabaseManager {
     bot: Bot;

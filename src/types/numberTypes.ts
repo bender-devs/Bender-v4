@@ -477,6 +477,17 @@ export const enum CUSTOM_GATEWAY_ERRORS {
     HEARTBEAT_TIMEOUT
 }
 
+// consistent source of time units
+export const enum DURATION_UNITS  {
+    SECOND = 1000,
+    MINUTE = 1000 * 60,
+    HOUR =  1000 * 60 * 60,
+    DAY =   1000 * 60 * 60 * 24,
+    WEEK =  1000 * 60 * 60 * 24 * 7,
+    MONTH = 1000 * 60 * 60 * 24 * 30,
+    YEAR =  1000 * 60 * 60 * 24 * 365
+}
+
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
 export const enum API_ERRORS {
     GENERAL_ERROR,

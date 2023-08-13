@@ -1,7 +1,7 @@
 // database limits: used for validation before saving
 // TODO: make more robust w/ relational restrictions etc.?
 
-import { DURATION_UNITS } from '../utils/time.js';
+import { DURATION_UNITS } from '../types/numberTypes.js';
 
 // minage.enabled = true requires a value for minage.duration
 export const MINAGE_MESSAGE_LENGTH_MAXIMUM = 500;
