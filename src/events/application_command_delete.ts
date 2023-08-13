@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { CommandUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { CommandUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class CommandDeleteHandler extends EventHandler<CommandUpdateData> {
     constructor(bot: Bot) {

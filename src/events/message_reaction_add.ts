@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { ReactionAddData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { ReactionAddData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class ReactionAddHandler extends EventHandler<ReactionAddData> {
     constructor(bot: Bot) {

@@ -1,4 +1,4 @@
-import { Snowflake, URL, User } from '../types/types.js';
+import type { Snowflake, URL, User } from '../types/types.js';
 import { CDN_BASE } from '../data/constants.js';
 
 export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';

@@ -1,5 +1,5 @@
 //import Bot from '../../structures/bot';
-import { MessageCommand } from '../../structures/command.js';
+import type { MessageCommand } from '../../structures/command.js';
 
 
 export default function getMessageCommands(/*bot: Bot*/): MessageCommand[] {

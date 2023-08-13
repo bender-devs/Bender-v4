@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { ChannelUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { ChannelUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
 
 export default class ChannelDeleteHandler extends EventHandler<ChannelUpdateData> {

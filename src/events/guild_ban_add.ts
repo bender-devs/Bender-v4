@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { GuildBanEventData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { GuildBanEventData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class GuildBanAddHandler extends EventHandler<GuildBanEventData> {
     constructor(bot: Bot) {

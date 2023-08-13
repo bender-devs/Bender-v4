@@ -1,9 +1,9 @@
 import RPSUtils from '../../interactionUtils/rps.js';
-import { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
+import type { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
 import MiscUtils from '../../utils/misc.js';
 import TextUtils from '../../utils/text.js';
-import FunCommand from '../fun.js';
+import type FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction, show?: CommandOptionValue, userID?: CommandOptionValue) {
     const authorID = interaction.member?.user.id || interaction.user?.id;

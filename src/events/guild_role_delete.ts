@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { GuildRoleDeleteData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { GuildRoleDeleteData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class GuildRoleDeleteHandler extends EventHandler<GuildRoleDeleteData> {
     constructor(bot: Bot) {

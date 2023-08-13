@@ -1,6 +1,7 @@
-import { ShardConnectionData } from '../types/gatewayTypes.js';
-import ShardManager, { GENERAL_STATS, ShardComplexCallbackData, ShardDestination, ShardFetchCallback, ShardFetchData, ShardMessage, ShardValues } from './shardManager.js';
-import Bot from './bot.js';
+import type { ShardConnectionData } from '../types/gatewayTypes.js';
+import type { ShardComplexCallbackData, ShardDestination, ShardFetchCallback, ShardFetchData, ShardMessage, ShardValues } from './shardManager.js';
+import ShardManager, { GENERAL_STATS } from './shardManager.js';
+import type Bot from './bot.js';
 import { randomUUID } from 'crypto';
 import { SHARD_MESSAGE_TIMEOUT } from '../data/constants.js';
 

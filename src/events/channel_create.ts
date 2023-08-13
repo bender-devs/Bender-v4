@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { ChannelUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { ChannelUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class ChannelCreateHandler extends EventHandler<ChannelUpdateData> {
     constructor(bot: Bot) {

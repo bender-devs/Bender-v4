@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { InteractionCreateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { InteractionCreateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 import { INTERACTION_REQUEST_TYPES } from '../types/numberTypes.js';
 import { inspect } from 'util';
 import { DEV_SERVER } from '../data/constants.js';

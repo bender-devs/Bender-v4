@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import { PartialApplication, TimeoutList, User } from '../types/types.js';
-import { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes.js';
+import type { PartialApplication, TimeoutList, User } from '../types/types.js';
+import type { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes.js';
 import APIInterface from './apiInterface.js';
 import CacheHandler from './cacheHandler.js';
 import Gateway from './gateway.js';

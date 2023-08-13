@@ -1,9 +1,10 @@
-import { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
+import type { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
 import MiscUtils from '../../utils/misc.js';
 import TextUtils from '../../utils/text.js';
-import TicTacToeUtils, { TicTacToeBoard } from '../../interactionUtils/tictactoe.js';
-import FunCommand from '../fun.js';
+import type { TicTacToeBoard } from '../../interactionUtils/tictactoe.js';
+import TicTacToeUtils from '../../interactionUtils/tictactoe.js';
+import type FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction, userString?: CommandOptionValue) {
     if (userString && typeof userString !== 'string') {

@@ -1,7 +1,7 @@
 import { API_BASE, MAX_RATE_LIMIT_DELAY, USER_AGENT } from '../data/constants.js';
 import superagent from 'superagent';
-import * as types from '../types/types.js';
-import { GatewayBotInfo, GatewayInfo } from '../types/gatewayTypes.js';
+import type * as types from '../types/types.js';
+import type { GatewayBotInfo, GatewayInfo } from '../types/gatewayTypes.js';
 import APIError from '../structures/apiError.js';
 
 const USER_AGENT_HEADER: types.RequestHeaders = {

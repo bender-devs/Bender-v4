@@ -17,12 +17,12 @@ local cache:
 - guild commands
 - presences
 */
-import * as types from '../types/types.js';
-import Bot from './bot.js';
+import type * as types from '../types/types.js';
+import type Bot from './bot.js';
 import * as redis from 'redis';
-import { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData, UpdatePresenceData } from '../types/gatewayTypes.js';
+import type { GatewayBotInfo, GatewaySessionLimitHash, GuildMemberUpdateData, MessageUpdateData, ThreadSyncData, UpdatePresenceData } from '../types/gatewayTypes.js';
 import TimeUtils from '../utils/time.js';
-import { PREMIUM_TYPES } from '../types/numberTypes.js';
+import type { PREMIUM_TYPES } from '../types/numberTypes.js';
 
 type ChannelMap = Record<types.Snowflake, types.GuildChannel>;
 type ThreadMap = Record<types.Snowflake, types.ThreadChannel>;

@@ -1,8 +1,9 @@
-import Bot from './bot.js';
-import { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
+import type Bot from './bot.js';
+import type { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
 import { DEV_SERVER } from '../data/constants.js';
-import { Interaction, Locale, Snowflake } from '../types/types.js';
-import { COMPARE_COMMANDS_KEYS, DatabaseResult, SavedCommand } from '../types/dbTypes.js';
+import type { Interaction, Locale, Snowflake } from '../types/types.js';
+import type { DatabaseResult, SavedCommand } from '../types/dbTypes.js';
+import { COMPARE_COMMANDS_KEYS } from '../types/dbTypes.js';
 import { COMMAND_TYPES } from '../types/numberTypes.js';
 
 import getUserCommands from '../commands/nonText/user.js';

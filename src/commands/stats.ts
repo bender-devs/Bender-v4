@@ -1,9 +1,9 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import { ACTIVITY_TYPES, COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
-import { LangKey } from '../text/languageList.js';
+import type { LangKey } from '../text/languageList.js';
 
 export default class StatsCommand extends SlashCommand {
     constructor(bot: Bot) {

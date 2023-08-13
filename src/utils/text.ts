@@ -1,5 +1,6 @@
 import * as CONSTANTS from '../data/constants.js';
-import { Emoji, Snowflake, TimestampFormat, TIMESTAMP_FORMATS, UnixTimestampMillis } from '../types/types.js';
+import type { Emoji, Snowflake, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import { TIMESTAMP_FORMATS } from '../types/types.js';
 
 function _getRegex(chars: string, exact: boolean, caseSensitive = false, timestamp = false) {
     return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? `(:[${TIMESTAMP_FORMATS.join('')}])?` : ''}>${exact ? '$' : ''}`, caseSensitive ? undefined : 'i');

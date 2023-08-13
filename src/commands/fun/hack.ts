@@ -1,8 +1,9 @@
-import { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
+import type { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
-import MiscUtils, { EmojiKey } from '../../utils/misc.js';
+import type { EmojiKey } from '../../utils/misc.js';
+import MiscUtils from '../../utils/misc.js';
 import IMAGES from '../../data/images.js';
-import FunCommand from '../fun.js';
+import type FunCommand from '../fun.js';
 import TextUtils from '../../utils/text.js';
 
 const base64ModChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('');

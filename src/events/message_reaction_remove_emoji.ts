@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { ReactionRemoveEmojiData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { ReactionRemoveEmojiData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class ReactionRemoveEmojiHandler extends EventHandler<ReactionRemoveEmojiData> {
     constructor(bot: Bot) {

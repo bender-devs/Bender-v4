@@ -1,7 +1,7 @@
 // Where indexes should be created so that these fields can be quickly accessed.
 
-import { CreateIndexesOptions } from 'mongodb';
-import { GuildDotFormatKey } from '../types/dbTypes.js';
+import type { CreateIndexesOptions } from 'mongodb';
+import type { GuildDotFormatKey } from '../types/dbTypes.js';
 
 type ComplexIndex = {
     name: string;

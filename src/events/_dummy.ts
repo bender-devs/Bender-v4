@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { EventData, LowercaseEventName } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { EventData, LowercaseEventName } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class DummyEventHandler<T extends EventData> extends EventHandler<T> {
     constructor(bot: Bot, name: LowercaseEventName) {

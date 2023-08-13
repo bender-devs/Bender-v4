@@ -1,7 +1,7 @@
 import { EventHandler } from '../types/types.js';
-import { ReadyData } from '../types/gatewayTypes.js';
+import type { ReadyData } from '../types/gatewayTypes.js';
 import { ACTIVITY_TYPES, CLIENT_STATE } from '../types/numberTypes.js';
-import Bot from '../structures/bot.js';
+import type Bot from '../structures/bot.js';
 import { BOT_ACTIVITY_NAME, VERSION } from '../data/constants.js';
 import DiscordUtils from '../utils/discord.js';
 

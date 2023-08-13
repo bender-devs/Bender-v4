@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { GuildMemberAddData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { GuildMemberAddData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class GuildMemberAddHandler extends EventHandler<GuildMemberAddData> {
     constructor(bot: Bot) {

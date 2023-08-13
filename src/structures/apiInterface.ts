@@ -1,9 +1,9 @@
 // this file sits between the client files and api wrapper and manages things like rate limits, cache, and errors.
 import APIWrapper from '../utils/apiWrapper.js';
 import APIError from './apiError.js';
-import Bot from './bot.js';
-import * as types from '../types/types.js';
-import { CachedGuild } from './cacheHandler.js';
+import type Bot from './bot.js';
+import type * as types from '../types/types.js';
+import type { CachedGuild } from './cacheHandler.js';
 
 export default class APIInterface {
     bot: Bot;

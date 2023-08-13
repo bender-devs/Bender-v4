@@ -1,5 +1,5 @@
-import { API_ERRORS } from '../types/numberTypes.js';
-import { HTTPMethod, ResponseError } from '../types/types.js';
+import type { API_ERRORS } from '../types/numberTypes.js';
+import type { HTTPMethod, ResponseError } from '../types/types.js';
 
 type BaseError = {
     code: string;

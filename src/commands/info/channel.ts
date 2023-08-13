@@ -2,12 +2,12 @@ import { DEFAULT_COLOR } from '../../data/constants.js';
 import { API_ERRORS } from '../../types/numberTypes.js';
 import IMAGES from '../../data/images.js';
 import { CHANNEL_TYPES, PERMISSIONS } from '../../types/numberTypes.js';
-import * as types from '../../types/types.js';
+import type * as types from '../../types/types.js';
 import APIError from '../../structures/apiError.js';
 import DiscordUtils from '../../utils/discord.js';
 import LangUtils from '../../utils/language.js';
 import TextUtils from '../../utils/text.js';
-import InfoCommand from '../info.js';
+import type InfoCommand from '../info.js';
 import TimeUtils from '../../utils/time.js';
 
 const CATEGORY_MAX_CHANNELS = 10;

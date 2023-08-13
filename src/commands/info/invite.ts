@@ -1,11 +1,11 @@
 import { DEFAULT_COLOR, INVITE_CODE_REGEX } from '../../data/constants.js';
-import { Channel, CommandOptionValue, Embed, ExtendedInvite, Interaction } from '../../types/types.js';
+import type { Channel, CommandOptionValue, Embed, ExtendedInvite, Interaction } from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
 import DiscordUtils from '../../utils/discord.js';
 import LangUtils from '../../utils/language.js';
 import TextUtils from '../../utils/text.js';
 import TimeUtils from '../../utils/time.js';
-import InfoCommand from '../info.js';
+import type InfoCommand from '../info.js';
 
 export default async function (this: InfoCommand, interaction: Interaction, inviteString?: CommandOptionValue) {
     if (!inviteString || typeof inviteString !== 'string') {

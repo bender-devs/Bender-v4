@@ -1,7 +1,8 @@
-import { BaseEmoji, getEmojis } from 'unicode-emoji';
+import type { BaseEmoji} from 'unicode-emoji';
+import { getEmojis } from 'unicode-emoji';
 import unicodeData from 'cldr-annotations-modern/annotations/en/annotations.json' assert { type: 'json' };
 import unicodeDerivedData from 'cldr-annotations-derived-modern/annotationsDerived/en/annotations.json' assert { type: 'json' };
-import { URL } from '../types/types.js';
+import type { URL } from '../types/types.js';
 /*
  * TODO: localization for unicodeData
  * note that is is theoretically possible to manually localize some data from the unicode-emoji module;

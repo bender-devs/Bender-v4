@@ -1,9 +1,9 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants.js';
-import { CommandOptionValue, Embed, Interaction, URL } from '../../types/types.js';
+import type { CommandOptionValue, Embed, Interaction, URL } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
 import { EMOJI_REGEX_EXACT } from '../../utils/text.js';
 import UnicodeUtils from '../../utils/unicode.js';
-import InfoCommand from '../info.js';
+import type InfoCommand from '../info.js';
 import emojiInfo from './emoji.js';
 import IMAGES from '../../data/images.js';
 

@@ -1,9 +1,12 @@
-import { LOCALE_LIST, Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake, CommandOption } from '../types/types.js';
-import languages, { LangKey } from '../text/languageList.js';
-import Logger from '../structures/logger.js';
+import type { Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake, CommandOption } from '../types/types.js';
+import { LOCALE_LIST } from '../types/types.js';
+import type { LangKey } from '../text/languageList.js';
+import languages from '../text/languageList.js';
+import type Logger from '../structures/logger.js';
 import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
 import TimeUtils from './time.js';
-import MiscUtils, { EmojiKey } from './misc.js';
+import type { EmojiKey } from './misc.js';
+import MiscUtils from './misc.js';
 import TextUtils from './text.js';
 import Replacers from './replacers.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';

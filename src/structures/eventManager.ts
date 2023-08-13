@@ -1,8 +1,8 @@
-import Bot from './bot.js';
-import * as gatewayTypes from '../types/gatewayTypes.js';
+import type Bot from './bot.js';
+import type * as gatewayTypes from '../types/gatewayTypes.js';
 import { CLIENT_STATE } from '../types/numberTypes.js';
 import events from '../types/eventTypes.js';
-import { EventHandler } from '../types/types.js';
+import type { EventHandler } from '../types/types.js';
 
 import dummy_event from '../events/_dummy.js';
 import application_command_create from '../events/application_command_create.js';

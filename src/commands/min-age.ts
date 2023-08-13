@@ -1,11 +1,12 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { Bitfield, CommandOption, CommandResponse, Interaction, Locale } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { Bitfield, CommandOption, CommandResponse, Interaction, Locale } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import { COMMAND_OPTION_TYPES, PERMISSIONS } from '../types/numberTypes.js';
 import TimeUtils from '../utils/time.js';
 import { MINAGE_DURATION_MAXIMUM, MINAGE_DURATION_MINIMUM, MINAGE_MESSAGE_LENGTH_MAXIMUM } from '../data/dbLimits.js';
-import { MinAgeAction, MINAGE_ACTIONS } from '../types/dbTypes.js';
+import type { MinAgeAction} from '../types/dbTypes.js';
+import { MINAGE_ACTIONS } from '../types/dbTypes.js';
 import Replacers from '../utils/replacers.js';
 import { EXAMPLE_DURATION, EXAMPLE_TIMESTAMP } from '../data/constants.js';
 

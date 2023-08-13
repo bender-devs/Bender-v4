@@ -1,5 +1,5 @@
 import { EXAMPLE_DURATION, EXAMPLE_TIMESTAMP } from '../data/constants.js';
-import { Locale, ReplaceMap } from '../types/types.js';
+import type { Locale, ReplaceMap } from '../types/types.js';
 import LangUtils from './language.js';
 import TimeUtils from './time.js';
 

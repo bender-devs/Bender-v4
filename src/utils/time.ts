@@ -1,5 +1,5 @@
-import { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
-import { LangKey } from '../text/languageList.js';
+import type { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import type { LangKey } from '../text/languageList.js';
 import LangUtils from './language.js';
 import TextUtils from './text.js';
 import { DURATION_REGEX } from '../data/constants.js';

@@ -1,5 +1,5 @@
 import * as gatewayTypes from '../types/gatewayTypes.js';
-import Bot from './bot.js';
+import type Bot from './bot.js';
 import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes.js';
 import EventEmitter from 'events';
 import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants.js';

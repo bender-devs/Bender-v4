@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { PresenceUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { PresenceUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class PresenceUpdateHandler extends EventHandler<PresenceUpdateData> {
     constructor(bot: Bot) {

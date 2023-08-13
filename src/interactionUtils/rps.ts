@@ -1,7 +1,7 @@
-import Bot from '../structures/bot.js';
+import type Bot from '../structures/bot.js';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
-import { Interaction, Locale, MessageComponent, Snowflake } from '../types/types.js';
-import { PendingInteractionBase } from './pending.js';
+import type { Interaction, Locale, MessageComponent, Snowflake } from '../types/types.js';
+import type { PendingInteractionBase } from './pending.js';
 import LangUtils from '../utils/language.js';
 import TextUtils from '../utils/text.js';
 import MiscUtils from '../utils/misc.js';

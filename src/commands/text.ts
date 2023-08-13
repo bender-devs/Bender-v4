@@ -1,6 +1,6 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 import textMap from '../data/text.json' assert { type: 'json' };
 import LangUtils from '../utils/language.js';

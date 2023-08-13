@@ -2,9 +2,9 @@ import * as mongodb from 'mongodb';
 import { DB_RECONNECT_DELAY, DB_WATCHER_OPTIONS, EXIT_CODE_NO_RESTART, ID_REGEX_EXACT } from '../data/constants.js';
 import DB_INDEXES from '../data/dbIndexes.js';
 import * as dbTypes from '../types/dbTypes.js';
-import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types.js';
-import Bot from './bot.js';
-import { SlashCommand } from './command.js';
+import type { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from '../types/types.js';
+import type Bot from './bot.js';
+import type { SlashCommand } from './command.js';
 import DatabaseCacheHandler from './dbCache.js';
 import { DURATION_UNITS } from '../utils/time.js';
 

@@ -1,6 +1,6 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
 import { ID_REGEX_EXACT } from '../data/constants.js';

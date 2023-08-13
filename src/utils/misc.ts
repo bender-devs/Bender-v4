@@ -1,7 +1,7 @@
-import Bot from '../structures/bot.js';
+import type Bot from '../structures/bot.js';
 import EMOTES from '../data/emotes.json' assert { type: 'json' };
 import SHITTY_EMOTES from '../data/shittyEmotes.json' assert { type: 'json' };
-import { Interaction, Locale, Snowflake, Status } from '../types/types.js';
+import type { Interaction, Locale, Snowflake, Status } from '../types/types.js';
 import LangUtils from './language.js';
 import { ACTIVITY_TYPES } from '../types/numberTypes.js';
 import TextUtils from './text.js';

@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { AutoModExecuteData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { AutoModExecuteData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class AutoModExecuteHandler extends EventHandler<AutoModExecuteData> {
     constructor(bot: Bot) {

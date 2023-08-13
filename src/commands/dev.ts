@@ -1,12 +1,13 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes.js';
-import { ShardDestination, ShardOperation, SHARD_OPERATION_LIST } from '../structures/shardManager.js';
+import type { ShardDestination, ShardOperation} from '../structures/shardManager.js';
+import { SHARD_OPERATION_LIST } from '../structures/shardManager.js';
 import { randomUUID } from 'crypto';
 import PermissionUtils from '../utils/permissions.js';
 import LangUtils from '../utils/language.js';
-import { GatewayData, GatewayPayload } from '../types/gatewayTypes.js';
+import type { GatewayData, GatewayPayload } from '../types/gatewayTypes.js';
 import { VERSION } from '../data/constants.js';
 import { inspect, promisify } from 'util';
 import { exec } from 'child_process';

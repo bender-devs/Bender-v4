@@ -1,5 +1,5 @@
-import { CLIENT_STATE } from './numberTypes.js';
-import { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types.js';
+import type { CLIENT_STATE } from './numberTypes.js';
+import type { Command, CommandCreateData, Snowflake, UnixTimestampMillis } from './types.js';
 
 export type DatabaseResult = {
     changes: number;

@@ -1,4 +1,4 @@
-import Bot from './bot.js';
+import type Bot from './bot.js';
 import { DEBUG } from '../data/constants.js';
 import chalk from 'chalk';
 import { createHash } from 'crypto';

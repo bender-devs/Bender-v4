@@ -1,10 +1,10 @@
-import Bot from '../structures/bot.js';
+import type Bot from '../structures/bot.js';
 import { BUTTON_STYLES, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
-import { Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
+import type { Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
 import CDNUtils from '../utils/cdn.js';
 import LangUtils from '../utils/language.js';
 import MiscUtils from '../utils/misc.js';
-import { PendingInteractionBase } from './pending.js';
+import type { PendingInteractionBase } from './pending.js';
 
 export interface BlackjackInteraction extends PendingInteractionBase {
     authorHand: Card[],

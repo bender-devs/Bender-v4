@@ -1,5 +1,5 @@
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
-import { Channel, Member, PartialMember, Role, User } from '../types/types.js';
+import type { Channel, Member, PartialMember, Role, User } from '../types/types.js';
 import TimeUtils from './time.js';
 
 export default class DiscordUtils {

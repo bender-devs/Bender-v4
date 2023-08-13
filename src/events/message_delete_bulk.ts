@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { MessageDeleteBulkData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { MessageDeleteBulkData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class MessageDeleteBulkHandler extends EventHandler<MessageDeleteBulkData> {
     constructor(bot: Bot) {

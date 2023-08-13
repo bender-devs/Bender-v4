@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { ThreadUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { ThreadUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class ThreadDeleteHandler extends EventHandler<ThreadUpdateData> {
     constructor(bot: Bot) {

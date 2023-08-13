@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { VoiceStateUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { VoiceStateUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class VoiceStateUpdateHandler extends EventHandler<VoiceStateUpdateData> {
     constructor(bot: Bot) {

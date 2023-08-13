@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { GuildMemberRemoveData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { GuildMemberRemoveData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class GuildMemberRemoveHandler extends EventHandler<GuildMemberRemoveData> {
     constructor(bot: Bot) {

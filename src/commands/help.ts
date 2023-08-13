@@ -1,6 +1,6 @@
 import { SlashCommand } from '../structures/command.js';
-import Bot from '../structures/bot.js';
-import { CommandOption, CommandResponse, Embed, Interaction } from '../types/types.js';
+import type Bot from '../structures/bot.js';
+import type { CommandOption, CommandResponse, Embed, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 import TextUtils from '../utils/text.js';

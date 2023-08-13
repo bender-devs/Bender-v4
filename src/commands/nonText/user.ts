@@ -1,6 +1,6 @@
-import Bot from '../../structures/bot.js';
+import type Bot from '../../structures/bot.js';
 import { UserCommand } from '../../structures/command.js';
-import { Interaction, InteractionDataOption } from '../../types/types.js';
+import type { Interaction, InteractionDataOption } from '../../types/types.js';
 
 class UserInfoCommand extends UserCommand {
     constructor(bot: Bot) {

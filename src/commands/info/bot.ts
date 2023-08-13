@@ -1,7 +1,7 @@
 import { DASHBOARD, DEFAULT_COLOR, GITHUB_LINK, OWNERS, SUPPORT_SERVER, VERSION, WEBSITE } from '../../data/constants.js';
-import { Embed, Interaction } from '../../types/types.js';
+import type { Embed, Interaction } from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
-import InfoCommand from '../info.js';
+import type InfoCommand from '../info.js';
 import { cpus, totalmem, freemem } from 'os';
 import LangUtils from '../../utils/language.js';
 import DiscordUtils from '../../utils/discord.js';

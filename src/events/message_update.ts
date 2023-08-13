@@ -1,6 +1,6 @@
 import { EventHandler } from '../types/types.js';
-import { MessageUpdateData } from '../types/gatewayTypes.js';
-import Bot from '../structures/bot.js';
+import type { MessageUpdateData } from '../types/gatewayTypes.js';
+import type Bot from '../structures/bot.js';
 
 export default class MessageUpdateHandler extends EventHandler<MessageUpdateData> {
     constructor(bot: Bot) {

@@ -1,4 +1,4 @@
-import { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types.js';
+import type { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types.js';
 import Logger from './logger.js';
 import { randomUUID } from 'crypto';
 import * as child_process from 'child_process';

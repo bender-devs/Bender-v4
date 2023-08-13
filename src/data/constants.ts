@@ -1,7 +1,7 @@
-import { GatewayParams, IdentifyData } from '../types/gatewayTypes.js';
+import type { GatewayParams, IdentifyData } from '../types/gatewayTypes.js';
 import { GATEWAY_VERSIONS, ACTIVITY_TYPES, INTENT_FLAGS } from '../types/numberTypes.js';
 import * as os from 'os';
-import { Snowflake } from '../types/types.js';
+import type { Snowflake } from '../types/types.js';
 import { DURATION_UNITS } from '../utils/time.js';
 
 function getOSType() {

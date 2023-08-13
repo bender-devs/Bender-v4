@@ -1,10 +1,10 @@
 import { PERMISSIONS } from '../../types/numberTypes.js';
-import { CommandOptionValue, Embed, Interaction, Locale, Member, Role, Snowflake } from '../../types/types.js';
+import type { CommandOptionValue, Embed, Interaction, Locale, Member, Role, Snowflake } from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
 import LangUtils from '../../utils/language.js';
 import TextUtils from '../../utils/text.js';
 import UnicodeUtils from '../../utils/unicode.js';
-import InfoCommand from '../info.js';
+import type InfoCommand from '../info.js';
 
 function getKeyPermNames(role: Role, locale?: Locale): string[] {
     const perms: string[] = [];
