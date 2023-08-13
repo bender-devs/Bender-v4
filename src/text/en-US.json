@@ -50,6 +50,9 @@
     "SETTING_DISABLE_UNNECESSARY": "No changes made; {{setting}} was already disabled.",
     "SETTING_DISABLE_FAILED": "Failed to disable {{setting}}.",
 
+    "MESSAGE_SET_INVALID": "You need to either provide a message or use the `reset` option.",
+    "MESSAGE_RESET_INVALID": "You can't use the `reset` option with a message - please pick one.",
+
 
 
     "----------- /ping -----------": "",
@@ -640,8 +643,6 @@
     "MINAGE_SETTING_MESSAGE": "min-age message",
 
     "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later ({{timestampRelative}}.)",
-    "MINAGE_MESSAGE_SET_INVALID": "You need to either provide a message or use the `reset` option.",
-    "MINAGE_MESSAGE_RESET_INVALID": "You can't use the `reset` option with a message - please pick one.",
     "MINAGE_ENABLED_SET_INVALID": "Please set a duration (via {{commandLink}}) before enabling minimum account age.",
     "MINAGE_DURATION_SET_INVALID": "Minimum account age must be between {{minimum}} and {{maximum}}.",
 

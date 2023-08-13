@@ -153,7 +153,7 @@ export class CommandUtils {
             genericSettingKey = `SETTING_${data.type}_${data.result}`;
         }
         const replyText = LangUtils.getAndReplace(genericSettingKey, {
-            setting: LangUtils.get('MINAGE_SETTING_ACTION', interaction.locale),
+            setting: LangUtils.get(settingKey, interaction.locale),
             value: value || ''
         }, interaction.locale);
         return this.respond(interaction, replyText, `SUCCESS${data.result === 'UNNECESSARY' ? '_ALT' : ''}`);

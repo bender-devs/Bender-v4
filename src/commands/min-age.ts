@@ -267,7 +267,7 @@ export default class MinAgeCommand extends SlashCommand {
                 const message = subcommand.options?.find(opt => opt.name === LangUtils.get('MINAGE_OPTION_MESSAGE'))?.value;
                 const reset = subcommand.options?.find(opt => opt.name === LangUtils.get('MINAGE_OPTION_RESET'))?.value;
                 if (reset && message) {
-                    return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_INVALID', 'WARNING', true);
+                    return this.respondKey(interaction, 'MESSAGE_RESET_INVALID', 'WARNING', true);
                 } else if (reset) {
                     return this.bot.db.guild.deleteValue(interaction.guild_id, 'minage.message').then(result => {
                         return this.respondSettingsResult(interaction, 'MINAGE_SETTING_MESSAGE', {
@@ -283,7 +283,7 @@ export default class MinAgeCommand extends SlashCommand {
                     });
                 }
                 if (!message) {
-                    return this.respondKey(interaction, 'MINAGE_MESSAGE_SET_INVALID', 'WARNING', true);
+                    return this.respondKey(interaction, 'MESSAGE_SET_INVALID', 'WARNING', true);
                 }
                 if (typeof message !== 'string') {
                     return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
