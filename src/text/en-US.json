@@ -648,6 +648,64 @@
 
 
 
+    "----------- /member-msg -----------": "",
+
+    "MEMBER_MSG_NAME": "member-msg",
+    "MEMBER_MSG_DESCRIPTION": "Set member messages, such as welcome/leave messages and ban/kick DMs.",
+
+    "MEMBER_MSG_SUBCOMMAND_VIEW": "view",
+    "MEMBER_MSG_SUBCOMMAND_VIEW_DESCRIPTION": "View current member messages and DM settings.",
+
+    "MEMBER_MSG_SUBCOMMAND_CHANNEL": "channel",
+    "MEMBER_MSG_SUBCOMMAND_CHANNEL_DESCRIPTION": "Set the channel where welcome, leave, and ban messages are posted.",
+    "MEMBER_MSG_OPTION_CHANNEL": "channel",
+    "MEMBER_MSG_OPTION_CHANNEL_DESCRIPTION": "We recommend using a channel which everyone can view but not type in.",
+
+    "MEMBER_MSG_OPTION": "message",
+    "MEMBER_MSG_OPTION_RESET": "reset",
+    "MEMBER_MSG_OPTION_RESET_DESCRIPTION": "Remove the current message or DM.",
+
+    "MEMBER_MSG_SUBCOMMAND_JOIN": "join",
+    "MEMBER_MSG_SUBCOMMAND_JOIN_DESCRIPTION": "Set the message that's sent when a member joins the server.",
+    "MEMBER_MSG_OPTION_JOIN_DESCRIPTION": "Example: Hi {member}, welcome to {server}! You're member #{count}.",
+
+    "MEMBER_MSG_SUBCOMMAND_LEAVE": "leave",
+    "MEMBER_MSG_SUBCOMMAND_LEAVE_DESCRIPTION": "Set the message that's sent when a member leaves the server.",
+    "MEMBER_MSG_OPTION_LEAVE_DESCRIPTION": "Example: 👋 See you later, {member}! (There are now {count} members.)",
+
+    "MEMBER_MSG_SUBCOMMAND_BAN": "ban",
+    "MEMBER_MSG_SUBCOMMAND_BAN_DESCRIPTION": "Set the message that's sent when a member is banned.",
+    "MEMBER_MSG_OPTION_BAN_DESCRIPTION": "Example: 🔨 {member} got their dumb ass banned!",
+
+    "MEMBER_MSG_SUBCOMMAND_JOIN_DM": "join_dm",
+    "MEMBER_MSG_SUBCOMMAND_JOIN_DM_DESCRIPTION": "Set the DM that's sent to new members upon joining.",
+    "MEMBER_MSG_OPTION_JOIN_DM_DESCRIPTION": "Example: Welcome {member}! Please read the #rules and enjoy!",
+
+    "MEMBER_MSG_SUBCOMMAND_BAN_DM": "ban_dm",
+    "MEMBER_MSG_SUBCOMMAND_BAN_DM_DESCRIPTION": "Set the DM that's sent to users when they get banned.",
+    "MEMBER_MSG_OPTION_BAN_DM_DESCRIPTION": "Example: You've been banned by {moderator} for {reason}. To appeal, contact your local Nibblonian.",
+
+    "MEMBER_MSG_SUBCOMMAND_KICK_DM": "kick_dm",
+    "MEMBER_MSG_SUBCOMMAND_KICK_DM_DESCRIPTION": "Set the DM that's sent to members when they get kicked from the server.",
+    "MEMBER_MSG_OPTION_KICK_DM_DESCRIPTION": "Example: You've been kicked by {moderator} for {reason}.",
+
+    "MEMBER_MSG_TITLE": "## Member messages",
+    "MEMBER_MSG_CHANNEL": "Member message channel:",
+    "MEMBER_MSG_JOIN": "Join message:",
+    "MEMBER_MSG_LEAVE": "Leave message:",
+    "MEMBER_MSG_BAN": "Ban message:",
+    "MEMBER_MSG_JOIN_DM": "Join DM:",
+    "MEMBER_MSG_BAN_DM": "Ban DM:",
+    "MEMBER_MSG_KICK_DM": "Kick DM:",
+    "MEMBER_MSG_NONE": "*(None)*",
+
+    "MEMBER_MSG_SETTING_CHANNEL": "member message channel",
+    "MEMBER_MSG_SETTING_JOIN": "join message",
+    "MEMBER_MSG_SETTING_LEAVE": "leave message",
+    "MEMBER_MSG_SETTING_BAN": "ban message",
+    "MEMBER_MSG_SETTING_JOIN_DM": "join DM",
+    "MEMBER_MSG_SETTING_BAN_DM": "ban DM",
+    "MEMBER_MSG_SETTING_KICK_DM": "kick DM",
 
 
 
