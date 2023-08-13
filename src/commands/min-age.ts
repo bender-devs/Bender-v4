@@ -200,11 +200,15 @@ export default class MinAgeCommand extends SlashCommand {
                 }
 
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.duration', duration).then(result => {
-                    const replyText = LangUtils.get(`MINAGE_DURATION_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
+                    const replyText = LangUtils.getAndReplace(`SETTING_UPDATE_${result.changes ? 'SUCCESS' : 'UNNECESSARY'}`, {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
                     this.bot.logger.handleError(`/${this.name} set`, err);
-                    return this.respondKey(interaction, 'MINAGE_DURATION_SET_FAILED', 'ERROR', true);
+                    return this.respondKeyReplace(interaction, 'SETTING_UPDATE_FAILED', {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, 'ERROR', true);
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_ENABLE'): {
@@ -213,20 +217,28 @@ export default class MinAgeCommand extends SlashCommand {
                     return this.respondKeyReplace(interaction, 'MINAGE_ENABLED_SET_INVALID', { commandLink: cmdLink }, 'WARNING', true);
                 }
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.enabled', true).then(result => {
-                    const replyText = LangUtils.get(`MINAGE_ENABLED_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
+                    const replyText = LangUtils.getAndReplace(`SETTING_ENABLE_${result.changes ? 'SUCCESS' : 'UNNECESSARY'}`, {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
                     this.bot.logger.handleError(`/${this.name} enable`, err);
-                    return this.respondKey(interaction, 'MINAGE_ENABLED_SET_FAILED', 'ERROR', true);
+                    return this.respondKeyReplace(interaction, 'SETTING_ENABLE_FAILED', {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, 'ERROR', true);
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_DISABLE'): {
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.enabled', false).then(result => {
-                    const replyText = LangUtils.get(`MINAGE_DISABLED_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
+                    const replyText = LangUtils.getAndReplace(`SETTING_DISABLE_${result.changes ? 'SUCCESS' : 'UNNECESSARY'}`, {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, interaction.locale);
                     return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
                 }).catch(err => {
                     this.bot.logger.handleError(`/${this.name} disable`, err);
-                    return this.respondKey(interaction, 'MINAGE_DISABLED_SET_FAILED', 'ERROR', true);
+                    return this.respondKeyReplace(interaction, 'SETTING_DISABLE_FAILED', {
+                        setting: LangUtils.get('MINAGE_SETTING', interaction.locale)
+                    }, 'ERROR', true);
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_ACTION'): {
@@ -238,13 +250,16 @@ export default class MinAgeCommand extends SlashCommand {
                 const actionLocalized = LangUtils.get(`MINAGE_OPTION_ACTION_${actionUpper}`, interaction.locale);
 
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.action', action).then(result => {
-                    const replyText = LangUtils.getAndReplace(`MINAGE_ACTION_SET${result.changes ? '' : '_ALREADY'}`, {
-                        action: actionLocalized
-                    }, interaction.locale);
-                    return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
+                    return this.respondSettingsResult(interaction, 'MINAGE_SETTING_ACTION', {
+                        type: 'UPDATE',
+                        result: result.changes ? 'SUCCESS' : 'UNNECESSARY'
+                    }, `**${actionLocalized}**`);
                 }).catch(err => {
                     this.bot.logger.handleError(`/${this.name} action`, err);
-                    return this.respondKey(interaction, 'MINAGE_ACTION_SET_FAILED', 'ERROR', true);
+                    return this.respondSettingsResult(interaction, 'MINAGE_SETTING_ACTION', {
+                        type: 'UPDATE',
+                        result: 'FAILURE'
+                    });
                 });
             }
             case LangUtils.get('MINAGE_SUBCOMMAND_MESSAGE'): {
@@ -254,11 +269,16 @@ export default class MinAgeCommand extends SlashCommand {
                     return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_INVALID', 'WARNING', true);
                 } else if (reset) {
                     return this.bot.db.guild.deleteValue(interaction.guild_id, 'minage.message').then(result => {
-                        const replyText = LangUtils.get(`MINAGE_MESSAGE_RESET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
-                        return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
+                        return this.respondSettingsResult(interaction, 'MINAGE_SETTING_MESSAGE', {
+                            type: 'RESET',
+                            result: result.changes ? 'SUCCESS' : 'UNNECESSARY'
+                        });
                     }).catch(err => {
                         this.bot.logger.handleError(`/${this.name} message`, err);
-                        return this.respondKey(interaction, 'MINAGE_MESSAGE_RESET_FAILED', 'ERROR', true);
+                        return this.respondSettingsResult(interaction, 'MINAGE_SETTING_MESSAGE', {
+                            type: 'RESET',
+                            result: 'FAILURE'
+                        });
                     });
                 }
                 if (!message) {
@@ -275,11 +295,16 @@ export default class MinAgeCommand extends SlashCommand {
                 }
 
                 return this.bot.db.guild.update(interaction.guild_id, 'minage.message', message).then(result => {
-                    const replyText = LangUtils.get(`MINAGE_MESSAGE_SET${result.changes ? '' : '_ALREADY'}`, interaction.locale);
-                    return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
+                    return this.respondSettingsResult(interaction, 'MINAGE_SETTING_MESSAGE', {
+                        type: 'UPDATE',
+                        result: result.changes ? 'SUCCESS' : 'UNNECESSARY'
+                    });
                 }).catch(err => {
                     this.bot.logger.handleError(`/${this.name} message`, err);
-                    return this.respondKey(interaction, 'MINAGE_MESSAGE_SET_FAILED', 'ERROR', true);
+                    return this.respondSettingsResult(interaction, 'MINAGE_SETTING_MESSAGE', {
+                        type: 'UPDATE',
+                        result: 'FAILURE'
+                    });
                 });
             }
             default:

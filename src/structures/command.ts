@@ -37,6 +37,11 @@ export class MessageCommand extends UserOrMessageCommand {
 type CommandResponseEditData = string | types.MessageData;
 type CommandResponseCreateData = CommandResponseEditData | types.InteractionResponseData;
 
+type SettingsResultData = {
+    type: 'UPDATE' | 'RESET' | 'ENABLE' | 'DISABLE',
+    result: 'SUCCESS' | 'UNNECESSARY' | 'FAILURE'
+}
+
 export class CommandUtils {
     bot: Bot;
     name: string;
@@ -133,6 +138,25 @@ export class CommandUtils {
         const permNames = perms.map(perm => LangUtils.getPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${context === interaction.guild_id ? 'GUILD_' : ''}PERMISSIONS`;
         return this.respondKeyReplace(interaction, key, { context, permissions: `\`${permNames.join('`, `')}\`` }, 'WARNING', true);
+    }
+
+    async respondSettingsResult(interaction: types.Interaction, settingKey: LangKey, data: SettingsResultData, value?: string) {
+        if (data.result === 'FAILURE') {
+            return this.respondKeyReplace(interaction, `SETTING_${data.type}_FAILED`, {
+                setting: LangUtils.get(settingKey, interaction.locale)
+            }, 'ERROR', true);
+        }
+        let genericSettingKey: LangKey;
+        if (value && data.type === 'UPDATE') {
+            genericSettingKey = `SETTING_${data.type}_${data.result}_VALUE`;
+        } else {
+            genericSettingKey = `SETTING_${data.type}_${data.result}`;
+        }
+        const replyText = LangUtils.getAndReplace(genericSettingKey, {
+            setting: LangUtils.get('MINAGE_SETTING_ACTION', interaction.locale),
+            value: value || ''
+        }, interaction.locale);
+        return this.respond(interaction, replyText, `SUCCESS${data.result === 'UNNECESSARY' ? '_ALT' : ''}`);
     }
 
     async handleAPIError(err: APIError) {

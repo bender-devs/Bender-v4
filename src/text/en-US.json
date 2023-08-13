@@ -30,6 +30,28 @@
 
 
 
+    "----------- Generic settings messages -----------": "",
+
+    "SETTING_UPDATE_SUCCESS": "Updated {{setting}}.",
+    "SETTING_UPDATE_SUCCESS_VALUE": "Updated {{setting}}: {{value}}",
+    "SETTING_UPDATE_UNNECESSARY": "No changes made; that's the current {{setting}}.",
+    "SETTING_UPDATE_UNNECESSARY_VALUE": "No changes made; {{setting}} was already set to {{value}}.",
+    "SETTING_UPDATE_FAILED": "Failed to update {{setting}}.",
+
+    "SETTING_RESET_SUCCESS": "Reset {{setting}}.",
+    "SETTING_RESET_UNNECESSARY": "No changes made; {{setting}} was already set to the default.",
+    "SETTING_RESET_FAILED": "Failed to reset {{setting}}.",
+
+    "SETTING_ENABLE_SUCCESS": "Enabled {{setting}}.",
+    "SETTING_ENABLE_UNNECESSARY": "No changes made; {{setting}} was already enabled.",
+    "SETTING_ENABLE_FAILED": "Failed to enable {{setting}}.",
+
+    "SETTING_DISABLE_SUCCESS": "Disabled {{setting}}.",
+    "SETTING_DISABLE_UNNECESSARY": "No changes made; {{setting}} was already disabled.",
+    "SETTING_DISABLE_FAILED": "Failed to disable {{setting}}.",
+
+
+
     "----------- /ping -----------": "",
 
     "PING_NAME": "ping",
@@ -607,39 +629,24 @@
     "MINAGE_TITLE": "## Minimum account age settings",
 
     "MINAGE_ENABLED": "Status: **enabled**",
-    "MINAGE_ENABLED_SET": "Enabled minimum account age.",
-    "MINAGE_ENABLED_SET_ALREADY": "Minimum account age is already enabled.",
-    "MINAGE_ENABLED_SET_FAILED": "Failed to enable minimum account age.",
-    "MINAGE_ENABLED_SET_INVALID": "Please set a duration (via {{commandLink}}) before enabling minimum account age.",
-    
     "MINAGE_DISABLED": "Status: **disabled**",
-    "MINAGE_DISABLED_SET": "Disabled minimum account age.",
-    "MINAGE_DISABLED_SET_ALREADY": "Minimum account age is already disabled.",
-    "MINAGE_DISABLED_SET_FAILED": "Failed to disable minimum account age.",
-
     "MINAGE_DURATION": "Minimum account age: **{{duration}}**",
     "MINAGE_DURATION_NONE": "Minimum account age: *Not configured*",
-    "MINAGE_DURATION_SET": "Set minimum account age to **{{duration}}**.",
-    "MINAGE_DURATION_SET_ALREADY": "Minimum account age is already set to **{{duration}}**.",
-    "MINAGE_DURATION_SET_FAILED": "Failed to set minimum account age.",
+    "MINAGE_ACTION": "Action (when account is too new): **{{action}}**",
+    "MINAGE_MESSAGE": "**Message** (to send before taking action):\n> {{message}}",
+
+    "MINAGE_SETTING": "minimum account age",
+    "MINAGE_SETTING_ACTION": "min-age action",
+    "MINAGE_SETTING_MESSAGE": "min-age message",
+
+    "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later ({{timestampRelative}}.)",
+    "MINAGE_MESSAGE_SET_INVALID": "You need to either provide a message or use the `reset` option.",
+    "MINAGE_MESSAGE_RESET_INVALID": "You can't use the `reset` option with a message - please pick one.",
+    "MINAGE_ENABLED_SET_INVALID": "Please set a duration (via {{commandLink}}) before enabling minimum account age.",
     "MINAGE_DURATION_SET_INVALID": "Minimum account age must be between {{minimum}} and {{maximum}}.",
 
-    "MINAGE_ACTION": "Action (when account is too new): **{{action}}**",
-    "MINAGE_ACTION_SET": "Set min-age action to: **{{action}}**.",
-    "MINAGE_ACTION_SET_ALREADY": "Min-age action was already set to: **{{action}}**.",
-    "MINAGE_ACTION_SET_FAILED": "Failed to update min-age action.",
 
-    "MINAGE_MESSAGE": "**Message** (to send before taking action):\n> {{message}}",
-    "MINAGE_DEFAULT_MESSAGE": "This server requires that your account be created at least {{duration}} ago. You can rejoin at {{timestamp}} or later ({{timestampRelative}}.)",
-    "MINAGE_MESSAGE_SET": "Updated min-age message.",
-    "MINAGE_MESSAGE_SET_ALREADY": "No changes made; that's the current min-age message.",
-    "MINAGE_MESSAGE_SET_FAILED": "Failed to update min-age message.",
-    "MINAGE_MESSAGE_SET_INVALID": "You need to either provide a message or use the `reset` option.",
 
-    "MINAGE_MESSAGE_RESET_INVALID": "You can't use the `reset` option with a message - please pick one.",
-    "MINAGE_MESSAGE_RESET": "Reset min-age message.",
-    "MINAGE_MESSAGE_RESET_ALREADY": "No changes made; min-age message was already set to the default.",
-    "MINAGE_MESSAGE_RESET_FAILED": "Failed to reset min-age message.",
 
 
 
