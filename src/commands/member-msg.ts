@@ -36,7 +36,7 @@ function getMessageMarkdown(this: MemberMsgCommand, interaction: Interaction, se
     if (message) {
         msgMarkdown += `\n> ${message}`;
     } else {
-        msgMarkdown += ` ${LangUtils.get('MEMBER_MSG_NONE', interaction.locale)}`;
+        msgMarkdown += ` ${LangUtils.get('NONE', interaction.locale)}`;
     }
     return msgMarkdown;
 }
@@ -185,7 +185,7 @@ export default class MemberMsgCommand extends SlashCommand {
                 if (msgs?.channel) {
                     replyText += TextUtils.mention.parseChannel(msgs.channel);
                 } else {
-                    replyText += LangUtils.get('MEMBER_MSG_NONE', interaction.locale);
+                    replyText += LangUtils.get('NONE', interaction.locale);
                 }
                 // TODO: message variable previews?
                 replyText += getMessageMarkdown.bind(this)(interaction, 'MEMBER_MSG_JOIN', msgs?.join, 'JOIN');

@@ -697,7 +697,6 @@
     "MEMBER_MSG_JOIN_DM": "Join DM:",
     "MEMBER_MSG_BAN_DM": "Ban DM:",
     "MEMBER_MSG_KICK_DM": "Kick DM:",
-    "MEMBER_MSG_NONE": "*(None)*",
 
     "MEMBER_MSG_SETTING_CHANNEL": "member message channel",
     "MEMBER_MSG_SETTING_JOIN": "join message",
@@ -743,6 +742,12 @@
     "DURATION_MONTHS": "{{number}} months",
     "DURATION_YEAR": "1 year",
     "DURATION_YEARS": "{{number}} years",
+
+
+
+    "----------- Miscellaneous -----------": "",
+    
+    "NONE": "*None*",
 
 
 
