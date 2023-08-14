@@ -296,6 +296,23 @@ export default class DatabaseManager {
             return bs.updateOne({ guild: guildID }, { $pull: { [dfKey]: null }, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
         },
 
+        deleteValues: async (guildID: Snowflake, dfKeys: dbTypes.GuildDotFormatKey[]) => {
+            if (this.cacheEnabled) {
+                for (const dfKey of dfKeys) {
+                    const firstPiece = dfKey.split('.')[0];
+                    this.cache.guilds.update(guildID, undefined, [firstPiece]);
+                }
+            }
+
+            const unsetObj: Partial<Record<dbTypes.GuildDotFormatKey, ''>> = {};
+            for (const dfKey of dfKeys) {
+                unsetObj[dfKey] = '';
+            }
+
+            const bs = this.bender.collection('bot_settings');
+            return bs.updateOne({ guild: guildID }, { $unset: unsetObj, $currentDate: { lastModified: true } }).then(DatabaseManager.reformat);
+        },
+
         addToSet: async (guildID: Snowflake, dfKey: dbTypes.GuildDotFormatKey, arr: Array<unknown>) => {
             const bs = this.bender.collection('bot_settings');
             arr = arr.filter(item => item !== null)

@@ -2,6 +2,7 @@ import { EventHandler } from '../types/types.js';
 import type { ChannelUpdateData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
+import type { GuildDotFormatKey } from '../types/dbTypes.js';
 
 export default class ChannelDeleteHandler extends EventHandler<ChannelUpdateData> {
     constructor(bot: Bot) {
@@ -18,7 +19,26 @@ export default class ChannelDeleteHandler extends EventHandler<ChannelUpdateData
         this.bot.cache.channels.delete(eventData.guild_id, eventData.id);
     }
 
-    handler = (/*eventData: ChannelUpdateData*/) => {
-        // TODO: update settings if they have become invalid
+    handler = async (eventData: ChannelUpdateData) => {
+        if (!eventData.guild_id) {
+            return null;
+        }
+        // update settings if they have become invalid
+        const settings = await this.bot.db.guild.get(eventData.guild_id, {
+            'memberLog.channel': 1
+        });
+        if (!settings) {
+            return null;
+        }
+        const deleteKeys: GuildDotFormatKey[] = [];
+        if (settings.memberLog?.channel === eventData.id) {
+            deleteKeys.push('memberLog.channel');
+        }
+        if (deleteKeys.length) {
+            return this.bot.db.guild.deleteValues(eventData.guild_id, deleteKeys).catch(err => {
+                this.bot.logger.handleError('CHANNEL_DELETE', err);
+                return null;
+            });
+        }
     }
 }
