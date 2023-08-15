@@ -40,7 +40,10 @@ export default async function (this: FunCommand, interaction: Interaction, show?
         }, interaction.locale);
         return this.respond(interaction, {
             content,
-            components: RPSUtils.getComponents(interaction.id)
+            components: RPSUtils.getComponents(interaction.id),
+            allowed_mentions: {
+                users: [userID as Snowflake]
+            }
         }, undefined, false).then(msg => {
             this.bot.interactionUtils.addItem({
                 author: authorID,

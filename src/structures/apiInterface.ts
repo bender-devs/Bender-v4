@@ -201,7 +201,10 @@ export default class APIInterface {
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
         send: async (channel_id: types.Snowflake, message_data: types.MessageData) => {
-            // TODO: apply default options (i.e. allowed_mentions)
+            // don't mention anyone by default
+            if (!message_data.allowed_mentions) {
+                message_data.allowed_mentions = { parse: [] };
+            }
             return APIWrapper.message.create(channel_id, message_data)
                 .then(res => res.body).catch(this.handleError.bind(this));
         },
