@@ -665,6 +665,38 @@ export type ForumTag = {
     emoji_name: string | null;
 }
 
+/************ audit log types ************/
+
+export type AuditLogEntry = {
+    target_id: Snowflake | null;
+    changes?: AuditLogChange[];
+    user_id: Snowflake | null;
+    id: Snowflake;
+    action_type: num.AUDIT_LOG_ENTRY_TYPES;
+    options?: AuditLogEntryInfo;
+    reason?: string;
+}
+
+export type AuditLogChange = {
+    new_value?: unknown;
+    old_value?: unknown;
+    key: string;
+}
+
+export type AuditLogEntryInfo = {
+    application_id?: Snowflake;
+    auto_moderation_rule_name?: string;
+    auto_moderation_rule_trigger_type?: string;
+    channel_id?: Snowflake;
+    count?: string;
+    delete_member_days?: string;
+    id?: Snowflake;
+    members_removed?: string;
+    message_id?: Snowflake;
+    role_name?: string;
+    type: '0' | '1';
+}
+
 /************ integration types ************/
 
 export type Integration = {
