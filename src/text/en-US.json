@@ -747,6 +747,8 @@
 
     "----------- Miscellaneous -----------": "",
     
+    "ORDINAL_NUMBER_FORMAT": "{{number}}th",
+    "NEW_ACCOUNT_NOTICE": "**New account** - Created at {{timestamp}}",
     "NONE": "*None*",
 
 

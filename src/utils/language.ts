@@ -156,6 +156,23 @@ export default class LanguageUtils {
         return LanguageUtils.get(`PERMISSION_${perm}`, locale);
     }
 
+    // used for special cases in formatting ordinal numbers (1st, 2nd, 3rd, etc.)
+    static formatOrdinalNumber(num: number, locale: Locale = DEFAULT_LANGUAGE) {
+        if (locale === 'en-US' || locale === 'en-GB') {
+            let suffix = 'th';
+            if (num % 10 === 1 && num % 100 !== 11) {
+                suffix = 'st';
+            } else if (num % 10 === 2 && num % 100 !== 12) {
+                suffix = 'nd';
+            } else if (num % 10 === 3 && num % 100 !== 13) {
+                suffix = 'rd';
+            }
+            return `${num.toLocaleString(locale)}${suffix}`;
+        }
+        // TODO: add other language-specific rules
+        return this.getAndReplace('ORDINAL_NUMBER_FORMAT', { number: num }, locale);
+    }
+
     static logLocalizationSupport(logger: Logger) {
         const langList = Object.keys(languages);
         logger.debug('LANGUAGES', `Loaded ${langList.length} languages: ${langList.join(', ')}`);
