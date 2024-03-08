@@ -932,6 +932,7 @@ export type Message = {
     components?: MessageComponent[];
     sticker_items?: StickerItem[];
     stickers?: Sticker[];
+    enforce_nonce?: boolean;
 }
 
 interface UserMember extends User {
@@ -1019,21 +1020,26 @@ export interface MessageComponentButton extends MessageComponentBase {
     emoji?: PartialEmoji;
     url?: URL;
 }
-export interface MessageComponentSelect extends MessageComponentBase {
+export interface Select extends MessageComponentBase {
     custom_id?: string;
     disabled?: boolean;
     placeholder?: string;
     min_values?: number;
     max_values?: number;
+    default_values?: SelectDefaultValue[];
 }
-export interface MessageComponentTextSelect extends MessageComponentSelect {
-    options: MessageComponentSelectOption[];
+export interface TextSelect extends Select {
+    options: SelectOption[];
 }
-export interface MessageComponentChannelSelect extends MessageComponentSelect {
+export interface ChannelSelect extends Select {
     channel_types: num.CHANNEL_TYPES[];
 }
-export type MessageComponent = MessageComponentRow | MessageComponentButton | MessageComponentSelect | MessageComponentTextSelect | MessageComponentChannelSelect;
-export type MessageComponentSelectOption = {
+export interface SelectDefaultValue {
+    id: Snowflake;
+    type: 'user' | 'role' | 'channel';
+}
+export type MessageComponent = MessageComponentRow | MessageComponentButton | Select | TextSelect | ChannelSelect;
+export type SelectOption = {
     label: string,
     value: string,
     description?: string;
