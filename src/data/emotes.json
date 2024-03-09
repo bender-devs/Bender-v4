@@ -16,6 +16,7 @@
     "NITRO":       "<:nitro:354113480753807376>",
     "NODEJS":      "<:nodejs:422663087389147136>",
     "GITHUB":      "<:github:992315867201273967>",
+    "PRO":         "<:BenderBeta:354108166998327296>",
 
     "JOE":  "<:joe:409944941544996865>",
     "MARK": "<a:mark:750372935365165074>",
@@ -46,14 +47,10 @@
     "USER":       "👤",
     "USERS":      "👥",
     "DATE":       "🗓",
-
-    "INFO_MINI": "\\ℹ",
-    "LINK_MINI": "\\🔗",
-    "PRO_MINI":  "\\🏆",
-    "SITE_MINI": "\\🌎",
-    "CHAT_MINI": "\\💬",
-    "DASH_MINI": "\\🎨",
-    "TOS_MINI":  "\\📄",
+    "SITE":       "🌎",
+    "CHAT":       "💬",
+    "DASH":       "🎨",
+    "TOS":        "📄",
 
     "SECURITY_NONE":      "🔓",
     "SECURITY_LOW":       "🔒",

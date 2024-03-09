@@ -127,27 +127,27 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         interaction.locale
     )}](${GITHUB_LINK})\n\n`;
 
-    description += `[${this.bot.utils.getEmoji('LINK_MINI', interaction)} ${LangUtils.get(
+    description += `[${this.bot.utils.getEmoji('LINK', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_ADD',
         interaction.locale
     )}](${WEBSITE}/${process.env.RUNTIME_MODE === 'BETA' ? 'beta_' : ''}invite)`;
-    description += ` | [${this.bot.utils.getEmoji('CHAT_MINI', interaction)} ${LangUtils.get(
+    description += ` | [${this.bot.utils.getEmoji('CHAT', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_SUPPORT',
         interaction.locale
     )}](${SUPPORT_SERVER})`;
-    description += ` | [${this.bot.utils.getEmoji('TOS_MINI', interaction)} ${LangUtils.get(
+    description += ` | [${this.bot.utils.getEmoji('TOS', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_TOS',
         interaction.locale
     )}](${WEBSITE}/tos)`;
-    description += `\n[${this.bot.utils.getEmoji('SITE_MINI', interaction)} ${LangUtils.get(
+    description += `\n[${this.bot.utils.getEmoji('SITE', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_SITE',
         interaction.locale
     )}](${WEBSITE})`;
-    description += ` | [${this.bot.utils.getEmoji('DASH_MINI', interaction)} ${LangUtils.get(
+    description += ` | [${this.bot.utils.getEmoji('DASH', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_DASHBOARD',
         interaction.locale
     )}](${DASHBOARD})`;
-    description += ` | [${this.bot.utils.getEmoji('PRO_MINI', interaction)} ${LangUtils.get(
+    description += ` | [${this.bot.utils.getEmoji('PRO', interaction)} ${LangUtils.get(
         'BOT_INFO_LINKS_PRO',
         interaction.locale
     )}](${WEBSITE}/pro)`;

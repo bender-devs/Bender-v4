@@ -39,7 +39,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
         description += `\n${LangUtils.getAndReplace(
             'EMOJI_INFO_MANAGED',
             {
-                infoEmoji: this.getEmoji('INFO_MINI', interaction),
+                infoEmoji: this.getEmoji('INFO', interaction),
             },
             interaction.locale
         )}`;

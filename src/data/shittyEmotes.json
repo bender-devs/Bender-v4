@@ -16,6 +16,7 @@
     "NITRO":       "🏳️‍🌈",
     "NODEJS":      "🛠",
     "GITHUB":      "👩‍💻",
+    "PRO":         "💎",
 
     "JOE":  "👤",
     "MARK": "👤",
@@ -46,14 +47,10 @@
     "USER":       "👤",
     "USERS":      "👥",
     "DATE":       "🗓",
-
-    "INFO_MINI": "\\ℹ",
-    "LINK_MINI": "\\🔗",
-    "PRO_MINI":  "\\🏆",
-    "SITE_MINI": "\\🌎",
-    "CHAT_MINI": "\\💬",
-    "DASH_MINI": "\\🎨",
-    "TOS_MINI":  "\\📄",
+    "SITE":       "🌎",
+    "CHAT":       "💬",
+    "DASH":       "🎨",
+    "TOS":        "📄",
 
     "SECURITY_NONE":      "🔓",
     "SECURITY_LOW":       "🔒",

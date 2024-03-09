@@ -193,7 +193,7 @@ export default async function (
     const linkTitle = LangUtils.getAndReplace(
         'CHANNEL_INFO_LINK_TITLE',
         {
-            linkEmoji: this.getEmoji('LINK_MINI', interaction),
+            linkEmoji: this.getEmoji('LINK', interaction),
         },
         interaction.locale
     );
