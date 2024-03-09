@@ -103,7 +103,7 @@ export default class CacheHandler {
                 this.flush().then((result) => this.bot.logger.debug('REDIS', `Flush on boot: ${result}`));
             }
         });
-        this.redisClient.on('error', (err) => this.bot.logger.handleError('REDIS ERROR', err));
+        this.redisClient.on('error', (err: unknown) => this.bot.logger.handleError('REDIS ERROR', err));
         this.redisClient.on('end', () => {
             this.#connected = false;
             this.#startTimestamp = Date.now();
@@ -895,7 +895,14 @@ export default class CacheHandler {
                         return null;
                     }
                     let sessionLimitData: GatewaySessionLimitHash | null = null;
-                    if (data[2] && typeof data[2] === 'object' && 'max_concurrency' in data[2]) {
+                    if (
+                        data[2] &&
+                        typeof data[2] === 'object' &&
+                        'total' in data[2] &&
+                        'remaining' in data[2] &&
+                        'reset_at' in data[2] &&
+                        'max_concurrency' in data[2]
+                    ) {
                         sessionLimitData = data[2] as GatewaySessionLimitHash;
                     }
                     if (!sessionLimitData) {

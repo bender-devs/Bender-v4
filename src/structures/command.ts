@@ -13,7 +13,7 @@ export class UserOrMessageCommand {
     bot: Bot;
     name: string;
     type: COMMAND_TYPES.USER | COMMAND_TYPES.MESSAGE;
-    description: '' = '';
+    description = '' as const;
     run: (interaction: types.Interaction) => types.CommandResponse;
 
     constructor(bot: Bot, name: string, run: UserOrMessageCommand['run'], type: UserOrMessageCommand['type']) {
