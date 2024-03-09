@@ -1,11 +1,11 @@
-import type Bot from '../structures/bot.js';
 import EMOTES from '../data/emotes.json' assert { type: 'json' };
 import SHITTY_EMOTES from '../data/shittyEmotes.json' assert { type: 'json' };
+import type Bot from '../structures/bot.js';
+import { ACTIVITY_TYPES } from '../types/numberTypes.js';
 import type { Interaction, Locale, Snowflake, Status } from '../types/types.js';
 import LangUtils from './language.js';
-import { ACTIVITY_TYPES } from '../types/numberTypes.js';
-import TextUtils from './text.js';
 import PermissionUtils from './permissions.js';
+import TextUtils from './text.js';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 
@@ -20,13 +20,20 @@ export default class MiscUtils {
         if (!guildID) {
             return EMOTES[emojiKey];
         }
-        const matches = this.bot.perms.matchesMemberCache(this.bot.user.id, 'USE_EXTERNAL_EMOJIS', guildID, channelID);
+        const matches = this.bot.perms.matchesMemberCache(
+            this.bot.user.id,
+            'USE_EXTERNAL_EMOJIS',
+            guildID,
+            channelID
+        );
         return matches ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
     }
 
     getEmoji(emojiKey: EmojiKey, interaction: Interaction) {
         if (interaction.app_permissions) {
-            return PermissionUtils.has(interaction.app_permissions, 'USE_EXTERNAL_EMOJIS') ? EMOTES[emojiKey] : SHITTY_EMOTES[emojiKey];
+            return PermissionUtils.has(interaction.app_permissions, 'USE_EXTERNAL_EMOJIS')
+                ? EMOTES[emojiKey]
+                : SHITTY_EMOTES[emojiKey];
         }
         return this.getEmojiText(emojiKey, interaction.guild_id, interaction.channel_id);
     }
@@ -64,12 +71,14 @@ export default class MiscUtils {
                     status += this.#getActivityTypeName(activity.type);
                     if (
                         secondActivity.type === ACTIVITY_TYPES.STREAMING &&
-                        secondActivity.name && !/^\s+$/.test(secondActivity.name) &&
-                        secondActivity.url && !/^\s$/.test(secondActivity.url)
+                        secondActivity.name &&
+                        !/^\s+$/.test(secondActivity.name) &&
+                        secondActivity.url &&
+                        !/^\s$/.test(secondActivity.url)
                     ) {
                         status += ` **[${secondActivity.name}](${secondActivity.url})**`;
                     } else {
-                        status += ` **${secondActivity.name}**`
+                        status += ` **${secondActivity.name}**`;
                     }
                 } else {
                     status += ` ${statusType}`;
@@ -82,7 +91,8 @@ export default class MiscUtils {
         } else if (
             activity.type === ACTIVITY_TYPES.STREAMING &&
             activity.name.trim() &&
-            activity.url && !/^\s$/.test(activity.url)
+            activity.url &&
+            !/^\s$/.test(activity.url)
         ) {
             status += ` **[${activity.name}](${activity.url})**`;
         } else {
@@ -90,7 +100,10 @@ export default class MiscUtils {
         }
 
         for (const activity of presence.activities) {
-            if (activity.type !== ACTIVITY_TYPES.CUSTOM && (activity.application_id || activity.details || activity.state)) {
+            if (
+                activity.type !== ACTIVITY_TYPES.CUSTOM &&
+                (activity.application_id || activity.details || activity.state)
+            ) {
                 status += ` ${this.getEmoji('RPC', interaction)}`;
                 break;
             }
@@ -99,14 +112,14 @@ export default class MiscUtils {
     }
 
     static randomNumber(max: number, min = 0) {
-		return Math.random() * (max + 1 - min) + min;
-	}
+        return Math.random() * (max + 1 - min) + min;
+    }
 
     static randomInt(max: number, min = 0) {
-		return Math.floor(this.randomNumber(max, min));
-	}
+        return Math.floor(this.randomNumber(max, min));
+    }
 
     static randomItem<T>(items: T[]) {
-		return items[this.randomInt(items.length - 1)];
-	}
+        return items[this.randomInt(items.length - 1)];
+    }
 }

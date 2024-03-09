@@ -1,9 +1,9 @@
-import type { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import { DURATION_REGEX } from '../data/constants.js';
 import type { LangKey } from '../text/languageList.js';
+import { DURATION_UNITS } from '../types/numberTypes.js';
+import type { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
 import LangUtils from './language.js';
 import TextUtils from './text.js';
-import { DURATION_REGEX } from '../data/constants.js';
-import { DURATION_UNITS } from '../types/numberTypes.js';
 
 type UnitName = keyof typeof DURATION_UNITS;
 
@@ -31,7 +31,8 @@ export default class TimeUtils {
     }
 
     static formatDuration(duration: number, locale?: Locale) {
-        let unit = 1, unitName: UnitName = 'SECOND';
+        let unit = 1,
+            unitName: UnitName = 'SECOND';
         if (duration >= DURATION_UNITS.YEAR) {
             unit = DURATION_UNITS.YEAR;
             unitName = 'YEAR';
@@ -74,7 +75,7 @@ export default class TimeUtils {
     }
 
     static relative(date: Date | Timestamp | UnixTimestampMillis) {
-        return this.formatDate(date, 'R')
+        return this.formatDate(date, 'R');
     }
 
     static parseFloatLocale(localizedNumber: string, locale?: Locale) {
@@ -87,12 +88,12 @@ export default class TimeUtils {
         const testNum = (1234.5).toLocaleString(locale);
         if (testNum.indexOf('.') > testNum.indexOf(',')) {
             // reverse decimal and thousands separators
-            localizedNumber = Array.from(localizedNumber, char => {
+            localizedNumber = Array.from(localizedNumber, (char) => {
                 if (char === ',') {
                     return '.';
                 }
                 if (char === '.') {
-                    return ','
+                    return ',';
                 }
                 return char;
             }).join('');
@@ -101,11 +102,11 @@ export default class TimeUtils {
     }
 
     static parseDuration(time: string): number | null {
-		if (!DURATION_REGEX.test(time)) {
+        if (!DURATION_REGEX.test(time)) {
             return null;
         }
 
-		let duration = 0;
+        let duration = 0;
         const matches = time.matchAll(DURATION_REGEX);
         for (const match of matches) {
             // match[0] = full string, match[1] = value, match[2] = unit
@@ -131,6 +132,5 @@ export default class TimeUtils {
             }
         }
         return duration;
-		
-	}
+    }
 }

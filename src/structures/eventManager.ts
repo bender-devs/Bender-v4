@@ -1,8 +1,8 @@
-import type Bot from './bot.js';
+import events from '../types/eventTypes.js';
 import type * as gatewayTypes from '../types/gatewayTypes.js';
 import { CLIENT_STATE } from '../types/numberTypes.js';
-import events from '../types/eventTypes.js';
 import type { EventHandler } from '../types/types.js';
+import type Bot from './bot.js';
 
 import dummy_event from '../events/_dummy.js';
 import application_command_create from '../events/application_command_create.js';
@@ -19,8 +19,8 @@ import guild_delete from '../events/guild_delete.js';
 import guild_emojis_update from '../events/guild_emojis_update.js';
 import guild_member_add from '../events/guild_member_add.js';
 import guild_member_remove from '../events/guild_member_remove.js';
-import guild_members_chunk from '../events/guild_members_chunk.js';
 import guild_member_update from '../events/guild_member_update.js';
+import guild_members_chunk from '../events/guild_members_chunk.js';
 import guild_role_create from '../events/guild_role_create.js';
 import guild_role_delete from '../events/guild_role_delete.js';
 import guild_role_update from '../events/guild_role_update.js';
@@ -40,8 +40,8 @@ import resumed from '../events/resumed.js';
 import thread_create from '../events/thread_create.js';
 import thread_delete from '../events/thread_delete.js';
 import thread_list_sync from '../events/thread_list_sync.js';
-import thread_members_update from '../events/thread_members_update.js';
 import thread_member_update from '../events/thread_member_update.js';
+import thread_members_update from '../events/thread_members_update.js';
 import thread_update from '../events/thread_update.js';
 import user_update from '../events/user_update.js';
 import voice_state_update from '../events/voice_state_update.js';
@@ -117,7 +117,10 @@ export default class EventManager {
         this.bot = bot;
         this.application_command_create = new application_command_create(this.bot);
         this.application_command_delete = new application_command_delete(this.bot);
-        this.application_command_permissions_update = new dummy_event(this.bot, 'application_command_permissions_update');
+        this.application_command_permissions_update = new dummy_event(
+            this.bot,
+            'application_command_permissions_update'
+        );
         this.application_command_update = new application_command_update(this.bot);
         this.auto_moderation_action_execution = new auto_moderation_action_execution(this.bot);
         this.auto_moderation_rule_create = new dummy_event(this.bot, 'auto_moderation_rule_create');
@@ -133,7 +136,7 @@ export default class EventManager {
         this.guild_create = new guild_create(this.bot);
         this.guild_delete = new guild_delete(this.bot);
         this.guild_emojis_update = new guild_emojis_update(this.bot);
-        this.guild_integrations_update = new dummy_event(this.bot, 'guild_integrations_update')
+        this.guild_integrations_update = new dummy_event(this.bot, 'guild_integrations_update');
         this.guild_member_add = new guild_member_add(this.bot);
         this.guild_member_remove = new guild_member_remove(this.bot);
         this.guild_members_chunk = new guild_members_chunk(this.bot);
@@ -194,7 +197,8 @@ export default class EventManager {
     }
 
     addAllListeners() {
-        for (const eventName of events) { // add all events
+        for (const eventName of events) {
+            // add all events
             const lowercaseEventName = eventName.toLowerCase() as gatewayTypes.LowercaseEventName;
             this.bot.on(eventName, (eventData: gatewayTypes.EventData) =>
                 this.handleEvent(this[lowercaseEventName] as EventHandler<gatewayTypes.EventData>, eventData)

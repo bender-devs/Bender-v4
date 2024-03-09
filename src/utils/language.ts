@@ -1,15 +1,24 @@
-import type { Locale, PermissionName, LocaleDict, UnixTimestampMillis, Timestamp, ReplaceMap, Snowflake, CommandOption } from '../types/types.js';
-import { LOCALE_LIST } from '../types/types.js';
+import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
+import type Logger from '../structures/logger.js';
 import type { LangKey } from '../text/languageList.js';
 import languages from '../text/languageList.js';
-import type Logger from '../structures/logger.js';
-import { DEFAULT_LANGUAGE, EXIT_CODE_NO_RESTART } from '../data/constants.js';
-import TimeUtils from './time.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import type {
+    CommandOption,
+    Locale,
+    LocaleDict,
+    PermissionName,
+    ReplaceMap,
+    Snowflake,
+    Timestamp,
+    UnixTimestampMillis,
+} from '../types/types.js';
+import { LOCALE_LIST } from '../types/types.js';
 import type { EmojiKey } from './misc.js';
 import MiscUtils from './misc.js';
-import TextUtils from './text.js';
 import Replacers from './replacers.js';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import TextUtils from './text.js';
+import TimeUtils from './time.js';
 
 if (!languages[DEFAULT_LANGUAGE]) {
     console.error(`Default language invalid: No translation file exists for ${DEFAULT_LANGUAGE}!`);
@@ -17,7 +26,6 @@ if (!languages[DEFAULT_LANGUAGE]) {
 }
 
 export default class LanguageUtils {
-
     static discordSupportsLocale(locale: Locale): boolean {
         return LOCALE_LIST.includes(locale);
     }
@@ -82,7 +90,11 @@ export default class LanguageUtils {
         }
         const formattedDate = TimeUtils.formatDate(timestamp);
         const relativeDuration = TimeUtils.relative(timestamp);
-        return LanguageUtils.getAndReplace(key, { dateRelative: `${formattedDate} (${relativeDuration})` }, locale);
+        return LanguageUtils.getAndReplace(
+            key,
+            { dateRelative: `${formattedDate} (${relativeDuration})` },
+            locale
+        );
     }
 
     static formatNumber(num: number, locale?: Locale) {
@@ -92,8 +104,8 @@ export default class LanguageUtils {
     static getLocalizationMap(key: LangKey, emojiKey?: EmojiKey) {
         const emoji = emojiKey ? MiscUtils.getDefaultEmoji(emojiKey) : null;
         const dict: LocaleDict = {
-            [DEFAULT_LANGUAGE]: emojiKey ? `${emoji} ${LanguageUtils.get(key)}` : LanguageUtils.get(key)
-        }
+            [DEFAULT_LANGUAGE]: emojiKey ? `${emoji} ${LanguageUtils.get(key)}` : LanguageUtils.get(key),
+        };
         for (const locale in languages) {
             const lang = languages[locale];
             if (lang && key in lang) {
@@ -111,12 +123,12 @@ export default class LanguageUtils {
         // TODO: command links cannot be localized, see:
         // https://github.com/discord/discord-api-docs/issues/5518
         // for now this line will force the default language
-        const cmdNames = langKeys.map(key => this.get(key));
+        const cmdNames = langKeys.map((key) => this.get(key));
         return TextUtils.mention.parseCommand(cmdNames.join(' '), commandID);
     }
     static getCommandText(langKeys: LangKey[], locale?: Locale) {
         // create a localized text version of a command link; used when a command isn't cached
-        const cmdNames = langKeys.map(key => this.get(key, locale));
+        const cmdNames = langKeys.map((key) => this.get(key, locale));
         return `\`/${cmdNames.join(' ')}\``;
     }
     static getCommandFormat(options?: CommandOption[], locale?: Locale) {
@@ -124,14 +136,18 @@ export default class LanguageUtils {
             return null;
         }
         // don't show format for top-level command with subcommands
-        if (options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND ||
-            options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP) {
+        if (
+            options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND ||
+            options[0].type === COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP
+        ) {
             return false;
         }
-        return options.map(opt => {
-            const name = this.getFromMap(opt.name, opt.name_localizations, locale);
-            return opt.required ? `<${name}>` : `[${name}]`;
-        }).join(' ');
+        return options
+            .map((opt) => {
+                const name = this.getFromMap(opt.name, opt.name_localizations, locale);
+                return opt.required ? `<${name}>` : `[${name}]`;
+            })
+            .join(' ');
     }
     static getSubcommandList(options?: CommandOption[], locale?: Locale) {
         if (!options?.length) {
@@ -143,7 +159,7 @@ export default class LanguageUtils {
                 const groupName = this.getFromMap(opt.name, opt.name_localizations, locale);
                 const cmds = this.getSubcommandList(opt.options);
                 if (cmds) {
-                    subcommands = subcommands.concat(cmds.map(cmd => `${groupName} ${cmd}`));
+                    subcommands = subcommands.concat(cmds.map((cmd) => `${groupName} ${cmd}`));
                 }
             } else if (opt.type === COMMAND_OPTION_TYPES.SUB_COMMAND) {
                 subcommands.push(this.getFromMap(opt.name, opt.name_localizations, locale));
@@ -176,7 +192,10 @@ export default class LanguageUtils {
     static logLocalizationSupport(logger: Logger) {
         const langList = Object.keys(languages);
         logger.debug('LANGUAGES', `Loaded ${langList.length} languages: ${langList.join(', ')}`);
-        logger.debug('LANGUAGES', `Implementing ${langList.length}/${LOCALE_LIST.length} locales supported by Discord`);
+        logger.debug(
+            'LANGUAGES',
+            `Implementing ${langList.length}/${LOCALE_LIST.length} locales supported by Discord`
+        );
         const defaultLangKeys = Object.keys(languages[DEFAULT_LANGUAGE]);
         for (const locale in languages) {
             if (!languages[locale]) {
@@ -184,7 +203,10 @@ export default class LanguageUtils {
             }
             const keys = Object.keys(languages[locale]);
             if (keys.length < defaultLangKeys.length) {
-                logger.moduleWarn('LANGUAGES', `Language '${locale}' is incomplete (${keys.length}/${defaultLangKeys.length} keys.)`);
+                logger.moduleWarn(
+                    'LANGUAGES',
+                    `Language '${locale}' is incomplete (${keys.length}/${defaultLangKeys.length} keys.)`
+                );
             }
         }
     }

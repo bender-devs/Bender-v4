@@ -1,11 +1,11 @@
-import { SlashCommand } from '../structures/command.js';
+import { DEFAULT_COLOR, WEBSITE } from '../data/constants.js';
 import type Bot from '../structures/bot.js';
+import { SlashCommand } from '../structures/command.js';
+import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 import type { CommandOption, CommandResponse, Embed, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
-import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
-import TextUtils from '../utils/text.js';
-import { DEFAULT_COLOR, WEBSITE } from '../data/constants.js';
 import PermissionUtils from '../utils/permissions.js';
+import TextUtils from '../utils/text.js';
 
 export default class HelpCommand extends SlashCommand {
     constructor(bot: Bot) {
@@ -18,29 +18,32 @@ export default class HelpCommand extends SlashCommand {
 
     readonly dm_permission: boolean = true;
 
-    readonly options: CommandOption[] = [{
-        type: COMMAND_OPTION_TYPES.STRING,
+    readonly options: CommandOption[] = [
+        {
+            type: COMMAND_OPTION_TYPES.STRING,
 
-        name: LangUtils.get('HELP_OPTION_COMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('HELP_OPTION_COMMAND'),
-        
-        description: LangUtils.get('HELP_OPTION_COMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('HELP_OPTION_COMMAND_DESCRIPTION'),
+            name: LangUtils.get('HELP_OPTION_COMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('HELP_OPTION_COMMAND'),
 
-        required: true
-    }, {
-        type: COMMAND_OPTION_TYPES.BOOLEAN,
+            description: LangUtils.get('HELP_OPTION_COMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('HELP_OPTION_COMMAND_DESCRIPTION'),
 
-        name: LangUtils.get('HELP_OPTION_PERM_ONLY'),
-        name_localizations: LangUtils.getLocalizationMap('HELP_OPTION_PERM_ONLY'),
-        
-        description: LangUtils.get('HELP_OPTION_PERM_ONLY_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('HELP_OPTION_PERM_ONLY_DESCRIPTION'),
-    }]
+            required: true,
+        },
+        {
+            type: COMMAND_OPTION_TYPES.BOOLEAN,
+
+            name: LangUtils.get('HELP_OPTION_PERM_ONLY'),
+            name_localizations: LangUtils.getLocalizationMap('HELP_OPTION_PERM_ONLY'),
+
+            description: LangUtils.get('HELP_OPTION_PERM_ONLY_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('HELP_OPTION_PERM_ONLY_DESCRIPTION'),
+        },
+    ];
 
     async run(interaction: Interaction): CommandResponse {
-        const commandName = interaction.data?.options?.find(opt =>
-            opt.name === LangUtils.get('HELP_OPTION_COMMAND')
+        const commandName = interaction.data?.options?.find(
+            (opt) => opt.name === LangUtils.get('HELP_OPTION_COMMAND')
         )?.value;
         if (!commandName || typeof commandName !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_MISSING');
@@ -51,38 +54,46 @@ export default class HelpCommand extends SlashCommand {
         }
 
         const title = LangUtils.getFromMap(command.name, command.name_localizations, interaction.locale);
-        let description = LangUtils.getFromMap(command.description, command.description_localizations, interaction.locale);
+        let description = LangUtils.getFromMap(
+            command.description,
+            command.description_localizations,
+            interaction.locale
+        );
 
         const embed: Embed = {
             title: `/${title}`,
             color: DEFAULT_COLOR,
-            fields: []
-        }
+            fields: [],
+        };
 
         const format = LangUtils.getCommandFormat(command.options, interaction.locale);
         const subcommands = LangUtils.getSubcommandList(command.options, interaction.locale);
         if (format) {
-            description += `\n${LangUtils.getAndReplace('HELP_FORMAT', {
-                format: `\`${commandName} ${format}\``
-            }, interaction.locale)}`;
+            description += `\n${LangUtils.getAndReplace(
+                'HELP_FORMAT',
+                {
+                    format: `\`${commandName} ${format}\``,
+                },
+                interaction.locale
+            )}`;
         } else if (subcommands?.length) {
             const cachedCommand = await this.bot.db.command.getByName(command.name);
-            const formattedSubcommands = subcommands.map(subcmd => {
+            const formattedSubcommands = subcommands.map((subcmd) => {
                 if (cachedCommand?.id) {
                     return TextUtils.mention.parseCommand(`${commandName} ${subcmd}`, cachedCommand.id);
                 }
                 return `\`/${commandName} ${subcmd}\``;
-            })
+            });
             embed.fields?.push({
                 name: LangUtils.get('HELP_SUBCOMMANDS_TITLE', interaction.locale),
-                value: formattedSubcommands.join(' ')
+                value: formattedSubcommands.join(' '),
             });
         }
 
         if (command.default_member_permissions) {
             const perms = PermissionUtils.getPermNamesFromBitfield(command.default_member_permissions);
             const defaultPerms = LangUtils.getAndReplace('HELP_DEFAULT_PERMS', {
-                perms: perms.map(perm => `\`${perm}\``).join(', ')
+                perms: perms.map((perm) => `\`${perm}\``).join(', '),
             });
             description += `\n${defaultPerms}`;
         }

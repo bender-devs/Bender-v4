@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { GuildMemberUpdateData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { GuildMemberUpdateData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class GuildMemberUpdateHandler extends EventHandler<GuildMemberUpdateData> {
     constructor(bot: Bot) {
@@ -23,8 +23,8 @@ export default class GuildMemberUpdateHandler extends EventHandler<GuildMemberUp
         // TODO: add to nickname history in db
 
         // TODO: if member is the bot user, check if essential permissions have been removed
-    }
+    };
 
     // only using cacheHandler as we wouldn't know what fields changed here
-    handler = () => undefined
+    handler = () => undefined;
 }

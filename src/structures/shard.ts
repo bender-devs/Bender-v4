@@ -1,9 +1,16 @@
-import type { ShardConnectionData } from '../types/gatewayTypes.js';
-import type { ShardComplexCallbackData, ShardDestination, ShardFetchCallback, ShardFetchData, ShardMessage, ShardValues } from './shardManager.js';
-import ShardManager, { GENERAL_STATS } from './shardManager.js';
-import type Bot from './bot.js';
 import { randomUUID } from 'crypto';
 import { SHARD_MESSAGE_TIMEOUT } from '../data/constants.js';
+import type { ShardConnectionData } from '../types/gatewayTypes.js';
+import type Bot from './bot.js';
+import type {
+    ShardComplexCallbackData,
+    ShardDestination,
+    ShardFetchCallback,
+    ShardFetchData,
+    ShardMessage,
+    ShardValues,
+} from './shardManager.js';
+import ShardManager, { GENERAL_STATS } from './shardManager.js';
 
 export default class Shard {
     bot: Bot;
@@ -27,7 +34,10 @@ export default class Shard {
     }
 
     async processMessage(message: ShardMessage) {
-        if (!this.bot.shard || (Array.isArray(message.toShards) && !message.toShards.includes(this.bot.shard.id))) {
+        if (
+            !this.bot.shard ||
+            (Array.isArray(message.toShards) && !message.toShards.includes(this.bot.shard.id))
+        ) {
             this.bot.logger.handleError('SHARD MESSAGE', 'Received irrelevant shard message:', message);
             return; // invalid message or not intended for this shard
         }
@@ -37,7 +47,7 @@ export default class Shard {
                     operation: 'pong',
                     fromShard: this.bot.shard.id,
                     toShards: message.fromShard === 'MANAGER' ? 'MANAGER' : [message.fromShard],
-                    nonce: message.nonce
+                    nonce: message.nonce,
                 });
             }
             case 'pong': {
@@ -52,8 +62,8 @@ export default class Shard {
                     operation: 'reply_with_values',
                     fromShard: this.id,
                     toShards: message.fromShard === 'MANAGER' ? 'MANAGER' : [message.fromShard],
-                    nonce: message.nonce
-                }
+                    nonce: message.nonce,
+                };
                 const data: ShardValues = {};
                 if (values.includes('guildCount')) {
                     data.guildCount = this.bot.cache.guilds.size();
@@ -99,7 +109,10 @@ export default class Shard {
     sendMessage(message: ShardMessage) {
         const stringifiedMessage = JSON.stringify(message);
         if (!process.send) {
-            this.bot.logger.handleError('SHARD MESSAGE', 'Tried to send a shard message from an unsharded client.');
+            this.bot.logger.handleError(
+                'SHARD MESSAGE',
+                'Tried to send a shard message from an unsharded client.'
+            );
             return;
         }
         // send to parent process, which is the shard manager, and it will be forwarded to other shards if necessary
@@ -117,10 +130,11 @@ export default class Shard {
             fromShard: this.id,
             toShards: shards,
             nonce,
-            data: GENERAL_STATS.join(',')
+            data: GENERAL_STATS.join(','),
         };
 
-        const callback: ShardFetchCallback = () => this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
+        const callback: ShardFetchCallback = () =>
+            this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
@@ -130,8 +144,8 @@ export default class Shard {
                 this.bot.logger.debug('shard.getStats', 'TIMED OUT', message);
                 delete this.#callbacks[nonce];
                 reject();
-            })
-        })
+            });
+        });
     }
 
     #handleComplexCallback(nonce: string, fetchData: ShardFetchData) {
@@ -161,13 +175,13 @@ export default class Shard {
             fromShard: this.id,
             toShards: shards,
             nonce,
-            data: values.join(',')
+            data: values.join(','),
         };
 
         const callback: ShardFetchCallback = () => {
             this.bot.logger.handleError('shard.getStats', 'CALLBACK BEFORE READY', message);
             return null;
-        }
+        };
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
@@ -176,7 +190,7 @@ export default class Shard {
                 this.#complexCallbacks[nonce] = {
                     completed: 0,
                     expected: shards === 'ALL' ? this.total_shards : shards.length,
-                    currentValues: []
+                    currentValues: [],
                 };
             }
             this.#callbacks[nonce] = resolve;
@@ -185,6 +199,6 @@ export default class Shard {
                 delete this.#callbacks[nonce];
                 reject('Shard operation timed out.');
             }, SHARD_MESSAGE_TIMEOUT);
-        })
+        });
     }
 }

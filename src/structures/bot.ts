@@ -1,20 +1,26 @@
 import EventEmitter from 'events';
-import type { PartialApplication, TimeoutList, User } from '../types/types.js';
+import {
+    EXIT_CODE_NO_RESTART,
+    GATEWAY_ERROR_RECONNECT,
+    GATEWAY_ERROR_RECONNECT_TIMEOUT,
+    GATEWAY_PARAMS,
+    USE_CACHE,
+} from '../data/constants.js';
+import PendingInteractionUtils from '../interactionUtils/pending.js';
 import type { GatewayBotInfo, IdentifyData, ShardConnectionData } from '../types/gatewayTypes.js';
-import APIInterface from './apiInterface.js';
-import CacheHandler from './cacheHandler.js';
-import Gateway from './gateway.js';
-import Logger from './logger.js';
-import { GATEWAY_ERROR_RECONNECT, GATEWAY_ERROR_RECONNECT_TIMEOUT, GATEWAY_PARAMS, EXIT_CODE_NO_RESTART, USE_CACHE } from '../data/constants.js';
 import { CLIENT_STATE } from '../types/numberTypes.js';
-import EventManager from './eventManager.js';
-import Shard from './shard.js';
-import CommandManager from './commandManager.js';
+import type { PartialApplication, TimeoutList, User } from '../types/types.js';
 import MiscUtils from '../utils/misc.js';
 import PermissionUtils from '../utils/permissions.js';
 import TextUtils from '../utils/text.js';
+import APIInterface from './apiInterface.js';
+import CacheHandler from './cacheHandler.js';
+import CommandManager from './commandManager.js';
 import DatabaseManager from './db.js';
-import PendingInteractionUtils from '../interactionUtils/pending.js';
+import EventManager from './eventManager.js';
+import Gateway from './gateway.js';
+import Logger from './logger.js';
+import Shard from './shard.js';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -42,9 +48,9 @@ export default class Bot extends EventEmitter {
         this.logger = new Logger(this);
 
         process.removeAllListeners('unhandledRejection');
-        process.on('unhandledRejection', error => {
+        process.on('unhandledRejection', (error) => {
             this.logger.handleError('UNHANDLED REJECTION', error);
-        })
+        });
 
         this.api = new APIInterface(this, true);
         this.cache = new CacheHandler(this);
@@ -61,7 +67,7 @@ export default class Bot extends EventEmitter {
         }
 
         this.timeouts = {
-            gatewayError: []
+            gatewayError: [],
         };
         this.state = CLIENT_STATE.DEAD;
         this.useCache = USE_CACHE;
@@ -74,11 +80,11 @@ export default class Bot extends EventEmitter {
     }
 
     async init(flushCache = false) {
-        await this.cache.init(flushCache).catch(err => this.logger.handleError('REDIS ERROR', err));
+        await this.cache.init(flushCache).catch((err) => this.logger.handleError('REDIS ERROR', err));
         let dbError: unknown;
-        await this.db.connect().catch(err => {
+        await this.db.connect().catch((err) => {
             dbError = err;
-            this.logger.handleError('DATABASE ERROR', err)
+            this.logger.handleError('DATABASE ERROR', err);
         });
         if (dbError) {
             process.exit(EXIT_CODE_NO_RESTART);
@@ -102,8 +108,8 @@ export default class Bot extends EventEmitter {
             gatewayInfo = await this.cache.gatewayInfo.get();
         }
         if (!gatewayInfo) {
-            this.logger.debug('BOT CONNECT', 'Cache enabled, but no cached gateway info found...')
-            gatewayInfo = await this.api.gateway.getBotInfo().catch(err => {
+            this.logger.debug('BOT CONNECT', 'Cache enabled, but no cached gateway info found...');
+            gatewayInfo = await this.api.gateway.getBotInfo().catch((err) => {
                 this.logger.handleError('GET GATEWAY', err);
                 return null;
             });
@@ -111,7 +117,9 @@ export default class Bot extends EventEmitter {
         if (!gatewayInfo) {
             if (GATEWAY_ERROR_RECONNECT) {
                 this.logger.debug('GET GATEWAY', `Retrying in ${GATEWAY_ERROR_RECONNECT_TIMEOUT}ms...`);
-                this.timeouts.gatewayError.push(setTimeout(() => this.connect(identifyData, reconnect), GATEWAY_ERROR_RECONNECT_TIMEOUT));
+                this.timeouts.gatewayError.push(
+                    setTimeout(() => this.connect(identifyData, reconnect), GATEWAY_ERROR_RECONNECT_TIMEOUT)
+                );
                 return null; // TODO: better way to indicate a retry will happen?
             } else {
                 this.logger.handleError('GET GATEWAY', 'Failed to get gateway, and retrying is not enabled.');

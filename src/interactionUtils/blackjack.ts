@@ -7,43 +7,43 @@ import MiscUtils from '../utils/misc.js';
 import type { PendingInteractionBase } from './pending.js';
 
 export interface BlackjackInteraction extends PendingInteractionBase {
-    authorHand: Card[],
-    botHand: Card[],
-    authorRightHand?: Card[],
-    stand?: boolean,
-    double?: boolean,
-    standRight?: boolean
+    authorHand: Card[];
+    botHand: Card[];
+    authorRightHand?: Card[];
+    stand?: boolean;
+    double?: boolean;
+    standRight?: boolean;
 }
 
 const SUITS = ['HEARTS', 'SPADES', 'CLUBS', 'DIAMONDS'] as const;
 const VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as const;
 export type Card = {
-    suit: typeof SUITS[number],
-    num: typeof VALUES[number]
-}
+    suit: (typeof SUITS)[number];
+    num: (typeof VALUES)[number];
+};
 
 const CARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
-type CardValue = typeof CARD_VALUES[number];
+type CardValue = (typeof CARD_VALUES)[number];
 
 const BJ_ACTIONS = ['hit', 'stand', 'double', 'split', 'hitRight', 'standRight'] as const;
-type BlackjackAction = typeof BJ_ACTIONS[number];
+type BlackjackAction = (typeof BJ_ACTIONS)[number];
 
 const enum RESULTS {
     PUSH = 0,
     BOT,
     USER,
     SPLIT,
-    SPLIT_PUSH
+    SPLIT_PUSH,
 }
 
 type WinData = {
-    overall: RESULTS
-    userMain: boolean,
-    userMainBj: boolean,
-    userRight?: boolean,
-    userRightBj?: boolean,
-    botBj: boolean,
-}
+    overall: RESULTS;
+    userMain: boolean;
+    userMainBj: boolean;
+    userRight?: boolean;
+    userRightBj?: boolean;
+    botBj: boolean;
+};
 
 export default class BlackjackUtils {
     bot: Bot;
@@ -53,19 +53,21 @@ export default class BlackjackUtils {
     }
 
     static getValue(card: Card): CardValue {
-        if (card.num === 1) { // an ace can be treated as a 1 or 11; treat it as 11 for now
+        if (card.num === 1) {
+            // an ace can be treated as a 1 or 11; treat it as 11 for now
             return 11;
         }
-        if (card.num === 11 || card.num === 12 || card.num === 13) { // jack, queen, king all treated as 10
+        if (card.num === 11 || card.num === 12 || card.num === 13) {
+            // jack, queen, king all treated as 10
             return 10;
         }
         return card.num;
     }
 
     static getSum(hand: Card[]): number {
-        const values = hand.map(card => BlackjackUtils.getValue(card));
+        const values = hand.map((card) => BlackjackUtils.getValue(card));
         let sum = (values as number[]).reduce((prev, current) => prev + current);
-        const aces = values.filter(val => val === 11).length;
+        const aces = values.filter((val) => val === 11).length;
         if (aces && sum > 21) {
             for (let i = 1; i <= aces; i++) {
                 sum -= 10; // treat this ace as a 1 instead of an 11
@@ -88,34 +90,41 @@ export default class BlackjackUtils {
         const canDouble = canHit && hand.length === 2;
         const perfect = this.getSum(hand) === 21;
 
-        const buttonRows: MessageComponent[] = [{
-            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
-            components: [{
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `bj_${id}_hit`,
-                style: BUTTON_STYLES.DANGER,
-                label: LangUtils.get('FUN_BJ_HIT', locale),
-                disabled: !canHit || disable
-            }, {
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `bj_${id}_stand`,
-                style: BUTTON_STYLES.SUCCESS,
-                label: LangUtils.get('FUN_BJ_STAND', locale),
-                disabled: interactionData.stand || perfect || disable
-            }, {
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `bj_${id}_double`,
-                style: BUTTON_STYLES.SECONDARY,
-                label: LangUtils.get('FUN_BJ_DOUBLE', locale),
-                disabled: !!rightHand || !canDouble || disable
-            }, {
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `bj_${id}_split`,
-                style: BUTTON_STYLES.PRIMARY,
-                label: LangUtils.get('FUN_BJ_SPLIT', locale),
-                disabled: !!rightHand || !canSplit || disable
-            }]
-        }];
+        const buttonRows: MessageComponent[] = [
+            {
+                type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                components: [
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_hit`,
+                        style: BUTTON_STYLES.DANGER,
+                        label: LangUtils.get('FUN_BJ_HIT', locale),
+                        disabled: !canHit || disable,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_stand`,
+                        style: BUTTON_STYLES.SUCCESS,
+                        label: LangUtils.get('FUN_BJ_STAND', locale),
+                        disabled: interactionData.stand || perfect || disable,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_double`,
+                        style: BUTTON_STYLES.SECONDARY,
+                        label: LangUtils.get('FUN_BJ_DOUBLE', locale),
+                        disabled: !!rightHand || !canDouble || disable,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_split`,
+                        style: BUTTON_STYLES.PRIMARY,
+                        label: LangUtils.get('FUN_BJ_SPLIT', locale),
+                        disabled: !!rightHand || !canSplit || disable,
+                    },
+                ],
+            },
+        ];
 
         if (rightHand) {
             const canHitRight = !interactionData.standRight && this.getSum(rightHand) < 21;
@@ -123,20 +132,23 @@ export default class BlackjackUtils {
 
             buttonRows.push({
                 type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
-                components: [{
-                    type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                    custom_id: `bj_${id}_hitRight`,
-                    style: BUTTON_STYLES.DANGER,
-                    label: LangUtils.get('FUN_BJ_HIT_RIGHT', locale),
-                    disabled: !canHitRight || disable
-                }, {
-                    type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                    custom_id: `bj_${id}_standRight`,
-                    style: BUTTON_STYLES.SUCCESS,
-                    label: LangUtils.get('FUN_BJ_STAND_RIGHT', locale),
-                    disabled: interactionData.standRight || perfectRight || disable
-                }]
-            })
+                components: [
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_hitRight`,
+                        style: BUTTON_STYLES.DANGER,
+                        label: LangUtils.get('FUN_BJ_HIT_RIGHT', locale),
+                        disabled: !canHitRight || disable,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `bj_${id}_standRight`,
+                        style: BUTTON_STYLES.SUCCESS,
+                        label: LangUtils.get('FUN_BJ_STAND_RIGHT', locale),
+                        disabled: interactionData.standRight || perfectRight || disable,
+                    },
+                ],
+            });
         }
 
         return buttonRows;
@@ -146,7 +158,7 @@ export default class BlackjackUtils {
         const cards: Card[] = [];
         for (const suit of SUITS) {
             for (const num of VALUES) {
-                if (usedCards.find(card => card.suit == suit && card.num === num)) {
+                if (usedCards.find((card) => card.suit == suit && card.num === num)) {
                     continue;
                 }
                 cards.push({ suit, num });
@@ -158,13 +170,13 @@ export default class BlackjackUtils {
         const cards: Card[] = [];
         for (const suit of SUITS) {
             for (const num of VALUES) {
-                if (interactionData.authorHand.find(card => card.suit == suit && card.num === num)) {
+                if (interactionData.authorHand.find((card) => card.suit == suit && card.num === num)) {
                     continue;
                 }
-                if (interactionData.botHand.find(card => card.suit == suit && card.num === num)) {
+                if (interactionData.botHand.find((card) => card.suit == suit && card.num === num)) {
                     continue;
                 }
-                if (interactionData.authorRightHand?.find(card => card.suit == suit && card.num === num)) {
+                if (interactionData.authorRightHand?.find((card) => card.suit == suit && card.num === num)) {
                     continue;
                 }
                 cards.push({ suit, num });
@@ -187,19 +199,22 @@ export default class BlackjackUtils {
             overall: RESULTS.PUSH,
             userMain: userSum <= 21 && !botBj && userSum > botSum,
             userMainBj: userBj,
-            botBj
-        }
+            botBj,
+        };
 
         if (interactionData.authorRightHand) {
             const userSumRight = this.getSum(interactionData.authorRightHand);
             const userBjRight = BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
 
-            if (userSum > 21 && userSumRight > 21) { // double bust ( ͡° ͜ʖ ͡°)
+            if (userSum > 21 && userSumRight > 21) {
+                // double bust ( ͡° ͜ʖ ͡°)
                 data.overall = RESULTS.BOT;
                 return data;
             }
-            if (botSum > 21) { // bot went bust
-                if (userSum > 21 || userSumRight > 21) { // one of user's hands went bust
+            if (botSum > 21) {
+                // bot went bust
+                if (userSum > 21 || userSumRight > 21) {
+                    // one of user's hands went bust
                     data.overall = RESULTS.SPLIT;
                     return data;
                 }
@@ -207,17 +222,20 @@ export default class BlackjackUtils {
                 return data;
             }
 
-            if (!interactionData.standRight && userSumRight < 21) { // player can still hit on the right hand
+            if (!interactionData.standRight && userSumRight < 21) {
+                // player can still hit on the right hand
                 return null;
             }
-            if (!interactionData.stand && userSum < 21) { // player can still hit on the left hand
+            if (!interactionData.stand && userSum < 21) {
+                // player can still hit on the left hand
                 return null;
             }
-            if (botSum < 17) { // bot can still hit; dealer stands on 17
+            if (botSum < 17) {
+                // bot can still hit; dealer stands on 17
                 return null;
             }
 
-            data.userRight = userSumRight <= 21 && !botBj && userSumRight > botSum
+            data.userRight = userSumRight <= 21 && !botBj && userSumRight > botSum;
             data.userRightBj = userBjRight;
 
             if ((userBj || data.userMain) && (userBjRight || data.userRight)) {
@@ -262,10 +280,12 @@ export default class BlackjackUtils {
             data.overall = RESULTS.USER;
             return data;
         }
-        if (!interactionData.stand && userSum < 21) { // player can still hit
+        if (!interactionData.stand && userSum < 21) {
+            // player can still hit
             return null;
         }
-        if (botSum < 17) { // bot can still hit; dealer stands on 17
+        if (botSum < 17) {
+            // bot can still hit; dealer stands on 17
             return null;
         }
 
@@ -289,11 +309,13 @@ export default class BlackjackUtils {
         if (!cards.length) {
             return '';
         }
-        const cardsText = cards.map(card => this.getCardText(card, interaction));
+        const cardsText = cards.map((card) => this.getCardText(card, interaction));
 
-        if (cardsText[0].startsWith('<:')) { // using "real" emojis
+        if (cardsText[0].startsWith('<:')) {
+            // using "real" emojis
             return `# ${cardsText.join('')}`;
-        } else { // using fallback emojis; reduce size and add |
+        } else {
+            // using fallback emojis; reduce size and add |
             return `## ${cardsText.join(' | ')}`;
         }
     }
@@ -301,12 +323,15 @@ export default class BlackjackUtils {
     getMessageData(interactionData: BlackjackInteraction, author: User, locale?: Locale): MessageData {
         const userBj = BlackjackUtils.hasBlackjack(interactionData.authorHand);
         const botBj = BlackjackUtils.hasBlackjack(interactionData.botHand);
-        const userBjRight = interactionData.authorRightHand && BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
+        const userBjRight =
+            interactionData.authorRightHand && BlackjackUtils.hasBlackjack(interactionData.authorRightHand);
 
         let result = BlackjackUtils.getWinner(interactionData);
 
         let content = LangUtils.get('FUN_BJ_TITLE_START', locale);
-        let userStatus = '', userStatusRight = '', botStatus = '';
+        let userStatus = '',
+            userStatusRight = '',
+            botStatus = '';
 
         if (userBj && userBjRight && botBj) {
             userStatusRight = LangUtils.get('FUN_BJ_USER_BJ_RIGHT', locale);
@@ -341,7 +366,7 @@ export default class BlackjackUtils {
             } else {
                 botStatus = LangUtils.get('FUN_BJ_BOT_FIRST', locale);
             }
-            
+
             const sum = BlackjackUtils.getSum(interactionData.authorHand);
             if (interactionData.authorRightHand) {
                 if (sum > 21) {
@@ -352,9 +377,17 @@ export default class BlackjackUtils {
 
                 const sumRight = BlackjackUtils.getSum(interactionData.authorRightHand);
                 if (sumRight > 21) {
-                    userStatusRight = LangUtils.getAndReplace('FUN_BJ_USER_BUST_RIGHT', { value: sumRight }, locale);
+                    userStatusRight = LangUtils.getAndReplace(
+                        'FUN_BJ_USER_BUST_RIGHT',
+                        { value: sumRight },
+                        locale
+                    );
                 } else {
-                    userStatusRight = LangUtils.getAndReplace('FUN_BJ_USER_HAS_RIGHT', { value: sumRight }, locale);
+                    userStatusRight = LangUtils.getAndReplace(
+                        'FUN_BJ_USER_HAS_RIGHT',
+                        { value: sumRight },
+                        locale
+                    );
                 }
                 if (sum === 21) {
                     interactionData.stand = true;
@@ -362,12 +395,14 @@ export default class BlackjackUtils {
                 if (sumRight === 21) {
                     interactionData.standRight = true;
                 }
-                if (sum === 21 && sumRight === 21) { // automatically stand in both hands
+                if (sum === 21 && sumRight === 21) {
+                    // automatically stand in both hands
                     this.processBotHit(interactionData);
                     result = BlackjackUtils.getWinner(interactionData);
                 }
             } else {
-                if (sum === 21) { // automatically stand
+                if (sum === 21) {
+                    // automatically stand
                     this.processBotHit(interactionData);
                     result = BlackjackUtils.getWinner(interactionData);
                     userStatus = LangUtils.getAndReplace('FUN_BJ_USER_HAS', { value: sum }, locale);
@@ -409,26 +444,34 @@ export default class BlackjackUtils {
             authorDescription += `\n\n${userStatusRight}\n${authorCardsRight}`;
         }
 
-        const botCards = this.getLargeCards(result ? interactionData.botHand : [interactionData.botHand[0]], inter);
+        const botCards = this.getLargeCards(
+            result ? interactionData.botHand : [interactionData.botHand[0]],
+            inter
+        );
         const botDescription = `${botStatus}\n${botCards}`;
 
         return {
             content,
-            embeds: [{
-                author: {
-                    name: author.username,
-                    icon_url: author.avatar ? CDNUtils.userAvatar(author.id, author.avatar) : undefined
+            embeds: [
+                {
+                    author: {
+                        name: author.username,
+                        icon_url: author.avatar ? CDNUtils.userAvatar(author.id, author.avatar) : undefined,
+                    },
+                    description: authorDescription,
                 },
-                description: authorDescription
-            }, {
-                author: {
-                    name: this.bot.user.username,
-                    icon_url: this.bot.user.avatar ? CDNUtils.userAvatar(this.bot.user.id, this.bot.user.avatar) : undefined
+                {
+                    author: {
+                        name: this.bot.user.username,
+                        icon_url: this.bot.user.avatar
+                            ? CDNUtils.userAvatar(this.bot.user.id, this.bot.user.avatar)
+                            : undefined,
+                    },
+                    description: botDescription,
                 },
-                description: botDescription
-            }],
-            components
-        }
+            ],
+            components,
+        };
     }
 
     processBotHit(interactionData: BlackjackInteraction, newCard?: Card) {
@@ -458,12 +501,17 @@ export default class BlackjackUtils {
         }
 
         // ACK the current interaction
-        await this.bot.api.interaction.sendResponse(newInteraction, { type: INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE }).catch(err => {
-            this.bot.logger.handleError('BLACKJACK', err, 'Failed to ack interaction.');
-        });
+        await this.bot.api.interaction
+            .sendResponse(newInteraction, { type: INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE })
+            .catch((err) => {
+                this.bot.logger.handleError('BLACKJACK', err, 'Failed to ack interaction.');
+            });
 
         let leftDone = interactionData.stand || BlackjackUtils.getSum(interactionData.authorHand) >= 21;
-        let rightDone = !interactionData.authorRightHand || interactionData.standRight || BlackjackUtils.getSum(interactionData.authorRightHand) >= 21;
+        let rightDone =
+            !interactionData.authorRightHand ||
+            interactionData.standRight ||
+            BlackjackUtils.getSum(interactionData.authorRightHand) >= 21;
 
         const newCard = MiscUtils.randomItem(BlackjackUtils.getAvailableCards(interactionData));
         if (action === 'hit') {
@@ -474,7 +522,11 @@ export default class BlackjackUtils {
                 interactionData.authorRightHand.push(newCard);
                 rightDone = BlackjackUtils.getSum(interactionData.authorRightHand) >= 21;
             } else {
-                this.bot.logger.debug('BLACKJACK', 'Invalid operation: hitRight without authorRightHand', interactionData);
+                this.bot.logger.debug(
+                    'BLACKJACK',
+                    'Invalid operation: hitRight without authorRightHand',
+                    interactionData
+                );
             }
         } else if (action === 'double') {
             interactionData.authorHand.push(newCard);

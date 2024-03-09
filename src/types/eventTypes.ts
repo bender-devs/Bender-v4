@@ -62,5 +62,5 @@ export default [
     'USER_UPDATE',
     'VOICE_SERVER_UPDATE',
     'VOICE_STATE_UPDATE',
-    'WEBHOOKS_UPDATE'
+    'WEBHOOKS_UPDATE',
 ] as const;

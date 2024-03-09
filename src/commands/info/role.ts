@@ -1,5 +1,13 @@
 import { PERMISSIONS } from '../../types/numberTypes.js';
-import type { CommandOptionValue, Embed, Interaction, Locale, Member, Role, Snowflake } from '../../types/types.js';
+import type {
+    CommandOptionValue,
+    Embed,
+    Interaction,
+    Locale,
+    Member,
+    Role,
+    Snowflake,
+} from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
 import LangUtils from '../../utils/language.js';
 import TextUtils from '../../utils/text.js';
@@ -58,39 +66,47 @@ export default async function (this: InfoCommand, interaction: Interaction, role
         return this.respondKey(interaction, 'SERVER_INFO_FETCH_FAILED', 'ERROR', true);
     }
 
-
-    const title = LangUtils.getAndReplace('ROLE_INFO_TITLE', {
-        roleName: role.name
-    }, interaction.locale);
+    const title = LangUtils.getAndReplace(
+        'ROLE_INFO_TITLE',
+        {
+            roleName: role.name,
+        },
+        interaction.locale
+    );
 
     const totalRoles = Array.isArray(guild.roles) ? guild.roles.length : Object.keys(guild.roles).length;
-    let description = LangUtils.getAndReplace('ROLE_INFO_POSITION', {
-        position: role.position,
-        total: totalRoles
-    }, interaction.locale);
+    let description = LangUtils.getAndReplace(
+        'ROLE_INFO_POSITION',
+        {
+            position: role.position,
+            total: totalRoles,
+        },
+        interaction.locale
+    );
 
     const hexColor = role.color.toString(16).padStart(6, '0');
-    description += '\n'+LangUtils.getAndReplace('ROLE_INFO_COLOR', { hexColor }, interaction.locale);
+    description += '\n' + LangUtils.getAndReplace('ROLE_INFO_COLOR', { hexColor }, interaction.locale);
 
     // can't fetch total # of members in a role, see:
     // https://github.com/discord/discord-api-docs/discussions/3790
     // instead, only show online members in guilds > 1000 members
-    let totalMembers = -1, onlineMembers = 0;
-    const count = ('member_count' in guild) ? guild.member_count : guild.approximate_member_count;
+    let totalMembers = -1,
+        onlineMembers = 0;
+    const count = 'member_count' in guild ? guild.member_count : guild.approximate_member_count;
     if (count) {
         const cached = this.bot.cache.guilds.get(interaction.guild_id)?.members;
         const cacheCount = cached ? Object.keys(cached).length : 0;
         let members: Member[] | null = null;
         if (cached && count === cacheCount) {
-            members = Object.values(cached).filter(mem => mem.roles.includes(typedRoleID));
-        } else if (count <= 1000) { 
+            members = Object.values(cached).filter((mem) => mem.roles.includes(typedRoleID));
+        } else if (count <= 1000) {
             const allMembers = await this.bot.api.member.list(interaction.guild_id, 1000);
             if (allMembers) {
-                members = allMembers.filter(mem => mem.roles.includes(typedRoleID));
+                members = allMembers.filter((mem) => mem.roles.includes(typedRoleID));
             }
         } else if (cached) {
             // if only online members are cached, only update onlineMembers
-            onlineMembers = Object.values(cached).filter(mem => {
+            onlineMembers = Object.values(cached).filter((mem) => {
                 if (!mem.roles.includes(typedRoleID)) {
                     return false;
                 }
@@ -100,33 +116,46 @@ export default async function (this: InfoCommand, interaction: Interaction, role
         }
         if (members) {
             totalMembers = members.length;
-            onlineMembers = members.filter(mem => {
+            onlineMembers = members.filter((mem) => {
                 const presence = this.bot.cache.presences.get(mem.user.id);
                 return presence && presence.status !== 'offline';
             }).length;
         }
     }
     const onlineEmoji = this.getEmoji('ONLINE', interaction);
-    description += '\n'+LangUtils.getAndReplace(`ROLE_INFO_MEMBERS${totalMembers === -1 ? '_ONLINE' : ''}`, {
-        total: totalMembers,
-        online: onlineMembers,
-        onlineEmoji
-    }, interaction.locale);
+    description +=
+        '\n' +
+        LangUtils.getAndReplace(
+            `ROLE_INFO_MEMBERS${totalMembers === -1 ? '_ONLINE' : ''}`,
+            {
+                total: totalMembers,
+                online: onlineMembers,
+                onlineEmoji,
+            },
+            interaction.locale
+        );
 
     const createdAt = TextUtils.timestamp.fromSnowflake(role.id);
-    description += '\n'+LangUtils.formatDateAgo('CHANNEL_INFO_CREATED_AT', createdAt, interaction.locale);
+    description += '\n' + LangUtils.formatDateAgo('CHANNEL_INFO_CREATED_AT', createdAt, interaction.locale);
 
     const keyPermNames = getKeyPermNames(role, interaction.locale);
     if (keyPermNames.length) {
-        description += '\n'+LangUtils.getAndReplace('ROLE_INFO_PERMISSIONS', {
-            keyPerms: keyPermNames.map(perm => `\`${perm}\``).join(', ')
-        }, interaction.locale);
+        description +=
+            '\n' +
+            LangUtils.getAndReplace(
+                'ROLE_INFO_PERMISSIONS',
+                {
+                    keyPerms: keyPermNames.map((perm) => `\`${perm}\``).join(', '),
+                },
+                interaction.locale
+            );
     }
 
-    description += '\n\n'+LangUtils.get(`ROLE_INFO_${role.hoist ? '' : 'NOT_'}HOISTED`, interaction.locale);
-    description += '\n'+LangUtils.get(`ROLE_INFO_${role.mentionable ? '' : 'NOT_'}MENTIONABLE`, interaction.locale);
+    description += '\n\n' + LangUtils.get(`ROLE_INFO_${role.hoist ? '' : 'NOT_'}HOISTED`, interaction.locale);
+    description +=
+        '\n' + LangUtils.get(`ROLE_INFO_${role.mentionable ? '' : 'NOT_'}MENTIONABLE`, interaction.locale);
     if (role.managed) {
-        description += '\n'+LangUtils.get('ROLE_INFO_MANAGED', interaction.locale);
+        description += '\n' + LangUtils.get('ROLE_INFO_MANAGED', interaction.locale);
     }
 
     const embed: Embed = { title, description };

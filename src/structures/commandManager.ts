@@ -1,26 +1,26 @@
-import type Bot from './bot.js';
-import type { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
 import { DEV_SERVER } from '../data/constants.js';
-import type { Interaction, Locale, Snowflake } from '../types/types.js';
 import type { DatabaseResult, SavedCommand } from '../types/dbTypes.js';
 import { COMPARE_COMMANDS_KEYS } from '../types/dbTypes.js';
 import { COMMAND_TYPES } from '../types/numberTypes.js';
+import type { Interaction, Locale, Snowflake } from '../types/types.js';
+import type Bot from './bot.js';
+import type { MessageCommand, SlashCommand, UserCommand, UserOrMessageCommand } from './command.js';
 
-import getUserCommands from '../commands/nonText/user.js';
 import getMessageCommands from '../commands/nonText/message.js';
+import getUserCommands from '../commands/nonText/user.js';
 
 import DevCommand from '../commands/dev.js';
 
-import PingCommand from '../commands/ping.js';
-import TextCommand from '../commands/text.js';
 import ConvertTextCommand from '../commands/convert-text.js';
-import InfoCommand from '../commands/info.js';
 import FunCommand from '../commands/fun.js';
+import HelpCommand from '../commands/help.js';
+import InfoCommand from '../commands/info.js';
+import MemberMsgCommand from '../commands/member-msg.js';
+import MinAgeCommand from '../commands/min-age.js';
+import PingCommand from '../commands/ping.js';
 import RestrictEmojiCommand from '../commands/restrict-emoji.js';
 import StatsCommand from '../commands/stats.js';
-import MinAgeCommand from '../commands/min-age.js';
-import HelpCommand from '../commands/help.js';
-import MemberMsgCommand from '../commands/member-msg.js';
+import TextCommand from '../commands/text.js';
 
 export default class SlashCommandManager {
     bot: Bot;
@@ -60,33 +60,44 @@ export default class SlashCommandManager {
         const listTypeInfo = `[${guildID ? `GUILD ${guildID}` : 'GLOBAL'}]`;
         this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updating command list...');
 
-        const currentCommands = await (guildID ? this.bot.db.guildCommand.list(guildID) : this.bot.db.command.list());
+        const currentCommands = await (guildID
+            ? this.bot.db.guildCommand.list(guildID)
+            : this.bot.db.command.list());
         if (!currentCommands.length) {
-            await (guildID ? this.bot.api.guildCommand.replaceAll(guildID, commandList) : this.bot.api.command.replaceAll(commandList)).then(cmds => {
-                return cmds ? (guildID ? this.bot.db.guildCommand.replaceAll(guildID, cmds) : this.bot.db.command.replaceAll(cmds)) : null;
-            }).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+            await (guildID
+                ? this.bot.api.guildCommand.replaceAll(guildID, commandList)
+                : this.bot.api.command.replaceAll(commandList)
+            )
+                .then((cmds) => {
+                    return cmds
+                        ? guildID
+                            ? this.bot.db.guildCommand.replaceAll(guildID, cmds)
+                            : this.bot.db.command.replaceAll(cmds)
+                        : null;
+                })
+                .catch((error) => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
             return true;
         }
         const newCommands: (SlashCommand | UserOrMessageCommand)[] = [];
         const editedCommands: Record<Snowflake, SlashCommand | UserOrMessageCommand> = {};
         const deletedCommands: SavedCommand[] = [];
         for (const command of currentCommands) {
-            const loadedCommand = commandList.find(cmd => cmd.name === command.name);
+            const loadedCommand = commandList.find((cmd) => cmd.name === command.name);
             if (!loadedCommand) {
                 deletedCommands.push(command);
-            }
-            else if (!this.#compareCommands(command, loadedCommand)) {
+            } else if (!this.#compareCommands(command, loadedCommand)) {
                 editedCommands[command.id] = loadedCommand;
             }
         }
         for (const command of commandList) {
-            if (currentCommands.find(cmd => cmd.name === command.name)) {
+            if (currentCommands.find((cmd) => cmd.name === command.name)) {
                 continue;
             }
-            if (deletedCommands.find(cmd => cmd.name === command.name)) {
+            if (deletedCommands.find((cmd) => cmd.name === command.name)) {
                 continue;
             }
-            let id: Snowflake, foundEdited = false;
+            let id: Snowflake,
+                foundEdited = false;
             for (id in editedCommands) {
                 if (editedCommands[id].name === command.name) {
                     foundEdited = true;
@@ -102,41 +113,71 @@ export default class SlashCommandManager {
             this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'No command changes detected.');
         }
         if (newCommands.length) {
-            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'New commands:', newCommands.map(cmd => cmd.name));
-            await Promise.all(newCommands.map(this.#stripBotValue).map(cmd => guildID ?
-                this.bot.api.guildCommand.create(guildID, cmd).then(command =>
-                    command ? this.bot.db.guildCommand.create(guildID, command) : null
-                ) :
-                this.bot.api.command.create(cmd).then(command => 
-                    command ? this.bot.db.command.create(command) : null
-                )
-            )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+            this.bot.logger.debug(
+                'COMMAND MANAGER',
+                listTypeInfo,
+                'New commands:',
+                newCommands.map((cmd) => cmd.name)
+            );
+            await Promise.all(
+                newCommands
+                    .map(this.#stripBotValue)
+                    .map((cmd) =>
+                        guildID
+                            ? this.bot.api.guildCommand
+                                  .create(guildID, cmd)
+                                  .then((command) =>
+                                      command ? this.bot.db.guildCommand.create(guildID, command) : null
+                                  )
+                            : this.bot.api.command
+                                  .create(cmd)
+                                  .then((command) => (command ? this.bot.db.command.create(command) : null))
+                    )
+            ).catch((error) => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         if (Object.keys(editedCommands).length) {
-            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Updated commands:', Object.values(editedCommands).map(cmd => cmd.name));
+            this.bot.logger.debug(
+                'COMMAND MANAGER',
+                listTypeInfo,
+                'Updated commands:',
+                Object.values(editedCommands).map((cmd) => cmd.name)
+            );
             const promises: Promise<DatabaseResult | null>[] = [];
             let id: Snowflake;
             for (id in editedCommands) {
                 const cmd = this.#stripBotValue(editedCommands[id]);
-                promises.push(guildID ?
-                    this.bot.api.guildCommand.edit(guildID, id, cmd).then(command =>
-                        command ? this.bot.db.guildCommand.update(guildID, id, command) : null
-                    ) :
-                    this.bot.api.command.edit(id, cmd).then(command => 
-                        command ? this.bot.db.command.update(id, command) : null
-                    )
+                promises.push(
+                    guildID
+                        ? this.bot.api.guildCommand
+                              .edit(guildID, id, cmd)
+                              .then((command) =>
+                                  command ? this.bot.db.guildCommand.update(guildID, id, command) : null
+                              )
+                        : this.bot.api.command
+                              .edit(id, cmd)
+                              .then((command) => (command ? this.bot.db.command.update(id, command) : null))
                 );
             }
-            await Promise.all(promises).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+            await Promise.all(promises).catch((error) =>
+                this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo)
+            );
         }
         if (deletedCommands.length) {
-            this.bot.logger.debug('COMMAND MANAGER', listTypeInfo, 'Deleted commands:', deletedCommands.map(cmd => cmd.name));
-            await Promise.all(deletedCommands.map(cmd => guildID ?
-                this.bot.api.guildCommand.delete(guildID, cmd.id)
-                    .then(() => this.bot.db.guildCommand.delete(guildID, cmd.id)) :
-                this.bot.api.command.delete(cmd.id)
-                    .then(() => this.bot.db.command.delete(cmd.id))
-            )).catch(error => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
+            this.bot.logger.debug(
+                'COMMAND MANAGER',
+                listTypeInfo,
+                'Deleted commands:',
+                deletedCommands.map((cmd) => cmd.name)
+            );
+            await Promise.all(
+                deletedCommands.map((cmd) =>
+                    guildID
+                        ? this.bot.api.guildCommand
+                              .delete(guildID, cmd.id)
+                              .then(() => this.bot.db.guildCommand.delete(guildID, cmd.id))
+                        : this.bot.api.command.delete(cmd.id).then(() => this.bot.db.command.delete(cmd.id))
+                )
+            ).catch((error) => this.bot.logger.handleError('COMMAND MANAGER', error, listTypeInfo));
         }
         return true;
     }
@@ -204,12 +245,13 @@ export default class SlashCommandManager {
             const actualValue = loadedCommand[key];
             if (key === 'dm_permission') {
                 // for this case, setting it to true makes discord return undefined. therefore only compare false
-                if ((expectedValue === false && actualValue !== false) || 
-                    (expectedValue !== false && actualValue === false)) {
+                if (
+                    (expectedValue === false && actualValue !== false) ||
+                    (expectedValue !== false && actualValue === false)
+                ) {
                     return false;
                 }
-            }
-            else if (!this.#isEqual(actualValue, expectedValue)) {
+            } else if (!this.#isEqual(actualValue, expectedValue)) {
                 return false;
             }
         }
@@ -217,12 +259,12 @@ export default class SlashCommandManager {
     }
 
     #findCommandLocalized(name: string, locale: Locale) {
-        return this.commands.find(cmd =>
-            cmd.name_localizations && cmd.name_localizations[locale] === name
-        ) || null;
+        return (
+            this.commands.find((cmd) => cmd.name_localizations && cmd.name_localizations[locale] === name) || null
+        );
     }
     findCommand(name: string, interaction: Interaction) {
-        const exactMatch = this.commands.find(cmd => cmd.name === name);
+        const exactMatch = this.commands.find((cmd) => cmd.name === name);
         if (exactMatch) {
             return exactMatch;
         }
@@ -231,7 +273,7 @@ export default class SlashCommandManager {
             localizedMatch = this.#findCommandLocalized(name, interaction.locale);
         }
         if (!localizedMatch && interaction.guild_locale) {
-            localizedMatch = this.#findCommandLocalized(name, interaction.guild_locale); 
+            localizedMatch = this.#findCommandLocalized(name, interaction.guild_locale);
         }
         if (localizedMatch) {
             return localizedMatch;

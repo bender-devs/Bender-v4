@@ -1,16 +1,29 @@
 import { ID_REGEX_EXACT, OWNERS } from '../data/constants.js';
-import { PERMISSIONS, ALL_PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes.js';
-import type { BenderPermission, Bitfield, Channel, DiscordPermission, Flags, Locale, Member, PermissionName, PermissionOverwrites, RoleHierarchyPermission, Snowflake, User } from '../types/types.js';
-import type { CachedGuild } from '../structures/cacheHandler.js';
 import type Bot from '../structures/bot.js';
+import type { CachedGuild } from '../structures/cacheHandler.js';
+import { ALL_PERMISSIONS, PERMISSIONS, PERMISSION_OVERWRITE_TYPES } from '../types/numberTypes.js';
+import type {
+    BenderPermission,
+    Bitfield,
+    Channel,
+    DiscordPermission,
+    Flags,
+    Locale,
+    Member,
+    PermissionName,
+    PermissionOverwrites,
+    RoleHierarchyPermission,
+    Snowflake,
+    User,
+} from '../types/types.js';
 import LanguageUtils from './language.js';
 
 type PermBitfield = Bitfield | Flags | bigint;
 type SimplifiedOverwrites = {
     allow: bigint;
     deny: bigint;
-}
-const allPermissionValues = Object.values(PERMISSIONS).filter(value => typeof value === 'number');
+};
+const allPermissionValues = Object.values(PERMISSIONS).filter((value) => typeof value === 'number');
 
 export default class PermissionUtils {
     bot: Bot;
@@ -23,7 +36,7 @@ export default class PermissionUtils {
         const numberBitfield = BigInt(bitfield);
         const permissionFlag = BigInt(PERMISSIONS[permission]);
 
-        return (numberBitfield & permissionFlag) ? true : false;
+        return numberBitfield & permissionFlag ? true : false;
     }
 
     static #hasMany(bitfield: PermBitfield, permissions: PermissionName[], onlySome: boolean) {
@@ -47,14 +60,19 @@ export default class PermissionUtils {
         return this.#hasMany(bitfield, permissions, true);
     }
 
-    static computeOverwritesForMember(member: Member, overwrites: PermissionOverwrites[] = []): SimplifiedOverwrites {
+    static computeOverwritesForMember(
+        member: Member,
+        overwrites: PermissionOverwrites[] = []
+    ): SimplifiedOverwrites {
         const bitfields: SimplifiedOverwrites = {
             allow: BigInt(0),
-            deny: BigInt(0)
-        }
+            deny: BigInt(0),
+        };
         for (const overwrite of overwrites) {
-            const memberMatch = overwrite.type === PERMISSION_OVERWRITE_TYPES.MEMBER && overwrite.id === member.user.id;
-            const roleMatch = overwrite.type === PERMISSION_OVERWRITE_TYPES.ROLE && member.roles.includes(overwrite.id);
+            const memberMatch =
+                overwrite.type === PERMISSION_OVERWRITE_TYPES.MEMBER && overwrite.id === member.user.id;
+            const roleMatch =
+                overwrite.type === PERMISSION_OVERWRITE_TYPES.ROLE && member.roles.includes(overwrite.id);
             if (memberMatch || roleMatch) {
                 bitfields.allow |= BigInt(overwrite.allow);
                 bitfields.deny |= BigInt(overwrite.deny);
@@ -139,12 +157,15 @@ export default class PermissionUtils {
     static matchesEveryone(perm: DiscordPermission, guild: CachedGuild, channel?: Channel) {
         const everyonePerms = BigInt(guild.roles[guild.id]?.permissions || 0);
         if (channel) {
-            const overwrite = channel.permission_overwrites?.find(ow => ow.id === guild.id);
+            const overwrite = channel.permission_overwrites?.find((ow) => ow.id === guild.id);
             if (overwrite) {
-                return this.computeBitfieldFromOverwrite({
-                    allow: BigInt(overwrite.allow),
-                    deny: BigInt(overwrite.deny)
-                }, everyonePerms);
+                return this.computeBitfieldFromOverwrite(
+                    {
+                        allow: BigInt(overwrite.allow),
+                        deny: BigInt(overwrite.deny),
+                    },
+                    everyonePerms
+                );
             }
         }
         return this.has(everyonePerms, perm);

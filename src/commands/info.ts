@@ -1,19 +1,19 @@
-import { SlashCommand } from '../structures/command.js';
 import type Bot from '../structures/bot.js';
-import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import { SlashCommand } from '../structures/command.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
+import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 
-import userInfo from './info/user.js';
-import emojiInfo from './info/emoji.js';
-import channelInfo from './info/channel.js';
-import bannerInfo from './info/banner.js';
-import inviteInfo from './info/invite.js';
-import serverInfo from './info/server.js';
-import roleInfo from './info/role.js';
 import avatarInfo from './info/avatar.js';
+import bannerInfo from './info/banner.js';
 import botInfo from './info/bot.js';
+import channelInfo from './info/channel.js';
 import charInfo from './info/char.js';
+import emojiInfo from './info/emoji.js';
+import inviteInfo from './info/invite.js';
+import roleInfo from './info/role.js';
+import serverInfo from './info/server.js';
+import userInfo from './info/user.js';
 
 export default class InfoCommand extends SlashCommand {
     constructor(bot: Bot) {
@@ -26,177 +26,204 @@ export default class InfoCommand extends SlashCommand {
 
     readonly dm_permission: boolean = true;
 
-    readonly options: CommandOption[] = [{
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+    readonly options: CommandOption[] = [
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('BOT_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND'),
+            name: LangUtils.get('BOT_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('BOT_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND_DESCRIPTION')
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            description: LangUtils.get('BOT_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('BOT_INFO_SUBCOMMAND_DESCRIPTION'),
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('USER_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('USER_INFO_SUBCOMMAND'),
+            name: LangUtils.get('USER_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('USER_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('USER_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('USER_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('USER_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('USER_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.USER,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.USER,
 
-            name: LangUtils.get('USER_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION'),
+                    name: LangUtils.get('USER_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION'),
 
-            description: LangUtils.get('USER_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION_DESCRIPTION')
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    description: LangUtils.get('USER_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('USER_INFO_OPTION_DESCRIPTION'),
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('CHANNEL_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND'),
+            name: LangUtils.get('CHANNEL_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.CHANNEL,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.CHANNEL,
 
-            name: LangUtils.get('CHANNEL_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION'),
+                    name: LangUtils.get('CHANNEL_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION'),
 
-            description: LangUtils.get('CHANNEL_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION_DESCRIPTION'),
+                    description: LangUtils.get('CHANNEL_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('CHANNEL_INFO_OPTION_DESCRIPTION'),
 
-            required: true
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    required: true,
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('SERVER_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
+            name: LangUtils.get('SERVER_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION')
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+            description: LangUtils.get('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('SERVER_INFO_SUBCOMMAND_DESCRIPTION'),
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('ROLE_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND'),
+            name: LangUtils.get('ROLE_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.ROLE,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.ROLE,
 
-            name: LangUtils.get('ROLE_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION'),
+                    name: LangUtils.get('ROLE_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION'),
 
-            description: LangUtils.get('ROLE_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION_DESCRIPTION'),
+                    description: LangUtils.get('ROLE_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('ROLE_INFO_OPTION_DESCRIPTION'),
 
-            required: true
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    required: true,
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('EMOJI_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_SUBCOMMAND'),
+            name: LangUtils.get('EMOJI_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('EMOJI_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('EMOJI_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.STRING,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.STRING,
 
-            name: LangUtils.get('EMOJI_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_OPTION'),
+                    name: LangUtils.get('EMOJI_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_OPTION'),
 
-            description: LangUtils.get('EMOJI_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_OPTION_DESCRIPTION'),
+                    description: LangUtils.get('EMOJI_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('EMOJI_INFO_OPTION_DESCRIPTION'),
 
-            required: true
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    required: true,
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('AVATAR_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND'),
+            name: LangUtils.get('AVATAR_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.USER,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.USER,
 
-            name: LangUtils.get('AVATAR_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION'),
+                    name: LangUtils.get('AVATAR_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION'),
 
-            description: LangUtils.get('AVATAR_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION_DESCRIPTION')
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    description: LangUtils.get('AVATAR_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('AVATAR_INFO_OPTION_DESCRIPTION'),
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('BANNER_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('BANNER_INFO_SUBCOMMAND'),
+            name: LangUtils.get('BANNER_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('BANNER_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('BANNER_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('BANNER_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('BANNER_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('BANNER_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.USER,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.USER,
 
-            name: LangUtils.get('BANNER_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('BANNER_INFO_OPTION'),
+                    name: LangUtils.get('BANNER_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('BANNER_INFO_OPTION'),
 
-            description: LangUtils.get('BANNER_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('BANNER_INFO_OPTION_DESCRIPTION')
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    description: LangUtils.get('BANNER_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('BANNER_INFO_OPTION_DESCRIPTION'),
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('INVITE_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND'),
+            name: LangUtils.get('INVITE_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.STRING,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.STRING,
 
-            name: LangUtils.get('INVITE_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION'),
+                    name: LangUtils.get('INVITE_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION'),
 
-            description: LangUtils.get('INVITE_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION_DESCRIPTION'),
+                    description: LangUtils.get('INVITE_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('INVITE_INFO_OPTION_DESCRIPTION'),
 
-            required: true
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    required: true,
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
-        name: LangUtils.get('CHAR_INFO_SUBCOMMAND'),
-        name_localizations: LangUtils.getLocalizationMap('CHAR_INFO_SUBCOMMAND'),
+            name: LangUtils.get('CHAR_INFO_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('CHAR_INFO_SUBCOMMAND'),
 
-        description: LangUtils.get('CHAR_INFO_SUBCOMMAND_DESCRIPTION'),
-        description_localizations: LangUtils.getLocalizationMap('CHAR_INFO_SUBCOMMAND_DESCRIPTION'),
+            description: LangUtils.get('CHAR_INFO_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('CHAR_INFO_SUBCOMMAND_DESCRIPTION'),
 
-        options: [{
-            type: COMMAND_OPTION_TYPES.STRING,
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.STRING,
 
-            name: LangUtils.get('CHAR_INFO_OPTION'),
-            name_localizations: LangUtils.getLocalizationMap('CHAR_INFO_OPTION'),
+                    name: LangUtils.get('CHAR_INFO_OPTION'),
+                    name_localizations: LangUtils.getLocalizationMap('CHAR_INFO_OPTION'),
 
-            description: LangUtils.get('CHAR_INFO_OPTION_DESCRIPTION'),
-            description_localizations: LangUtils.getLocalizationMap('CHAR_INFO_OPTION_DESCRIPTION'),
+                    description: LangUtils.get('CHAR_INFO_OPTION_DESCRIPTION'),
+                    description_localizations: LangUtils.getLocalizationMap('CHAR_INFO_OPTION_DESCRIPTION'),
 
-            required: true
-        }]
-    }];
+                    required: true,
+                },
+            ],
+        },
+    ];
 
     run(interaction: Interaction): CommandResponse {
         const args = interaction.data?.options;

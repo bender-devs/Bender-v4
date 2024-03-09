@@ -14,14 +14,14 @@ export const enum USER_FLAGS {
     VERIFIED_DEVELOPER = 1 << 17,
     CERTIFIED_MODERATOR = 1 << 18,
     BOT_HTTP_INTERACTIONS = 1 << 19,
-    ACTIVE_DEVELOPER = 1 << 22
+    ACTIVE_DEVELOPER = 1 << 22,
 }
 
 // https://discord.com/developers/docs/resources/user#user-object-premium-types
 export const enum PREMIUM_TYPES {
     NONE,
     NITRO_CLASSIC,
-    NITRO
+    NITRO,
 }
 
 // https://discord.com/developers/docs/topics/gateway#activity-object-activity-types
@@ -31,48 +31,48 @@ export enum ACTIVITY_TYPES {
     LISTENING,
     WATCHING,
     CUSTOM,
-    COMPETING
+    COMPETING,
 }
 
 // https://discord.com/developers/docs/topics/permissions#role-object-role-flags
 export const enum ROLE_FLAGS {
-    IN_PROMPT = 1 << 0
+    IN_PROMPT = 1 << 0,
 }
 
 // https://discord.com/developers/docs/resources/channel#attachment-object-attachment-flags
 export const enum ATTACHMENT_FLAGS {
-    IS_REMIX = 1 << 2
+    IS_REMIX = 1 << 2,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-onboarding-object-onboarding-mode
 export const enum ONBOARDING_MODES {
     DEFAULT,
-    ADVANCED
+    ADVANCED,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-onboarding-object-prompt-types
 export const enum ONBOARDING_PROMPT_TYPES {
     MULTIPLE_CHOICE,
-    DROPDOWN
+    DROPDOWN,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level
 export const enum MESSAGE_NOTIFICATION_LEVELS {
     ALL_MESSAGES,
-    ONLY_MENTIONS
+    ONLY_MENTIONS,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level
 export const enum EXPLICIT_FILTER_LEVELS {
     DISABLED,
     MEMBERS_WITHOUT_ROLES,
-    ALL_MEMBERS
+    ALL_MEMBERS,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-mfa-level
 export const enum MFA_LEVELS {
     NONE,
-    ELEVATED
+    ELEVATED,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-verification-level
@@ -81,7 +81,7 @@ export const enum VERIFICATION_LEVELS {
     LOW,
     MEDIUM,
     HIGH,
-    VERY_HIGH
+    VERY_HIGH,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-guild-nsfw-level
@@ -89,7 +89,7 @@ export const enum NSFW_LEVELS {
     DEFAULT,
     EXPLICIT,
     SAFE,
-    AGE_RESTRICTED
+    AGE_RESTRICTED,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-premium-tier
@@ -98,7 +98,7 @@ export const enum PREMIUM_TIERS {
     LOW,
     MEDIUM,
     HIGH,
-    VERY_HIGH
+    VERY_HIGH,
 }
 
 // https://discord.com/developers/docs/resources/channel#message-object-message-types
@@ -125,7 +125,7 @@ export const enum MESSAGE_TYPES {
     CHAT_INPUT_COMMAND,
     THREAD_STARTER_MESSAGE,
     GUILD_INVITE_REMINDER,
-    CONTEXT_MENU_COMMAND
+    CONTEXT_MENU_COMMAND,
 }
 
 // https://discord.com/developers/docs/resources/channel#message-object-message-activity-types
@@ -133,7 +133,7 @@ export const enum MESSAGE_ACTIVITY_TYPES {
     JOIN = 1,
     SPECTATE,
     LISTEN,
-    JOIN_REQUEST = 5
+    JOIN_REQUEST = 5,
 }
 
 // https://discord.com/developers/docs/resources/channel#message-object-message-flags
@@ -146,20 +146,20 @@ export const enum MESSAGE_FLAGS {
     HAS_THREAD = 1 << 5,
     EPHEMERAL = 1 << 6,
     LOADING = 1 << 7,
-    FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = 1 << 8
+    FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = 1 << 8,
 }
 
 // https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
 export const enum SYSTEM_CHANNEL_FLAGS {
     SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0,
     SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1,
-    SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2
+    SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2,
 }
 
 // https://discord.com/developers/docs/resources/stage-instance#stage-instance-object-privacy-level
 export const enum STAGE_PRIVACY_LEVELS {
     PUBLIC = 1,
-    GUILD_ONLY
+    GUILD_ONLY,
 }
 
 // https://discord.com/developers/docs/resources/channel#channel-object-channel-types
@@ -176,38 +176,38 @@ export const enum CHANNEL_TYPES {
     GUILD_PRIVATE_THREAD,
     GUILD_STAGE_VOICE,
     GUILD_DIRECTORY,
-    GUILD_FORUM
+    GUILD_FORUM,
 }
 
 // https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes
 export const enum VIDEO_QUALITY_MODES {
     AUTO = 1,
-    FULL
+    FULL,
 }
 
 // https://discord.com/developers/docs/resources/channel#edit-channel-permissions-json-params
 export const enum PERMISSION_OVERWRITE_TYPES {
     ROLE,
-    MEMBER
+    MEMBER,
 }
 
 // https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-types
 export const enum STICKER_TYPES {
     STANDARD = 1,
-    GUILD
+    GUILD,
 }
 
 // https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-format-types
 export const enum STICKER_FORMAT_TYPES {
     PNG = 1,
     APNG,
-    LOTTIE
+    LOTTIE,
 }
 
 // https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors
 export const enum INTEGRATION_EXPIRE_BEHAVIORS {
     REMOVE_ROLE,
-    KICK
+    KICK,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-object-interaction-request-type
@@ -216,7 +216,7 @@ export const enum INTERACTION_REQUEST_TYPES {
     APPLICATION_COMMAND,
     MESSAGE_COMPONENT,
     APPLICATION_COMMAND_AUTOCOMPLETE,
-    MODAL_SUBMIT
+    MODAL_SUBMIT,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-callback-type
@@ -227,20 +227,20 @@ export const enum INTERACTION_CALLBACK_TYPES {
     DEFERRED_UPDATE_MESSAGE,
     UPDATE_MESSAGE,
     APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-    MODAL
+    MODAL,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
 export const enum INTERACTION_CALLBACK_FLAGS {
     SUPPRESS_EMBEDS = 1 << 2,
-    EPHEMERAL = 1 << 6
+    EPHEMERAL = 1 << 6,
 }
 
 // https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types
 export const enum COMMAND_TYPES {
     CHAT_INPUT = 1,
     USER,
-    MESSAGE
+    MESSAGE,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#application-command-object-application-command-option-type
@@ -255,14 +255,14 @@ export const enum COMMAND_OPTION_TYPES {
     ROLE,
     MENTIONABLE,
     NUMBER,
-    ATTACHMENT
+    ATTACHMENT,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#applicationcommandpermissiontype
 export const enum COMMAND_PERMISSION_TYPES {
     ROLE = 1,
     USER,
-    CHANNEL
+    CHANNEL,
 }
 
 // https://discord.com/developers/docs/interactions/message-components#component-object-component-types
@@ -274,7 +274,7 @@ export const enum MESSAGE_COMPONENT_TYPES {
     USER_SELECT,
     ROLE_SELECT,
     MENTIONABLE_SELECT, // users and roles
-    CHANNEL_SELECT
+    CHANNEL_SELECT,
 }
 
 // https://discord.com/developers/docs/interactions/message-components#button-object-button-styles
@@ -283,7 +283,7 @@ export const enum BUTTON_STYLES {
     SECONDARY,
     SUCCESS,
     DANGER,
-    LINK
+    LINK,
 }
 
 // https://discord.com/developers/docs/resources/application#application-object-application-flags
@@ -297,25 +297,25 @@ export const enum APPLICATION_FLAGS {
     EMBEDDED = 1 << 17,
     GATEWAY_MESSAGE_CONTENT = 1 << 18,
     GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19,
-    APPLICATION_COMMAND_BADGE = 1 << 23
+    APPLICATION_COMMAND_BADGE = 1 << 23,
 }
 
 // https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum
 export const enum TEAM_MEMBERSHIP_STATE {
     INVITED = 1,
-    ACCEPTED
+    ACCEPTED,
 }
 
 // https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-privacy-level
 export const enum GUILD_SCHEDULED_EVENT_PRIVACY_LEVEL {
-    GUILD_ONLY = 2
+    GUILD_ONLY = 2,
 }
 
 // https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types
 export const enum GUILD_SCHEDULED_EVENT_ENTITY_TYPES {
     STAGE_INSTANCE = 1,
     VOICE,
-    EXTERNAL
+    EXTERNAL,
 }
 
 // https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-status
@@ -323,7 +323,7 @@ export const enum GUILD_SCHEDULED_EVENT_STATUS {
     SCHEDULED = 1,
     ACTIVE,
     COMPLETED,
-    CANCELED
+    CANCELED,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types
@@ -331,26 +331,26 @@ export const enum AUTOMOD_TRIGGER_TYPES {
     KEYWORD = 1,
     SPAM = 3,
     KEYWORD_PRESET,
-    MENTION_SPAM
+    MENTION_SPAM,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types
 export const enum AUTOMOD_KEYWORD_PRESET_TYPES {
     PROFANITY = 1,
     SEXUAL_CONTENT,
-    SLURS
+    SLURS,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types
 export const enum AUTOMOD_EVENT_TYPES {
-    MESSAGE_SEND = 1
+    MESSAGE_SEND = 1,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-action-object-action-types
 export const enum AUTOMOD_ACTION_TYPES {
     BLOCK_MESSAGE = 1,
     SEND_ALERT_MESSAGE,
-    TIMEOUT
+    TIMEOUT,
 }
 
 // https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events
@@ -362,15 +362,15 @@ export const enum AUDIT_LOG_ENTRY_TYPES {
     CHANNEL_OVERWRITE_CREATE,
     CHANNEL_OVERWRITE_UPDATE,
     CHANNEL_OVERWRITE_DELETE,
-    MEMBER_KICK = 20,	
+    MEMBER_KICK = 20,
     MEMBER_PRUNE,
     MEMBER_BAN_ADD,
-    MEMBER_BAN_REMOVE,	
+    MEMBER_BAN_REMOVE,
     MEMBER_UPDATE,
     MEMBER_ROLE_UPDATE,
     MEMBER_MOVE,
-    MEMBER_DISCONNECT,	
-    BOT_ADD,	
+    MEMBER_DISCONNECT,
+    BOT_ADD,
     ROLE_CREATE = 30,
     ROLE_UPDATE,
     ROLE_DELETE,
@@ -383,7 +383,7 @@ export const enum AUDIT_LOG_ENTRY_TYPES {
     EMOJI_CREATE = 60,
     EMOJI_UPDATE,
     EMOJI_DELETE,
-    MESSAGE_DELETE = 72,	
+    MESSAGE_DELETE = 72,
     MESSAGE_BULK_DELETE,
     MESSAGE_PIN,
     MESSAGE_UNPIN,
@@ -409,24 +409,24 @@ export const enum AUDIT_LOG_ENTRY_TYPES {
     AUTO_MODERATION_BLOCK_MESSAGE,
     AUTO_MODERATION_FLAG_TO_CHANNEL,
     AUTO_MODERATION_USER_COMMUNICATION_DISABLED,
-    CREATOR_MONETIZATION_REQUEST_CREATED = 150,	
-    CREATOR_MONETIZATION_TERMS_ACCEPTED
+    CREATOR_MONETIZATION_REQUEST_CREATED = 150,
+    CREATOR_MONETIZATION_TERMS_ACCEPTED,
 }
 
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes
 // (S = Send, R = Receive)
 export const enum GATEWAY_OPCODES {
-    DISPATCH,               // (R)
-    HEARTBEAT,              // (S/R)
-    IDENTIFY,               // (S)
-    PRESENCE_UPDATE,        // (S)
-    VOICE_STATE_UPDATE,     // (S)
-    RESUME = 6,             // (S)
-    RECONNECT,              // (R)
-    REQUEST_GUILD_MEMBERS,  // (S)
-    INVALID_SESSION,        // (R)
-    HELLO,                  // (R)
-    HEARTBEAT_ACK           // (R)
+    DISPATCH, // (R)
+    HEARTBEAT, // (S/R)
+    IDENTIFY, // (S)
+    PRESENCE_UPDATE, // (S)
+    VOICE_STATE_UPDATE, // (S)
+    RESUME = 6, // (S)
+    RECONNECT, // (R)
+    REQUEST_GUILD_MEMBERS, // (S)
+    INVALID_SESSION, // (R)
+    HELLO, // (R)
+    HEARTBEAT_ACK, // (R)
 }
 
 // https://discord.com/developers/docs/topics/gateway#gateway-intents
@@ -447,12 +447,12 @@ export const enum INTENT_FLAGS {
     DIRECT_MESSAGE_REACTIONS = 1 << 13,
     DIRECT_MESSAGE_TYPING = 1 << 14,
     MESSAGE_CONTENT = 1 << 15,
-    GUILD_SCHEDULED_EVENTS = 1 << 16
+    GUILD_SCHEDULED_EVENTS = 1 << 16,
 }
 
 // https://discord.com/developers/docs/topics/gateway#gateways-gateway-versions
 export const enum GATEWAY_VERSIONS {
-    CURRENT = 9
+    CURRENT = 9,
 }
 
 // used internally to determine gateway connection state
@@ -461,7 +461,7 @@ export const enum CLIENT_STATE {
     CONNECTING,
     RECONNECTING,
     WAITING,
-    DEAD
+    DEAD,
 }
 
 // https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
@@ -507,7 +507,7 @@ export enum PERMISSIONS {
     USE_EXTERNAL_STICKERS = 1 << 37,
     SEND_MESSAGES_IN_THREADS = 1 << 38,
     USE_EMBEDDED_ACTIVITIES = 1 << 39,
-    MODERATE_MEMBERS = 1 << 40
+    MODERATE_MEMBERS = 1 << 40,
 }
 
 export const ALL_PERMISSIONS = 0b1111111111111111111111111111111111111111; // 40 digits
@@ -527,25 +527,25 @@ export const enum GATEWAY_ERRORS {
     SHARDING_REQUIRED,
     INVALID_VERSION,
     INVALID_INTENTS,
-    DISALLOWED_INTENTS
+    DISALLOWED_INTENTS,
 }
 
 // additional disconnect codes for client-side disconnects
 export const enum CUSTOM_GATEWAY_ERRORS {
     RECONNECT_REQUESTED = 4997,
     INVALID_SESSION,
-    HEARTBEAT_TIMEOUT
+    HEARTBEAT_TIMEOUT,
 }
 
 // consistent source of time units
-export const enum DURATION_UNITS  {
+export const enum DURATION_UNITS {
     SECOND = 1000,
     MINUTE = 1000 * 60,
-    HOUR =  1000 * 60 * 60,
-    DAY =   1000 * 60 * 60 * 24,
-    WEEK =  1000 * 60 * 60 * 24 * 7,
+    HOUR = 1000 * 60 * 60,
+    DAY = 1000 * 60 * 60 * 24,
+    WEEK = 1000 * 60 * 60 * 24 * 7,
     MONTH = 1000 * 60 * 60 * 24 * 30,
-    YEAR =  1000 * 60 * 60 * 24 * 365
+    YEAR = 1000 * 60 * 60 * 24 * 365,
 }
 
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes

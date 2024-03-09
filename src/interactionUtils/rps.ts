@@ -1,15 +1,20 @@
 import type Bot from '../structures/bot.js';
-import { BUTTON_STYLES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
+import {
+    BUTTON_STYLES,
+    INTERACTION_CALLBACK_FLAGS,
+    INTERACTION_CALLBACK_TYPES,
+    MESSAGE_COMPONENT_TYPES,
+} from '../types/numberTypes.js';
 import type { Interaction, Locale, MessageComponent, Snowflake } from '../types/types.js';
-import type { PendingInteractionBase } from './pending.js';
 import LangUtils from '../utils/language.js';
-import TextUtils from '../utils/text.js';
 import MiscUtils from '../utils/misc.js';
+import TextUtils from '../utils/text.js';
+import type { PendingInteractionBase } from './pending.js';
 
 export interface RockPaperScissorsInteraction extends PendingInteractionBase {
-    target: Snowflake,
-    authorChoice?: RPSShow,
-    targetChoice?: RPSShow
+    target: Snowflake;
+    authorChoice?: RPSShow;
+    targetChoice?: RPSShow;
 }
 
 export type RPSShow = 'r' | 'p' | 's';
@@ -22,28 +27,34 @@ export default class RPSUtils {
     }
 
     static getComponents(id: Snowflake, disabled = false): MessageComponent[] {
-        return [{
-            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
-            components: [{
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `rps_${id}_r`,
-                style: BUTTON_STYLES.PRIMARY,
-                emoji: { name: MiscUtils.getDefaultEmoji('ROCK'), id: null },
-                disabled
-            }, {
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `rps_${id}_p`,
-                style: BUTTON_STYLES.PRIMARY,
-                emoji: { name: MiscUtils.getDefaultEmoji('PAPER'), id: null },
-                disabled
-            }, {
-                type: MESSAGE_COMPONENT_TYPES.BUTTON,
-                custom_id: `rps_${id}_s`,
-                style: BUTTON_STYLES.PRIMARY,
-                emoji: { name: MiscUtils.getDefaultEmoji('SCISSORS'), id: null },
-                disabled
-            }]
-        }]
+        return [
+            {
+                type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                components: [
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `rps_${id}_r`,
+                        style: BUTTON_STYLES.PRIMARY,
+                        emoji: { name: MiscUtils.getDefaultEmoji('ROCK'), id: null },
+                        disabled,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `rps_${id}_p`,
+                        style: BUTTON_STYLES.PRIMARY,
+                        emoji: { name: MiscUtils.getDefaultEmoji('PAPER'), id: null },
+                        disabled,
+                    },
+                    {
+                        type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                        custom_id: `rps_${id}_s`,
+                        style: BUTTON_STYLES.PRIMARY,
+                        emoji: { name: MiscUtils.getDefaultEmoji('SCISSORS'), id: null },
+                        disabled,
+                    },
+                ],
+            },
+        ];
     }
 
     static getChoiceText(choice: RPSShow, locale?: Locale) {
@@ -76,13 +87,17 @@ export default class RPSUtils {
         }
         const win = RPSUtils.getWinner(interactionData.authorChoice, interactionData.targetChoice);
         if (!win) {
-            const tieText = LangUtils.getAndReplace('FUN_RPS_TIE_USER', {
-                choice: RPSUtils.getChoiceText(interactionData.targetChoice)
-            }, newInteraction.locale);
+            const tieText = LangUtils.getAndReplace(
+                'FUN_RPS_TIE_USER',
+                {
+                    choice: RPSUtils.getChoiceText(interactionData.targetChoice),
+                },
+                newInteraction.locale
+            );
             this.bot.interactionUtils.deleteItem(interactionData.interaction.id);
             return this.bot.api.interaction.editResponse(interactionData.interaction, {
                 content: tieText,
-                components: RPSUtils.getComponents(interactionData.interaction.id, true)
+                components: RPSUtils.getComponents(interactionData.interaction.id, true),
             });
         }
         let winner, wChoice, loser, lChoice;
@@ -97,18 +112,26 @@ export default class RPSUtils {
             loser = TextUtils.mention.parseUser(interactionData.target);
             lChoice = RPSUtils.getChoiceText(interactionData.targetChoice);
         }
-        const winText = LangUtils.getAndReplace('FUN_RPS_RESULT', { winner, wChoice, loser, lChoice }, newInteraction.locale);
+        const winText = LangUtils.getAndReplace(
+            'FUN_RPS_RESULT',
+            { winner, wChoice, loser, lChoice },
+            newInteraction.locale
+        );
         this.bot.interactionUtils.deleteItem(interactionData.interaction.id);
         return this.bot.api.interaction.editResponse(interactionData.interaction, {
             content: winText,
-            components: RPSUtils.getComponents(interactionData.interaction.id, true)
+            components: RPSUtils.getComponents(interactionData.interaction.id, true),
         });
     }
 
     async processPlayerChoice(interactionData: RockPaperScissorsInteraction, newInteraction: Interaction) {
         const author = newInteraction.member?.user.id || newInteraction.user?.id;
         if (!author) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Rock-paper-scissors interaction has no author:', newInteraction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Rock-paper-scissors interaction has no author:',
+                newInteraction
+            );
             return;
         }
         if (author !== interactionData.author && author !== interactionData.target) {
@@ -118,8 +141,8 @@ export default class RPSUtils {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
                     content: failResponse,
-                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
-                }
+                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
+                },
             });
         }
         if (
@@ -132,17 +155,25 @@ export default class RPSUtils {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
                     content: failResponse,
-                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL
-                }
+                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
+                },
             });
         }
         if (!newInteraction.data?.custom_id) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Rock-paper-scissors interaction is missing custom ID:', newInteraction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Rock-paper-scissors interaction is missing custom ID:',
+                newInteraction
+            );
             return;
         }
         const choice = newInteraction.data.custom_id.split('_')[2];
         if (!['r', 'p', 's'].includes(choice)) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Rock-paper-scissors interaction has an invalid custom ID:', newInteraction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Rock-paper-scissors interaction has an invalid custom ID:',
+                newInteraction
+            );
             return;
         }
         if (author === interactionData.author) {
@@ -152,9 +183,11 @@ export default class RPSUtils {
         }
 
         // ACK the current interaction
-        await this.bot.api.interaction.sendResponse(newInteraction, { type: INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE }).catch(err => {
-            this.bot.logger.handleError('PENDING INTERACTIONS', err, 'Failed to ack interaction');
-        });
+        await this.bot.api.interaction
+            .sendResponse(newInteraction, { type: INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE })
+            .catch((err) => {
+                this.bot.logger.handleError('PENDING INTERACTIONS', err, 'Failed to ack interaction');
+            });
 
         const id = interactionData.interaction.id;
 
@@ -164,14 +197,20 @@ export default class RPSUtils {
             return winResult;
         }
 
-        let waitText = LangUtils.getAndReplace('FUN_RPS_TURN', {
-            user: TextUtils.mention.parseUser(interactionData.authorChoice ? interactionData.target : interactionData.author)
-        }, newInteraction.locale);
+        let waitText = LangUtils.getAndReplace(
+            'FUN_RPS_TURN',
+            {
+                user: TextUtils.mention.parseUser(
+                    interactionData.authorChoice ? interactionData.target : interactionData.author
+                ),
+            },
+            newInteraction.locale
+        );
         waitText = `${this.bot.utils.getEmoji('WAITING', newInteraction)} ${waitText}`;
 
         return this.bot.api.interaction.editResponse(interactionData.interaction, {
             content: waitText,
-            components: RPSUtils.getComponents(interactionData.interaction.id)
+            components: RPSUtils.getComponents(interactionData.interaction.id),
         });
     }
 }

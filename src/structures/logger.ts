@@ -1,7 +1,7 @@
-import type Bot from './bot.js';
-import { DEBUG } from '../data/constants.js';
 import chalk from 'chalk';
 import { createHash } from 'crypto';
+import { DEBUG } from '../data/constants.js';
+import type Bot from './bot.js';
 
 export default class Logger {
     bot?: Bot;
@@ -93,5 +93,5 @@ export default class Logger {
         return `${this.#toHexByte(red)}${this.#toHexByte(green)}${this.#toHexByte(blue)}`;
     }
 
-    static #toHexByte = (num: number) => num.toString(16).padStart(2, '0')
+    static #toHexByte = (num: number) => num.toString(16).padStart(2, '0');
 }

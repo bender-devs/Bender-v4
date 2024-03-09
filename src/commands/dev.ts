@@ -1,16 +1,16 @@
-import { SlashCommand } from '../structures/command.js';
-import type Bot from '../structures/bot.js';
-import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
-import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes.js';
-import type { ShardDestination, ShardOperation} from '../structures/shardManager.js';
-import { SHARD_OPERATION_LIST } from '../structures/shardManager.js';
-import { randomUUID } from 'crypto';
-import PermissionUtils from '../utils/permissions.js';
-import LangUtils from '../utils/language.js';
-import type { GatewayData, GatewayPayload } from '../types/gatewayTypes.js';
-import { VERSION } from '../data/constants.js';
-import { inspect, promisify } from 'util';
 import { exec } from 'child_process';
+import { randomUUID } from 'crypto';
+import { inspect, promisify } from 'util';
+import { VERSION } from '../data/constants.js';
+import type Bot from '../structures/bot.js';
+import { SlashCommand } from '../structures/command.js';
+import type { ShardDestination, ShardOperation } from '../structures/shardManager.js';
+import { SHARD_OPERATION_LIST } from '../structures/shardManager.js';
+import type { GatewayData, GatewayPayload } from '../types/gatewayTypes.js';
+import { COMMAND_OPTION_TYPES, GATEWAY_OPCODES } from '../types/numberTypes.js';
+import type { CommandOption, CommandResponse, Interaction } from '../types/types.js';
+import LangUtils from '../utils/language.js';
+import PermissionUtils from '../utils/permissions.js';
 import TextUtils from '../utils/text.js';
 const execAsync = promisify(exec);
 
@@ -48,141 +48,187 @@ export default class DevCommand extends SlashCommand {
 
     // dm_permission not applicable as this is a guild command
 
-    readonly options: CommandOption[] = [{
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
-        name: 'msg',
-        description: 'Send a message to a shard or the shard manager.',
-        options: [{
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'manager',
-            description: 'Send a message to the shard manager.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'operation',
-                description: 'The operation to perform on the shard manager.',
-                required: true,
-                choices: SHARD_OPERATION_LIST
-            }, {
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'data',
-                description: 'The data string to send for operation data.'
-            }, {
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'nonce',
-                description: 'A nonce to establish relationships to other messages. Default is a random UUID.'
-            }]
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
-        name: 'gateway',
-        description: 'Simulate/send events on the gateway.',
-        options: [{
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'send',
-            description: 'Send an event to the gateway.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.INTEGER,
-                name: 'opcode',
-                description: 'The operation to perform.',
-                required: true,
-                choices: [{
-                    name: 'Heartbeat',
-                    value: GATEWAY_OPCODES.HEARTBEAT
-                }, {
-                    name: 'Identify',
-                    value: GATEWAY_OPCODES.IDENTIFY
-                }, {
-                    name: 'Presence Update',
-                    value: GATEWAY_OPCODES.PRESENCE_UPDATE
-                }, {
-                    name: 'Voice State Update',
-                    value: GATEWAY_OPCODES.VOICE_STATE_UPDATE
-                }, {
-                    name: 'Resume',
-                    value: GATEWAY_OPCODES.RESUME
-                }, {
-                    name: 'Request Guild Members',
-                    value: GATEWAY_OPCODES.REQUEST_GUILD_MEMBERS
-                }]
-            }, {
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'data',
-                description: 'The JSON data to send.',
-                required: true
-            }]
-        }, {
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'receive',
-            description: 'Simulate a non-event payload from the gateway.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.INTEGER,
-                name: 'opcode',
-                description: 'The operation to receive.',
-                required: true,
-                choices: [{
-                    name: 'Heartbeat',
-                    value: GATEWAY_OPCODES.HEARTBEAT
-                }, {
-                    name: 'Reconnect',
-                    value: GATEWAY_OPCODES.RECONNECT
-                }, {
-                    name: 'Invalid Session',
-                    value: GATEWAY_OPCODES.INVALID_SESSION
-                }, {
-                    name: 'Hello',
-                    value: GATEWAY_OPCODES.HELLO
-                }, {
-                    name: 'Heartbeat ACK',
-                    value: GATEWAY_OPCODES.HEARTBEAT_ACK
-                }]
-            }, {
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'data',
-                description: 'The JSON data to send.'
-            }]
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
-        name: 'run',
-        description: 'Run code in the context of the bot or on its server.',
-        options: [{
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'eval',
-            description: 'Run code in the context of the bot.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'code',
-                description: 'The code to run.'
-            }]
-        }, {
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'exec',
-            description: 'Run code on the bot\'s server.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'code',
-                description: 'The code to run.'
-            }]
-        }]
-    }, {
-        type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
-        name: 'shard',
-        description: 'Perform operations on shard(s).',
-        options: [{
-            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
-            name: 'get',
-            description: 'Get values from a shard or all shards.',
-            options: [{
-                type: COMMAND_OPTION_TYPES.INTEGER,
-                name: 'shard-id',
-                description: 'The shard ID from which to get values.'
-            }, {
-                type: COMMAND_OPTION_TYPES.STRING,
-                name: 'value',
-                description: 'The value to get.'
-            }]
-        }]
-    }];
+    readonly options: CommandOption[] = [
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+            name: 'msg',
+            description: 'Send a message to a shard or the shard manager.',
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'manager',
+                    description: 'Send a message to the shard manager.',
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'operation',
+                            description: 'The operation to perform on the shard manager.',
+                            required: true,
+                            choices: SHARD_OPERATION_LIST,
+                        },
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'data',
+                            description: 'The data string to send for operation data.',
+                        },
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'nonce',
+                            description:
+                                'A nonce to establish relationships to other messages. Default is a random UUID.',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+            name: 'gateway',
+            description: 'Simulate/send events on the gateway.',
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'send',
+                    description: 'Send an event to the gateway.',
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.INTEGER,
+                            name: 'opcode',
+                            description: 'The operation to perform.',
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'Heartbeat',
+                                    value: GATEWAY_OPCODES.HEARTBEAT,
+                                },
+                                {
+                                    name: 'Identify',
+                                    value: GATEWAY_OPCODES.IDENTIFY,
+                                },
+                                {
+                                    name: 'Presence Update',
+                                    value: GATEWAY_OPCODES.PRESENCE_UPDATE,
+                                },
+                                {
+                                    name: 'Voice State Update',
+                                    value: GATEWAY_OPCODES.VOICE_STATE_UPDATE,
+                                },
+                                {
+                                    name: 'Resume',
+                                    value: GATEWAY_OPCODES.RESUME,
+                                },
+                                {
+                                    name: 'Request Guild Members',
+                                    value: GATEWAY_OPCODES.REQUEST_GUILD_MEMBERS,
+                                },
+                            ],
+                        },
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'data',
+                            description: 'The JSON data to send.',
+                            required: true,
+                        },
+                    ],
+                },
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'receive',
+                    description: 'Simulate a non-event payload from the gateway.',
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.INTEGER,
+                            name: 'opcode',
+                            description: 'The operation to receive.',
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'Heartbeat',
+                                    value: GATEWAY_OPCODES.HEARTBEAT,
+                                },
+                                {
+                                    name: 'Reconnect',
+                                    value: GATEWAY_OPCODES.RECONNECT,
+                                },
+                                {
+                                    name: 'Invalid Session',
+                                    value: GATEWAY_OPCODES.INVALID_SESSION,
+                                },
+                                {
+                                    name: 'Hello',
+                                    value: GATEWAY_OPCODES.HELLO,
+                                },
+                                {
+                                    name: 'Heartbeat ACK',
+                                    value: GATEWAY_OPCODES.HEARTBEAT_ACK,
+                                },
+                            ],
+                        },
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'data',
+                            description: 'The JSON data to send.',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+            name: 'run',
+            description: 'Run code in the context of the bot or on its server.',
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'eval',
+                    description: 'Run code in the context of the bot.',
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'code',
+                            description: 'The code to run.',
+                        },
+                    ],
+                },
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'exec',
+                    description: "Run code on the bot's server.",
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'code',
+                            description: 'The code to run.',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP,
+            name: 'shard',
+            description: 'Perform operations on shard(s).',
+            options: [
+                {
+                    type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+                    name: 'get',
+                    description: 'Get values from a shard or all shards.',
+                    options: [
+                        {
+                            type: COMMAND_OPTION_TYPES.INTEGER,
+                            name: 'shard-id',
+                            description: 'The shard ID from which to get values.',
+                        },
+                        {
+                            type: COMMAND_OPTION_TYPES.STRING,
+                            name: 'value',
+                            description: 'The value to get.',
+                        },
+                    ],
+                },
+            ],
+        },
+    ];
 
     async run(interaction: Interaction): CommandResponse {
         const user = (interaction.member || interaction).user;
@@ -197,28 +243,33 @@ export default class DevCommand extends SlashCommand {
         switch (command) {
             case 'msg': {
                 if (!this.bot.shard) {
-                    return this.respond(interaction, 'This bot isn\'t sharded; can\'t send shard messages.', 'ERROR', true);
+                    return this.respond(
+                        interaction,
+                        "This bot isn't sharded; can't send shard messages.",
+                        'ERROR',
+                        true
+                    );
                 }
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
-                const operation = args[0].options?.[0]?.options?.find(opt => opt.name === 'operation')?.value;
+                const operation = args[0].options?.[0]?.options?.find((opt) => opt.name === 'operation')?.value;
                 if (!destination || !operation) {
                     return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
                 }
-                const data = args[0].options?.[0]?.options?.find(opt => opt.name === 'data')?.value;
-                const nonce = args[0].options?.[0]?.options?.find(opt => opt.name === 'nonce')?.value;
+                const data = args[0].options?.[0]?.options?.find((opt) => opt.name === 'data')?.value;
+                const nonce = args[0].options?.[0]?.options?.find((opt) => opt.name === 'nonce')?.value;
                 this.bot.shard.sendMessage({
                     operation: operation as ShardOperation,
                     toShards: destination as ShardDestination,
                     fromShard: this.bot.shard.id,
-                    nonce: nonce ? nonce as string : randomUUID(),
-                    data: data ? data as string : undefined
+                    nonce: nonce ? (nonce as string) : randomUUID(),
+                    data: data ? (data as string) : undefined,
                 });
                 return this.respond(interaction, 'Message sent.', 'MSG_SENT', true);
             }
             case 'gateway': {
-                const rawOpcode = args[0].options?.[0]?.options?.find(opt => opt.name === 'opcode')?.value;
+                const rawOpcode = args[0].options?.[0]?.options?.find((opt) => opt.name === 'opcode')?.value;
                 const opcode = typeof rawOpcode === 'number' ? rawOpcode : null;
-                const rawData = args[0].options?.[0]?.options?.find(opt => opt.name === 'data')?.value;
+                const rawData = args[0].options?.[0]?.options?.find((opt) => opt.name === 'data')?.value;
                 let data: string | null = null;
                 if (typeof rawData === 'string') {
                     data = rawData || null;
@@ -234,7 +285,7 @@ export default class DevCommand extends SlashCommand {
                             op: opcode,
                             d: data as GatewayData,
                             s: null,
-                            t: null
+                            t: null,
                         });
                         return this.respond(interaction, 'Gateway event sent.', 'SENT', true);
                     }
@@ -243,7 +294,7 @@ export default class DevCommand extends SlashCommand {
                             op: opcode,
                             d: data as GatewayData,
                             s: null,
-                            t: null
+                            t: null,
                         };
                         let payloadString = '';
                         try {
@@ -268,9 +319,11 @@ export default class DevCommand extends SlashCommand {
                 const start = Date.now();
                 let stop = 0;
 
-                let footer = '', maxLength = 1950;
+                let footer = '',
+                    maxLength = 1950;
                 try {
-                    let evaled = '', evaledColor = '';
+                    let evaled = '',
+                        evaledColor = '';
                     if (subcommand === 'eval') {
                         const result = await eval(code);
                         const typeofResult = typeof result;
@@ -299,9 +352,14 @@ export default class DevCommand extends SlashCommand {
 
                     stop = Date.now();
 
-                    const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.deferredResponse(interaction, `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
-
+                    const elapsedTime =
+                        stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+                    return this.deferredResponse(
+                        interaction,
+                        `💻 Executed in \`${elapsedTime}\`. Output:\n\`\`\`js\n${evaled}${
+                            truncated ? '\n(Truncated; full results in console)' : '```'
+                        }${footer}`
+                    );
                 } catch (err) {
                     maxLength -= footer.length;
 
@@ -313,36 +371,52 @@ export default class DevCommand extends SlashCommand {
                         this.bot.logger.moduleLog(subcommand.toUpperCase(), errString);
                         errString = TextUtils.truncate(errString, maxLength - 50, '```');
                     }
-                    const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
-                    return this.deferredResponse(interaction, `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}${truncated ? '\n(Truncated; full results in console)' : '```'}${footer}`);
+                    const elapsedTime =
+                        stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+                    return this.deferredResponse(
+                        interaction,
+                        `❌ Executed in \`${elapsedTime}\`. Error:\n\`\`\`js\n${errString}${
+                            truncated ? '\n(Truncated; full results in console)' : '```'
+                        }${footer}`
+                    );
                 }
             }
             case 'shard': {
                 if (!this.bot.shard) {
-                    return this.respond(interaction, 'Bot isn\'t sharded.', 'ERROR', true);
+                    return this.respond(interaction, "Bot isn't sharded.", 'ERROR', true);
                 }
                 const subcommand = args[0].options?.[0]?.name;
-                const values = args[0].options?.[0]?.options?.find(opt => opt.name === 'value')?.value;
+                const values = args[0].options?.[0]?.options?.find((opt) => opt.name === 'value')?.value;
                 if (!subcommand || typeof subcommand !== 'string' || !values || typeof values !== 'string') {
                     return this.handleUnexpectedError(interaction, 'SUBCOMMANDS_OR_ARGS_INCOMPLETE');
                 }
-                const rawShardID = args[0].options?.[0]?.options?.find(opt => opt.name === 'shard-id')?.value;
+                const rawShardID = args[0].options?.[0]?.options?.find((opt) => opt.name === 'shard-id')?.value;
                 const shardID = typeof rawShardID === 'number' ? rawShardID : null;
 
                 await this.ack(interaction);
 
                 const start = Date.now();
-                let stop = 0, err;
+                let stop = 0,
+                    err;
 
-                const result = await this.bot.shard.getValues(shardID ? [shardID] : 'ALL', values.split(',')).catch(e => err = e);
+                const result = await this.bot.shard
+                    .getValues(shardID ? [shardID] : 'ALL', values.split(','))
+                    .catch((e) => (err = e));
 
                 stop = Date.now();
-                const elapsedTime = stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
+                const elapsedTime =
+                    stop - start < 1000 ? `${stop - start}ms` : `${Math.round((stop - start) / 100) / 10}s`;
 
                 if (!result || err) {
-                    return this.deferredResponse(interaction, `❌ Failed to fetch values in \`${elapsedTime}\`.\n${err || ''}`);
+                    return this.deferredResponse(
+                        interaction,
+                        `❌ Failed to fetch values in \`${elapsedTime}\`.\n${err || ''}`
+                    );
                 }
-                return this.deferredResponse(interaction, `💻 Fetched shard values in \`${elapsedTime}\`.\n\`\`\`js\n${inspect(result, false, 1)}\`\`\``);
+                return this.deferredResponse(
+                    interaction,
+                    `💻 Fetched shard values in \`${elapsedTime}\`.\n\`\`\`js\n${inspect(result, false, 1)}\`\`\``
+                );
             }
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND_GROUP');

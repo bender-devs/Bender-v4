@@ -1,6 +1,6 @@
-import type { GatewayParams, IdentifyData } from '../types/gatewayTypes.js';
-import { GATEWAY_VERSIONS, ACTIVITY_TYPES, INTENT_FLAGS, DURATION_UNITS } from '../types/numberTypes.js';
 import * as os from 'os';
+import type { GatewayParams, IdentifyData } from '../types/gatewayTypes.js';
+import { ACTIVITY_TYPES, DURATION_UNITS, GATEWAY_VERSIONS, INTENT_FLAGS } from '../types/numberTypes.js';
 import type { Snowflake } from '../types/types.js';
 
 function getOSType() {
@@ -38,7 +38,7 @@ export const SUPPORT_SERVER = 'https://discord.gg/99xaeGn';
 
 export const GITHUB_LINK = 'https://github.com/bender-devs/Bender-v4';
 
-export const DEFAULT_COLOR = 0xCC1616;
+export const DEFAULT_COLOR = 0xcc1616;
 
 export const PUBLIC_KEY = ''; // TODO: fill this in
 
@@ -65,31 +65,42 @@ export const GATEWAY_ERROR_RECONNECT_TIMEOUT = DURATION_UNITS.SECOND * 30; // ho
 export const GATEWAY_PARAMS: GatewayParams = {
     v: GATEWAY_VERSIONS.CURRENT,
     encoding: 'json',
-    compress: 'zlib-stream'
-}
+    compress: 'zlib-stream',
+};
 
 export const HEARTBEAT_TIMEOUT = DURATION_UNITS.SECOND * 15;
 
-export const INTENTS = INTENT_FLAGS.GUILDS | INTENT_FLAGS.GUILD_MEMBERS | INTENT_FLAGS.GUILD_MODERATION | INTENT_FLAGS.GUILD_EMOJIS_AND_STICKERS | INTENT_FLAGS.GUILD_WEBHOOKS | INTENT_FLAGS.GUILD_PRESENCES | INTENT_FLAGS.GUILD_MESSAGES | INTENT_FLAGS.GUILD_MESSAGE_REACTIONS | INTENT_FLAGS.DIRECT_MESSAGES;
+export const INTENTS =
+    INTENT_FLAGS.GUILDS |
+    INTENT_FLAGS.GUILD_MEMBERS |
+    INTENT_FLAGS.GUILD_MODERATION |
+    INTENT_FLAGS.GUILD_EMOJIS_AND_STICKERS |
+    INTENT_FLAGS.GUILD_WEBHOOKS |
+    INTENT_FLAGS.GUILD_PRESENCES |
+    INTENT_FLAGS.GUILD_MESSAGES |
+    INTENT_FLAGS.GUILD_MESSAGE_REACTIONS |
+    INTENT_FLAGS.DIRECT_MESSAGES;
 
 export const CONNECT_DATA: IdentifyData = {
     token: '', // assigned later
     properties: {
         os: getOSType(),
         browser: `Custom (${WEBSITE})`,
-        device: `Custom (${WEBSITE})`
+        device: `Custom (${WEBSITE})`,
     },
     presence: {
         since: null,
         afk: false,
         status: 'dnd',
-        activities: [{
-            name: 'Starting up...',
-            type: ACTIVITY_TYPES.PLAYING,
-            created_at: 0
-        }]
+        activities: [
+            {
+                name: 'Starting up...',
+                type: ACTIVITY_TYPES.PLAYING,
+                created_at: 0,
+            },
+        ],
     },
-    intents: INTENTS
+    intents: INTENTS,
 };
 
 /***** discord constants *****/
@@ -126,10 +137,12 @@ export const ID_REGEX_EXACT = /^\d{17,19}$/;
 export const INVITE_LINK_PREFIX = 'https://discord.gg/';
 export const INVITE_CODE_REGEX = /^[a-z0-9-]{2,32}$/i;
 export const INVITE_REGEX = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/i;
-export const INVITE_REGEX_EXACT = /^(?:https?:\/\/)?discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})$/i;
+export const INVITE_REGEX_EXACT =
+    /^(?:https?:\/\/)?discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})$/i;
 export const INVITE_REGEX_GLOBAL = /discord(?:\.gg(?:\/invite)?|(?:app)?\.com\/invite)\/([a-z0-9-]{2,32})/gi;
 
-export const DURATION_REGEX = /([\d,.]+)\s*(s|secs?|seconds?|m|mins?|minutes?|h|hrs?|hours?|d|days?|w|wks?|weeks?|mos?|months?|y|yrs?|years?)/g;
+export const DURATION_REGEX =
+    /([\d,.]+)\s*(s|secs?|seconds?|m|mins?|minutes?|h|hrs?|hours?|d|days?|w|wks?|weeks?|mos?|months?|y|yrs?|years?)/g;
 
 export const EXAMPLE_TIMESTAMP = 3133702800000;
 export const EXAMPLE_DURATION = DURATION_UNITS.YEAR * 69;

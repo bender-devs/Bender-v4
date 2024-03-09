@@ -11,7 +11,7 @@ const IMAGES = {
         `${IMAGE_BASE_URL}/uwot/k.gif`,
         `${IMAGE_BASE_URL}/uwot/o.gif`,
         `${IMAGE_BASE_URL}/uwot/z.gif`,
-        `${IMAGE_BASE_URL}/uwot/t.gif`
+        `${IMAGE_BASE_URL}/uwot/t.gif`,
     ] as URL[],
     nou: [
         `${IMAGE_BASE_URL}/nou/popplers.jpg`,
@@ -19,7 +19,7 @@ const IMAGES = {
         `${IMAGE_BASE_URL}/nou/robots.jpg`,
         `${IMAGE_BASE_URL}/nou/protest.jpg`,
         `${IMAGE_BASE_URL}/nou/foxhunt.jpg`,
-        `${IMAGE_BASE_URL}/nou/valentine.jpg`
+        `${IMAGE_BASE_URL}/nou/valentine.jpg`,
     ] as URL[],
     mad: `${IMAGE_BASE_URL}/mad-pimp.png` as URL,
     think: `${IMAGE_BASE_URL}/think.gif` as URL,
@@ -57,7 +57,7 @@ const IMAGES = {
     channel_locked: `${IMAGE_BASE_URL}/channel-locked.png` as URL,
     category: `${IMAGE_BASE_URL}/category.png` as URL,
     voice: `${IMAGE_BASE_URL}/voice-normal.png` as URL,
-    voice_locked: `${IMAGE_BASE_URL}/voice-locked.png` as URL
+    voice_locked: `${IMAGE_BASE_URL}/voice-locked.png` as URL,
 };
 
 export default IMAGES;

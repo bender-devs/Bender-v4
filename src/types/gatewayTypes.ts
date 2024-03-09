@@ -1,13 +1,12 @@
-
-import type * as num from './numberTypes.js';
 import events from './eventTypes.js';
+import type * as num from './numberTypes.js';
 import type * as types from './types.js';
 
 /************ gateway errors ************/
 
 export const enum ERRORS {
     PAYLOAD_SENT_BEFORE_WS = 'Tried to send data before the WebSocket was established.',
-    PAYLOAD_SENT_BEFORE_CONNECT = 'Tried to send data before the WebSocket was connected.'
+    PAYLOAD_SENT_BEFORE_CONNECT = 'Tried to send data before the WebSocket was connected.',
 }
 
 export interface GatewayError extends Error {
@@ -21,22 +20,22 @@ export type GatewayParams = {
     v: num.GATEWAY_VERSIONS;
     encoding: 'json' | 'etf';
     compress?: 'zlib-stream';
-}
+};
 
 export type GatewayPayload = {
     op: num.GATEWAY_OPCODES;
     d: GatewayData;
     s: SequenceNumber;
     t: EventName | null;
-}
+};
 
 export type SequenceNumber = number | null;
 
 /********* events *********/
 
-export type EventName = typeof events[number];
+export type EventName = (typeof events)[number];
 export type LowercaseEventName = Lowercase<EventName>;
-export const LowercaseEventNames = events.map(name => name.toLowerCase());
+export const LowercaseEventNames = events.map((name) => name.toLowerCase());
 
 export interface EventPayload extends GatewayPayload {
     op: num.GATEWAY_OPCODES.DISPATCH;
@@ -44,7 +43,50 @@ export interface EventPayload extends GatewayPayload {
     s: number;
     t: EventName;
 }
-export type EventData = ReadyData | ResumedData | ChannelUpdateData | ChannelPinsUpdateData | ThreadSyncData | ThreadMemberUpdateData | ThreadMembersUpdateData | GuildCreateData | GuildUpdateData | GuildDeleteData | GuildBanEventData | GuildEmojisUpdateData | GuildIntegrationsUpdateData | GuildMemberAddData | GuildMemberRemoveData | GuildMemberUpdateData | GuildMembersChunkData | GuildRoleDeleteData | GuildRoleUpdateData | IntegrationDeleteData | IntegrationUpdateData | InviteCreateData | InviteDeleteData | MessageCreateData | MessageDeleteBulkData | MessageDeleteData | MessageUpdateData | ReactionAddData | ReactionRemoveAllData | ReactionRemoveData | ReactionRemoveEmojiData | PresenceUpdateData | TypingStartData | UserUpdateData | VoiceServerUpdateData | VoiceStateUpdateData | WebhooksUpdateData | CommandUpdateData | CommandPermissionsUpdateData | InteractionCreateData | StageInstanceUpdateData | AutoModUpdateData | AutoModExecuteData;
+export type EventData =
+    | ReadyData
+    | ResumedData
+    | ChannelUpdateData
+    | ChannelPinsUpdateData
+    | ThreadSyncData
+    | ThreadMemberUpdateData
+    | ThreadMembersUpdateData
+    | GuildCreateData
+    | GuildUpdateData
+    | GuildDeleteData
+    | GuildBanEventData
+    | GuildEmojisUpdateData
+    | GuildIntegrationsUpdateData
+    | GuildMemberAddData
+    | GuildMemberRemoveData
+    | GuildMemberUpdateData
+    | GuildMembersChunkData
+    | GuildRoleDeleteData
+    | GuildRoleUpdateData
+    | IntegrationDeleteData
+    | IntegrationUpdateData
+    | InviteCreateData
+    | InviteDeleteData
+    | MessageCreateData
+    | MessageDeleteBulkData
+    | MessageDeleteData
+    | MessageUpdateData
+    | ReactionAddData
+    | ReactionRemoveAllData
+    | ReactionRemoveData
+    | ReactionRemoveEmojiData
+    | PresenceUpdateData
+    | TypingStartData
+    | UserUpdateData
+    | VoiceServerUpdateData
+    | VoiceStateUpdateData
+    | WebhooksUpdateData
+    | CommandUpdateData
+    | CommandPermissionsUpdateData
+    | InteractionCreateData
+    | StageInstanceUpdateData
+    | AutoModUpdateData
+    | AutoModExecuteData;
 
 /****** ready ******/
 
@@ -60,7 +102,7 @@ export type ReadyData = {
     session_id: string;
     shard?: ShardConnectionData;
     application: types.PartialApplication;
-}
+};
 
 export interface ResumedPayload extends EventPayload {
     t: 'RESUMED';
@@ -87,7 +129,7 @@ export type ChannelPinsUpdateData = {
     guild_id?: types.Snowflake;
     channel_id: types.Snowflake;
     last_pin_timestamp?: types.Timestamp | null;
-}
+};
 
 export interface ThreadEventPayload extends EventPayload {
     t: 'THREAD_CREATE' | 'THREAD_UPDATE' | 'THREAD_DELETE';
@@ -106,7 +148,7 @@ export type ThreadSyncData = {
     channel_ids?: types.Snowflake[];
     threads: types.ThreadChannel[];
     members: types.ThreadMember[];
-}
+};
 
 export interface ThreadMemberUpdatePayload extends EventPayload {
     t: 'THREAD_MEMBER_UPDATE';
@@ -126,7 +168,7 @@ export type ThreadMembersUpdateData = {
     member_count: number;
     added_members?: types.ThreadMember[];
     removed_member_ids?: types.Snowflake[];
-}
+};
 
 /****** guilds ******/
 
@@ -159,7 +201,7 @@ export interface GuildBanEventPayload extends EventPayload {
 export type GuildBanEventData = {
     guild_id: types.Snowflake;
     user: types.User;
-}
+};
 
 export interface GuildEmojisUpdatePayload extends EventPayload {
     t: 'GUILD_EMOJIS_UPDATE';
@@ -169,7 +211,7 @@ export interface GuildEmojisUpdatePayload extends EventPayload {
 export type GuildEmojisUpdateData = {
     guild_id: types.Snowflake;
     emojis: types.Emoji[];
-}
+};
 
 export interface GuildStickersUpdatePayload extends EventPayload {
     t: 'GUILD_STICKERS_UPDATE';
@@ -179,7 +221,7 @@ export interface GuildStickersUpdatePayload extends EventPayload {
 export type GuildStickersUpdateData = {
     guild_id: types.Snowflake;
     stickers: types.Sticker[];
-}
+};
 
 export interface GuildIntegrationsUpdatePayload extends EventPayload {
     t: 'GUILD_INTEGRATIONS_UPDATE';
@@ -188,7 +230,7 @@ export interface GuildIntegrationsUpdatePayload extends EventPayload {
 
 export type GuildIntegrationsUpdateData = {
     guild_id: types.Snowflake;
-}
+};
 
 export interface GuildMemberAddPayload extends EventPayload {
     t: 'GUILD_MEMBER_ADD';
@@ -238,7 +280,7 @@ export type GuildMembersChunkData = {
     not_found?: types.Snowflake[];
     presences?: types.Presence[];
     nonce?: string;
-}
+};
 
 export interface GuildRoleUpdatePayload extends EventPayload {
     t: 'GUILD_ROLE_CREATE' | 'GUILD_ROLE_UPDATE';
@@ -248,7 +290,7 @@ export interface GuildRoleUpdatePayload extends EventPayload {
 export type GuildRoleUpdateData = {
     guild_id: types.Snowflake;
     role: types.Role;
-}
+};
 
 export interface GuildRoleDeletePayload extends EventPayload {
     t: 'GUILD_ROLE_DELETE';
@@ -258,7 +300,7 @@ export interface GuildRoleDeletePayload extends EventPayload {
 export type GuildRoleDeleteData = {
     guild_id: types.Snowflake;
     role_id: types.Snowflake;
-}
+};
 
 export type GuildScheduledEventUpdateData = types.GuildScheduledEvent;
 export type GuildScheduledEventUserUpdateData = types.GuildScheduledEvent;
@@ -280,10 +322,10 @@ export interface IntegrationDeletePayload extends EventPayload {
 }
 
 export type IntegrationDeleteData = {
-    id: types.Snowflake
+    id: types.Snowflake;
     guild_id: types.Snowflake;
     application_id?: types.Snowflake;
-}
+};
 
 /****** invites ******/
 
@@ -305,7 +347,7 @@ export type InviteCreateData = {
     target_application?: types.PartialApplication;
     temporary: boolean;
     uses: number;
-}
+};
 
 export interface InviteDeletePayload extends EventPayload {
     t: 'INVITE_DELETE';
@@ -366,7 +408,7 @@ export type ReactionAddData = {
     member?: types.Member;
     emoji: types.Emoji;
     message_author_id?: types.Snowflake;
-}
+};
 
 export interface ReactionRemovePayload extends EventPayload {
     t: 'MESSAGE_REACTION_REMOVE';
@@ -411,7 +453,7 @@ export type TypingStartData = {
     user_id: types.Snowflake;
     timestamp: types.UnixTimestampMillis;
     member?: types.Member;
-}
+};
 
 /****** users ******/
 
@@ -440,7 +482,7 @@ export type VoiceServerUpdateData = {
     token: string;
     guild_id: types.Snowflake;
     endpoint: string | null;
-}
+};
 
 /****** webhooks ******/
 
@@ -452,7 +494,7 @@ export interface WebhooksUpdatePayload extends EventPayload {
 export type WebhooksUpdateData = {
     guild_id: types.Snowflake;
     channel_id: types.Snowflake;
-}
+};
 
 /****** commands ******/
 
@@ -509,9 +551,7 @@ export type AutoModExecuteData = {
     content: string;
     matched_keyword: string | null;
     matched_content: string | null;
-}
-
-
+};
 
 /********* non-events *********/
 
@@ -520,7 +560,18 @@ export interface NonEventPayload extends GatewayPayload {
     t: null;
 }
 
-export type GatewayData = EventData | SequenceNumber | IdentifyData | UpdatePresenceData | VoiceUpdateData | ResumeData | ReconnectData | RequestMembersData | InvalidSessionData | HelloData | HeartbeatAckData;
+export type GatewayData =
+    | EventData
+    | SequenceNumber
+    | IdentifyData
+    | UpdatePresenceData
+    | VoiceUpdateData
+    | ResumeData
+    | ReconnectData
+    | RequestMembersData
+    | InvalidSessionData
+    | HelloData
+    | HeartbeatAckData;
 
 /****** heartbeat ******/
 
@@ -544,13 +595,13 @@ export type IdentifyData = {
     shard?: ShardConnectionData;
     presence: UpdatePresenceData;
     intents: types.Flags;
-}
+};
 
 export type ConnectionProperties = {
     os: string;
     browser: string;
     device: string;
-}
+};
 
 export type ShardConnectionData = [shard_id: number, num_shards: number];
 
@@ -562,8 +613,8 @@ export interface UpdatePresencePayload extends NonEventPayload {
 }
 
 export interface UpdatePresenceData extends Pick<types.Presence, 'activities' | 'status'> {
-    since: types.UnixTimestampMillis | null,
-    afk: boolean
+    since: types.UnixTimestampMillis | null;
+    afk: boolean;
 }
 
 /****** voice state update ******/
@@ -578,7 +629,7 @@ export type VoiceUpdateData = {
     channel_id: types.Snowflake | null;
     self_mute: boolean;
     self_deaf: boolean;
-}
+};
 
 /****** resume ******/
 
@@ -591,7 +642,7 @@ export type ResumeData = {
     token: string;
     session_id: string;
     seq: number;
-}
+};
 
 /****** reconnect ******/
 
@@ -617,7 +668,7 @@ export type RequestMembersData = {
     presences?: boolean;
     user_ids?: types.Snowflake | types.Snowflake[];
     nonce?: string;
-}
+};
 
 /****** invalid session ******/
 
@@ -637,7 +688,7 @@ export interface HelloPayload extends NonEventPayload {
 
 export type HelloData = {
     heartbeat_interval: number;
-}
+};
 
 /****** heartbeat ack ******/
 
@@ -652,7 +703,7 @@ export type HeartbeatAckData = undefined;
 
 export type GatewayInfo = {
     url: types.URL;
-}
+};
 
 export interface GatewayBotInfo extends GatewayInfo {
     shards: number;
@@ -663,13 +714,13 @@ export type GatewaySessionLimit = {
     total: number;
     remaining: number;
     reset_after: number;
-    max_concurrency: number
-}
+    max_concurrency: number;
+};
 
 // used in cache
 export type GatewaySessionLimitHash = {
     total: string;
     remaining: string;
     reset_at: string;
-    max_concurrency: string
-}
+    max_concurrency: string;
+};

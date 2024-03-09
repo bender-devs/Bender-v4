@@ -4,13 +4,13 @@ import type { HTTPMethod, ResponseError } from '../types/types.js';
 type BaseError = {
     code: string;
     message: string;
-}
+};
 export interface APISubError extends BaseError {
     key: string;
 }
 type WrappedErrors = {
-    _errors: BaseError[]
-}
+    _errors: BaseError[];
+};
 type NestedError = { [key: string]: NestedError } | WrappedErrors;
 
 export default class APIError extends Error {
@@ -39,7 +39,13 @@ export default class APIError extends Error {
             return null;
         }
         if (typeof body === 'object' && body.code && body.message) {
-            const apiError = new APIError(body.code, body.message, status, httpError.method as HTTPMethod, httpError.path);
+            const apiError = new APIError(
+                body.code,
+                body.message,
+                status,
+                httpError.method as HTTPMethod,
+                httpError.path
+            );
             if (body.errors) {
                 apiError.errors = this.parseSubErrors(body.errors);
             }
@@ -59,7 +65,7 @@ export default class APIError extends Error {
                 subErrors.push({
                     code: error.code,
                     message: error.message,
-                    key: currentKey || ''
+                    key: currentKey || '',
                 });
             }
             return subErrors;

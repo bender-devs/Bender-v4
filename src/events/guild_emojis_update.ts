@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { GuildEmojisUpdateData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { GuildEmojisUpdateData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class GuildEmojisUpdateHandler extends EventHandler<GuildEmojisUpdateData> {
     constructor(bot: Bot) {
@@ -9,9 +9,9 @@ export default class GuildEmojisUpdateHandler extends EventHandler<GuildEmojisUp
 
     cacheHandler = (eventData: GuildEmojisUpdateData) => {
         this.bot.cache.emojis.setAll(eventData.guild_id, eventData.emojis);
-    }
+    };
 
     handler = (/*eventData: GuildEmojisUpdateData*/) => {
         // event unused for now
-    }
+    };
 }

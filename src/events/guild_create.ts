@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { GuildCreateData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { GuildCreateData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
     constructor(bot: Bot) {
@@ -24,8 +24,8 @@ export default class GuildCreateHandler extends EventHandler<GuildCreateData> {
         } else {
             // TODO: send intro message for new servers
         }
-    }
+    };
 
     // don't use this as we don't know whether it's a new guild here
-    handler = () => undefined
+    handler = () => undefined;
 }

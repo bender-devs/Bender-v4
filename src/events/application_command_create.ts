@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { CommandUpdateData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { CommandUpdateData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class CommandCreateHandler extends EventHandler<CommandUpdateData> {
     constructor(bot: Bot) {
@@ -16,9 +16,9 @@ export default class CommandCreateHandler extends EventHandler<CommandUpdateData
         } else {
             this.bot.cache.globalCommands.update(eventData);
         }
-    }
+    };
 
     handler = (/*eventData: CommandUpdateData*/) => {
         // event unused for now
-    }
+    };
 }

@@ -1,11 +1,15 @@
 import { DEFAULT_COLOR } from '../../data/constants.js';
-import type * as types from '../../types/types.js';
 import type { CachedGuild } from '../../structures/cacheHandler.js';
+import type * as types from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
 import LangUtils from '../../utils/language.js';
 import type InfoCommand from '../info.js';
 
-export default async function (this: InfoCommand, interaction: types.Interaction, userID?: types.CommandOptionValue) {
+export default async function (
+    this: InfoCommand,
+    interaction: types.Interaction,
+    userID?: types.CommandOptionValue
+) {
     let partialUser: types.PartialUser | null = null;
     if (!userID && !interaction.guild_id) {
         if (!interaction.user) {
@@ -14,7 +18,7 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         userID = interaction.user.id;
         partialUser = interaction.user;
     }
-    const userIDSnowflake = userID ? userID as types.Snowflake : null;
+    const userIDSnowflake = userID ? (userID as types.Snowflake) : null;
     if (userIDSnowflake && !partialUser) {
         if (interaction.data?.resolved?.users && userIDSnowflake in interaction.data.resolved.users) {
             partialUser = interaction.data.resolved.users[userID as types.Snowflake];
@@ -31,7 +35,11 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         }
     }
     let member: types.Member | types.PartialMember | null = null;
-    if (userIDSnowflake && interaction.data?.resolved?.members && userIDSnowflake in interaction.data.resolved.members) {
+    if (
+        userIDSnowflake &&
+        interaction.data?.resolved?.members &&
+        userIDSnowflake in interaction.data.resolved.members
+    ) {
         member = interaction.data.resolved.members[userIDSnowflake];
     }
 
@@ -41,18 +49,22 @@ export default async function (this: InfoCommand, interaction: types.Interaction
             return this.respondKeyReplace(interaction, 'BANNER_INFO_USER_NO_BANNER', { name }, 'INFO');
         }
         const bannerLink = CDNUtils.userBanner(user.id, user.banner, undefined, 512);
-        const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', {
-            name,
-            bannerLink,
-            bannerEmoji: this.getEmoji('BANNER', interaction)
-        }, interaction.locale);
+        const title = LangUtils.getAndReplace(
+            'BANNER_INFO_TITLE',
+            {
+                name,
+                bannerLink,
+                bannerEmoji: this.getEmoji('BANNER', interaction),
+            },
+            interaction.locale
+        );
 
         const embed: types.Embed = {
             description: title,
             color: user.accent_color || DEFAULT_COLOR,
             image: {
-                url: bannerLink
-            }
+                url: bannerLink,
+            },
         };
         return this.respond(interaction, { embeds: [embed] });
     }
@@ -69,18 +81,22 @@ export default async function (this: InfoCommand, interaction: types.Interaction
         return this.respondKey(interaction, 'BANNER_INFO_GUILD_NO_BANNER', 'INFO');
     }
     const bannerLink = CDNUtils.guildBanner(guild.id, guild.banner, undefined, 512);
-    const title = LangUtils.getAndReplace('BANNER_INFO_TITLE', {
-        name: guild.name,
-        bannerLink,
-        bannerEmoji: this.getEmoji('BANNER', interaction)
-    }, interaction.locale);
+    const title = LangUtils.getAndReplace(
+        'BANNER_INFO_TITLE',
+        {
+            name: guild.name,
+            bannerLink,
+            bannerEmoji: this.getEmoji('BANNER', interaction),
+        },
+        interaction.locale
+    );
 
     const embed: types.Embed = {
         description: title,
         color: DEFAULT_COLOR,
         image: {
-            url: bannerLink
-        }
+            url: bannerLink,
+        },
     };
     return this.respond(interaction, { embeds: [embed] });
 }

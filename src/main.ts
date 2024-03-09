@@ -1,11 +1,11 @@
 import 'dotenv/config';
+import { CONNECT_DATA, EXIT_CODE_NO_RESTART, SHARDED, SHARD_COUNT } from './data/constants.js';
 import Bot from './structures/bot.js';
-import { SHARDED, SHARD_COUNT, CONNECT_DATA, EXIT_CODE_NO_RESTART } from './data/constants.js';
 import ShardManager from './structures/shardManager.js';
 import type { IdentifyData } from './types/gatewayTypes.js';
 import LanguageUtils from './utils/language.js';
 
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection', (error) => {
     console.error('Unhandled rejection before bot was spawned:', error);
 });
 

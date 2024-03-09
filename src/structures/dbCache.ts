@@ -1,11 +1,18 @@
-import type { GuildSettings, UserSettings, PremiumData, Reminder, UserReminders, GuildKey } from '../types/dbTypes.js';
-import type { Snowflake } from '../types/types.js';
 import type { ObjectId } from 'mongodb';
+import type {
+    GuildKey,
+    GuildSettings,
+    PremiumData,
+    Reminder,
+    UserReminders,
+    UserSettings,
+} from '../types/dbTypes.js';
+import type { Snowflake } from '../types/types.js';
 
 type WrappedSettings<T> = {
     id: ObjectId;
     data: T;
-}
+};
 type WrappedSettingsMap<T> = Record<Snowflake, WrappedSettings<T>>;
 
 type GuildSettingsMap = WrappedSettingsMap<GuildSettings>;
@@ -34,7 +41,7 @@ export default class DatabaseCacheHandler {
         set: (guildID: Snowflake, dbID: ObjectId, guildSettings: GuildSettings) => {
             this.#guildSettings[guildID] = {
                 id: dbID,
-                data: guildSettings
+                data: guildSettings,
             };
         },
 
@@ -46,7 +53,7 @@ export default class DatabaseCacheHandler {
                 Object.assign(this.#guildSettings[guildID].data, updatedFields);
             }
             if (removedFields) {
-                const removedGuildFields = removedFields as GuildKey[]
+                const removedGuildFields = removedFields as GuildKey[];
                 for (const key of removedGuildFields) {
                     delete this.#guildSettings[guildID].data[key];
                 }
@@ -72,8 +79,8 @@ export default class DatabaseCacheHandler {
             if (guildID) {
                 delete this.#guildSettings[guildID];
             }
-        }
-    }
+        },
+    };
 
     userSettings = {
         get: (userID: Snowflake) => {
@@ -83,7 +90,7 @@ export default class DatabaseCacheHandler {
         set: (userID: Snowflake, dbID: ObjectId, userSettings: UserSettings) => {
             this.#userSettings[userID] = {
                 id: dbID,
-                data: userSettings
+                data: userSettings,
             };
         },
 
@@ -121,8 +128,8 @@ export default class DatabaseCacheHandler {
             if (userID) {
                 delete this.#userSettings[userID];
             }
-        }
-    }
+        },
+    };
 
     userReminders = {
         get: (userID: Snowflake) => {
@@ -131,13 +138,13 @@ export default class DatabaseCacheHandler {
 
         findByMessage: (userID: Snowflake, messageID: Snowflake) => {
             const reminders = this.userReminders.get(userID);
-            return reminders?.find(r => r.message === messageID) || null;
+            return reminders?.find((r) => r.message === messageID) || null;
         },
 
         set: (userID: Snowflake, dbID: ObjectId, reminders: Reminder[]) => {
             this.#userReminders[userID] = {
                 id: dbID,
-                data: reminders
+                data: reminders,
             };
         },
 
@@ -172,9 +179,8 @@ export default class DatabaseCacheHandler {
             if (userID) {
                 delete this.#userReminders[userID];
             }
-        }
-    }
-
+        },
+    };
 
     premium = {
         get: (ppid: string) => {
@@ -184,7 +190,7 @@ export default class DatabaseCacheHandler {
         set: (ppid: string, dbID: ObjectId, premiumData: PremiumData) => {
             this.#premiumData[ppid] = {
                 id: dbID,
-                data: premiumData
+                data: premiumData,
             };
         },
 
@@ -221,6 +227,6 @@ export default class DatabaseCacheHandler {
             if (ppid) {
                 delete this.#premiumData[ppid];
             }
-        }
-    }
+        },
+    };
 }

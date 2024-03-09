@@ -29,7 +29,7 @@ export type ResponseError = superagent.ResponseError;
 export type UserData = {
     username?: string;
     avatar?: ImageData | null;
-}
+};
 
 export type PartialUser = {
     id: Snowflake;
@@ -37,7 +37,7 @@ export type PartialUser = {
     discriminator: StringNum;
     global_name: string | null;
     avatar: string | null;
-}
+};
 
 export interface User extends PartialUser {
     bot?: boolean;
@@ -113,30 +113,49 @@ export type Activity = {
 export type ActivityTimestamps = {
     start?: UnixTimestampMillis;
     end?: UnixTimestampMillis;
-}
+};
 export type ActivityParty = {
     id?: Snowflake; // TODO: Should this be string instead?
     size?: [current_size: number, max_size: number];
-}
+};
 export type ActivityAssets = {
     large_image?: URL;
     large_text?: string;
     small_image?: URL;
     small_text?: string;
-}
+};
 export type ActivitySecrets = {
     join?: string;
     spectate?: string;
     match?: string;
-}
+};
 export type ActivityButton = {
     label: string;
     url: URL;
-}
+};
 
 /************ guild types ************/
 
-type GuildDataPartial = Partial<Pick<Guild, 'name' | 'verification_level' | 'default_message_notifications' | 'explicit_content_filter' | 'afk_channel_id' | 'afk_timeout' | 'owner_id' | 'banner' | 'system_channel_id' | 'system_channel_flags' | 'rules_channel_id' | 'public_updates_channel_id' | 'preferred_locale' | 'features' | 'description'>>;
+type GuildDataPartial = Partial<
+    Pick<
+        Guild,
+        | 'name'
+        | 'verification_level'
+        | 'default_message_notifications'
+        | 'explicit_content_filter'
+        | 'afk_channel_id'
+        | 'afk_timeout'
+        | 'owner_id'
+        | 'banner'
+        | 'system_channel_id'
+        | 'system_channel_flags'
+        | 'rules_channel_id'
+        | 'public_updates_channel_id'
+        | 'preferred_locale'
+        | 'features'
+        | 'description'
+    >
+>;
 
 export interface GuildData extends GuildDataPartial {
     icon?: ImageData | null;
@@ -184,25 +203,40 @@ export type Guild = {
     premium_progress_bar_enabled: boolean;
 };
 
-export interface PartialGuild extends Pick<Guild, 'id' | 'name' | 'splash' | 'banner' | 'description' | 'icon' | 'features' | 'verification_level' | 'vanity_url_code' | 'premium_subscription_count' | 'welcome_screen' | 'nsfw_level'> {
+export interface PartialGuild
+    extends Pick<
+        Guild,
+        | 'id'
+        | 'name'
+        | 'splash'
+        | 'banner'
+        | 'description'
+        | 'icon'
+        | 'features'
+        | 'verification_level'
+        | 'vanity_url_code'
+        | 'premium_subscription_count'
+        | 'welcome_screen'
+        | 'nsfw_level'
+    > {
     nsfw?: boolean;
 }
 
 export type UnavailableGuild = {
-    id: Snowflake,
-    unavailable?: true
-}
+    id: Snowflake;
+    unavailable?: true;
+};
 
 export type WelcomeScreen = {
     description: string | null;
     welcome_channels: WelcomeChannel[];
-}
+};
 export type WelcomeChannel = {
     channel_id: Snowflake;
     description: string;
     emoji_id: Snowflake | null;
     emoji_name: string | null;
-}
+};
 
 // the following props are only sent in GUILD_CREATE
 export interface GatewayGuildBase extends Guild {
@@ -229,10 +263,31 @@ export type StageInstance = {
     topic: string;
     privacy_level: num.STAGE_PRIVACY_LEVELS;
     discoverable_disabled: boolean;
-}
+};
 
 // explanation of features: https://canary.discord.com/developers/docs/resources/guild#guild-object-guild-features
-export type GuildFeature = 'ANIMATED_ICON' | 'BANNER' | 'COMMERCE' | 'COMMUNITY' | 'DISCOVERABLE' | 'FEATURABLE' | 'INVITE_SPLASH' | 'MEMBER_VERIFICATION_GATE_ENABLED' | 'NEWS' | 'PARTNERED' | 'PREVIEW_ENABLED' | 'VANITY_URL' | 'VERIFIED' | 'VIP_REGIONS' | 'WELCOME_SCREEN_ENABLED' | 'TICKETED_EVENTS_ENABLED' | 'MONETIZATION_ENABLED' | 'MORE_STICKERS' | 'THREE_DAY_THREAD_ARCHIVE' | 'SEVEN_DAY_THREAD_ARCHIVE' | 'PRIVATE_THREADS';
+export type GuildFeature =
+    | 'ANIMATED_ICON'
+    | 'BANNER'
+    | 'COMMERCE'
+    | 'COMMUNITY'
+    | 'DISCOVERABLE'
+    | 'FEATURABLE'
+    | 'INVITE_SPLASH'
+    | 'MEMBER_VERIFICATION_GATE_ENABLED'
+    | 'NEWS'
+    | 'PARTNERED'
+    | 'PREVIEW_ENABLED'
+    | 'VANITY_URL'
+    | 'VERIFIED'
+    | 'VIP_REGIONS'
+    | 'WELCOME_SCREEN_ENABLED'
+    | 'TICKETED_EVENTS_ENABLED'
+    | 'MONETIZATION_ENABLED'
+    | 'MORE_STICKERS'
+    | 'THREE_DAY_THREAD_ARCHIVE'
+    | 'SEVEN_DAY_THREAD_ARCHIVE'
+    | 'PRIVATE_THREADS';
 
 export type VoiceState = {
     guild_id?: Snowflake;
@@ -253,24 +308,24 @@ export type VoiceState = {
 export type Ban = {
     reason: string | null;
     user: User;
-}
+};
 
 export type BanFetchData = {
     limit?: number;
     before?: Snowflake;
     after?: Snowflake;
-}
+};
 
 export type Reaction = {
     count: number;
     me: boolean;
     emoji: PartialEmoji;
-}
+};
 
 export type ReactionFetchData = {
     limit: number;
     after?: Snowflake;
-}
+};
 
 /*** onboarding types ***/
 
@@ -280,7 +335,7 @@ export type Onboarding = {
     default_channel_ids: Snowflake[];
     enabled: boolean;
     mode: num.ONBOARDING_MODES;
-}
+};
 
 export type OnboardingPrompt = {
     id: Snowflake;
@@ -290,7 +345,7 @@ export type OnboardingPrompt = {
     single_select: boolean;
     required: boolean;
     in_onboarding: boolean;
-}
+};
 
 export type OnboardingPromptOption = {
     id: Snowflake;
@@ -299,7 +354,7 @@ export type OnboardingPromptOption = {
     emoji: PartialEmoji;
     title: string;
     description: string | null;
-}
+};
 
 /****** scheduled event types ******/
 
@@ -320,34 +375,34 @@ export type GuildScheduledEvent = {
     creator?: User;
     user_count?: number;
     image?: string | null;
-}
+};
 
 export type GuildScheduledEventEntityMetadata = {
     location?: string;
-}
+};
 
 export type GuildScheduledEventUser = {
     guild_scheduled_event_id: Snowflake;
     user: User;
     member?: Member;
-}
+};
 
 /****** member prune types ******/
 
 export type PruneResult = {
     pruned: number;
-}
+};
 
 export type PruneCountData = {
-    days: number,
+    days: number;
     include_roles?: Snowflake[];
-}
+};
 
 export type PruneData = {
-    days: number,
+    days: number;
     include_roles?: Snowflake[];
     compute_prune_count: boolean;
-}
+};
 
 /****** emoji types ******/
 
@@ -366,12 +421,12 @@ export type EmojiCreateData = {
     name: string;
     image: ImageData;
     roles: string[];
-}
+};
 
 export type EmojiEditData = {
     name?: string;
     roles?: string[];
-}
+};
 
 export interface PartialEmoji extends Omit<Emoji, 'id' | 'name'> {
     id?: Snowflake | null;
@@ -393,13 +448,13 @@ export type Sticker = {
     guild_id?: Snowflake;
     user?: User;
     sort_value?: number;
-}
+};
 
 export type StickerItem = {
-    id: Snowflake,
-    name: string,
-    format_type: num.STICKER_FORMAT_TYPES
-}
+    id: Snowflake;
+    name: string;
+    format_type: num.STICKER_FORMAT_TYPES;
+};
 
 /************ role types ************/
 
@@ -415,8 +470,8 @@ export type Role = {
     managed: boolean;
     mentionable: boolean;
     tags?: RoleTags;
-    flags?: num.ROLE_FLAGS
-}
+    flags?: num.ROLE_FLAGS;
+};
 
 export type RoleData = {
     name?: string;
@@ -426,18 +481,18 @@ export type RoleData = {
     permissions?: Bitfield;
     managed?: boolean;
     mentionable?: boolean;
-}
+};
 
 export type RoleTags = {
     bot_id?: Snowflake;
     integration_id?: Snowflake;
     premium_subscriber?: null;
-}
+};
 
 export type RolePositionData = {
     id: Snowflake;
     position?: number | null;
-}
+};
 
 /************ member types ************/
 
@@ -447,7 +502,7 @@ export type MemberData = {
     deaf?: boolean;
     mute?: boolean;
     channel_id?: Snowflake | null;
-}
+};
 
 export interface PartialMember {
     user?: User; // Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects
@@ -477,14 +532,14 @@ export type ChannelData = {
     bitrate?: number;
     user_limit?: number;
     thread_metadata?: ThreadMeta;
-}
+};
 
 export type PartialChannel = {
     id: Snowflake;
     type: num.CHANNEL_TYPES;
     name?: string;
     permissions: Bitfield;
-}
+};
 
 export interface Channel extends Omit<PartialChannel, 'permissions'> {
     // guild fields
@@ -585,7 +640,10 @@ export interface StoreChannel extends TextBasedChannel {
 }
 
 export interface ThreadChannel extends GuildChannel {
-    type: num.CHANNEL_TYPES.GUILD_NEWS_THREAD | num.CHANNEL_TYPES.GUILD_PUBLIC_THREAD | num.CHANNEL_TYPES.GUILD_PRIVATE_THREAD;
+    type:
+        | num.CHANNEL_TYPES.GUILD_NEWS_THREAD
+        | num.CHANNEL_TYPES.GUILD_PUBLIC_THREAD
+        | num.CHANNEL_TYPES.GUILD_PRIVATE_THREAD;
     thread_metadata: ThreadMeta;
     member: ThreadMember;
     message_count: number;
@@ -618,44 +676,46 @@ export type ThreadMeta = {
     auto_archive_duration: number;
     archive_timestamp: Timestamp;
     locked: boolean;
-}
+};
 
 export type ThreadMember = {
-    id?: Snowflake,
+    id?: Snowflake;
     user_id?: Snowflake;
     join_timestamp: Timestamp;
     flags: Flags;
-}
+};
 
 export type VoiceRegion = {
-    id: Snowflake,
+    id: Snowflake;
     name: string;
     vip: boolean;
     optimal: boolean;
     deprecated: boolean;
     custom: boolean;
-}
+};
 
 export type PermissionOverwrites = {
     id: Snowflake;
     type: num.PERMISSION_OVERWRITE_TYPES;
     allow: Bitfield;
     deny: Bitfield;
-}
+};
 
 export type ChannelPositionData = {
     id: Snowflake;
     position: number | null;
     lock_permissions?: boolean | null;
     parent_id?: Snowflake | null;
-}
+};
 
 // https://discord.com/developers/docs/resources/channel#default-reaction-object
-export type DefaultReaction = {
-    emoji_id: Snowflake
-} | {
-    emoji_name: string
-}
+export type DefaultReaction =
+    | {
+          emoji_id: Snowflake;
+      }
+    | {
+          emoji_name: string;
+      };
 
 export type ForumTag = {
     id: Snowflake;
@@ -663,7 +723,7 @@ export type ForumTag = {
     moderated: boolean;
     emoji_id: Snowflake | null;
     emoji_name: string | null;
-}
+};
 
 /************ audit log types ************/
 
@@ -675,13 +735,13 @@ export type AuditLogEntry = {
     action_type: num.AUDIT_LOG_ENTRY_TYPES;
     options?: AuditLogEntryInfo;
     reason?: string;
-}
+};
 
 export type AuditLogChange = {
     new_value?: unknown;
     old_value?: unknown;
     key: string;
-}
+};
 
 export type AuditLogEntryInfo = {
     application_id?: Snowflake;
@@ -695,7 +755,7 @@ export type AuditLogEntryInfo = {
     message_id?: Snowflake;
     role_name?: string;
     type: '0' | '1';
-}
+};
 
 /************ integration types ************/
 
@@ -715,14 +775,14 @@ export type Integration = {
     subscriber_count?: number;
     revoked?: boolean;
     application?: IntegrationApplication;
-}
+};
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord';
 
 export type IntegrationAccount = {
     id: string;
     name: string;
-}
+};
 
 export type IntegrationApplication = {
     id: Snowflake;
@@ -731,7 +791,7 @@ export type IntegrationApplication = {
     description: string;
     summary: string;
     bot?: User;
-}
+};
 
 /************ interaction types ************/
 
@@ -750,7 +810,7 @@ export type Interaction = {
     app_permissions?: Bitfield;
     locale?: Locale;
     guild_locale?: Locale;
-}
+};
 
 export type InteractionData = {
     id: Snowflake;
@@ -762,7 +822,7 @@ export type InteractionData = {
     values?: string[];
     target_id?: Snowflake;
     components?: MessageComponent[];
-}
+};
 
 export type InteractionDataResolved = {
     users?: Record<Snowflake, User>;
@@ -771,7 +831,7 @@ export type InteractionDataResolved = {
     channels?: Record<Snowflake, PartialChannel>;
     messages?: Record<Snowflake, PartialMessage>;
     attachments?: Record<Snowflake, Attachment>;
-}
+};
 
 export type InteractionDataOption = {
     name: string;
@@ -779,12 +839,12 @@ export type InteractionDataOption = {
     value?: CommandOptionValue;
     options?: InteractionDataOption[];
     focused?: boolean; // for autocomplete
-}
+};
 
 export type InteractionResponse = {
     type: num.INTERACTION_CALLBACK_TYPES;
     data?: InteractionResponseData;
-}
+};
 
 export type InteractionResponseData = {
     tts?: boolean;
@@ -793,50 +853,50 @@ export type InteractionResponseData = {
     allowed_mentions?: AllowedMentions;
     flags?: num.INTERACTION_CALLBACK_FLAGS | 0;
     components?: MessageComponent[];
-}
+};
 
 export type MessageInteraction = {
     id: Snowflake;
     type: num.INTERACTION_REQUEST_TYPES;
     name: string;
     user: User;
-}
+};
 
 /****** application command types ******/
 
 export const LOCALE_LIST = [
-    'da',    // Danish          Dansk
-    'de',    // German          Deutsch
+    'da', // Danish          Dansk
+    'de', // German          Deutsch
     'en-GB', // English, UK
     'en-US', // English, US
     'es-ES', // Spanish         Español
-    'fr',    // French          Français
-    'hr',    // Croation        Hrvatski
-    'it',	 // Italian         Italiano
-    'lt',	 // Lithuanian	    Lietuviškai
-    'hu',	 // Hungarian	    Magyar
-    'nl',	 // Dutch	        Nederlands
-    'no',	 // Norwegian	    Norsk
-    'pl',	 // Polish	        Polski
+    'fr', // French          Français
+    'hr', // Croation        Hrvatski
+    'it', // Italian         Italiano
+    'lt', // Lithuanian	    Lietuviškai
+    'hu', // Hungarian	    Magyar
+    'nl', // Dutch	        Nederlands
+    'no', // Norwegian	    Norsk
+    'pl', // Polish	        Polski
     'pt-BR', // Portuguese, Brazilian	Português do Brasil
-    'ro',	 // Romanian, Romania	    Română
-    'fi',	 // Finnish	        Suomi
+    'ro', // Romanian, Romania	    Română
+    'fi', // Finnish	        Suomi
     'sv-SE', // Swedish	        Svenska
-    'vi',	 // Vietnamese	    Tiếng Việt
-    'tr',	 // Turkish	        Türkçe
-    'cs',	 // Czech	        Čeština
-    'el',	 // Greek	        Ελληνικά
-    'bg',	 // Bulgarian	    български
-    'ru',	 // Russian	        Pусский
-    'uk',	 // Ukrainian	    Українська
-    'hi',	 // Hindi	        हिन्दी
-    'th',	 // Thai	        ไทย
+    'vi', // Vietnamese	    Tiếng Việt
+    'tr', // Turkish	        Türkçe
+    'cs', // Czech	        Čeština
+    'el', // Greek	        Ελληνικά
+    'bg', // Bulgarian	    български
+    'ru', // Russian	        Pусский
+    'uk', // Ukrainian	    Українська
+    'hi', // Hindi	        हिन्दी
+    'th', // Thai	        ไทย
     'zh-CN', // Chinese, China	中文
-    'ja',	 // Japanese	    日本語
+    'ja', // Japanese	    日本語
     'zh-TW', // Chinese, Taiwan	繁體中文
-    'ko',	 // Korean	        한국어
+    'ko', // Korean	        한국어
 ] as const;
-export type Locale = typeof LOCALE_LIST[number];
+export type Locale = (typeof LOCALE_LIST)[number];
 export type LocaleDict = Partial<Record<Locale, string | string[]>>;
 
 export type CommandBase = {
@@ -848,7 +908,7 @@ export type CommandBase = {
     default_member_permissions?: Bitfield | null;
     dm_permission?: boolean | null;
     type?: num.COMMAND_TYPES;
-}
+};
 export interface CommandCreateData extends CommandBase {
     name: string;
     description: string;
@@ -878,26 +938,26 @@ export type CommandOption = {
     min_value?: number;
     max_value?: number;
     autocomplete?: boolean;
-}
+};
 
 export type CommandOptionChoice = {
     name: string;
     name_localizations?: LocaleDict;
     value: string | number;
-}
+};
 
 export type CommandPermissions = {
     id: Snowflake;
     application_id: Snowflake;
     guild_id: Snowflake;
     permissions: CommandPermissionsData[];
-}
+};
 
 export type CommandPermissionsData = {
     id: Snowflake;
     type: num.COMMAND_PERMISSION_TYPES;
     permission: boolean;
-}
+};
 
 /************ message types ************/
 
@@ -933,10 +993,10 @@ export type Message = {
     sticker_items?: StickerItem[];
     stickers?: Sticker[];
     enforce_nonce?: boolean;
-}
+};
 
 interface UserMember extends User {
-    member: PartialMember
+    member: PartialMember;
 }
 
 type WebhookUser = Pick<User, 'id' | 'username' | 'avatar'>;
@@ -957,25 +1017,28 @@ export type MessageReference = {
 };
 
 export interface PartialMessage extends Partial<Message> {
-    id: Snowflake
+    id: Snowflake;
 }
 
-export interface MessageData extends Partial<Pick<Message, 'content' | 'tts' | 'embeds' | 'message_reference' | 'components' | 'attachments' | 'flags'>> {
-    allowed_mentions?: AllowedMentions,
-    sticker_ids?: Snowflake[]
+export interface MessageData
+    extends Partial<
+        Pick<Message, 'content' | 'tts' | 'embeds' | 'message_reference' | 'components' | 'attachments' | 'flags'>
+    > {
+    allowed_mentions?: AllowedMentions;
+    sticker_ids?: Snowflake[];
 }
 
 export type MessageActivity = {
-    type: num.MESSAGE_ACTIVITY_TYPES,
-    party_id?: string
-}
+    type: num.MESSAGE_ACTIVITY_TYPES;
+    party_id?: string;
+};
 
 export type MessageFetchData = {
     limit: number;
     around?: Snowflake;
     before?: Snowflake;
     after?: Snowflake;
-}
+};
 
 // https://discord.com/developers/docs/resources/channel#attachment-object
 export type Attachment = {
@@ -991,15 +1054,15 @@ export type Attachment = {
     ephemeral?: boolean;
     duration_secs?: number; // voice messages only
     waveform?: string; // voice messages only
-    flags?: num.ATTACHMENT_FLAGS
-}
+    flags?: num.ATTACHMENT_FLAGS;
+};
 
 export type ChannelMention = {
     id: Snowflake;
     guild_id: Snowflake;
     type: num.CHANNEL_TYPES;
     name: string;
-}
+};
 
 /****** message component types ******/
 
@@ -1040,12 +1103,12 @@ export interface SelectDefaultValue {
 }
 export type MessageComponent = MessageComponentRow | MessageComponentButton | Select | TextSelect | ChannelSelect;
 export type SelectOption = {
-    label: string,
-    value: string,
+    label: string;
+    value: string;
     description?: string;
     emoji?: PartialEmoji;
     default?: boolean;
-}
+};
 
 /****** embed types ******/
 
@@ -1063,7 +1126,7 @@ export type Embed = {
     provider?: EmbedProvider;
     author?: EmbedAuthor;
     fields?: EmbedField[];
-}
+};
 
 export type EmbedFooter = {
     text: string;
@@ -1117,14 +1180,14 @@ export type Application = {
     install_params?: ApplicationInstallParams;
     custom_install_url?: URL;
     role_connections_verification_url?: URL;
-}
+};
 
-export type PartialApplication = Pick<Application, 'id' | 'flags'>
+export type PartialApplication = Pick<Application, 'id' | 'flags'>;
 
 export type ApplicationInstallParams = {
     scopes: string[];
     permissions: string;
-}
+};
 
 export type ApplicationTeam = {
     icon: string | null;
@@ -1132,14 +1195,14 @@ export type ApplicationTeam = {
     members: ApplicationTeamMember[];
     name: string;
     owner_user_id: Snowflake;
-}
+};
 
 export type ApplicationTeamMember = {
     membership_state: num.TEAM_MEMBERSHIP_STATE;
-    permissions: ['*']
+    permissions: ['*'];
     team_id: Snowflake;
     user: PartialUser;
-}
+};
 
 /************ automod types ************/
 
@@ -1152,7 +1215,7 @@ export type AutoModRuleData = {
     enabled?: boolean;
     exempt_roles?: Snowflake[];
     exempt_channels?: Snowflake[];
-}
+};
 
 export type AutoModRuleEditData = Partial<AutoModRuleData>;
 
@@ -1172,18 +1235,18 @@ type AutoModTriggerMetadata = {
     presets: num.AUTOMOD_KEYWORD_PRESET_TYPES;
     allow_list: string[];
     mention_total_limit: number;
-}
+};
 
 export type AutoModAction = {
     type: num.AUTOMOD_ACTION_TYPES;
     metadata?: AutoModActionMetadata;
-}
+};
 
 type AutoModActionMetadata = {
     channel_id?: Snowflake;
     duration_seconds?: number;
     custom_message?: string;
-}
+};
 
 /************ invite types ************/
 
@@ -1199,7 +1262,7 @@ export type Invite = {
     approximate_member_count?: number; // ?with_counts=true
     expires_at?: Timestamp | null; // ?with_expiration=true
     guild_scheduled_event?: GuildScheduledEvent; // ?guild_scheduled_event_id=<id>
-}
+};
 
 export interface ExtendedInvite extends Invite {
     uses: number;
@@ -1256,7 +1319,7 @@ export type UnixTimestampMillis = number;
 
 // https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
 export const TIMESTAMP_FORMATS = ['t', 'T', 'd', 'D', 'f', 'F', 'R'] as const;
-export type TimestampFormat = typeof TIMESTAMP_FORMATS[number];
+export type TimestampFormat = (typeof TIMESTAMP_FORMATS)[number];
 
 /* what the run() function in commands can return.
  * may add more types later.
@@ -1274,7 +1337,7 @@ export type StringNum = `${number}`;
 
 export type TimeoutList = {
     gatewayError: NodeJS.Timeout[];
-}
+};
 
 /*** event handler types ***/
 

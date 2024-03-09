@@ -19,12 +19,12 @@ export default async function (this: FunCommand, interaction: Interaction) {
         author: author.id,
         authorHand: [userCard1, userCard2],
         botHand: [botCard1, botCard2],
-        interaction
+        interaction,
     };
 
     const msgData = this.bot.interactionUtils.bjUtils.getMessageData(gameData, author, interaction.locale);
 
-    return this.respond(interaction, msgData).then(msg => {
+    return this.respond(interaction, msgData).then((msg) => {
         this.bot.interactionUtils.addItem(gameData);
         return msg;
     });

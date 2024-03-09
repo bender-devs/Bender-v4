@@ -1,11 +1,11 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants.js';
+import IMAGES from '../../data/images.js';
 import type { CommandOptionValue, Embed, Interaction, URL } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
 import { EMOJI_REGEX_EXACT } from '../../utils/text.js';
 import UnicodeUtils from '../../utils/unicode.js';
 import type InfoCommand from '../info.js';
 import emojiInfo from './emoji.js';
-import IMAGES from '../../data/images.js';
 
 export default async function (this: InfoCommand, interaction: Interaction, charString?: CommandOptionValue) {
     if (!charString || typeof charString !== 'string') {
@@ -23,22 +23,44 @@ export default async function (this: InfoCommand, interaction: Interaction, char
     }
 
     const display = LangUtils.getAndReplace('CHAR_INFO_DISPLAY', { char: firstChar }, interaction.locale);
-    const codes8 = LangUtils.getAndReplace('CHAR_INFO_UTF8', { 
-        codes: UnicodeUtils.formatCodes(charData.codepoints_utf8, 8)
-    }, interaction.locale);
-    const codes16 = LangUtils.getAndReplace('CHAR_INFO_UTF16', { 
-        codes: UnicodeUtils.formatCodes(charData.codepoints_utf16, 16)
-    }, interaction.locale);
-    const groupInfo = charData.category && charData.group && charData.subgroup ? LangUtils.getAndReplace('CHAR_INFO_GROUP', { 
-        category: charData.category,
-        group: charData.group,
-        subgroup: charData.subgroup
-    }, interaction.locale) : '';
-    const variations = charData.variations ? LangUtils.getAndReplace('CHAR_INFO_VARIATIONS', {
-        variations: charData.variations.join('  ')
-    }, interaction.locale) : '';
+    const codes8 = LangUtils.getAndReplace(
+        'CHAR_INFO_UTF8',
+        {
+            codes: UnicodeUtils.formatCodes(charData.codepoints_utf8, 8),
+        },
+        interaction.locale
+    );
+    const codes16 = LangUtils.getAndReplace(
+        'CHAR_INFO_UTF16',
+        {
+            codes: UnicodeUtils.formatCodes(charData.codepoints_utf16, 16),
+        },
+        interaction.locale
+    );
+    const groupInfo =
+        charData.category && charData.group && charData.subgroup
+            ? LangUtils.getAndReplace(
+                  'CHAR_INFO_GROUP',
+                  {
+                      category: charData.category,
+                      group: charData.group,
+                      subgroup: charData.subgroup,
+                  },
+                  interaction.locale
+              )
+            : '';
+    const variations = charData.variations
+        ? LangUtils.getAndReplace(
+              'CHAR_INFO_VARIATIONS',
+              {
+                  variations: charData.variations.join('  '),
+              },
+              interaction.locale
+          )
+        : '';
 
-    let links = '', imageLink = '';
+    let links = '',
+        imageLink = '';
     if (charData.is_emoji) {
         const infoName = LangUtils.get('CHAR_INFO_MORE_INFO', interaction.locale);
         const infoLink = `https://emojipedia.org/emoji/${encodeURIComponent(firstChar)}`;
@@ -55,17 +77,19 @@ export default async function (this: InfoCommand, interaction: Interaction, char
         links = `[${infoName}](${infoLink})`;
     }
 
-    const description = `${charData ? `${charData.description}\n\n` : ''}${display}${groupInfo ? `\n${groupInfo}` : ''}${variations ? `\n${variations}` : ''}\n\n${codes8}\n${codes16}\n\n${links}`;
+    const description = `${charData ? `${charData.description}\n\n` : ''}${display}${
+        groupInfo ? `\n${groupInfo}` : ''
+    }${variations ? `\n${variations}` : ''}\n\n${codes8}\n${codes16}\n\n${links}`;
     const embed: Embed = {
         author: {
             name: LangUtils.get('CHAR_INFO_TITLE', interaction.locale),
-            icon_url: IMAGES.info
+            icon_url: IMAGES.info,
         },
         description,
-        color: DEFAULT_COLOR
+        color: DEFAULT_COLOR,
     };
     if (imageLink) {
-        embed.thumbnail = { url: imageLink as URL }
+        embed.thumbnail = { url: imageLink as URL };
     }
     return this.respond(interaction, { embeds: [embed] });
 }

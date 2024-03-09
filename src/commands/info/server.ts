@@ -32,9 +32,13 @@ function getSecurityLevelText(this: InfoCommand, interaction: Interaction, level
             break;
         }
     }
-    return LangUtils.getAndReplace(`SERVER_INFO_${key}`, {
-        securityEmoji: this.getEmoji(key, interaction)
-    }, interaction.locale);
+    return LangUtils.getAndReplace(
+        `SERVER_INFO_${key}`,
+        {
+            securityEmoji: this.getEmoji(key, interaction),
+        },
+        interaction.locale
+    );
 }
 
 export default async function (this: InfoCommand, interaction: Interaction) {
@@ -48,24 +52,35 @@ export default async function (this: InfoCommand, interaction: Interaction) {
     }
 
     const total = guild.approximate_member_count || this.bot.cache.members.size(guild.id);
-    const bots = this.bot.cache.members.filter(guild.id, mem => mem.user.bot || false)?.length || 0;
-    const online = guild.approximate_presence_count || this.bot.cache.members.filter(guild.id, mem => {
-        return this.bot.cache.presences.get(mem.user.id)?.status !== 'offline';
-    })?.length || 0;
-    const memberInfo = LangUtils.getAndReplace('SERVER_INFO_MEMBERS', {
-        usersEmoji: this.getEmoji('USERS', interaction),
-        total,
-        bots,
-        online,
-        onlineEmoji: this.getEmoji('ONLINE', interaction)
-    }, interaction.locale);
+    const bots = this.bot.cache.members.filter(guild.id, (mem) => mem.user.bot || false)?.length || 0;
+    const online =
+        guild.approximate_presence_count ||
+        this.bot.cache.members.filter(guild.id, (mem) => {
+            return this.bot.cache.presences.get(mem.user.id)?.status !== 'offline';
+        })?.length ||
+        0;
+    const memberInfo = LangUtils.getAndReplace(
+        'SERVER_INFO_MEMBERS',
+        {
+            usersEmoji: this.getEmoji('USERS', interaction),
+            total,
+            bots,
+            online,
+            onlineEmoji: this.getEmoji('ONLINE', interaction),
+        },
+        interaction.locale
+    );
 
     const owner = this.bot.cache.members.get(guild.id, guild.owner_id);
-    const ownerInfo = LangUtils.getAndReplace(`SERVER_INFO_OWNER${owner ? '' : '_UNKNOWN'}`, {
-        userEmoji: this.getEmoji('USER', interaction),
-        owner: owner ? DiscordUtils.user.getTag(owner.user) : '',
-        nickInfo: owner?.nick ? ` ~ ${owner.nick}` : ''
-    }, interaction.locale);
+    const ownerInfo = LangUtils.getAndReplace(
+        `SERVER_INFO_OWNER${owner ? '' : '_UNKNOWN'}`,
+        {
+            userEmoji: this.getEmoji('USER', interaction),
+            owner: owner ? DiscordUtils.user.getTag(owner.user) : '',
+            nickInfo: owner?.nick ? ` ~ ${owner.nick}` : '',
+        },
+        interaction.locale
+    );
 
     const createdAt = TextUtils.timestamp.fromSnowflake(guild.id);
     let createdInfo = LangUtils.formatDateAgo('SERVER_INFO_CREATED_AT', createdAt, interaction.locale);
@@ -73,32 +88,50 @@ export default async function (this: InfoCommand, interaction: Interaction) {
 
     const securityInfo = getSecurityLevelText.bind(this)(interaction, guild.verification_level);
 
-    const textCount = this.bot.cache.channels.filter(guild.id, chan => DiscordUtils.channel.isText(chan))?.length || 0;
-    const textInfo = LangUtils.getAndReplace(`SERVER_INFO_TEXT_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: textCount,
-        chanEmoji: this.getEmoji('CHANNEL_TEXT', interaction)
-    }, interaction.locale);
+    const textCount =
+        this.bot.cache.channels.filter(guild.id, (chan) => DiscordUtils.channel.isText(chan))?.length || 0;
+    const textInfo = LangUtils.getAndReplace(
+        `SERVER_INFO_TEXT_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`,
+        {
+            count: textCount,
+            chanEmoji: this.getEmoji('CHANNEL_TEXT', interaction),
+        },
+        interaction.locale
+    );
 
-    const voiceCount = this.bot.cache.channels.filter(guild.id, chan => DiscordUtils.channel.isVoice(chan))?.length || 0;
-    const voiceInfo = LangUtils.getAndReplace(`SERVER_INFO_VOICE_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: voiceCount,
-        chanEmoji: this.getEmoji('CHANNEL_VOICE', interaction)
-    }, interaction.locale);
+    const voiceCount =
+        this.bot.cache.channels.filter(guild.id, (chan) => DiscordUtils.channel.isVoice(chan))?.length || 0;
+    const voiceInfo = LangUtils.getAndReplace(
+        `SERVER_INFO_VOICE_CHANNEL_${textCount === 1 ? 'SINGLE' : 'COUNT'}`,
+        {
+            count: voiceCount,
+            chanEmoji: this.getEmoji('CHANNEL_VOICE', interaction),
+        },
+        interaction.locale
+    );
 
     const roleCount = this.bot.cache.roles.size(guild.id);
-    const roleInfo = LangUtils.getAndReplace(`SERVER_INFO_ROLE_${roleCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: roleCount
-    }, interaction.locale);
+    const roleInfo = LangUtils.getAndReplace(
+        `SERVER_INFO_ROLE_${roleCount === 1 ? 'SINGLE' : 'COUNT'}`,
+        {
+            count: roleCount,
+        },
+        interaction.locale
+    );
 
     const emojiCount = this.bot.cache.emojis.size(guild.id);
-    const emojiInfo = LangUtils.getAndReplace(`SERVER_INFO_EMOJI_${emojiCount === 1 ? 'SINGLE' : 'COUNT'}`, {
-        count: emojiCount
-    }, interaction.locale);
+    const emojiInfo = LangUtils.getAndReplace(
+        `SERVER_INFO_EMOJI_${emojiCount === 1 ? 'SINGLE' : 'COUNT'}`,
+        {
+            count: emojiCount,
+        },
+        interaction.locale
+    );
 
     const embed: Embed = {
         color: DEFAULT_COLOR,
         description: `${memberInfo}\n${ownerInfo}\n${createdInfo}\n${securityInfo}\n\n${roleInfo} | ${emojiInfo} | ${textInfo} | ${voiceInfo}`,
-        footer: { text: `ID: ${guild.id}` }
+        footer: { text: `ID: ${guild.id}` },
     };
 
     const icon = guild.icon ? CDNUtils.guildIcon(guild.id, guild.icon) : null;

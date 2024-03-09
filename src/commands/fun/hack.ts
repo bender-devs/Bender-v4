@@ -1,10 +1,10 @@
+import IMAGES from '../../data/images.js';
 import type { CommandOptionValue, Interaction, Snowflake } from '../../types/types.js';
 import LangUtils from '../../utils/language.js';
 import type { EmojiKey } from '../../utils/misc.js';
 import MiscUtils from '../../utils/misc.js';
-import IMAGES from '../../data/images.js';
-import type FunCommand from '../fun.js';
 import TextUtils from '../../utils/text.js';
+import type FunCommand from '../fun.js';
 
 const base64ModChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('');
 
@@ -16,16 +16,14 @@ export default async function (this: FunCommand, interaction: Interaction, userS
 
     if (userID === this.bot.user.id) {
         const img = MiscUtils.randomItem(IMAGES.uwotm8);
-        return this.respond(interaction, img)
-            .catch(this.handleAPIError.bind(this));
+        return this.respond(interaction, img).catch(this.handleAPIError.bind(this));
     }
 
     const user = await this.bot.api.user.fetch(userID).catch(() => null);
 
     if (user?.bot) {
         const response = LangUtils.get('FUN_HACK_BOT', interaction.locale);
-        return this.respond(interaction, response, 'ANGRY')
-            .catch(this.handleAPIError.bind(this));
+        return this.respond(interaction, response, 'ANGRY').catch(this.handleAPIError.bind(this));
     }
 
     let progress = ''; // make animated bar
@@ -33,33 +31,43 @@ export default async function (this: FunCommand, interaction: Interaction, userS
         progress += this.getEmoji(`BAR_${i}` as EmojiKey, interaction);
     }
 
-    const progressText = LangUtils.getAndReplace('FUN_HACK_PROGRESS', {
-        user: TextUtils.mention.parseUser(userID),
-        progress
-    }, interaction.locale);
+    const progressText = LangUtils.getAndReplace(
+        'FUN_HACK_PROGRESS',
+        {
+            user: TextUtils.mention.parseUser(userID),
+            progress,
+        },
+        interaction.locale
+    );
     await this.respond(interaction, progressText, 'HACK');
 
-    const createdTimestamp = TextUtils.timestamp.fromSnowflake(userID)
+    const createdTimestamp = TextUtils.timestamp.fromSnowflake(userID);
     const value = Math.floor(createdTimestamp / 1000) - 1293840000; // timestamp in seconds minus token epoch
 
     const part1 = Buffer.from(userID).toString('base64'); // string to base64
-    const part2 = Buffer.from([value>>24,value>>16,value>>8,value]).toString('base64').substring(0, 6); // number to base64
+    const part2 = Buffer.from([value >> 24, value >> 16, value >> 8, value])
+        .toString('base64')
+        .substring(0, 6); // number to base64
     let part3 = ''; // generate random base64-esque number
     for (let i = 0; i < 27; i++) {
         part3 += MiscUtils.randomItem(base64ModChars);
     }
 
     progress = ''; // make static bar
-    for (const i of [1,2,2,2,2,3]) {
+    for (const i of [1, 2, 2, 2, 2, 3]) {
         progress += this.getEmoji(`BAR_${i}_FULL` as EmojiKey, interaction);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const completedText = LangUtils.getAndReplace('FUN_HACK_COMPLETE', {
-        user: TextUtils.mention.parseUser(userID),
-        progress,
-        token: `${part1}.${part2}.${part3}`
-    }, interaction.locale)
+    const completedText = LangUtils.getAndReplace(
+        'FUN_HACK_COMPLETE',
+        {
+            user: TextUtils.mention.parseUser(userID),
+            progress,
+            token: `${part1}.${part2}.${part3}`,
+        },
+        interaction.locale
+    );
     return this.editResponse(interaction, completedText, 'HACK');
 }

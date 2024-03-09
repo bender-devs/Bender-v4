@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { AutoModExecuteData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { AutoModExecuteData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class AutoModExecuteHandler extends EventHandler<AutoModExecuteData> {
     constructor(bot: Bot) {
@@ -9,5 +9,5 @@ export default class AutoModExecuteHandler extends EventHandler<AutoModExecuteDa
 
     handler = (/*eventData: AutoModExecuteData*/) => {
         // TODO: handle custom filter actions?
-    }
+    };
 }

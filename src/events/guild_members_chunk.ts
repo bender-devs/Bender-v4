@@ -1,6 +1,6 @@
-import { EventHandler } from '../types/types.js';
-import type { GuildMembersChunkData } from '../types/gatewayTypes.js';
 import type Bot from '../structures/bot.js';
+import type { GuildMembersChunkData } from '../types/gatewayTypes.js';
+import { EventHandler } from '../types/types.js';
 
 export default class GuildMembersChunkHandler extends EventHandler<GuildMembersChunkData> {
     constructor(bot: Bot) {
@@ -12,9 +12,9 @@ export default class GuildMembersChunkHandler extends EventHandler<GuildMembersC
         if (eventData.presences) {
             this.bot.cache.presences.addChunk(eventData.presences);
         }
-    }
+    };
 
     handler = (/*eventData: GuildMembersChunkData*/) => {
         // event unused for now
-    }
+    };
 }

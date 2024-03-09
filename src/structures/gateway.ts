@@ -1,13 +1,13 @@
-import * as gatewayTypes from '../types/gatewayTypes.js';
-import type Bot from './bot.js';
-import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes.js';
 import EventEmitter from 'events';
-import { GATEWAY_PARAMS, HEARTBEAT_TIMEOUT, EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART } from '../data/constants.js';
-import zlib from 'zlib-sync';
 import WS from 'ws';
+import zlib from 'zlib-sync';
+import { EXIT_CODE_NO_RESTART, EXIT_CODE_RESTART, GATEWAY_PARAMS, HEARTBEAT_TIMEOUT } from '../data/constants.js';
+import * as gatewayTypes from '../types/gatewayTypes.js';
+import { CLIENT_STATE, CUSTOM_GATEWAY_ERRORS, GATEWAY_ERRORS, GATEWAY_OPCODES } from '../types/numberTypes.js';
 import TimeUtils from '../utils/time.js';
+import type Bot from './bot.js';
 
-const ZLIB_SUFFIX = [0x00, 0x00, 0xFF, 0xFF];
+const ZLIB_SUFFIX = [0x00, 0x00, 0xff, 0xff];
 
 export default class Gateway extends EventEmitter {
     bot: Bot;
@@ -173,13 +173,16 @@ export default class Gateway extends EventEmitter {
                     return this.resume({
                         session_id: this.sessionID,
                         seq: this.#lastSequenceNumber,
-                        token: this.#identifyData.token
+                        token: this.#identifyData.token,
                     });
                 } else if (this.#identifyData) {
                     this.bot.logger.debug('WS DISCONNECTED', 'Invalid session, reconnecting...');
                     return this.connectAndIdentify(this.ws.url, this.#identifyData, true);
                 }
-                this.bot.logger.debug('WS DISCONNECTED', 'Invalid session and no identify data cached, restarting...');
+                this.bot.logger.debug(
+                    'WS DISCONNECTED',
+                    'Invalid session and no identify data cached, restarting...'
+                );
                 process.exit(EXIT_CODE_RESTART);
             }
         }
@@ -195,13 +198,15 @@ export default class Gateway extends EventEmitter {
             return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_WS);
         }
         if (this.ws.readyState !== WS.OPEN) {
-            return this.bot.logger.handleError('GATEWAY sendData', gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT);
+            return this.bot.logger.handleError(
+                'GATEWAY sendData',
+                gatewayTypes.ERRORS.PAYLOAD_SENT_BEFORE_CONNECT
+            );
         }
         let stringifiedData: string | null = null;
         try {
             stringifiedData = JSON.stringify(data);
-        }
-        catch (err) {
+        } catch (err) {
             this.bot.logger.handleError('GATEWAY sendData', err as Error);
         }
         if (!stringifiedData) {
@@ -242,8 +247,8 @@ export default class Gateway extends EventEmitter {
             op: GATEWAY_OPCODES.IDENTIFY,
             d: identifyData,
             s: null,
-            t: null
-        }
+            t: null,
+        };
         //this.bot.logger.debug('SEND GATEWAY IDENTIFY', payload);
         return this.sendData(payload);
     }
@@ -253,8 +258,8 @@ export default class Gateway extends EventEmitter {
             op: GATEWAY_OPCODES.HEARTBEAT,
             d: this.#lastSequenceNumber,
             s: null,
-            t: null
-        }
+            t: null,
+        };
         this.bot.logger.debug('SEND GATEWAY HEARTBEAT', payload);
         this.#heartbeatTimeout = setTimeout(() => {
             this.ws.close(CUSTOM_GATEWAY_ERRORS.HEARTBEAT_TIMEOUT, 'HEARTBEAT_TIMEOUT');
@@ -268,8 +273,8 @@ export default class Gateway extends EventEmitter {
             op: GATEWAY_OPCODES.PRESENCE_UPDATE,
             d: presenceData,
             s: null,
-            t: null
-        }
+            t: null,
+        };
         this.bot.cache.presences.updateSelf(presenceData);
         //this.bot.logger.debug('SEND GATEWAY PRESENCE', payload);
         return this.sendData(payload);
@@ -280,8 +285,8 @@ export default class Gateway extends EventEmitter {
             op: GATEWAY_OPCODES.VOICE_STATE_UPDATE,
             d: voiceStateData,
             s: null,
-            t: null
-        }
+            t: null,
+        };
         this.bot.logger.debug('SEND GATEWAY VOICE STATE', payload);
         return this.sendData(payload);
     }
@@ -294,11 +299,11 @@ export default class Gateway extends EventEmitter {
                 op: GATEWAY_OPCODES.RESUME,
                 d: resumeData,
                 s: null,
-                t: null
-            }
+                t: null,
+            };
             //this.bot.logger.debug('GATEWAY RESUME', payload);
             return this.sendData(payload);
-        })
+        });
     }
 
     async requestGuildMembers(requestGuildMembersData: gatewayTypes.RequestMembersData) {
@@ -306,8 +311,8 @@ export default class Gateway extends EventEmitter {
             op: GATEWAY_OPCODES.REQUEST_GUILD_MEMBERS,
             d: requestGuildMembersData,
             s: null,
-            t: null
-        }
+            t: null,
+        };
         this.bot.logger.debug('SEND GATEWAY REQUEST MEMBERS', payload);
         return this.sendData(payload);
     }

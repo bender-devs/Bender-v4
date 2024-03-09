@@ -1,25 +1,36 @@
-import type { CommandOptionChoice, Interaction, InteractionResponse, UnixTimestampMillis } from '../types/types.js';
-import Logger from './logger.js';
-import { randomUUID } from 'crypto';
 import * as child_process from 'child_process';
-import { EXIT_CODE_NO_RESTART, RESPAWN_DEAD_SHARDS, EXIT_CODE_RESTART, SHARD_SPAWN_COMMAND, SHARD_SPAWN_FILE, SHARD_MESSAGE_TIMEOUT } from '../data/constants.js';
+import { randomUUID } from 'crypto';
+import {
+    EXIT_CODE_NO_RESTART,
+    EXIT_CODE_RESTART,
+    RESPAWN_DEAD_SHARDS,
+    SHARD_MESSAGE_TIMEOUT,
+    SHARD_SPAWN_COMMAND,
+    SHARD_SPAWN_FILE,
+} from '../data/constants.js';
+import type {
+    CommandOptionChoice,
+    Interaction,
+    InteractionResponse,
+    UnixTimestampMillis,
+} from '../types/types.js';
+import Logger from './logger.js';
 
 const shardOperations = [
     'ping', // ping a shard to make sure it's responsive
     'pong', // response to ping
     'request_values', // request values from a shard
-    'reply_with_values' // respond with requested values
+    'reply_with_values', // respond with requested values
 ] as const;
-export type ShardOperation = typeof shardOperations[number];
+export type ShardOperation = (typeof shardOperations)[number];
 export const SHARD_OPERATION_LIST: CommandOptionChoice[] = [
     { name: 'Ping', value: 'ping' }, // ping a shard to make sure it's responsive
     { name: 'Pong', value: 'pong' }, // response to ping
     { name: 'Request values', value: 'request_values' }, // request values from a shard
-    { name: 'Reply with values', value: 'reply_with_values' } // respond with requested values
-]
+    { name: 'Reply with values', value: 'reply_with_values' }, // respond with requested values
+];
 export type ShardDestination = number[] | 'ALL' | 'MANAGER';
 export const GENERAL_STATS = ['ping', 'uptime', 'lastActivity', 'totalGuilds', 'availableGuilds'];
-
 
 export type ShardMessage = {
     operation: ShardOperation;
@@ -27,19 +38,19 @@ export type ShardMessage = {
     toShards: ShardDestination;
     nonce: string;
     data?: string;
-}
+};
 
 export type ShardManagerValues = {
-    pids?: (number | null)[],
-    lastActivity?: number[],
-    uptime?: number[]
-}
+    pids?: (number | null)[];
+    lastActivity?: number[];
+    uptime?: number[];
+};
 
 export type ShardValues = {
-    guildCount?: number,
-    memberCount?: number,
-    userCount?: number,
-    channelCount?: number
+    guildCount?: number;
+    memberCount?: number;
+    userCount?: number;
+    channelCount?: number;
 };
 
 export type ShardFetchData = ShardValues | null;
@@ -48,7 +59,7 @@ export type ShardComplexCallbackData = {
     completed: number;
     expected: number;
     currentValues: ShardFetchData[];
-}
+};
 
 export default class ShardManager {
     logger: Logger;
@@ -89,9 +100,9 @@ export default class ShardManager {
             env: Object.assign({}, process.env, {
                 SHARD_ID: shardID,
                 SHARD_COUNT: this.shardCount,
-                FLUSH_CACHE: flushCache
+                FLUSH_CACHE: flushCache,
             }),
-            stdio: ['inherit', 'inherit', 'inherit', 'ipc']
+            stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
         });
         shardProcess.on('error', (err: Error) => {
             this.logger.handleError(`UNHANDLED EXCEPTION [SHARD ${shardID}]`, err);
@@ -112,7 +123,10 @@ export default class ShardManager {
 
     handleDeadProcess(shardID: number) {
         const proc = this.#shardProcesses[shardID];
-        this.logger.moduleLog(`Shard ${shardID}`, `Process died${proc?.exitCode ? ` with exit code ${proc.exitCode}` : ''}, rip`);
+        this.logger.moduleLog(
+            `Shard ${shardID}`,
+            `Process died${proc?.exitCode ? ` with exit code ${proc.exitCode}` : ''}, rip`
+        );
         if (proc && !proc.exitCode) {
             proc.kill(EXIT_CODE_RESTART);
         } else if (proc?.exitCode === EXIT_CODE_NO_RESTART) {
@@ -176,7 +190,7 @@ export default class ShardManager {
                     operation: 'pong',
                     fromShard: 'MANAGER',
                     toShards: [message.fromShard],
-                    nonce: message.nonce
+                    nonce: message.nonce,
                 });
             }
             case 'request_values': {
@@ -185,18 +199,22 @@ export default class ShardManager {
                     break;
                 }
                 if (!values.includes('pids') && !values.includes('lastActivity') && !values.includes('uptime')) {
-                    this.logger.debug('IGNORING SHARD MESSAGE', message, '(requesting shard manager values other than pids, lastActivity, or uptime)');
+                    this.logger.debug(
+                        'IGNORING SHARD MESSAGE',
+                        message,
+                        '(requesting shard manager values other than pids, lastActivity, or uptime)'
+                    );
                     break;
                 }
                 const responseMessage: ShardMessage = {
                     operation: 'reply_with_values',
                     fromShard: 'MANAGER',
                     toShards: [message.fromShard],
-                    nonce: message.nonce
-                }
+                    nonce: message.nonce,
+                };
                 const data: ShardManagerValues = {};
                 if (values.includes('pids')) {
-                    data.pids = this.#shardProcesses.map(proc => proc?.pid || null);
+                    data.pids = this.#shardProcesses.map((proc) => proc?.pid || null);
                 }
                 if (values.includes('lastActivity')) {
                     data.lastActivity = this.#lastActivityTimestamps;
@@ -245,7 +263,13 @@ export default class ShardManager {
     static parseMessage(message: string, logger?: Logger): ShardMessage | null {
         try {
             const messageObject = JSON.parse(message);
-            if (!messageObject.operation || !shardOperations.includes(messageObject.operation) || messageObject.toShards === undefined || messageObject.fromShard === undefined || messageObject.nonce === undefined) {
+            if (
+                !messageObject.operation ||
+                !shardOperations.includes(messageObject.operation) ||
+                messageObject.toShards === undefined ||
+                messageObject.fromShard === undefined ||
+                messageObject.nonce === undefined
+            ) {
                 return null;
             }
             return {
@@ -253,8 +277,8 @@ export default class ShardManager {
                 fromShard: messageObject.fromShard,
                 toShards: messageObject.toShards,
                 nonce: messageObject.nonce,
-                data: messageObject.data
-            }
+                data: messageObject.data,
+            };
         } catch (err) {
             if (logger) {
                 logger.handleError('PARSING SHARD MESSAGE FAILED', err, message);
@@ -296,13 +320,13 @@ export default class ShardManager {
             fromShard: 'MANAGER',
             toShards: shards,
             nonce,
-            data: values.join(',')
+            data: values.join(','),
         };
 
         const callback: ShardFetchCallback = () => {
             this.logger.handleError('shardManager.getStats', 'CALLBACK BEFORE READY', message);
             return null;
-        }
+        };
         this.#callbacks[nonce] = callback;
 
         this.sendMessage(message);
@@ -311,7 +335,7 @@ export default class ShardManager {
                 this.#complexCallbacks[nonce] = {
                     completed: 0,
                     expected: shards === 'ALL' ? this.shardCount : shards.length,
-                    currentValues: []
+                    currentValues: [],
                 };
             }
             this.#callbacks[nonce] = resolve;
@@ -320,7 +344,7 @@ export default class ShardManager {
                 delete this.#callbacks[nonce];
                 reject('Shard operation timed out.');
             }, SHARD_MESSAGE_TIMEOUT);
-        })
+        });
     }
 
     async dispatchInteraction(interaction: Interaction): Promise<InteractionResponse> {

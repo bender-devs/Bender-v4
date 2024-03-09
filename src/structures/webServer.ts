@@ -1,11 +1,11 @@
-import type ShardManager from './shardManager.js';
 import express from 'express';
-import Logger from './logger.js';
-import { WEBSERVER_PORT, PUBLIC_KEY } from '../data/constants.js';
 import * as nacl from 'tweetnacl';
+import { PUBLIC_KEY, WEBSERVER_PORT } from '../data/constants.js';
+import Logger from './logger.js';
+import type ShardManager from './shardManager.js';
 
 export default class WebServer {
-    shardManager: ShardManager
+    shardManager: ShardManager;
     app: express.Application;
     logger: Logger;
     initialized = false;
@@ -22,20 +22,25 @@ export default class WebServer {
                 this.logger.debug('webServer POST /receive_interaction - INVALID REQUEST', req);
                 return res.status(401).send('Invalid interaction.');
             }
-            return this.shardManager.dispatchInteraction(req.body).then(response => res.status(200).send(response));
+            return this.shardManager
+                .dispatchInteraction(req.body)
+                .then((response) => res.status(200).send(response));
         });
 
         this.app.get('/shard_stats', (req: express.Request, res: express.Response) => {
-            return this.shardManager.getStats(req.body?.shards || 'ALL').then(values => res.status(200).send(values)).catch(err => {
-                this.logger.handleError('webServer GET /shard_stats', err);
-                return res.status(500).send(err);
-            });
-        })
+            return this.shardManager
+                .getStats(req.body?.shards || 'ALL')
+                .then((values) => res.status(200).send(values))
+                .catch((err) => {
+                    this.logger.handleError('webServer GET /shard_stats', err);
+                    return res.status(500).send(err);
+                });
+        });
 
         this.app.listen(WEBSERVER_PORT, () => {
             this.logger.debug(`Bot webserver listening on port ${WEBSERVER_PORT}`);
             this.initialized = true;
-        })
+        });
     }
 
     // https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization

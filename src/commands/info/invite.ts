@@ -28,10 +28,14 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
 
     const userID = interaction.member?.user.id;
     let fullInvite: ExtendedInvite | null = null;
-    if (userID && invite.guild.id === interaction.guild_id && this.bot.perms.matchesMemberCache(userID, 'MANAGE_GUILD', interaction.guild_id)) {
+    if (
+        userID &&
+        invite.guild.id === interaction.guild_id &&
+        this.bot.perms.matchesMemberCache(userID, 'MANAGE_GUILD', interaction.guild_id)
+    ) {
         const invites = await this.bot.api.invite.list(interaction.guild_id).catch(() => null);
         if (invites) {
-            fullInvite = invites.find(inv => inv.code === inviteCode) || null;
+            fullInvite = invites.find((inv) => inv.code === inviteCode) || null;
         }
     }
 
@@ -44,9 +48,16 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
             cachedChannel = this.bot.cache.channels.find(invite.channel.id);
         }
         const isVoice = cachedChannel && DiscordUtils.channel.isVoice(cachedChannel);
-        description += `\n${LangUtils.getAndReplace(`INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`, {
-            channel: invite.guild.id === interaction.guild_id ? TextUtils.mention.parseChannel(invite.channel.id) : `#${invite.channel.name}`
-        }, interaction.locale)}`;
+        description += `\n${LangUtils.getAndReplace(
+            `INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`,
+            {
+                channel:
+                    invite.guild.id === interaction.guild_id
+                        ? TextUtils.mention.parseChannel(invite.channel.id)
+                        : `#${invite.channel.name}`,
+            },
+            interaction.locale
+        )}`;
     }
 
     if (fullInvite?.uses) {
@@ -64,7 +75,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
 
     const embed: Embed = {
         color: DEFAULT_COLOR,
-        description
+        description,
     };
 
     if (invite.inviter) {
@@ -74,7 +85,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
 
         embed.footer = {
             text: userText,
-            icon_url: userAvatar
+            icon_url: userAvatar,
         };
     }
 
@@ -87,15 +98,21 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
     }
 
     if (invite.approximate_presence_count && invite.approximate_member_count) {
-        const presenceInfo = LangUtils.getAndReplace('INVITE_INFO_MEMBER_PRESENCES', {
-            online: invite.approximate_presence_count,
-            total: invite.approximate_member_count,
-            onlineEmoji: this.getEmoji('ONLINE', interaction)
-        }, interaction.locale);
-        embed.fields = [{
-            name: LangUtils.get('INVITE_INFO_MEMBERS', interaction.locale),
-            value: presenceInfo
-        }];
+        const presenceInfo = LangUtils.getAndReplace(
+            'INVITE_INFO_MEMBER_PRESENCES',
+            {
+                online: invite.approximate_presence_count,
+                total: invite.approximate_member_count,
+                onlineEmoji: this.getEmoji('ONLINE', interaction),
+            },
+            interaction.locale
+        );
+        embed.fields = [
+            {
+                name: LangUtils.get('INVITE_INFO_MEMBERS', interaction.locale),
+                value: presenceInfo,
+            },
+        ];
     }
 
     return this.respond(interaction, { embeds: [embed] });

@@ -3,13 +3,15 @@ import type { Emoji, Snowflake, TimestampFormat, UnixTimestampMillis } from '../
 import { TIMESTAMP_FORMATS } from '../types/types.js';
 
 function _getRegex(chars: string, exact: boolean, caseSensitive = false, timestamp = false) {
-    return new RegExp(`${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${timestamp ? `(:[${TIMESTAMP_FORMATS.join('')}])?` : ''}>${exact ? '$' : ''}`, caseSensitive ? undefined : 'i');
+    return new RegExp(
+        `${exact ? '^' : ''}<${chars}(\\d{${timestamp ? '1,16' : '17,19'}})${
+            timestamp ? `(:[${TIMESTAMP_FORMATS.join('')}])?` : ''
+        }>${exact ? '$' : ''}`,
+        caseSensitive ? undefined : 'i'
+    );
 }
 function getRegex(chars: string, caseSensitive = false, timestamp = false) {
-    return [
-        _getRegex(chars, false, caseSensitive, timestamp),
-        _getRegex(chars, true, caseSensitive, timestamp)
-    ];
+    return [_getRegex(chars, false, caseSensitive, timestamp), _getRegex(chars, true, caseSensitive, timestamp)];
 }
 
 export type NullableID = Snowflake | null;
@@ -24,7 +26,10 @@ export const [EMOJI_REGEX, EMOJI_REGEX_EXACT] = getRegex('(a?):([a-z0-9]{2,32}):
 
 export const [TIMESTAMP_REGEX, TIMESTAMP_REGEX_EXACT] = getRegex('t:', true, true);
 
-export const [COMMAND_LINK_REGEX, COMMAND_LINK_REGEX_EXACT] = getRegex('/[-_\\p{L}\\p{N}\\p{sc=Deva}\\p{sc=Thai}]{1,32}:', true);
+export const [COMMAND_LINK_REGEX, COMMAND_LINK_REGEX_EXACT] = getRegex(
+    '/[-_\\p{L}\\p{N}\\p{sc=Deva}\\p{sc=Thai}]{1,32}:',
+    true
+);
 
 export default class TextUtils {
     static #getFirstMatch(text: string, regex: RegExp): string | null {
@@ -33,11 +38,13 @@ export default class TextUtils {
     }
 
     static extractAny(text: string, exact = true): Snowflake | Emoji | number | null {
-        return this.mention.extractUserID(text, exact)
-            || this.mention.extractRoleID(text, exact)
-            || this.mention.extractChannelID(text, exact)
-            || this.emoji.extract(text, exact)
-            || this.timestamp.extract(text, exact);
+        return (
+            this.mention.extractUserID(text, exact) ||
+            this.mention.extractRoleID(text, exact) ||
+            this.mention.extractChannelID(text, exact) ||
+            this.emoji.extract(text, exact) ||
+            this.timestamp.extract(text, exact)
+        );
     }
 
     static mention = {
@@ -46,48 +53,50 @@ export default class TextUtils {
             return this.#getFirstMatch(text, regex) as NullableID;
         },
         parseUser: (id: Snowflake): string => {
-            return `<@${id}>`
+            return `<@${id}>`;
         },
         extractRoleID: (text: string, exact = true): NullableID => {
             const regex = exact ? ROLE_MENTION_REGEX_EXACT : ROLE_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
         parseRole: (id: Snowflake): string => {
-            return `<@&${id}>`
+            return `<@&${id}>`;
         },
         extractChannelID: (text: string, exact = true): NullableID => {
             const regex = exact ? CHANNEL_MENTION_REGEX_EXACT : CHANNEL_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
         parseChannel: (id: Snowflake): string => {
-            return `<#${id}>`
+            return `<#${id}>`;
         },
         extractCommandID: (text: string, exact = true): NullableID => {
             const regex = exact ? COMMAND_LINK_REGEX_EXACT : COMMAND_LINK_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
         parseCommand: (cmdString: string, id: Snowflake): string => {
-            return `</${cmdString}:${id}>`
-        }
-    }
+            return `</${cmdString}:${id}>`;
+        },
+    };
 
     static emoji = {
         extract: (text: string, exact = true): Emoji | null => {
             const regex = exact ? EMOJI_REGEX_EXACT : EMOJI_REGEX;
             const matches = text.match(regex);
-            return matches ? {
-                name: matches[2],
-                id: matches[3] as Snowflake,
-                animated: !!matches[1]
-            } : null;
+            return matches
+                ? {
+                      name: matches[2],
+                      id: matches[3] as Snowflake,
+                      animated: !!matches[1],
+                  }
+                : null;
         },
         parse: (emoji: Emoji, addZeroWidth = false): string => {
             return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}${addZeroWidth ? '\u200B' : ''}>`;
         },
         parseDisplay: (emoji: Emoji, nameOnly = false) => {
             return nameOnly ? `:${emoji.name}:` : TextUtils.emoji.parse(emoji);
-        }
-    }
+        },
+    };
 
     static timestamp = {
         extract: (text: string, exact = true): UnixTimestampMillis | null => {
@@ -106,8 +115,8 @@ export default class TextUtils {
         // https://discord.com/developers/docs/reference#snowflake-ids-in-pagination-generating-a-snowflake-id-from-a-timestamp-example
         toSnowflake(timestamp: UnixTimestampMillis) {
             return (timestamp - CONSTANTS.DISCORD_EPOCH) << 22;
-        }
-    }
+        },
+    };
 
     static inviteLink = {
         extract: (text: string, exact = true): string | null => {
@@ -119,8 +128,8 @@ export default class TextUtils {
         },
         parse: (code: string): string => {
             return CONSTANTS.INVITE_LINK_PREFIX + code;
-        }
-    }
+        },
+    };
 
     static parseQueryString(data: Record<string, string | number>): string {
         let qs = '';

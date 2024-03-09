@@ -3,21 +3,26 @@ import type Bot from '../structures/bot.js';
 import type { Interaction, Snowflake } from '../types/types.js';
 import type { BlackjackInteraction } from './blackjack.js';
 import BlackjackUtils from './blackjack.js';
+import type { InactiveStatsInteraction } from './inactiveStats.js';
+import InactiveStatsUtils from './inactiveStats.js';
+import type { RestrictEmojiInteraction } from './restrictEmoji.js';
+import RestrictEmojiUtils from './restrictEmoji.js';
 import type { RockPaperScissorsInteraction } from './rps.js';
 import RPSUtils from './rps.js';
 import type { TicTacToeInteraction } from './tictactoe.js';
 import TicTacToeUtils from './tictactoe.js';
-import type { RestrictEmojiInteraction } from './restrictEmoji.js';
-import RestrictEmojiUtils from './restrictEmoji.js';
-import type { InactiveStatsInteraction } from './inactiveStats.js';
-import InactiveStatsUtils from './inactiveStats.js';
 
 export type PendingInteractionBase = {
-    author: Snowflake,
-    interaction: Interaction,
-    expireTimeout?: NodeJS.Timeout
-}
-export type PendingInteraction = TicTacToeInteraction | RockPaperScissorsInteraction | BlackjackInteraction | RestrictEmojiInteraction | InactiveStatsInteraction;
+    author: Snowflake;
+    interaction: Interaction;
+    expireTimeout?: NodeJS.Timeout;
+};
+export type PendingInteraction =
+    | TicTacToeInteraction
+    | RockPaperScissorsInteraction
+    | BlackjackInteraction
+    | RestrictEmojiInteraction
+    | InactiveStatsInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
@@ -41,7 +46,11 @@ export default class PendingInteractionUtils {
     addItem(interactionData: PendingInteraction) {
         const id = interactionData.interaction.id;
         if (!id) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Cannot handle interaction without id:', interactionData.interaction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Cannot handle interaction without id:',
+                interactionData.interaction
+            );
             return;
         }
         interactionData.expireTimeout = setTimeout(() => this.deleteItem(id), INTERACTION_RESPONSE_TIMEOUT);
@@ -54,29 +63,49 @@ export default class PendingInteractionUtils {
 
     async processInteraction(interaction: Interaction) {
         if (!interaction.message?.id) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Cannot handle interaction without message:', interaction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Cannot handle interaction without message:',
+                interaction
+            );
             return;
         }
         if (!interaction.data?.custom_id) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Cannot handle interaction without custom ID:', interaction);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Cannot handle interaction without custom ID:',
+                interaction
+            );
             return;
         }
         const idPieces = interaction.data.custom_id.split('_');
         const initialInteractionID = idPieces[1];
         if (!initialInteractionID) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Interaction has invalid custom ID:', interaction.data.custom_id);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Interaction has invalid custom ID:',
+                interaction.data.custom_id
+            );
             return;
         }
         const interactionData = this.pendingInteractions[initialInteractionID as Snowflake];
         if (!interactionData) {
-            this.bot.logger.debug('PENDING INTERACTIONS', 'Interaction doesn\'t correspond to pending interaction object:', interaction, this.pendingInteractions);
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                "Interaction doesn't correspond to pending interaction object:",
+                interaction,
+                this.pendingInteractions
+            );
             return;
         }
         switch (idPieces[0]) {
             case 'ttt':
                 return this.tttUtils.processPlayerMove(interactionData as TicTacToeInteraction, interaction);
             case 'rps':
-                return this.rpsUtils.processPlayerChoice(interactionData as RockPaperScissorsInteraction, interaction);
+                return this.rpsUtils.processPlayerChoice(
+                    interactionData as RockPaperScissorsInteraction,
+                    interaction
+                );
             case 'bj':
                 return this.bjUtils.processPlayerAction(interactionData as BlackjackInteraction, interaction);
             case 'rem':
