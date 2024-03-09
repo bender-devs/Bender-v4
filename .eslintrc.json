@@ -14,8 +14,6 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "quotes": ["warn", "single", { "allowTemplateLiterals": true }],
-        "curly": "warn",
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": "warn",
         "no-empty-function": "off",
