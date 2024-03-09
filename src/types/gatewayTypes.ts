@@ -493,7 +493,7 @@ export interface AutoModUpdatePayload extends EventPayload {
 export type AutoModUpdateData = types.AutoModRule;
 
 export interface AutoModExecutePayload extends EventPayload {
-    t: 'AUTO_MODERATION_RULE_EXECUTION';
+    t: 'AUTO_MODERATION_ACTION_EXECUTION';
     d: AutoModExecuteData;
 }
 
