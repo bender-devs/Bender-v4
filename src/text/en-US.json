@@ -630,9 +630,6 @@
     "MINAGE_OPTION_RESET_DESCRIPTION": "Reset the message to default.",
 
     "MINAGE_TITLE": "## Minimum account age settings",
-
-    "MINAGE_ENABLED": "Status: **enabled**",
-    "MINAGE_DISABLED": "Status: **disabled**",
     "MINAGE_DURATION": "Minimum account age: **{{duration}}**",
     "MINAGE_DURATION_NONE": "Minimum account age: *Not configured*",
     "MINAGE_ACTION": "Action (when account is too new): **{{action}}**",
@@ -750,6 +747,8 @@
     "ORDINAL_NUMBER_FORMAT": "{{number}}th",
     "NEW_ACCOUNT_NOTICE": "**New account** - Created at {{timestamp}}",
     "NONE": "*None*",
+    "STATUS_ENABLED": "Status: **enabled**",
+    "STATUS_DISABLED": "Status: **disabled**",
 
 
 

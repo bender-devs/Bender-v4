@@ -206,7 +206,7 @@ export default class MinAgeCommand extends SlashCommand {
                 let replyText = LangUtils.get('MINAGE_TITLE', interaction.locale);
                 const emojiKey = min?.enabled ? 'ENABLED' : 'DISABLED';
                 replyText += `\n${this.getEmoji(emojiKey, interaction)} `;
-                replyText += LangUtils.get(`MINAGE_${emojiKey}`, interaction.locale);
+                replyText += LangUtils.get(`STATUS_${emojiKey}`, interaction.locale);
                 replyText += `\n${this.getEmoji('TIME', interaction)} `;
                 if (min?.duration) {
                     replyText += LangUtils.getAndReplace(

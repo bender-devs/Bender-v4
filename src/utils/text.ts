@@ -96,6 +96,9 @@ export default class TextUtils {
         parseDisplay: (emoji: Emoji, nameOnly = false) => {
             return nameOnly ? `:${emoji.name}:` : TextUtils.emoji.parse(emoji);
         },
+        parseReaction: (emoji: Emoji): string => {
+            return `${emoji.name}:${emoji.id}`;
+        },
     };
 
     static timestamp = {
