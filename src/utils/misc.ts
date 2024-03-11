@@ -1,11 +1,12 @@
+import { ID_REGEX_EXACT } from '../data/constants.js';
 import EMOTES from '../data/emotes.json' assert { type: 'json' };
 import SHITTY_EMOTES from '../data/shittyEmotes.json' assert { type: 'json' };
 import type Bot from '../structures/bot.js';
 import { ACTIVITY_TYPES } from '../types/numberTypes.js';
-import type { Interaction, Locale, Snowflake, Status } from '../types/types.js';
+import type { Emoji, Interaction, Locale, Snowflake, Status } from '../types/types.js';
 import LangUtils from './language.js';
 import PermissionUtils from './permissions.js';
-import TextUtils from './text.js';
+import TextUtils, { EMOJI_REGEX_EXACT } from './text.js';
 
 export type EmojiKey = keyof typeof EMOTES | keyof typeof SHITTY_EMOTES;
 
@@ -109,6 +110,23 @@ export default class MiscUtils {
             }
         }
         return status;
+    }
+
+    async resolveEmoji(emojiString: string, guildID: Snowflake) {
+        let cachedEmoji: Emoji | null = null;
+        const emojiRegexMatches = emojiString.match(EMOJI_REGEX_EXACT);
+        if (emojiRegexMatches) {
+            cachedEmoji = this.bot.cache.emojis.get(guildID, emojiRegexMatches[2] as Snowflake);
+        } else if (ID_REGEX_EXACT.test(emojiString)) {
+            cachedEmoji = this.bot.cache.emojis.get(guildID, emojiString as Snowflake);
+        }
+
+        let fetchedEmoji: Emoji | null = null;
+        if (!cachedEmoji) {
+            const partialEmoji = TextUtils.emoji.extract(emojiString);
+            fetchedEmoji = partialEmoji ? await this.bot.api.emoji.fetch(guildID, partialEmoji.id) : null;
+        }
+        return fetchedEmoji || cachedEmoji;
     }
 
     static randomNumber(max: number, min = 0) {

@@ -1,10 +1,9 @@
-import { ID_REGEX_EXACT } from '../data/constants.js';
 import type Bot from '../structures/bot.js';
 import { SlashCommand } from '../structures/command.js';
 import { COMMAND_OPTION_TYPES, MESSAGE_COMPONENT_TYPES, PERMISSIONS } from '../types/numberTypes.js';
-import type { Bitfield, CommandOption, CommandResponse, Emoji, Interaction, Snowflake } from '../types/types.js';
+import type { Bitfield, CommandOption, CommandResponse, Interaction } from '../types/types.js';
 import LangUtils from '../utils/language.js';
-import TextUtils, { EMOJI_REGEX_EXACT } from '../utils/text.js';
+import TextUtils from '../utils/text.js';
 
 const emojiOption: CommandOption = {
     type: COMMAND_OPTION_TYPES.STRING,
@@ -82,22 +81,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
         if (!emojiString || typeof emojiString !== 'string') {
             return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
         }
-        let cachedEmoji: Emoji | null = null;
-        const emojiRegexMatches = emojiString.match(EMOJI_REGEX_EXACT);
-        if (emojiRegexMatches) {
-            cachedEmoji = this.bot.cache.emojis.get(interaction.guild_id, emojiRegexMatches[2] as Snowflake);
-        } else if (ID_REGEX_EXACT.test(emojiString)) {
-            cachedEmoji = this.bot.cache.emojis.get(interaction.guild_id, emojiString as Snowflake);
-        }
-
-        let fetchedEmoji: Emoji | null = null;
-        if (!cachedEmoji) {
-            const partialEmoji = TextUtils.emoji.extract(emojiString);
-            fetchedEmoji = partialEmoji
-                ? await this.bot.api.emoji.fetch(interaction.guild_id, partialEmoji.id)
-                : null;
-        }
-        const emoji = fetchedEmoji || cachedEmoji;
+        const emoji = await this.bot.utils.resolveEmoji(emojiString, interaction.guild_id);
         if (!emoji) {
             return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', true);
         }
