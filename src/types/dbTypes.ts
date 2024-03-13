@@ -251,6 +251,8 @@ export interface ProjectionObject extends Partial<Record<GuildDotFormatKey, 1>> 
     _id?: 0;
 }
 
+export type GuildBulkUpdate = Partial<Record<GuildDotFormatKey, unknown>>;
+
 export type GuildSettings = {
     guild: Snowflake;
     antiadv?: AntiAdvertising;
