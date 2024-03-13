@@ -717,7 +717,7 @@ export type GatewaySessionLimit = {
     max_concurrency: number;
 };
 
-// used in cache
+/** used in cache */
 export type GatewaySessionLimitHash = {
     total: string;
     remaining: string;

@@ -18,7 +18,8 @@ export type PendingInteractionBase = {
     author: Snowflake;
     interaction: Interaction;
     expireTimeout?: NodeJS.Timeout;
-    modal?: boolean; // used to signal that a message is not required
+    /** used to signal that a message is not required */
+    modal?: boolean;
 };
 export type PendingInteraction =
     | TicTacToeInteraction

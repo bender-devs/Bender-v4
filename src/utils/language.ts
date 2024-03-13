@@ -34,8 +34,9 @@ export default class LanguageUtils {
         if (!this.discordSupportsLocale(locale)) {
             locale = DEFAULT_LANGUAGE;
         }
-        // fallback to default if specified language's translation file doesn't exist
-        // or if the key doesn't exist in that language's translation file
+        /* fallback to default if specified language's translation file doesn't exist
+         * or if the key doesn't exist in that language's translation file
+         */
         return languages[locale]?.[key] || languages[DEFAULT_LANGUAGE]?.[key];
     }
 
@@ -119,15 +120,16 @@ export default class LanguageUtils {
         return dict;
     }
 
+    /** TODO: command links cannot be localized, see:
+     * https://github.com/discord/discord-api-docs/issues/5518
+     * for now this line will force the default language
+     */
     static getCommandLink(langKeys: LangKey[], commandID: Snowflake) {
-        // TODO: command links cannot be localized, see:
-        // https://github.com/discord/discord-api-docs/issues/5518
-        // for now this line will force the default language
         const cmdNames = langKeys.map((key) => this.get(key));
         return TextUtils.mention.parseCommand(cmdNames.join(' '), commandID);
     }
+    /** create a localized text version of a command link; used when a command isn't cached */
     static getCommandText(langKeys: LangKey[], locale?: Locale) {
-        // create a localized text version of a command link; used when a command isn't cached
         const cmdNames = langKeys.map((key) => this.get(key, locale));
         return `\`/${cmdNames.join(' ')}\``;
     }
@@ -172,7 +174,7 @@ export default class LanguageUtils {
         return LanguageUtils.get(`PERMISSION_${perm}`, locale);
     }
 
-    // used for special cases in formatting ordinal numbers (1st, 2nd, 3rd, etc.)
+    /** handles special cases in formatting ordinal numbers (1st, 2nd, 3rd, etc.) */
     static formatOrdinalNumber(num: number, locale: Locale = DEFAULT_LANGUAGE) {
         if (locale === 'en-US' || locale === 'en-GB') {
             let suffix = 'th';

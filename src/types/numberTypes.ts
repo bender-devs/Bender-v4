@@ -273,7 +273,8 @@ export const enum MESSAGE_COMPONENT_TYPES {
     TEXT_INPUT,
     USER_SELECT,
     ROLE_SELECT,
-    MENTIONABLE_SELECT, // users and roles
+    /** users and roles */
+    MENTIONABLE_SELECT,
     CHANNEL_SELECT,
 }
 
@@ -420,19 +421,29 @@ export const enum AUDIT_LOG_ENTRY_TYPES {
 }
 
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes
-// (S = Send, R = Receive)
 export const enum GATEWAY_OPCODES {
-    DISPATCH, // (R)
-    HEARTBEAT, // (S/R)
-    IDENTIFY, // (S)
-    PRESENCE_UPDATE, // (S)
-    VOICE_STATE_UPDATE, // (S)
-    RESUME = 6, // (S)
-    RECONNECT, // (R)
-    REQUEST_GUILD_MEMBERS, // (S)
-    INVALID_SESSION, // (R)
-    HELLO, // (R)
-    HEARTBEAT_ACK, // (R)
+    /** Receive only */
+    DISPATCH,
+    /** Send/Receive */
+    HEARTBEAT,
+    /** Send only */
+    IDENTIFY,
+    /** Send only */
+    PRESENCE_UPDATE,
+    /** Send only */
+    VOICE_STATE_UPDATE,
+    /** Send only */
+    RESUME = 6,
+    /** Receive only */
+    RECONNECT,
+    /** Send only */
+    REQUEST_GUILD_MEMBERS,
+    /** Receive only */
+    INVALID_SESSION,
+    /** Receive only */
+    HELLO,
+    /** Receive only */
+    HEARTBEAT_ACK,
 }
 
 // https://discord.com/developers/docs/topics/gateway#gateway-intents

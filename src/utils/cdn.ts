@@ -5,7 +5,8 @@ export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';
 
 export type ImageFormatAnimated = ImageFormat | 'gif';
 
-export type StickerFormat = 'png' | 'json'; // json = lottie
+/** json = lottie */
+export type StickerFormat = 'png' | 'json';
 
 export type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 

@@ -248,7 +248,8 @@ export interface SlashCommand extends types.CommandBase {
     description: string;
     dm_permission: boolean;
 
-    hideSubcommands?: boolean; // whether to hide subcommands in /help
+    /** whether to hide subcommands in /help */
+    hideSubcommands?: boolean;
     getDetails?(locale?: types.Locale): Promise<string>;
     run(interaction: types.Interaction): types.CommandResponse;
 }

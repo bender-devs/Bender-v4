@@ -115,7 +115,7 @@ export type ActivityTimestamps = {
     end?: UnixTimestampMillis;
 };
 export type ActivityParty = {
-    id?: Snowflake; // TODO: Should this be string instead?
+    id?: string;
     size?: [current_size: number, max_size: number];
 };
 export type ActivityAssets = {
@@ -238,7 +238,6 @@ export type WelcomeChannel = {
     emoji_name: string | null;
 };
 
-// the following props are only sent in GUILD_CREATE
 export interface GatewayGuildBase extends Guild {
     joined_at: Timestamp;
     large: boolean;
@@ -441,7 +440,8 @@ export type Sticker = {
     name: string;
     description: string;
     tags: string;
-    asset: ''; // deprecated
+    /** @deprecated previously the sticker asset hash, now an empty string */
+    asset: '';
     type: num.STICKER_TYPES;
     format_type: num.STICKER_FORMAT_TYPES;
     available?: boolean;
@@ -505,13 +505,16 @@ export type MemberData = {
 };
 
 export interface PartialMember {
-    user?: User; // Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects
+    /** Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects */
+    user?: User;
     nick?: string;
     roles: Snowflake[];
     joined_at: Timestamp;
     premium_since?: Timestamp | null;
-    pending?: boolean; // member screening, only included in GUILD_* events
-    permissions?: Bitfield; // only provided in Interaction objects; includes overwrites
+    /** member screening, only included in GUILD_* events */
+    pending?: boolean;
+    /** only provided in Interaction objects; includes overwrites */
+    permissions?: Bitfield;
     communication_disabled_until?: Timestamp | null;
     avatar?: string | null;
 }
@@ -524,7 +527,7 @@ export interface Member extends PartialMember {
 
 /************ channel types ************/
 
-// for editing only
+/** for editing only */
 export type ChannelData = {
     name?: string;
     nsfw?: boolean;
@@ -566,7 +569,8 @@ export interface Channel extends Omit<PartialChannel, 'permissions'> {
     video_quality_mode?: num.VIDEO_QUALITY_MODES;
 
     // group dm fields
-    owner_id?: Snowflake; // also used in threads
+    /** also used in threads */
+    owner_id?: Snowflake;
     application_id?: Snowflake;
     icon?: string | null;
 
@@ -838,7 +842,8 @@ export type InteractionDataOption = {
     type: num.COMMAND_OPTION_TYPES;
     value?: CommandOptionValue;
     options?: InteractionDataOption[];
-    focused?: boolean; // for autocomplete
+    /** for autocomplete */
+    focused?: boolean;
 };
 
 export type InteractionResponse = {
@@ -985,7 +990,8 @@ export type Message = {
     mention_everyone: boolean;
     mentions: UserMember[];
     mention_roles?: Role[];
-    mention_channels?: ChannelMention[]; // only for crossposted messages and for "public" channels
+    /** only for crossposted messages and for "public" channels */
+    mention_channels?: ChannelMention[];
     attachments: Attachment[];
     embeds: Embed[];
     reactions?: Reaction[];
@@ -1064,8 +1070,10 @@ export type Attachment = {
     height?: number | null;
     width?: number | null;
     ephemeral?: boolean;
-    duration_secs?: number; // voice messages only
-    waveform?: string; // voice messages only
+    /** voice messages only */
+    duration_secs?: number;
+    /** voice messages only */
+    waveform?: string;
     flags?: num.ATTACHMENT_FLAGS;
 };
 
@@ -1296,10 +1304,14 @@ export type Invite = {
     target_type?: number;
     target_user?: User;
     target_application?: PartialApplication;
-    approximate_presence_count?: number; // ?with_counts=true
-    approximate_member_count?: number; // ?with_counts=true
-    expires_at?: Timestamp | null; // ?with_expiration=true
-    guild_scheduled_event?: GuildScheduledEvent; // ?guild_scheduled_event_id=<id>
+    /** only appears when ?with_counts=true */
+    approximate_presence_count?: number;
+    /** only appears when ?with_counts=true */
+    approximate_member_count?: number;
+    /** only appears when ?with_expiration=true */
+    expires_at?: Timestamp | null;
+    /** only appears when using ?guild_scheduled_event_id=<id> */
+    guild_scheduled_event?: GuildScheduledEvent;
 };
 
 export interface ExtendedInvite extends Invite {
@@ -1329,39 +1341,37 @@ export type UnicodeEmoji = string;
 // formatted as name:id (i.e. ) or Unicode emoji (i.e. 🔥)
 export type EmojiIdentifier = CustomEmojiIdentifier | UnicodeEmoji;
 
-// ISO8601 timestamp
+/** ISO8601 timestamp */
 export type Timestamp = `${number}-${number}-${number}T${number}:${number}:${number}.${number}Z`;
 
-// bitfield number represented as string
+/** bitfield number represented as string */
 export type Bitfield = `${number | bigint}`;
 
-// bitfield number represented as number
+/** bitfield number represented as number */
 export type Flags = number;
 
-// URI encoded image
+/** URI encoded image */
 export type ImageData = `data:image/${'jpeg' | 'png' | 'gif'};base64,${string}`;
 
-// Any kind of URL
+/** Any kind of URL */
 export type URL = `${string}://${string}`;
 
-// Discord Snowflake, 18-20 digits
+/** Discord Snowflake, 18-20 digits */
 export type Snowflake = `${number | bigint}`;
 
 export type SnowflakeOrMe = Snowflake | '@me';
 
-// Unix timestamp (seconds since epoch)
+/** Unix timestamp (seconds since epoch) */
 export type UnixTimestamp = number;
 
-// Unix timestamp (millis since epoch)
+/** Unix timestamp (millis since epoch) */
 export type UnixTimestampMillis = number;
 
 // https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
 export const TIMESTAMP_FORMATS = ['t', 'T', 'd', 'D', 'f', 'F', 'R'] as const;
 export type TimestampFormat = (typeof TIMESTAMP_FORMATS)[number];
 
-/* what the run() function in commands can return.
- * may add more types later.
- */
+/** what Command.run() can return. may add more types later. */
 export type CommandResponse = Promise<Message | null>;
 
 export type StringMap = Record<string, string>;

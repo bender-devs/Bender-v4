@@ -602,7 +602,7 @@ export default class APIInterface {
         },
     };
 
-    // make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord
+    /** make a copy of the commands and strip the 'bot' property so we don't send TMI to Discord */
     #stripCommands(commands: types.CommandCreateData[]) {
         const strippedCommands: types.CommandCreateData[] = [];
         commands.forEach((command) => {

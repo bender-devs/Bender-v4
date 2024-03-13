@@ -59,8 +59,10 @@ export const EXIT_CODE_NO_RESTART = 69;
 
 /***** connection info *****/
 
-export const GATEWAY_ERROR_RECONNECT = true; // whether to retry when failing to connect to gateway
-export const GATEWAY_ERROR_RECONNECT_TIMEOUT = DURATION_UNITS.SECOND * 30; // how long to wait before reconnecting
+/** whether to retry when failing to connect to gateway */
+export const GATEWAY_ERROR_RECONNECT = true;
+/** how long to wait before reconnecting */
+export const GATEWAY_ERROR_RECONNECT_TIMEOUT = DURATION_UNITS.SECOND * 30;
 
 export const GATEWAY_PARAMS: GatewayParams = {
     v: GATEWAY_VERSIONS.CURRENT,
@@ -113,10 +115,10 @@ export const USER_AGENT = `DiscordBot (${WEBSITE}, ${VERSION}) [Custom library]`
 
 export const CDN_BASE = 'https://cdn.discordapp.com/';
 
-// retry rate limited request only when wait time is at or below this number
+/** retry rate limited request only when wait time is at or below this number */
 export const MAX_RATE_LIMIT_DELAY = DURATION_UNITS.SECOND * 2;
 
-// timeframe in which editing interactions is allowed
+/** timeframe in which editing interactions is allowed */
 export const INTERACTION_RESPONSE_TIMEOUT = DURATION_UNITS.MINUTE * 15;
 
 /***** database constants *****/

@@ -16,7 +16,9 @@ export interface TicTacToeInteraction extends PendingInteractionBase {
     targetTurn: boolean;
 }
 
-type Cell = 0 | 1 | 2; // 0 = empty, 1 = player 1, 2 = player 2 (bot or user chosen by player 1)
+/** 0 = empty, 1 = player 1, 2 = player 2 (bot or user chosen by player 1) */
+type Cell = 0 | 1 | 2;
+/** 1-dimensional array representing the board, left -> right and top -> bottom */
 export type TicTacToeBoard = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell];
 
 export default class TicTacToeUtils {

@@ -41,7 +41,8 @@ export type ModlogExtras = {
     reason?: string;
     invalid?: boolean;
     dbFailure?: boolean;
-    time?: number; // duration in ms
+    /** duration in ms */
+    time?: number;
     updatedBy?: Snowflake;
     role?: Snowflake;
     notMember?: boolean;
@@ -83,17 +84,23 @@ export type PremiumData = {
     discord_id?: Snowflake;
     plan?: PremiumPlan;
     guilds?: Snowflake[];
-    txn_id?: string; // transaction ID
-    txn_timestamp?: UnixTimestampMillis; // transaction timestamp
+    /** unique transaction ID */
+    txn_id?: string;
+    /** transaction timestamp (ms) */
+    txn_timestamp?: UnixTimestampMillis;
     payer_name?: string;
     payer_email?: string;
 };
 export type PremiumPlan = {
     is_active: boolean;
     is_yearly: boolean;
+    /** maximum number of guilds allowed */
     num_guilds: number;
-    amount: number; // the payment amount
-    currency: string; // the payment currency
+    /** the payment amount */
+    amount: number;
+    /** the payment currency */
+    currency: string;
+    /** marks the end date of the subscription */
     valid_until: UnixTimestampMillis;
 };
 
@@ -331,7 +338,8 @@ type Joinables = {
 };
 
 type Lockdowns = {
-    default?: number; // default lock duration
+    /** default lock duration */
+    default?: number;
     [channelID: Snowflake]: Lockdown;
 };
 type Lockdown = {
@@ -412,10 +420,12 @@ type ReactionRole = {
 type Starboard = {
     enabled?: boolean;
     channel?: Snowflake | null;
-    emoji?: string; // snowflake or unicode emoji
+    /** snowflake or unicode emoji */
+    emoji?: string;
     count?: number;
     blacklist?: Snowflake[];
-    messages?: Record<Snowflake, Snowflake>; // map user message id => starboard message id
+    /** map user message id => starboard message id */
+    messages?: Record<Snowflake, Snowflake>;
 };
 
 type TempRoles = {
