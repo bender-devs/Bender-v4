@@ -17,25 +17,25 @@ import type InfoCommand from '../info.js';
 function getKeyPermNames(role: Role, locale?: Locale): string[] {
     const perms: string[] = [];
     const bitfield = BigInt(role.permissions);
-    if (bitfield & BigInt(PERMISSIONS.ADMINISTRATOR)) {
+    if (bitfield & PERMISSIONS.ADMINISTRATOR) {
         perms.push(LangUtils.getPermissionName('ADMINISTRATOR', locale));
     } else {
-        if (bitfield & BigInt(PERMISSIONS.MENTION_EVERYONE)) {
+        if (bitfield & PERMISSIONS.MENTION_EVERYONE) {
             perms.push(LangUtils.getPermissionName('MENTION_EVERYONE', locale));
         }
-        if (bitfield & BigInt(PERMISSIONS.BAN_MEMBERS)) {
+        if (bitfield & PERMISSIONS.BAN_MEMBERS) {
             perms.push(LangUtils.getPermissionName('BAN_MEMBERS', locale));
         }
-        if (bitfield & BigInt(PERMISSIONS.KICK_MEMBERS)) {
+        if (bitfield & PERMISSIONS.KICK_MEMBERS) {
             perms.push(LangUtils.getPermissionName('KICK_MEMBERS', locale));
         }
-        if (bitfield & BigInt(PERMISSIONS.MANAGE_ROLES)) {
+        if (bitfield & PERMISSIONS.MANAGE_ROLES) {
             perms.push(LangUtils.getPermissionName('MANAGE_ROLES', locale));
         }
-        if (bitfield & BigInt(PERMISSIONS.MANAGE_CHANNELS)) {
+        if (bitfield & PERMISSIONS.MANAGE_CHANNELS) {
             perms.push(LangUtils.getPermissionName('MANAGE_CHANNELS', locale));
         }
-        if (bitfield & BigInt(PERMISSIONS.MANAGE_MESSAGES)) {
+        if (bitfield & PERMISSIONS.MANAGE_MESSAGES) {
             perms.push(LangUtils.getPermissionName('MANAGE_MESSAGES', locale));
         }
     }

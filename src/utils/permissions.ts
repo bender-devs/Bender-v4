@@ -34,7 +34,7 @@ export default class PermissionUtils {
 
     static has(bitfield: PermBitfield, permission: PermissionName) {
         const numberBitfield = BigInt(bitfield);
-        const permissionFlag = BigInt(PERMISSIONS[permission]);
+        const permissionFlag = PERMISSIONS[permission];
 
         return numberBitfield & permissionFlag ? true : false;
     }
@@ -42,7 +42,7 @@ export default class PermissionUtils {
     static #hasMany(bitfield: PermBitfield, permissions: PermissionName[], onlySome: boolean) {
         const numberBitfield = BigInt(bitfield);
         for (const permission of permissions) {
-            const permissionFlag = BigInt(PERMISSIONS[permission]);
+            const permissionFlag = PERMISSIONS[permission];
             if (onlySome && numberBitfield & permissionFlag) {
                 return true;
             } else if (!onlySome && !(numberBitfield & permissionFlag)) {
@@ -82,19 +82,17 @@ export default class PermissionUtils {
     }
 
     static computeBitfieldFromOverwrite(overwrite: SimplifiedOverwrites, rolePerms: bigint): bigint {
-        if (rolePerms & BigInt(PERMISSIONS.ADMINISTRATOR)) {
+        if (rolePerms & PERMISSIONS.ADMINISTRATOR) {
             return BigInt(ALL_PERMISSIONS);
         }
         let bitfield = BigInt(0);
         for (const perm of allPermissionValues) {
-            const bit = BigInt(perm);
-
-            const allow = overwrite.allow & bit;
-            const deny = overwrite.deny & bit;
-            const roleAllow = rolePerms & bit;
+            const allow = overwrite.allow & perm;
+            const deny = overwrite.deny & perm;
+            const roleAllow = rolePerms & perm;
 
             if (allow || (roleAllow && !deny)) {
-                bitfield |= bit;
+                bitfield |= perm;
             }
         }
         return bitfield;
@@ -102,7 +100,7 @@ export default class PermissionUtils {
 
     static computeBitfieldFromRoles(roleIDs: Snowflake[], guild: CachedGuild): bigint {
         const everyonePerms = BigInt(guild.roles[guild.id]?.permissions || 0);
-        if (everyonePerms & BigInt(PERMISSIONS.ADMINISTRATOR)) {
+        if (everyonePerms & PERMISSIONS.ADMINISTRATOR) {
             return BigInt(ALL_PERMISSIONS); // don't waste computing power on people that are dumb enough to do this
         }
         let bitfield = everyonePerms;
@@ -121,7 +119,7 @@ export default class PermissionUtils {
             return BigInt(ALL_PERMISSIONS);
         }
         const rolePerms = this.computeBitfieldFromRoles(member.roles, guild);
-        if (rolePerms & BigInt(PERMISSIONS.ADMINISTRATOR)) {
+        if (rolePerms & PERMISSIONS.ADMINISTRATOR) {
             return BigInt(ALL_PERMISSIONS);
         }
         if (channel) {

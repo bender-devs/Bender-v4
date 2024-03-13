@@ -128,13 +128,13 @@ export default async function (
                 if (highestRole) {
                     let roleIcon = '🔘';
                     const perms = BigInt(highestRole.permissions);
-                    if (perms & BigInt(PERMISSIONS.ADMINISTRATOR)) {
+                    if (perms & PERMISSIONS.ADMINISTRATOR) {
                         roleIcon = '🛡';
-                    } else if (perms & BigInt(PERMISSIONS.BAN_MEMBERS)) {
+                    } else if (perms & PERMISSIONS.BAN_MEMBERS) {
                         roleIcon = '🔨';
-                    } else if (perms & BigInt(PERMISSIONS.KICK_MEMBERS)) {
+                    } else if (perms & PERMISSIONS.KICK_MEMBERS) {
                         roleIcon = '👢';
-                    } else if (perms & BigInt(PERMISSIONS.MANAGE_MESSAGES)) {
+                    } else if (perms & PERMISSIONS.MANAGE_MESSAGES) {
                         roleIcon = '👮‍♀️';
                     }
                     userRank = `${roleIcon} ${highestRole.name}`;

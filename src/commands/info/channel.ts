@@ -30,7 +30,7 @@ export default async function (
     if (!interaction.guild_id) {
         return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: 'info channel' }, 'GUILD', true);
     }
-    if (!(parseInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
+    if (!(BigInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(
             interaction,
             TextUtils.mention.parseChannel(chanID),
@@ -143,7 +143,7 @@ export default async function (
             { channelName: voiceChannel.name },
             interaction.locale
         );
-        if (perms && parseInt(perms.deny) & PERMISSIONS.CONNECT) {
+        if (perms && BigInt(perms.deny) & PERMISSIONS.CONNECT) {
             iconURL = IMAGES.voice_locked;
         } else {
             iconURL = IMAGES.voice;
@@ -183,7 +183,7 @@ export default async function (
 
         description += `\n${topic}\n${lastActivityInfo}`;
 
-        if (perms && parseInt(perms.deny) & PERMISSIONS.CONNECT) {
+        if (perms && BigInt(perms.deny) & PERMISSIONS.CONNECT) {
             iconURL = IMAGES.channel_locked;
         } else if (channel.nsfw) {
             iconURL = IMAGES.channel_nsfw;
