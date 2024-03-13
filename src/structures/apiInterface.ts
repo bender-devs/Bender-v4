@@ -1,4 +1,5 @@
 // this file sits between the client files and api wrapper and manages things like rate limits, cache, and errors.
+import { INTERACTION_CALLBACK_TYPES } from '../types/numberTypes.js';
 import type * as types from '../types/types.js';
 import APIWrapper from '../utils/apiWrapper.js';
 import APIError from './apiError.js';
@@ -465,13 +466,26 @@ export default class APIInterface {
     interaction = {
         sendResponse: async (interaction: types.Interaction, interaction_response: types.InteractionResponse) => {
             // don't mention everyone or roles by default
-            if (interaction_response.data && !interaction_response.data.allowed_mentions) {
+            if (
+                interaction_response.data &&
+                'content' in interaction_response.data &&
+                !interaction_response.data.allowed_mentions
+            ) {
                 interaction_response.data.allowed_mentions = { parse: ['users'] };
             }
             return APIWrapper.interactionResponse
                 .create(interaction.id, interaction.token, interaction_response)
                 .then((res) => res.body)
                 .catch(this.handleError.bind(this));
+        },
+        sendResponseMessage: async (interaction: types.Interaction, message_data: types.MessageData) => {
+            return this.interaction.sendResponse(interaction, {
+                type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: message_data as types.InteractionMessageResponseData,
+            });
+        },
+        ack: async (interaction: types.Interaction) => {
+            return this.interaction.sendResponse(interaction, { type: INTERACTION_CALLBACK_TYPES.PONG });
         },
         getResponse: async (interaction: types.Interaction) => {
             return APIWrapper.interactionResponse

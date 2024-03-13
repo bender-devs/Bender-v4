@@ -846,7 +846,7 @@ export type InteractionResponse = {
     data?: InteractionResponseData;
 };
 
-export type InteractionResponseData = {
+export type InteractionMessageResponseData = {
     tts?: boolean;
     content?: string;
     embeds?: Embed[];
@@ -854,6 +854,18 @@ export type InteractionResponseData = {
     flags?: num.INTERACTION_CALLBACK_FLAGS | 0;
     components?: MessageComponent[];
 };
+export type InteractionAutocompleteResponseData = {
+    choices: CommandOptionChoice[];
+};
+export type InteractionModalResponseData = {
+    custom_id: string;
+    title: string;
+    components: MessageComponentRow<TextInput>[];
+};
+export type InteractionResponseData =
+    | InteractionMessageResponseData
+    | InteractionAutocompleteResponseData
+    | InteractionModalResponseData;
 
 export type MessageInteraction = {
     id: Snowflake;
@@ -1070,9 +1082,10 @@ export type ChannelMention = {
 export type MessageComponentBase = {
     type: num.MESSAGE_COMPONENT_TYPES;
 };
-export interface MessageComponentRow extends MessageComponentBase {
+export interface MessageComponentRow<ComponentType extends MessageComponent = MessageComponent>
+    extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.ACTION_ROW;
-    components: MessageComponent[];
+    components: ComponentType[];
 }
 export interface MessageComponentButton extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.BUTTON;
@@ -1084,7 +1097,13 @@ export interface MessageComponentButton extends MessageComponentBase {
     url?: URL;
 }
 export interface Select extends MessageComponentBase {
-    custom_id?: string;
+    type:
+        | num.MESSAGE_COMPONENT_TYPES.CHANNEL_SELECT
+        | num.MESSAGE_COMPONENT_TYPES.MENTIONABLE_SELECT
+        | num.MESSAGE_COMPONENT_TYPES.ROLE_SELECT
+        | num.MESSAGE_COMPONENT_TYPES.STRING_SELECT
+        | num.MESSAGE_COMPONENT_TYPES.USER_SELECT;
+    custom_id: string;
     disabled?: boolean;
     placeholder?: string;
     min_values?: number;
@@ -1092,16 +1111,28 @@ export interface Select extends MessageComponentBase {
     default_values?: SelectDefaultValue[];
 }
 export interface TextSelect extends Select {
+    type: num.MESSAGE_COMPONENT_TYPES.STRING_SELECT;
     options: SelectOption[];
 }
 export interface ChannelSelect extends Select {
+    type: num.MESSAGE_COMPONENT_TYPES.CHANNEL_SELECT;
     channel_types: num.CHANNEL_TYPES[];
 }
 export interface SelectDefaultValue {
     id: Snowflake;
     type: 'user' | 'role' | 'channel';
 }
-export type MessageComponent = MessageComponentRow | MessageComponentButton | Select | TextSelect | ChannelSelect;
+export interface TextInput extends MessageComponentBase {
+    type: num.MESSAGE_COMPONENT_TYPES.TEXT_INPUT;
+    custom_id: string;
+    style: num.TEXT_INPUT_STYLES;
+    label: string;
+    min_length?: number;
+    max_length?: number;
+    required?: boolean;
+    value?: string;
+    placeholder?: string;
+}
 export type SelectOption = {
     label: string;
     value: string;
@@ -1109,6 +1140,13 @@ export type SelectOption = {
     emoji?: PartialEmoji;
     default?: boolean;
 };
+export type MessageComponent =
+    | MessageComponentRow
+    | MessageComponentButton
+    | Select
+    | TextSelect
+    | ChannelSelect
+    | TextInput;
 
 /****** embed types ******/
 

@@ -35,7 +35,8 @@ export class MessageCommand extends UserOrMessageCommand {
 }
 
 type CommandResponseEditData = string | types.MessageData;
-type CommandResponseCreateData = CommandResponseEditData | types.InteractionResponseData;
+type CommandResponseMessageData = CommandResponseEditData | types.InteractionMessageResponseData;
+type CommandResponseCreateData = CommandResponseMessageData | types.InteractionModalResponseData;
 
 type SettingsResultData = {
     type: 'UPDATE' | 'RESET' | 'ENABLE' | 'DISABLE';
@@ -59,14 +60,18 @@ export class CommandUtils {
         }
         return { content };
     }
-    #getResponseData(interaction: types.Interaction, msgData: CommandResponseCreateData, emojiKey?: EmojiKey) {
+    #getResponseData(
+        interaction: types.Interaction,
+        msgData: CommandResponseMessageData,
+        emojiKey?: EmojiKey
+    ): types.InteractionMessageResponseData {
         if (typeof msgData === 'string') {
-            return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionResponseData;
+            return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionMessageResponseData;
         } else if (emojiKey && msgData.content) {
             const emoji = this.getEmoji(emojiKey, interaction);
             msgData.content = `${emoji} ${msgData.content}`;
         }
-        return msgData as types.InteractionResponseData;
+        return msgData as types.InteractionMessageResponseData;
     }
 
     getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
@@ -114,6 +119,15 @@ export class CommandUtils {
             .sendResponse(interaction, {
                 type: responseType,
                 data,
+            })
+            .catch(this.handleAPIError.bind(this));
+    }
+
+    async respondWithModal(interaction: types.Interaction, modal: types.InteractionResponseData) {
+        return this.bot.api.interaction
+            .sendResponse(interaction, {
+                type: INTERACTION_CALLBACK_TYPES.MODAL,
+                data: modal,
             })
             .catch(this.handleAPIError.bind(this));
     }

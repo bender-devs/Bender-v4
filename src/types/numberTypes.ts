@@ -286,6 +286,12 @@ export const enum BUTTON_STYLES {
     LINK,
 }
 
+// https://discord.com/developers/docs/interactions/message-components#text-input-object-text-input-styles
+export const enum TEXT_INPUT_STYLES {
+    SHORT = 1,
+    PARAGRAPH,
+}
+
 // https://discord.com/developers/docs/resources/application#application-object-application-flags
 export const enum APPLICATION_FLAGS {
     APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE = 1 << 6,
