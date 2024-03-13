@@ -5,6 +5,8 @@ import type { BlackjackInteraction } from './blackjack.js';
 import BlackjackUtils from './blackjack.js';
 import type { InactiveStatsInteraction } from './inactiveStats.js';
 import InactiveStatsUtils from './inactiveStats.js';
+import type { MemberMsgInteraction } from './memberMsg.js';
+import MemberMsgUtils from './memberMsg.js';
 import type { RestrictEmojiInteraction } from './restrictEmoji.js';
 import RestrictEmojiUtils from './restrictEmoji.js';
 import type { RockPaperScissorsInteraction } from './rps.js';
@@ -16,13 +18,15 @@ export type PendingInteractionBase = {
     author: Snowflake;
     interaction: Interaction;
     expireTimeout?: NodeJS.Timeout;
+    modal?: boolean; // used to signal that a message is not required
 };
 export type PendingInteraction =
     | TicTacToeInteraction
     | RockPaperScissorsInteraction
     | BlackjackInteraction
     | RestrictEmojiInteraction
-    | InactiveStatsInteraction;
+    | InactiveStatsInteraction
+    | MemberMsgInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
@@ -32,6 +36,7 @@ export default class PendingInteractionUtils {
     bjUtils: BlackjackUtils;
     remUtils: RestrictEmojiUtils;
     inactiveUtils: InactiveStatsUtils;
+    memberMsgUtils: MemberMsgUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -41,6 +46,7 @@ export default class PendingInteractionUtils {
         this.bjUtils = new BlackjackUtils(bot);
         this.remUtils = new RestrictEmojiUtils(bot);
         this.inactiveUtils = new InactiveStatsUtils(bot);
+        this.memberMsgUtils = new MemberMsgUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -62,14 +68,6 @@ export default class PendingInteractionUtils {
     }
 
     async processInteraction(interaction: Interaction) {
-        if (!interaction.message?.id) {
-            this.bot.logger.debug(
-                'PENDING INTERACTIONS',
-                'Cannot handle interaction without message:',
-                interaction
-            );
-            return;
-        }
         if (!interaction.data?.custom_id) {
             this.bot.logger.debug(
                 'PENDING INTERACTIONS',
@@ -98,6 +96,14 @@ export default class PendingInteractionUtils {
             );
             return;
         }
+        if (!interaction.message?.id && !interactionData.modal) {
+            this.bot.logger.debug(
+                'PENDING INTERACTIONS',
+                'Cannot handle interaction without message:',
+                interaction
+            );
+            return;
+        }
         switch (idPieces[0]) {
             case 'ttt':
                 return this.tttUtils.processPlayerMove(interactionData as TicTacToeInteraction, interaction);
@@ -112,6 +118,8 @@ export default class PendingInteractionUtils {
                 return this.remUtils.submitRoles(interactionData as RestrictEmojiInteraction, interaction);
             case 'inactive':
                 return this.inactiveUtils.submitRoles(interactionData as InactiveStatsInteraction, interaction);
+            case 'mm':
+                return this.memberMsgUtils.submit(interactionData as MemberMsgInteraction, interaction);
         }
     }
 }

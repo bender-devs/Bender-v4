@@ -3,8 +3,14 @@ import type Bot from '../structures/bot.js';
 import { SlashCommand } from '../structures/command.js';
 import type { LangKey } from '../text/languageList.js';
 import type { GuildDotFormatKey } from '../types/dbTypes.js';
-import { CHANNEL_TYPES, COMMAND_OPTION_TYPES, PERMISSIONS } from '../types/numberTypes.js';
-import type { Bitfield, CommandOption, CommandResponse, Interaction, Snowflake } from '../types/types.js';
+import {
+    CHANNEL_TYPES,
+    COMMAND_OPTION_TYPES,
+    MESSAGE_COMPONENT_TYPES,
+    PERMISSIONS,
+    TEXT_INPUT_STYLES,
+} from '../types/numberTypes.js';
+import type { Bitfield, CommandOption, CommandResponse, Interaction, Locale, Snowflake } from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import type { EmojiKey } from '../utils/misc.js';
 import PermissionUtils from '../utils/permissions.js';
@@ -101,6 +107,24 @@ export default class MemberMsgCommand extends SlashCommand {
         {
             type: COMMAND_OPTION_TYPES.SUB_COMMAND,
 
+            name: LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP'),
+            name_localizations: LangUtils.getLocalizationMap('MEMBER_MSG_SUBCOMMAND_SETUP'),
+
+            description: LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('MEMBER_MSG_SUBCOMMAND_SETUP_DESCRIPTION'),
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+            name: LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP_DM'),
+            name_localizations: LangUtils.getLocalizationMap('MEMBER_MSG_SUBCOMMAND_SETUP_DM'),
+
+            description: LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP_DM_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('MEMBER_MSG_SUBCOMMAND_SETUP_DM_DESCRIPTION'),
+        },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
             name: LangUtils.get('MEMBER_MSG_SUBCOMMAND_JOIN'),
             name_localizations: LangUtils.getLocalizationMap('MEMBER_MSG_SUBCOMMAND_JOIN'),
 
@@ -165,6 +189,30 @@ export default class MemberMsgCommand extends SlashCommand {
             options: getMessageOptions('MEMBER_MSG_OPTION_BAN_DM_DESCRIPTION'),
         },
     ];
+
+    async getDetails(locale?: Locale) {
+        const cachedCommand = await this.bot.db.command.getByName(this.name);
+
+        const commandName = LangUtils.get('MEMBER_MSG_NAME', locale);
+        const setupSubcmd = LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP', locale);
+        const setupDMSubcmd = LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP_DM', locale);
+
+        if (!cachedCommand) {
+            return LangUtils.getAndReplace(
+                'MEMBER_MSG_DETAILS',
+                {
+                    setupCmd: `/${commandName} ${setupSubcmd}`,
+                    setupDMCmd: `/${commandName} ${setupDMSubcmd}`,
+                },
+                locale
+            );
+        }
+
+        const setupCmd = TextUtils.mention.parseCommand(`${commandName} ${setupSubcmd}`, cachedCommand.id);
+        const setupDMCmd = TextUtils.mention.parseCommand(`${commandName} ${setupDMSubcmd}`, cachedCommand.id);
+
+        return LangUtils.getAndReplace('MEMBER_MSG_DETAILS', { setupCmd, setupDMCmd }, locale);
+    }
 
     async run(interaction: Interaction): CommandResponse {
         const authorID = interaction.member?.user.id || interaction.user?.id;
@@ -277,6 +325,132 @@ export default class MemberMsgCommand extends SlashCommand {
                             result: 'FAILURE',
                         });
                     });
+            }
+            case LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP'): {
+                this.bot.interactionUtils.addItem({ interaction, author: authorID, modal: true, dm: false });
+                return this.respondWithModal(interaction, {
+                    title: LangUtils.get('MEMBER_MSG_MODAL_TITLE', interaction.locale),
+                    custom_id: `mm_${interaction.id}`,
+                    components: [
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_JOIN', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_join`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_JOIN_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.join || undefined,
+                                },
+                            ],
+                        },
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_LEAVE', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_leave`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_LEAVE_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.leave || undefined,
+                                },
+                            ],
+                        },
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_BAN', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_ban`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_BAN_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.ban || undefined,
+                                },
+                            ],
+                        },
+                    ],
+                });
+            }
+            case LangUtils.get('MEMBER_MSG_SUBCOMMAND_SETUP_DM'): {
+                this.bot.interactionUtils.addItem({ interaction, author: authorID, modal: true, dm: true });
+                return this.respondWithModal(interaction, {
+                    title: LangUtils.get('MEMBER_MSG_DM_MODAL_TITLE', interaction.locale),
+                    custom_id: `mm_${interaction.id}_dm`,
+                    components: [
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_JOIN_DM', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_join-dm`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_JOIN_DM_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.joinDM || undefined,
+                                },
+                            ],
+                        },
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_KICK_DM', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_kick-dm`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_KICK_DM_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.kickDM || undefined,
+                                },
+                            ],
+                        },
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                            components: [
+                                {
+                                    type: MESSAGE_COMPONENT_TYPES.TEXT_INPUT,
+                                    label: LangUtils.get('MEMBER_MSG_SETTING_BAN_DM', interaction.locale),
+                                    custom_id: `mm_${interaction.id}_ban-dm`,
+                                    style: TEXT_INPUT_STYLES.PARAGRAPH,
+                                    max_length: MEMBER_MESSAGE_LENGTH_MAXIMUM,
+                                    placeholder: LangUtils.get(
+                                        'MEMBER_MSG_OPTION_BAN_DM_DESCRIPTION',
+                                        interaction.locale
+                                    ),
+                                    required: false,
+                                    value: msgs?.banDM || undefined,
+                                },
+                            ],
+                        },
+                    ],
+                });
             }
             case LangUtils.get('MEMBER_MSG_SUBCOMMAND_JOIN'): {
                 settingKey = 'MEMBER_MSG_SETTING_JOIN';

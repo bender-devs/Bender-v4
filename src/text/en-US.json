@@ -650,6 +650,8 @@
     "MEMBER_MSG_NAME": "member-msg",
     "MEMBER_MSG_DESCRIPTION": "Set member messages, such as welcome/leave messages and ban/kick DMs.",
 
+    "MEMBER_MSG_DETAILS": "If you want to use multi-line messages, you will need to use {{setupCmd}} and {{setupDMCmd}} rather than setting the messages individually.",
+
     "MEMBER_MSG_SUBCOMMAND_VIEW": "view",
     "MEMBER_MSG_SUBCOMMAND_VIEW_DESCRIPTION": "View current member messages and DM settings.",
 
@@ -661,6 +663,11 @@
     "MEMBER_MSG_OPTION": "message",
     "MEMBER_MSG_OPTION_RESET": "reset",
     "MEMBER_MSG_OPTION_RESET_DESCRIPTION": "Remove the current message or DM.",
+
+    "MEMBER_MSG_SUBCOMMAND_SETUP": "setup",
+    "MEMBER_MSG_SUBCOMMAND_SETUP_DESCRIPTION": "Set the messages that are sent when a member joins, leaves, or is banned.",
+    "MEMBER_MSG_SUBCOMMAND_SETUP_DM": "setup_dm",
+    "MEMBER_MSG_SUBCOMMAND_SETUP_DM_DESCRIPTION": "Set the DM's that are sent to a member when they join, are kicked, or are banned.",
 
     "MEMBER_MSG_SUBCOMMAND_JOIN": "join",
     "MEMBER_MSG_SUBCOMMAND_JOIN_DESCRIPTION": "Set the message that's sent when a member joins the server.",
@@ -695,6 +702,9 @@
     "MEMBER_MSG_BAN_DM": "Ban DM:",
     "MEMBER_MSG_KICK_DM": "Kick DM:",
 
+    "MEMBER_MSG_MODAL_TITLE": "Set Member Messages",
+    "MEMBER_MSG_DM_MODAL_TITLE": "Set Member DM Settings",
+
     "MEMBER_MSG_SETTING_CHANNEL": "member message channel",
     "MEMBER_MSG_SETTING_JOIN": "join message",
     "MEMBER_MSG_SETTING_LEAVE": "leave message",
@@ -702,6 +712,8 @@
     "MEMBER_MSG_SETTING_JOIN_DM": "join DM",
     "MEMBER_MSG_SETTING_BAN_DM": "ban DM",
     "MEMBER_MSG_SETTING_KICK_DM": "kick DM",
+    "MEMBER_MSG_SETTING_MESSAGES": "member messages",
+    "MEMBER_MSG_SETTING_DMS": "member DMs",
 
 
 
