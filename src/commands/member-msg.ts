@@ -289,7 +289,7 @@ export default class MemberMsgCommand extends SlashCommand {
                     'KICK'
                 );
 
-                return this.respond(interaction, replyText);
+                return this.respond(interaction, replyText, undefined, true);
             }
             case LangUtils.get('MEMBER_MSG_SUBCOMMAND_CHANNEL'): {
                 const channelID = subcommand?.options?.find(
