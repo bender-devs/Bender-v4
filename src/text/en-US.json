@@ -717,6 +717,62 @@
 
 
 
+    "----------- /starboard -----------": "",
+
+    "STARBOARD_NAME": "starboard",
+    "STARBOARD_DESCRIPTION": "View end edit settings for the starboard.",
+    "STARBOARD_DETAILS": "When a message receives enough ⭐ (or another emoji of your choice) reactions, it will be immortalized in the starboard channel for everyone to see.",
+
+    "STARBOARD_SUBCOMMAND_VIEW": "view",
+    "STARBOARD_SUBCOMMAND_VIEW_DESCRIPTION": "View the current starboard settings.",
+
+    "STARBOARD_SUBCOMMAND_SETUP": "setup",
+    "STARBOARD_SUBCOMMAND_SETUP_DESCRIPTION": "Change starboard settings using an interactive message.",
+
+    "STARBOARD_SUBCOMMAND_ENABLE": "enable",
+    "STARBOARD_SUBCOMMAND_ENABLE_DESCRIPTION": "Enable the starboard and start listening for reactions.",
+    "STARBOARD_SUBCOMMAND_DISABLE": "disable",
+    "STARBOARD_SUBCOMMAND_DISABLE_DESCRIPTION": "Disable the starboard.",
+    "STARBOARD_OPTION_ENABLED": "enabled",
+    "STARBOARD_OPTION_ENABLED_DESCRIPTION": "Whether the starboard should be active.",
+
+    "STARBOARD_SUBCOMMAND_COUNT": "count",
+    "STARBOARD_SUBCOMMAND_COUNT_DESCRIPTION": "Change number of reactions needed to add a message to the starboard.",
+    "STARBOARD_OPTION_COUNT": "count",
+    "STARBOARD_OPTION_COUNT_DESCRIPTION": "The number of reactions. Default: 5",
+
+    "STARBOARD_SUBCOMMAND_CHANNEL": "channel",
+    "STARBOARD_SUBCOMMAND_CHANNEL_DESCRIPTION": "Set the channel where messages are posted when they receive enough reactions.",
+    "STARBOARD_OPTION_CHANNEL": "channel",
+    "STARBOARD_OPTION_CHANNEL_DESCRIPTION": "Where messages are posted. Should be public and read-only.",
+
+    "STARBOARD_SUBCOMMAND_EMOJI": "emoji",
+    "STARBOARD_SUBCOMMAND_EMOJI_DESCRIPTION": "Change the emoji users react with to add messages to the starboard.",
+    "STARBOARD_OPTION_EMOJI": "emoji",
+    "STARBOARD_OPTION_EMOJI_DESCRIPTION": "The emoji used to add messages. Default: ⭐",
+
+    "STARBOARD_SUBCOMMAND_BLACKLIST": "blacklist",
+    "STARBOARD_SUBCOMMAND_BLACKLIST_DESCRIPTION": "Set channels where starboard should not be active.",
+
+    "STARBOARD_TITLE": "## Starboard settings",
+    "STARBOARD_COUNT": "Number of reactions needed: **{{count}}**",
+    "STARBOARD_CHANNEL_NONE": "Channel: *Not configured*",
+    "STARBOARD_CHANNEL": "Channel: {{channel}}",
+    "STARBOARD_EMOJI": "Emoji: {{emoji}}",
+    "STARBOARD_BLACKLIST": "Blacklisted channels: {{blacklist}}",
+
+    "STARBOARD_SETTING": "Starboard",
+    "STARBOARD_SETTING_EMOJI": "starboard emoji",
+    "STARBOARD_SETTING_COUNT": "starboard reaction count",
+    "STARBOARD_SETTING_CHANNEL": "starboard channel",
+
+    "STARBOARD_BLACKLIST_HINT": "*To edit the blacklist, use {{command}}.*",
+    "STARBOARD_BLACKLIST_INSTRUCTIONS": "Using the menu below, choose channels where starboard should not be active.",
+    "STARBOARD_ENABLE_INVALID": "Please set a channel (via {{commandLink}}) before enabling starboard.",
+    "STARBOARD_COUNT_INVALID": "Number of reactions must be at least 1.",
+
+
+
     "----------- Presences -----------": "",
 
     "STATUS_ONLINE": "Online",
@@ -761,6 +817,7 @@
     "NONE": "*None*",
     "STATUS_ENABLED": "Status: **enabled**",
     "STATUS_DISABLED": "Status: **disabled**",
+    "SHOW_IN_CHAT": "Show in chat",
 
 
 

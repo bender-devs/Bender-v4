@@ -19,6 +19,7 @@ import MemberMsgCommand from '../commands/member-msg.js';
 import MinAgeCommand from '../commands/min-age.js';
 import PingCommand from '../commands/ping.js';
 import RestrictEmojiCommand from '../commands/restrict-emoji.js';
+import StarboardCommand from '../commands/starboard.js';
 import StatsCommand from '../commands/stats.js';
 import TextCommand from '../commands/text.js';
 
@@ -43,6 +44,7 @@ export default class SlashCommandManager {
         this.commands.push(new MinAgeCommand(this.bot));
         this.commands.push(new HelpCommand(this.bot));
         this.commands.push(new MemberMsgCommand(this.bot));
+        this.commands.push(new StarboardCommand(this.bot));
 
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));
