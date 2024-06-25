@@ -129,7 +129,7 @@ export default class CDNUtils {
         guildID: Snowflake,
         userID: Snowflake,
         iconHash: string,
-        format: ImageFormat = 'png',
+        format: ImageFormatAnimated = 'png',
         size?: ImageSize
     ): URL {
         return `${CDN_BASE}guilds/${guildID}/users/${userID}/avatars/${iconHash}.${this.#formatAndSize(

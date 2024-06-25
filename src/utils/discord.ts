@@ -1,5 +1,7 @@
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
-import type { Channel, Member, PartialMember, Role, User } from '../types/types.js';
+import type { Channel, Member, PartialMember, Role, Snowflake, URL, User } from '../types/types.js';
+import type { ImageFormatAnimated, ImageSize } from './cdn.js';
+import CDNUtils from './cdn.js';
 import TimeUtils from './time.js';
 
 export default class DiscordUtils {
@@ -97,6 +99,17 @@ export default class DiscordUtils {
                 // user on new username system
                 return `@${user.username}`;
             }
+        },
+        getAvatar: (
+            user: User,
+            memberData?: { member: Member | PartialMember; guild_id: Snowflake },
+            format?: ImageFormatAnimated,
+            size?: ImageSize
+        ): URL => {
+            if (memberData?.member?.avatar) {
+                return CDNUtils.memberAvatar(memberData.guild_id, user.id, memberData.member.avatar, format, size);
+            }
+            return CDNUtils.resolveUserAvatar(user, format, size);
         },
     };
 }
