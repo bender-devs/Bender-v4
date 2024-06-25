@@ -21,6 +21,7 @@ import EventManager from './eventManager.js';
 import Gateway from './gateway.js';
 import Logger from './logger.js';
 import Shard from './shard.js';
+import EventUtils from '../eventUtils/eventUtils.js';
 
 export default class Bot extends EventEmitter {
     api: APIInterface;
@@ -33,6 +34,7 @@ export default class Bot extends EventEmitter {
     events: EventManager;
     commandManager: CommandManager;
     interactionUtils: PendingInteractionUtils;
+    eventUtils: EventUtils;
 
     shard?: Shard;
     user!: User;
@@ -61,6 +63,7 @@ export default class Bot extends EventEmitter {
         this.events = new EventManager(this);
         this.commandManager = new CommandManager(this);
         this.interactionUtils = new PendingInteractionUtils(this);
+        this.eventUtils = new EventUtils(this);
 
         if (shard_data) {
             this.shard = new Shard(this, shard_data);
