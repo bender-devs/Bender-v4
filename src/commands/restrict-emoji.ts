@@ -71,7 +71,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
         }
 
         const args = interaction.data?.options;
@@ -83,7 +83,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
         }
         const emoji = await this.bot.utils.resolveEmoji(emojiString, interaction.guild_id);
         if (!emoji) {
-            return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', true);
+            return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', { ephemeral: true });
         }
 
         const currentRoles = emoji.roles || [];
@@ -109,7 +109,10 @@ export default class RestrictEmojiCommand extends SlashCommand {
                 },
                 interaction.locale
             );
-            return this.respond(interaction, { content: respText, allowed_mentions: { parse: [] } });
+            return this.respond(interaction, { content: respText, allowed_mentions: { parse: [] } }, undefined, {
+                ephemeral: true,
+                shareButton: true,
+            });
         }
 
         if (
@@ -133,7 +136,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
                             'REM_RESET_UNNECESSARY',
                             { emoji: emojiText },
                             'SUCCESS_ALT',
-                            true
+                            { ephemeral: true }
                         );
                     }
                     const respText = LangUtils.getAndReplace(
@@ -152,22 +155,27 @@ export default class RestrictEmojiCommand extends SlashCommand {
         let promptText = LangUtils.getAndReplace('REM_SET_PROMPT', { emoji: emojiText }, interaction.locale);
         promptText = `${this.getEmoji('INFO', interaction)} ${promptText}`;
 
-        return this.respond(interaction, {
-            content: promptText,
-            components: [
-                {
-                    type: 1,
-                    components: [
-                        {
-                            type: MESSAGE_COMPONENT_TYPES.ROLE_SELECT,
-                            custom_id: `rem_${interaction.id}`,
-                            min_values: 1,
-                            max_values: 25,
-                        },
-                    ],
-                },
-            ],
-        }).then((msg) => {
+        return this.respond(
+            interaction,
+            {
+                content: promptText,
+                components: [
+                    {
+                        type: 1,
+                        components: [
+                            {
+                                type: MESSAGE_COMPONENT_TYPES.ROLE_SELECT,
+                                custom_id: `rem_${interaction.id}`,
+                                min_values: 1,
+                                max_values: 25,
+                            },
+                        ],
+                    },
+                ],
+            },
+            undefined,
+            { ephemeral: true }
+        ).then((msg) => {
             this.bot.interactionUtils.addItem({ interaction, author: authorID, emoji, emojiText });
             return msg;
         });

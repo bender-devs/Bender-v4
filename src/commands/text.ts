@@ -155,9 +155,9 @@ export default class TextCommand extends SlashCommand {
             text = Array.from(text).reverse().join('');
             if (effect === 'reverse') {
                 if (Array.from(text).length > 1998) {
-                    return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
+                    return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', { ephemeral: true });
                 }
-                return this.respond(interaction, text, 'REVERSE');
+                return this.respond(interaction, text, 'REVERSE', { ephemeral: true, shareButton: true });
             }
         }
         if (effect === 'box' || effect === 'box-outline') {
@@ -182,9 +182,9 @@ export default class TextCommand extends SlashCommand {
             newText = newText.substring(0, newText.length - 1); // remove trailing \uFEFF
         }
         if (Array.from(newText).length > 2000) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', { ephemeral: true });
         }
-        return this.respond(interaction, newText);
+        return this.respond(interaction, newText, undefined, { ephemeral: true, shareButton: true });
     }
 
     async #doTextCase(interaction: Interaction, mode: string) {
@@ -247,6 +247,6 @@ export default class TextCommand extends SlashCommand {
         if (!newText) {
             return this.handleUnexpectedError(interaction, 'ARGS_INCOMPLETE');
         }
-        return this.respond(interaction, newText);
+        return this.respond(interaction, newText, undefined, { ephemeral: true, shareButton: true });
     }
 }

@@ -28,7 +28,7 @@ export default async function (
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
     }
     if (!interaction.guild_id) {
-        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: 'info channel' }, 'GUILD', true);
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: 'info channel' }, 'GUILD');
     }
     if (!(BigInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(
@@ -64,10 +64,10 @@ export default async function (
             ]);
         }
         this.bot.logger.handleError('FETCH CHANNEL', err);
-        return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR', true);
+        return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR', { ephemeral: true });
     }
     if (!channel?.guild_id) {
-        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', true);
+        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', { ephemeral: true });
     }
 
     const createdAt = TextUtils.timestamp.fromSnowflake(channel.id);

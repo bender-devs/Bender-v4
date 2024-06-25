@@ -50,7 +50,7 @@ export default class HelpCommand extends SlashCommand {
         }
         const command = this.bot.commandManager.findCommand(commandName, interaction);
         if (!command) {
-            return this.respondKey(interaction, 'HELP_COMMAND_NOT_FOUND', 'WARNING', true);
+            return this.respondKey(interaction, 'HELP_COMMAND_NOT_FOUND', 'WARNING', { ephemeral: true });
         }
 
         const title = LangUtils.getFromMap(command.name, command.name_localizations, interaction.locale);
@@ -103,6 +103,6 @@ export default class HelpCommand extends SlashCommand {
 
         embed.description = description;
 
-        return this.respond(interaction, { embeds: [embed] }, undefined, true);
+        return this.respond(interaction, { embeds: [embed] }, undefined, { ephemeral: true });
     }
 }

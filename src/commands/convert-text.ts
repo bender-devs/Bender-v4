@@ -171,9 +171,12 @@ export default class ConvertTextCommand extends SlashCommand {
             interaction.locale
         );
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', { ephemeral: true });
         }
-        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT', {
+            ephemeral: true,
+            shareButton: true,
+        });
     }
 
     #binary(interaction: Interaction, mode: string, text: string) {
@@ -208,14 +211,22 @@ export default class ConvertTextCommand extends SlashCommand {
             interaction.locale
         );
         if (Array.from(result).length + Array.from(modeMessage).length > 1993) {
-            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', true);
+            return this.respondKey(interaction, 'TEXT_TOO_LONG', 'WARNING', {
+                ephemeral: true,
+            });
         }
-        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT');
+        return this.respond(interaction, `${modeMessage}\n\`\`\`${result}\`\`\``, 'LONG_TEXT', {
+            ephemeral: true,
+            shareButton: true,
+        });
     }
 
     #hash(interaction: Interaction, algorithm: string, text: string) {
         const hash = createHash(algorithm).update(text).digest('hex');
         const computedMsg = LangUtils.get('CONVERT_TEXT_COMPUTED_HASH', interaction.locale);
-        return this.respond(interaction, `${computedMsg} \`${hash}\``, 'SHORT_TEXT');
+        return this.respond(interaction, `${computedMsg} \`${hash}\``, 'SHORT_TEXT', {
+            ephemeral: true,
+            shareButton: true,
+        });
     }
 }

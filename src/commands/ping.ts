@@ -18,7 +18,7 @@ export default class PingCommand extends SlashCommand {
     run(interaction: Interaction): CommandResponse {
         const pongMessage = this.getPongMessage(interaction.locale);
         const startTimestamp = Date.now();
-        return this.respond(interaction, pongMessage, 'PONG')
+        return this.respond(interaction, pongMessage, 'PONG', { ephemeral: true, shareButton: true })
             .then(() => {
                 return this.roundtripCallback.bind(this)(interaction, startTimestamp);
             })

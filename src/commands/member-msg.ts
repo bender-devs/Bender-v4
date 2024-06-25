@@ -220,7 +220,7 @@ export default class MemberMsgCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
         }
 
         const subcommand = interaction.data?.options?.[0];
@@ -234,7 +234,7 @@ export default class MemberMsgCommand extends SlashCommand {
                 return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
             }
             if (reset) {
-                return this.respondKey(interaction, 'MESSAGE_RESET_INVALID', 'WARNING', true);
+                return this.respondKey(interaction, 'MESSAGE_RESET_INVALID', 'WARNING', { ephemeral: true });
             }
             if (message.length > MEMBER_MESSAGE_LENGTH_MAXIMUM) {
                 return this.respondKeyReplace(
@@ -244,7 +244,7 @@ export default class MemberMsgCommand extends SlashCommand {
                         chars: MEMBER_MESSAGE_LENGTH_MAXIMUM,
                     },
                     'WARNING',
-                    true
+                    { ephemeral: true }
                 );
             }
         }
@@ -289,7 +289,7 @@ export default class MemberMsgCommand extends SlashCommand {
                     'KICK'
                 );
 
-                return this.respond(interaction, replyText, undefined, true);
+                return this.respond(interaction, replyText, undefined, { ephemeral: true, shareButton: true });
             }
             case LangUtils.get('MEMBER_MSG_SUBCOMMAND_CHANNEL'): {
                 const channelID = subcommand?.options?.find(
@@ -300,7 +300,7 @@ export default class MemberMsgCommand extends SlashCommand {
                 }
                 const channel = interaction.data?.resolved?.channels?.[channelID as Snowflake];
                 if (!channel) {
-                    return this.respondKey(interaction, 'ARGS_UNRESOLVED', 'ERROR', true);
+                    return this.respondKey(interaction, 'ARGS_UNRESOLVED', 'ERROR', { ephemeral: true });
                 }
                 if (!PermissionUtils.has(channel.permissions, 'SEND_MESSAGES')) {
                     return this.respondMissingPermissions(
@@ -504,7 +504,7 @@ export default class MemberMsgCommand extends SlashCommand {
                 });
         }
         if (!message) {
-            return this.respondKey(interaction, 'MESSAGE_SET_INVALID', 'WARNING', true);
+            return this.respondKey(interaction, 'MESSAGE_SET_INVALID', 'WARNING', { ephemeral: true });
         }
 
         return this.bot.db.guild

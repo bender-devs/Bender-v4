@@ -194,7 +194,7 @@ export default class MinAgeCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
         }
 
         const current = await this.bot.db.guild.get(interaction.guild_id, { minage: 1 });
@@ -255,7 +255,9 @@ export default class MinAgeCommand extends SlashCommand {
                             maximum: TimeUtils.formatDuration(MINAGE_DURATION_MAXIMUM, interaction.locale),
                         },
                         'WARNING',
-                        true
+                        {
+                            ephemeral: true,
+                        }
                     );
                 }
 
@@ -280,7 +282,9 @@ export default class MinAgeCommand extends SlashCommand {
                                 setting: LangUtils.get('MINAGE_SETTING', interaction.locale),
                             },
                             'ERROR',
-                            true
+                            {
+                                ephemeral: true,
+                            }
                         );
                     });
             }
@@ -295,7 +299,7 @@ export default class MinAgeCommand extends SlashCommand {
                         'MINAGE_ENABLED_SET_INVALID',
                         { commandLink: cmdLink },
                         'WARNING',
-                        true
+                        { ephemeral: true }
                     );
                 }
                 return this.bot.db.guild
@@ -319,7 +323,7 @@ export default class MinAgeCommand extends SlashCommand {
                                 setting: LangUtils.get('MINAGE_SETTING', interaction.locale),
                             },
                             'ERROR',
-                            true
+                            { ephemeral: true }
                         );
                     });
             }
@@ -345,7 +349,7 @@ export default class MinAgeCommand extends SlashCommand {
                                 setting: LangUtils.get('MINAGE_SETTING', interaction.locale),
                             },
                             'ERROR',
-                            true
+                            { ephemeral: true }
                         );
                     });
             }
@@ -386,7 +390,7 @@ export default class MinAgeCommand extends SlashCommand {
                     (opt) => opt.name === LangUtils.get('MINAGE_OPTION_RESET')
                 )?.value;
                 if (reset && message) {
-                    return this.respondKey(interaction, 'MESSAGE_RESET_INVALID', 'WARNING', true);
+                    return this.respondKey(interaction, 'MESSAGE_RESET_INVALID', 'WARNING', { ephemeral: true });
                 } else if (reset) {
                     return this.bot.db.guild
                         .deleteValue(interaction.guild_id, 'minage.message')
@@ -405,7 +409,7 @@ export default class MinAgeCommand extends SlashCommand {
                         });
                 }
                 if (!message) {
-                    return this.respondKey(interaction, 'MESSAGE_SET_INVALID', 'WARNING', true);
+                    return this.respondKey(interaction, 'MESSAGE_SET_INVALID', 'WARNING', { ephemeral: true });
                 }
                 if (typeof message !== 'string') {
                     return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
@@ -419,7 +423,7 @@ export default class MinAgeCommand extends SlashCommand {
                             chars: MINAGE_MESSAGE_LENGTH_MAXIMUM,
                         },
                         'WARNING',
-                        true
+                        { ephemeral: true }
                     );
                 }
 

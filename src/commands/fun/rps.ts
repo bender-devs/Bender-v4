@@ -24,13 +24,17 @@ export default async function (
             },
             interaction.locale
         );
-        return this.respond(interaction, cheatMsg, 'WARNING', true).catch(this.handleAPIError.bind(this));
+        return this.respond(interaction, cheatMsg, 'WARNING', { ephemeral: true }).catch(
+            this.handleAPIError.bind(this)
+        );
     } else if (userID && typeof userID === 'string') {
         const user = userID ? interaction.data?.resolved?.users?.[userID as Snowflake] || null : null;
 
         if (userID && !user) {
             const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);
-            return this.respond(interaction, response, 'WARNING', true).catch(this.handleAPIError.bind(this));
+            return this.respond(interaction, response, 'WARNING', { ephemeral: true }).catch(
+                this.handleAPIError.bind(this)
+            );
         }
 
         if (user?.bot) {
@@ -62,7 +66,7 @@ export default async function (
                 },
             },
             undefined,
-            false
+            { ephemeral: false }
         )
             .then((msg) => {
                 this.bot.interactionUtils.addItem({

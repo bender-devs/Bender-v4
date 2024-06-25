@@ -233,7 +233,7 @@ export default class DevCommand extends SlashCommand {
     async run(interaction: Interaction): CommandResponse {
         const user = (interaction.member || interaction).user;
         if (!PermissionUtils.isOwner(user)) {
-            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED', 'AUTH', true);
+            return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED', 'AUTH', { ephemeral: true });
         }
         const args = interaction.data?.options;
         if (!args) {
@@ -247,7 +247,7 @@ export default class DevCommand extends SlashCommand {
                         interaction,
                         "This bot isn't sharded; can't send shard messages.",
                         'ERROR',
-                        true
+                        { ephemeral: true }
                     );
                 }
                 const destination = args[0].options?.[0]?.name?.toUpperCase();
@@ -264,7 +264,7 @@ export default class DevCommand extends SlashCommand {
                     nonce: nonce ? (nonce as string) : randomUUID(),
                     data: data ? (data as string) : undefined,
                 });
-                return this.respond(interaction, 'Message sent.', 'MSG_SENT', true);
+                return this.respond(interaction, 'Message sent.', 'MSG_SENT', { ephemeral: true });
             }
             case 'gateway': {
                 const rawOpcode = args[0].options?.[0]?.options?.find((opt) => opt.name === 'opcode')?.value;
@@ -287,7 +287,7 @@ export default class DevCommand extends SlashCommand {
                             s: null,
                             t: null,
                         });
-                        return this.respond(interaction, 'Gateway event sent.', 'SENT', true);
+                        return this.respond(interaction, 'Gateway event sent.', 'SENT', { ephemeral: true });
                     }
                     case 'receive': {
                         const payload: GatewayPayload = {
@@ -303,7 +303,9 @@ export default class DevCommand extends SlashCommand {
                             return this.handleUnexpectedError(interaction, 'STRINGIFYING_FAILED');
                         }
                         this.bot.gateway.emit('message', payloadString);
-                        return this.respond(interaction, 'Simulated gateway event.', 'RECEIVED', true);
+                        return this.respond(interaction, 'Simulated gateway event.', 'RECEIVED', {
+                            ephemeral: true,
+                        });
                     }
                 }
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
@@ -383,7 +385,7 @@ export default class DevCommand extends SlashCommand {
             }
             case 'shard': {
                 if (!this.bot.shard) {
-                    return this.respond(interaction, "Bot isn't sharded.", 'ERROR', true);
+                    return this.respond(interaction, "Bot isn't sharded.", 'ERROR', { ephemeral: true });
                 }
                 const subcommand = args[0].options?.[0]?.name;
                 const values = args[0].options?.[0]?.options?.find((opt) => opt.name === 'value')?.value;

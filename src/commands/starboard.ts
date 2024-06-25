@@ -318,7 +318,7 @@ export default class StarboardCommand extends SlashCommand {
         // if the channel is not found,
         if (!channel) {
             // return an error response
-            return this.respondKey(interaction, 'ARGS_UNRESOLVED', 'ERROR', true);
+            return this.respondKey(interaction, 'ARGS_UNRESOLVED', 'ERROR', { ephemeral: true });
         }
         // if the bot does not have the required permissions to send messages,
         if (!PermissionUtils.has(channel.permissions, 'SEND_MESSAGES')) {
@@ -348,7 +348,7 @@ export default class StarboardCommand extends SlashCommand {
             'STARBOARD_ENABLE_INVALID',
             { commandLink: cmdLink },
             'WARNING',
-            true
+            { ephemeral: true }
         );
     }
 
@@ -358,7 +358,7 @@ export default class StarboardCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
         }
 
         const current = await this.bot.db.guild.get(interaction.guild_id, { starboard: 1 });
@@ -369,7 +369,7 @@ export default class StarboardCommand extends SlashCommand {
             case LangUtils.get('STARBOARD_SUBCOMMAND_VIEW'): {
                 const replyText = this.getSettingsOverview(interaction, starboard);
 
-                return this.respond(interaction, replyText);
+                return this.respond(interaction, replyText, undefined, { ephemeral: true, shareButton: true });
             }
             case LangUtils.get('STARBOARD_SUBCOMMAND_ENABLE'): {
                 if (!starboard?.channel) {
@@ -397,7 +397,7 @@ export default class StarboardCommand extends SlashCommand {
                                 setting: LangUtils.get('STARBOARD_SETTING', interaction.locale),
                             },
                             'ERROR',
-                            true
+                            { ephemeral: true }
                         );
                     });
             }
@@ -412,7 +412,9 @@ export default class StarboardCommand extends SlashCommand {
                             },
                             interaction.locale
                         );
-                        return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`);
+                        return this.respond(interaction, replyText, `SUCCESS${result.changes ? '' : '_ALT'}`, {
+                            ephemeral: true,
+                        });
                     })
                     .catch((err) => {
                         this.bot.logger.handleError(`/${this.name} disable`, err);
@@ -423,7 +425,7 @@ export default class StarboardCommand extends SlashCommand {
                                 setting: LangUtils.get('STARBOARD_NAME', interaction.locale),
                             },
                             'ERROR',
-                            true
+                            { ephemeral: true }
                         );
                     });
             }
@@ -463,7 +465,7 @@ export default class StarboardCommand extends SlashCommand {
 
                 const channelOrResponse = await this.validateChannel(interaction, channelID);
                 if (!channelOrResponse) {
-                    return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', true);
+                    return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', { ephemeral: true });
                 }
                 // If the result is not a channel, it must be a command response, therefore return it as is.
                 if (!('permissions' in channelOrResponse)) {
@@ -503,7 +505,7 @@ export default class StarboardCommand extends SlashCommand {
                 const resolvedEmoji = await this.resolveEmojiString(emojiString, interaction.guild_id);
 
                 if (resolvedEmoji === null) {
-                    return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'ERROR', true);
+                    return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'ERROR', { ephemeral: true });
                 }
 
                 return this.bot.db.guild
@@ -549,7 +551,7 @@ export default class StarboardCommand extends SlashCommand {
                 );
 
                 if (!enabledOption && !channelOption && !countOption && !emojiOption) {
-                    return this.respondKey(interaction, 'ARGS_MISSING', 'WARNING', true);
+                    return this.respondKey(interaction, 'ARGS_MISSING', 'WARNING', { ephemeral: true });
                 }
 
                 const updateObj: Partial<GuildSettings['starboard']> = {};
@@ -562,7 +564,7 @@ export default class StarboardCommand extends SlashCommand {
 
                     const resolvedEmoji = await this.resolveEmojiString(emojiString, interaction.guild_id);
                     if (resolvedEmoji === null) {
-                        return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'ERROR', true);
+                        return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'ERROR', { ephemeral: true });
                     }
                     updateObj.emoji = typeof resolvedEmoji === 'string' ? resolvedEmoji : resolvedEmoji.id;
                 }
@@ -571,7 +573,7 @@ export default class StarboardCommand extends SlashCommand {
                     const channelID = channelOption.value;
                     const channelOrResponse = await this.validateChannel(interaction, channelID);
                     if (!channelOrResponse) {
-                        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', true);
+                        return this.respondKey(interaction, 'CHANNEL_NOT_FOUND', 'WARNING', { ephemeral: true });
                     }
                     if (!('permissions' in channelOrResponse)) {
                         return channelOrResponse;
@@ -622,28 +624,33 @@ export default class StarboardCommand extends SlashCommand {
                 });
             }
             case LangUtils.get('STARBOARD_SUBCOMMAND_BLACKLIST'): {
-                return this.respond(interaction, {
-                    content: LangUtils.get('STARBOARD_BLACKLIST_INSTRUCTIONS', interaction.locale),
-                    components: [
-                        {
-                            type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
-                            components: [
-                                {
-                                    type: MESSAGE_COMPONENT_TYPES.CHANNEL_SELECT,
-                                    custom_id: `sb_${interaction.id}_blacklist`,
-                                    channel_types: [
-                                        CHANNEL_TYPES.GUILD_TEXT,
-                                        CHANNEL_TYPES.GUILD_NEWS,
-                                        CHANNEL_TYPES.GUILD_NEWS_THREAD,
-                                        CHANNEL_TYPES.GUILD_PRIVATE_THREAD,
-                                        CHANNEL_TYPES.GUILD_PUBLIC_THREAD,
-                                    ],
-                                },
-                            ],
-                        },
-                    ],
-                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
-                });
+                return this.respond(
+                    interaction,
+                    {
+                        content: LangUtils.get('STARBOARD_BLACKLIST_INSTRUCTIONS', interaction.locale),
+                        components: [
+                            {
+                                type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                                components: [
+                                    {
+                                        type: MESSAGE_COMPONENT_TYPES.CHANNEL_SELECT,
+                                        custom_id: `sb_${interaction.id}_blacklist`,
+                                        channel_types: [
+                                            CHANNEL_TYPES.GUILD_TEXT,
+                                            CHANNEL_TYPES.GUILD_NEWS,
+                                            CHANNEL_TYPES.GUILD_NEWS_THREAD,
+                                            CHANNEL_TYPES.GUILD_PRIVATE_THREAD,
+                                            CHANNEL_TYPES.GUILD_PUBLIC_THREAD,
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
+                        flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
+                    },
+                    undefined,
+                    { ephemeral: true }
+                );
             }
             default:
                 return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');

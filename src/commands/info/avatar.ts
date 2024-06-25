@@ -13,7 +13,7 @@ export default async function (
     let partialUser: types.PartialUser | null = null;
     if (!userID && !interaction.guild_id) {
         if (!interaction.user) {
-            return this.respondKey(interaction, 'AVATAR_INFO_MISSING_USER', 'WARNING', true);
+            return this.respondKey(interaction, 'AVATAR_INFO_MISSING_USER', 'WARNING', { ephemeral: true });
         }
         userID = interaction.user.id;
         partialUser = interaction.user;
@@ -31,7 +31,7 @@ export default async function (
         }
         user = await this.bot.api.user.fetch(partialUser.id);
         if (!user) {
-            return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
+            return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', { ephemeral: true });
         }
     }
     let member: types.Member | types.PartialMember | null = null;
@@ -79,7 +79,7 @@ export default async function (
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     if (!guild) {
-        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND', 'WARNING', true);
+        return this.respondKey(interaction, 'USER_OR_GUILD_NOT_FOUND', 'WARNING', { ephemeral: true });
     }
 
     if (!guild.icon) {

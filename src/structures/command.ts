@@ -43,6 +43,12 @@ type SettingsResultData = {
     result: 'SUCCESS' | 'UNNECESSARY' | 'FAILURE';
 };
 
+type CommandResponseOptions = {
+    ephemeral?: boolean;
+    deferred?: boolean;
+    shareButton?: boolean;
+};
+
 export class CommandUtils {
     bot: Bot;
     name: string;
@@ -63,7 +69,9 @@ export class CommandUtils {
     #getResponseData(
         interaction: types.Interaction,
         msgData: CommandResponseMessageData,
-        emojiKey?: EmojiKey
+        emojiKey?: EmojiKey,
+        ephemeral?: boolean,
+        shareButton?: boolean
     ): types.InteractionMessageResponseData {
         if (typeof msgData === 'string') {
             return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionMessageResponseData;
@@ -107,8 +115,7 @@ export class CommandUtils {
         interaction: types.Interaction,
         msgData: CommandResponseCreateData,
         emojiKey?: EmojiKey,
-        ephemeral = false,
-        deferred = false
+        { ephemeral = false, deferred = false, shareButton = false }: CommandResponseOptions = {}
     ) {
         const responseType = deferred
             ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE
@@ -154,10 +161,10 @@ export class CommandUtils {
         interaction: types.Interaction,
         messageLangKey: LangKey,
         emojiKey?: EmojiKey,
-        ephemeral = false
+        options: CommandResponseOptions = {}
     ) {
         const content = LangUtils.get(messageLangKey, interaction.locale);
-        return this.respond(interaction, content, emojiKey, ephemeral);
+        return this.respond(interaction, content, emojiKey, options);
     }
 
     async respondKeyReplace(
@@ -165,10 +172,10 @@ export class CommandUtils {
         messageLangKey: LangKey,
         replaceMap: types.ReplaceMap,
         emojiKey?: EmojiKey,
-        ephemeral = false
+        options: CommandResponseOptions = {}
     ) {
         const content = LangUtils.getAndReplace(messageLangKey, replaceMap, interaction.locale);
-        return this.respond(interaction, content, emojiKey, ephemeral);
+        return this.respond(interaction, content, emojiKey, options);
     }
 
     async respondMissingPermissions(
@@ -186,7 +193,7 @@ export class CommandUtils {
             key,
             { context, permissions: `\`${permNames.join('`, `')}\`` },
             'WARNING',
-            true
+            { ephemeral: true }
         );
     }
 
@@ -204,7 +211,7 @@ export class CommandUtils {
                     setting: LangUtils.get(settingKey, interaction.locale),
                 },
                 'ERROR',
-                true
+                { ephemeral: true }
             );
         }
         let genericSettingKey: LangKey;
@@ -221,7 +228,9 @@ export class CommandUtils {
             },
             interaction.locale
         );
-        return this.respond(interaction, replyText, `SUCCESS${data.result === 'UNNECESSARY' ? '_ALT' : ''}`);
+        return this.respond(interaction, replyText, `SUCCESS${data.result === 'UNNECESSARY' ? '_ALT' : ''}`, {
+            ephemeral: true,
+        });
     }
 
     async handleAPIError(err: APIError) {
@@ -237,7 +246,7 @@ export class CommandUtils {
         });
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
         this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69, true));
-        return this.respond(interaction, `${message}\n${supportNotice}`, 'ERROR', true);
+        return this.respond(interaction, `${message}\n${supportNotice}`, 'ERROR', { ephemeral: true });
     }
 }
 

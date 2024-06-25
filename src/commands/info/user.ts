@@ -29,7 +29,7 @@ export default async function (
     }
     const user = await this.bot.api.user.fetch(partialUser.id);
     if (!user) {
-        return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', true);
+        return this.respondKey(interaction, 'USER_FETCH_FAILED', 'ERROR', { ephemeral: true });
     }
 
     let footer = LangUtils.getAndReplace('USER_INFO_ID', { id: partialUser.id }, interaction.locale);

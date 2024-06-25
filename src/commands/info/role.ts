@@ -44,7 +44,7 @@ function getKeyPermNames(role: Role, locale?: Locale): string[] {
 
 export default async function (this: InfoCommand, interaction: Interaction, roleID?: CommandOptionValue) {
     if (!interaction.guild_id) {
-        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD', true);
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
     }
     if (!roleID || typeof roleID !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
@@ -63,7 +63,7 @@ export default async function (this: InfoCommand, interaction: Interaction, role
 
     const guild = await this.bot.api.guild.fetch(interaction.guild_id, true).catch(() => null);
     if (!guild) {
-        return this.respondKey(interaction, 'SERVER_INFO_FETCH_FAILED', 'ERROR', true);
+        return this.respondKey(interaction, 'SERVER_INFO_FETCH_FAILED', 'ERROR', { ephemeral: true });
     }
 
     const title = LangUtils.getAndReplace(

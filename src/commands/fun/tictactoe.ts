@@ -23,7 +23,9 @@ export default async function (this: FunCommand, interaction: Interaction, userS
 
     if (userID && !user) {
         const response = LangUtils.get('USER_FETCH_FAILED', interaction.locale);
-        return this.respond(interaction, response, 'WARNING', true).catch(this.handleAPIError.bind(this));
+        return this.respond(interaction, response, 'WARNING', { ephemeral: true }).catch(
+            this.handleAPIError.bind(this)
+        );
     }
 
     if (user?.bot) {
@@ -65,7 +67,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
             },
         },
         'TIC_TAC_TOE',
-        !userID
+        { ephemeral: !userID }
     ).then((msg) => {
         this.bot.interactionUtils.addItem({
             author: authorID,
