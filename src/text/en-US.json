@@ -818,6 +818,8 @@
     "STATUS_ENABLED": "Status: **enabled**",
     "STATUS_DISABLED": "Status: **disabled**",
     "SHOW_IN_CHAT": "Show in chat",
+    "SHARE_INFO": "Response to {{command}} shared by {{user}}",
+    "SHARE_INFO_GENERIC": "Command response shared by {{user}}",
 
 
 

@@ -5,6 +5,7 @@ import languages from '../text/languageList.js';
 import { COMMAND_OPTION_TYPES } from '../types/numberTypes.js';
 import type {
     CommandOption,
+    InteractionData,
     Locale,
     LocaleDict,
     PermissionName,
@@ -168,6 +169,25 @@ export default class LanguageUtils {
             }
         }
         return subcommands;
+    }
+    static getCommandOptionsString(data: InteractionData /*, locale?: Locale*/) {
+        if (!data.options?.length) {
+            return data.name;
+        }
+        const subcommands: string[] = [data.name];
+        for (const opt of data.options) {
+            if (
+                opt.type === COMMAND_OPTION_TYPES.SUB_COMMAND_GROUP ||
+                opt.type === COMMAND_OPTION_TYPES.SUB_COMMAND
+            ) {
+                // TODO: localization using cached commands w/ name_localizations
+                subcommands.push(opt.name);
+            }
+        }
+        if (!subcommands.length) {
+            return null;
+        }
+        return subcommands.join(' ');
     }
 
     static getPermissionName(perm: PermissionName, locale?: Locale) {

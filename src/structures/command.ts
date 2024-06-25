@@ -1,12 +1,19 @@
 import { inspect } from 'util';
 import { SUPPORT_SERVER } from '../data/constants.js';
 import type { LangKey } from '../text/languageList.js';
-import { COMMAND_TYPES, INTERACTION_CALLBACK_FLAGS, INTERACTION_CALLBACK_TYPES } from '../types/numberTypes.js';
+import {
+    BUTTON_STYLES,
+    COMMAND_TYPES,
+    INTERACTION_CALLBACK_FLAGS,
+    INTERACTION_CALLBACK_TYPES,
+    MESSAGE_COMPONENT_TYPES,
+} from '../types/numberTypes.js';
 import type * as types from '../types/types.js';
 import LangUtils from '../utils/language.js';
 import type { EmojiKey } from '../utils/misc.js';
 import type APIError from './apiError.js';
 import type Bot from './bot.js';
+import MiscUtils from '../utils/misc.js';
 
 // the format in which user/message commands are stored (both in files and in the database.)
 export class UserOrMessageCommand {
@@ -74,12 +81,69 @@ export class CommandUtils {
         shareButton?: boolean
     ): types.InteractionMessageResponseData {
         if (typeof msgData === 'string') {
-            return this.#getMessageData(interaction, msgData, emojiKey) as types.InteractionMessageResponseData;
+            msgData = this.#getMessageData(interaction, msgData, emojiKey);
         } else if (emojiKey && msgData.content) {
             const emoji = this.getEmoji(emojiKey, interaction);
             msgData.content = `${emoji} ${msgData.content}`;
         }
+        if (ephemeral) {
+            if (msgData.flags) {
+                msgData.flags |= INTERACTION_CALLBACK_FLAGS.EPHEMERAL;
+            } else {
+                msgData.flags = INTERACTION_CALLBACK_FLAGS.EPHEMERAL;
+            }
+            if (shareButton) {
+                const buttonText = LangUtils.get('SHOW_IN_CHAT', interaction.locale);
+                const shareButtonRow: types.MessageComponentRow = {
+                    type: MESSAGE_COMPONENT_TYPES.ACTION_ROW,
+                    components: [
+                        {
+                            type: MESSAGE_COMPONENT_TYPES.BUTTON,
+                            label: buttonText,
+                            style: BUTTON_STYLES.SECONDARY,
+                            emoji: { name: MiscUtils.getDefaultEmoji('SHOW_IN_CHAT'), id: null },
+                            custom_id: `share_${interaction.id}_${interaction.member?.user.id || ''}`,
+                        },
+                    ],
+                };
+                if (msgData.components) {
+                    msgData.components.push(shareButtonRow);
+                } else {
+                    msgData.components = [shareButtonRow];
+                }
+            }
+        }
         return msgData as types.InteractionMessageResponseData;
+    }
+
+    /** Removes the share button and the ephemeral flag from the message */
+    #formatShareableResponse(msgData: types.InteractionMessageResponseData): types.InteractionMessageResponseData {
+        const filteredComponents: types.MessageComponent[] = [];
+        for (const componentRow of msgData.components || []) {
+            if (componentRow.type === MESSAGE_COMPONENT_TYPES.ACTION_ROW) {
+                const filteredComponents = componentRow.components.filter((component) => {
+                    if (
+                        component.type === MESSAGE_COMPONENT_TYPES.BUTTON &&
+                        component.custom_id?.startsWith('share')
+                    ) {
+                        return false;
+                    }
+                    return true;
+                });
+                filteredComponents.push({
+                    ...componentRow,
+                    components: filteredComponents,
+                });
+            } else {
+                // shouldn't be possible, but pass through for future proofing
+                filteredComponents.push(componentRow);
+            }
+        }
+        return {
+            ...msgData,
+            components: filteredComponents,
+            flags: msgData.flags && msgData.flags & ~INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
+        };
     }
 
     getEmoji(emojiKey: EmojiKey, interaction: types.Interaction) {
@@ -120,12 +184,44 @@ export class CommandUtils {
         const responseType = deferred
             ? INTERACTION_CALLBACK_TYPES.DEFERRED_UPDATE_MESSAGE
             : INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE;
-        const data = this.#getResponseData(interaction, msgData, emojiKey);
-        data.flags = ephemeral ? INTERACTION_CALLBACK_FLAGS.EPHEMERAL : 0;
+
+        const authorID = interaction.user?.id || interaction.member?.user.id;
+        if (!authorID && shareButton) {
+            this.bot.logger.moduleWarn(
+                'PENDING INTERACTIONS',
+                'Not adding share button since interaction has no author ID: ',
+                interaction
+            );
+            shareButton = false;
+        } else if (!authorID) {
+            if (!authorID) {
+                this.bot.logger.moduleWarn('PENDING INTERACTIONS', 'Interaction has no author ID: ', interaction);
+            }
+        }
+        const data = this.#getResponseData(interaction, msgData, emojiKey, ephemeral, shareButton);
         return this.bot.api.interaction
             .sendResponse(interaction, {
                 type: responseType,
                 data,
+            })
+            .then((msg) => {
+                if (!authorID || !msg) {
+                    return msg;
+                }
+                const newData = this.#formatShareableResponse(data);
+
+                this.bot.logger.debug(
+                    'PENDING INTERACTIONS',
+                    'Adding message to pending share interactions...',
+                    msg,
+                    newData
+                );
+                this.bot.interactionUtils.addItem({
+                    author: authorID,
+                    interaction,
+                    responseData: newData,
+                });
+                return msg;
             })
             .catch(this.handleAPIError.bind(this));
     }

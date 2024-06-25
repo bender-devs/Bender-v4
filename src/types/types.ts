@@ -1003,7 +1003,7 @@ export type Message = {
     application?: Application;
     application_id?: Snowflake;
     message_reference?: MessageReference;
-    flags?: num.MESSAGE_FLAGS;
+    flags?: num.MESSAGE_FLAGS | 0;
     referenced_message?: Message | null;
     interaction?: MessageInteraction;
     thread?: ThreadChannel;
