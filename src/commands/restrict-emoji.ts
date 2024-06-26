@@ -26,7 +26,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
     readonly description = LangUtils.get('REM_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('REM_DESCRIPTION');
 
-    readonly default_member_permissions = `${PERMISSIONS.MANAGE_EXPRESSIONS}` as Bitfield;
+    readonly default_member_permissions = `${PERMISSIONS.MANAGE_EXPRESSIONS}` satisfies Bitfield;
     readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [

@@ -21,7 +21,7 @@ export default async function (
     const userIDSnowflake = userID ? (userID as types.Snowflake) : null;
     if (userIDSnowflake && !partialUser) {
         if (interaction.data?.resolved?.users && userIDSnowflake in interaction.data.resolved.users) {
-            partialUser = interaction.data.resolved.users[userID as types.Snowflake];
+            partialUser = interaction.data.resolved.users[userIDSnowflake];
         }
     }
     let user: types.User | null = null;

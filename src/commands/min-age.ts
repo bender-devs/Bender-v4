@@ -23,7 +23,7 @@ export default class MinAgeCommand extends SlashCommand {
     readonly description = LangUtils.get('MINAGE_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('MINAGE_DESCRIPTION');
 
-    readonly default_member_permissions = `${PERMISSIONS.KICK_MEMBERS}` as Bitfield;
+    readonly default_member_permissions = `${PERMISSIONS.KICK_MEMBERS}` satisfies Bitfield;
     readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [

@@ -57,9 +57,6 @@ export default async function (this: InfoCommand, interaction: Interaction, role
     if (!role) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
     }
-    // NOTE: must create duplicate var to avoid error ts2531 in .filter() below
-    // https://github.com/microsoft/TypeScript/issues/9998
-    const typedRoleID: Snowflake = role.id;
 
     const guild = await this.bot.api.guild.fetch(interaction.guild_id, true).catch(() => null);
     if (!guild) {
@@ -98,16 +95,16 @@ export default async function (this: InfoCommand, interaction: Interaction, role
         const cacheCount = cached ? Object.keys(cached).length : 0;
         let members: Member[] | null = null;
         if (cached && count === cacheCount) {
-            members = Object.values(cached).filter((mem) => mem.roles.includes(typedRoleID));
+            members = Object.values(cached).filter((mem) => mem.roles.includes(role.id));
         } else if (count <= 1000) {
             const allMembers = await this.bot.api.member.list(interaction.guild_id, 1000);
             if (allMembers) {
-                members = allMembers.filter((mem) => mem.roles.includes(typedRoleID));
+                members = allMembers.filter((mem) => mem.roles.includes(role.id));
             }
         } else if (cached) {
             // if only online members are cached, only update onlineMembers
             onlineMembers = Object.values(cached).filter((mem) => {
-                if (!mem.roles.includes(typedRoleID)) {
+                if (!mem.roles.includes(role.id)) {
                     return false;
                 }
                 const presence = this.bot.cache.presences.get(mem.user.id);

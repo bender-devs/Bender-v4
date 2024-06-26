@@ -47,7 +47,7 @@ const getMemoryUsage = () => {
 };
 
 export default async function (this: InfoCommand, interaction: Interaction) {
-    await this.ack(interaction);
+    await this.ack(interaction); // TODO: handle errors
 
     let guildCount = 0,
         memberCount = 0,

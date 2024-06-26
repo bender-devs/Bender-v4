@@ -65,7 +65,7 @@ export default class MemberMsgCommand extends SlashCommand {
     readonly description = LangUtils.get('MEMBER_MSG_DESCRIPTION');
     readonly description_localizations = LangUtils.getLocalizationMap('MEMBER_MSG_DESCRIPTION');
 
-    readonly default_member_permissions = `${PERMISSIONS.MANAGE_GUILD}` as Bitfield;
+    readonly default_member_permissions = `${PERMISSIONS.MANAGE_GUILD}` satisfies Bitfield;
     readonly dm_permission: boolean = false;
 
     readonly options: CommandOption[] = [
