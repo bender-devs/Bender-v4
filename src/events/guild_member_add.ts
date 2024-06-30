@@ -31,7 +31,11 @@ export default class GuildMemberAddHandler extends EventHandler<GuildMemberAddDa
             return null;
         }
 
-        // TODO: handle minage (and don't continue if action is taken)
+        const actionTaken = await this.bot.eventUtils.minAge.join(eventData, guild, settings);
+        if (actionTaken) {
+            return null; // member has been banned or kicked, no need to continue
+        }
+
         this.bot.eventUtils.memberLog.join(eventData, guild, settings);
 
         // TODO: send to mod member log if configured

@@ -643,6 +643,8 @@
     "MINAGE_ENABLED_SET_INVALID": "Please set a duration (via {{commandLink}}) before enabling minimum account age.",
     "MINAGE_DURATION_SET_INVALID": "Minimum account age must be between {{minimum}} and {{maximum}}.",
 
+    "MINAGE_REASON": "Account was created too recently ({{accountAge}} ago) | Requirement is set to {{duration}}",
+
 
 
     "----------- /member-msg -----------": "",
