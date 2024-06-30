@@ -27,16 +27,13 @@ export default class GuildMemberAddHandler extends EventHandler<GuildMemberAddDa
         }
         const guild = await this.bot.api.guild.fetch(eventData.guild_id);
         if (!guild) {
-            this.bot.logger.handleError(
-                'guild_member_add',
-                'Not performing member actions because guild fetch failed!'
-            );
+            this.bot.logger.handleError(this.name, 'Not performing member actions because guild fetch failed!');
             return null;
         }
 
-        // TODO: handle minage
+        // TODO: handle minage (and don't continue if action is taken)
         this.bot.eventUtils.memberLog.join(eventData, guild, settings);
-        // TODO: re-mute if applicable
+
         // TODO: send to mod member log if configured
         // TODO: add autorole if configured and member isn't "pending"
         // TODO: re-add temproles if applicable

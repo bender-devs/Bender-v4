@@ -1,4 +1,6 @@
+import MemberLogUtils from '../eventUtils/memberLog.js';
 import type Bot from '../structures/bot.js';
+import type { ProjectionObject } from '../types/dbTypes.js';
 import type { GuildMemberRemoveData } from '../types/gatewayTypes.js';
 import { EventHandler } from '../types/types.js';
 
@@ -12,9 +14,25 @@ export default class GuildMemberRemoveHandler extends EventHandler<GuildMemberRe
         this.bot.cache.users.set(eventData.user);
     };
 
-    handler = (/*eventData: GuildMemberRemoveData*/) => {
+    handler = async (eventData: GuildMemberRemoveData) => {
+        const memberLogSettings = MemberLogUtils.SETTINGS.LEAVE;
+        const fields: ProjectionObject = {};
+        for (const setting of memberLogSettings) {
+            fields[setting] = 1;
+        }
+
+        const settings = await this.bot.db.guild.get(eventData.guild_id, fields);
+        if (!settings) {
+            return null;
+        }
+        const guild = await this.bot.api.guild.fetch(eventData.guild_id);
+        if (!guild) {
+            this.bot.logger.handleError(this.name, 'Not performing member actions because guild fetch failed!');
+            return null;
+        }
+
         // TODO: check ban cache to avoid sending these messages for banned members
-        // TODO: send to member log if configured
+        this.bot.eventUtils.memberLog.leave(eventData, guild, settings);
         // TODO: send to mod member log if configured
     };
 }
