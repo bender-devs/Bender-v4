@@ -775,6 +775,39 @@
 
 
 
+    "----------- /role-color -----------": "",
+
+    "ROLE_COLOR_NAME": "role-color",
+    "ROLE_COLOR_DESCRIPTION": "Change, view, or reset the color of a role.",
+    "ROLE_COLOR_DETAILS": "Accepts hex colors or CSS color names. For a full list of color names, see [this w3schools page]({{link}}).",
+
+    "ROLE_COLOR_SUBCOMMAND_VIEW": "view",
+    "ROLE_COLOR_SUBCOMMAND_VIEW_DESCRIPTION": "View the current color of a role.",
+    "ROLE_COLOR_SUBCOMMAND_SET": "set",
+    "ROLE_COLOR_SUBCOMMAND_SET_DESCRIPTION": "Set the color of a role.",
+    "ROLE_COLOR_SUBCOMMAND_RESET": "reset",
+    "ROLE_COLOR_SUBCOMMAND_RESET_DESCRIPTION": "Reset the color of a role.",
+
+    "ROLE_COLOR_OPTION_ROLE": "role",
+    "ROLE_COLOR_OPTION_ROLE_DESCRIPTION": "The role for which the color should be set.",
+    "ROLE_COLOR_OPTION_COLOR": "color",
+    "ROLE_COLOR_OPTION_COLOR_DESCRIPTION": "The color to set. Accepts hex colors or CSS color names.",
+
+    "ROLE_COLOR_NONE": "{{role}} has no color.",
+    "ROLE_COLOR_EMBED_DESCRIPTION": "The color of {{role}} is: `{{color}}`.",
+
+    "ROLE_COLOR_RESET_UNNECESSARY": "{{role}} already has no color.",
+    "ROLE_COLOR_RESET_SUCCESS": "Reset the color of {{role}} to default.",
+    "ROLE_COLOR_RESET_FAILED": "Failed to reset the color of {{role}} to default.",
+
+    "ROLE_COLOR_SET_INVALID": "Invalid color. Please use a hex color (i.e. `#5865f2`) or [CSS color name]({{link}}).",
+    "ROLE_COLOR_PARSE_FAILED": "Failed to parse hex color.",
+    "ROLE_COLOR_SET_UNNECESSARY": "The color of {{role}} is already set to `{{color}}`.",
+    "ROLE_COLOR_SET_SUCCESS": "Set the color of {{role}} to `{{color}}`.",
+    "ROLE_COLOR_SET_FAILED": "Failed to set the color of {{role}} to `{{color}}`.",
+
+
+
     "----------- Presences -----------": "",
 
     "STATUS_ONLINE": "Online",

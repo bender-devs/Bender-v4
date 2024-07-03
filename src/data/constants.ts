@@ -150,3 +150,6 @@ export const DURATION_REGEX =
 
 export const EXAMPLE_TIMESTAMP = 3133702800000;
 export const EXAMPLE_DURATION = DURATION_UNITS.YEAR * 69;
+
+export const HEX_COLOR_REGEX = /^#?[0-9a-f]{6}$/i;
+export const COLOR_NAMES_LINK = 'https://www.w3schools.com/colors/colors_names.asp';
