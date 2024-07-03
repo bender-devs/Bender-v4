@@ -15,9 +15,8 @@ export default class GuildMemberRemoveHandler extends EventHandler<GuildMemberRe
     };
 
     handler = async (eventData: GuildMemberRemoveData) => {
-        const memberLogSettings = MemberLogUtils.SETTINGS.LEAVE;
         const fields: ProjectionObject = {};
-        for (const setting of memberLogSettings) {
+        for (const setting of MemberLogUtils.SETTINGS.LEAVE) {
             fields[setting] = 1;
         }
 

@@ -15,9 +15,8 @@ export default class GuildMemberAddHandler extends EventHandler<GuildMemberAddDa
     };
 
     handler = async (eventData: GuildMemberAddData) => {
-        const memberLogSettings = MemberLogUtils.SETTINGS.JOIN;
         const fields: ProjectionObject = {};
-        for (const setting of memberLogSettings) {
+        for (const setting of MemberLogUtils.SETTINGS.JOIN) {
             fields[setting] = 1;
         }
 

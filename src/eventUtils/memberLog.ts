@@ -4,7 +4,7 @@ import type { GuildDotFormatKey, GuildSettings } from '../types/dbTypes.js';
 import type { GuildBanEventData, GuildMemberAddData, GuildMemberRemoveData } from '../types/gatewayTypes.js';
 import type { Guild } from '../types/types.js';
 import Replacers from '../utils/replacers.js';
-import { EventUtilsItem } from './eventUtils.js';
+import EventUtilsItem from './eventUtilsItem.js';
 
 export default class MemberLogUtils extends EventUtilsItem {
     constructor(bot: Bot) {

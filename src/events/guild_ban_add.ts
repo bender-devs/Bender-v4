@@ -16,9 +16,8 @@ export default class GuildBanAddHandler extends EventHandler<GuildBanEventData> 
     handler = async (eventData: GuildBanEventData) => {
         // TODO: cache ban to suppress GUILD_MEMBER_REMOVE messages
 
-        const memberLogSettings = MemberLogUtils.SETTINGS.BAN;
         const fields: ProjectionObject = {};
-        for (const setting of memberLogSettings) {
+        for (const setting of MemberLogUtils.SETTINGS.BAN) {
             fields[setting] = 1;
         }
 

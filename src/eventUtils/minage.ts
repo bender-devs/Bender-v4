@@ -7,7 +7,7 @@ import LangUtils from '../utils/language.js';
 import Replacers from '../utils/replacers.js';
 import TextUtils from '../utils/text.js';
 import TimeUtils from '../utils/time.js';
-import { EventUtilsItem } from './eventUtils.js';
+import EventUtilsItem from './eventUtilsItem.js';
 
 export default class MinAgeUtils extends EventUtilsItem {
     constructor(bot: Bot) {
