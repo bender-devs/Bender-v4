@@ -107,7 +107,9 @@ export const CONNECT_DATA: IdentifyData = {
 
 /***** discord constants *****/
 
-export const API_BASE = 'https://discord.com/api/v10';
+export const DISCORD_DOMAIN = 'https://discord.com';
+
+export const API_BASE = `${DISCORD_DOMAIN}/api/v10`;
 
 export const DISCORD_EPOCH = 1420070400000;
 

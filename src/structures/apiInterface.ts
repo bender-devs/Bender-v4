@@ -341,6 +341,7 @@ export default class APIInterface {
     };
 
     message = {
+        // TODO: Instead of allowing channel object, add optional guild_id
         fetch: async (channel: types.Channel | types.Snowflake, message_id: types.Snowflake) => {
             const channel_id = typeof channel === 'string' ? channel : channel.id;
             const guild_id = typeof channel === 'string' ? null : channel.guild_id;
@@ -378,18 +379,28 @@ export default class APIInterface {
                 .catch(this.handleError.bind(this));
         },
         edit: async (message: types.Message, message_data: types.MessageData) => {
+            return this.message.editByID(message.channel_id, message.id, message_data);
+        },
+        editByID: async (
+            channel_id: types.Snowflake,
+            message_id: types.Snowflake,
+            message_data: types.MessageData
+        ) => {
             // don't mention everyone or roles by default
             if (!message_data.allowed_mentions) {
                 message_data.allowed_mentions = { parse: ['users'] };
             }
             return APIWrapper.message
-                .edit(message.channel_id, message.id, message_data)
+                .edit(channel_id, message_id, message_data)
                 .then((res) => res.body)
                 .catch(this.handleError.bind(this));
         },
         delete: async (message: types.Message, reason?: string) => {
+            return this.message.deleteByID(message.channel_id, message.id, reason);
+        },
+        deleteByID: async (channel_id: types.Snowflake, message_id: types.Snowflake, reason?: string) => {
             return APIWrapper.message
-                .delete(message.channel_id, message.id, reason)
+                .delete(channel_id, message_id, reason)
                 .then((res) => res.body)
                 .catch(this.handleError.bind(this));
         },

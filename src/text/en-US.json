@@ -820,6 +820,7 @@
     "STATUS_ENABLED": "Status: **enabled**",
     "STATUS_DISABLED": "Status: **disabled**",
     "SHOW_IN_CHAT": "Show in chat",
+    "MESSAGE_ID_FOOTER": "Message ID: {{messageId}}",
 
 
 
