@@ -23,7 +23,7 @@ type SimplifiedOverwrites = {
     allow: bigint;
     deny: bigint;
 };
-const allPermissionValues = Object.values(PERMISSIONS).filter((value) => typeof value === 'number');
+const allPermissionValues = Object.values(PERMISSIONS);
 
 export default class PermissionUtils {
     bot: Bot;
@@ -85,14 +85,12 @@ export default class PermissionUtils {
         if (rolePerms & PERMISSIONS.ADMINISTRATOR) {
             return BigInt(ALL_PERMISSIONS);
         }
-        let bitfield = BigInt(0);
+        let bitfield = rolePerms;
         for (const perm of allPermissionValues) {
-            const allow = overwrite.allow & perm;
-            const deny = overwrite.deny & perm;
-            const roleAllow = rolePerms & perm;
-
-            if (allow || (roleAllow && !deny)) {
+            if (overwrite.allow & perm) {
                 bitfield |= perm;
+            } else if (overwrite.deny & perm) {
+                bitfield &= ~perm;
             }
         }
         return bitfield;
