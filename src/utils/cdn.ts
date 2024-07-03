@@ -1,5 +1,5 @@
 import { CDN_BASE } from '../data/constants.js';
-import type { Snowflake, URL, User } from '../types/types.js';
+import type { Snowflake, URL, User, WebhookUser } from '../types/types.js';
 
 export type ImageFormat = 'png' | 'jpg' | 'jpeg' | 'webp';
 
@@ -92,11 +92,11 @@ export default class CDNUtils {
         return this.#getGeneric('banners', userID, bannerHash, format, size);
     }
 
-    static resolveUserAvatar(user: User, format: ImageFormatAnimated = 'png', size?: ImageSize) {
+    static resolveUserAvatar(user: User | WebhookUser, format: ImageFormatAnimated = 'png', size?: ImageSize) {
         if (user.avatar) {
             return this.userAvatar(user.id, user.avatar, format, size);
         }
-        return this.userDefaultAvatar(user.id, user.discriminator);
+        return this.userDefaultAvatar(user.id, 'discriminator' in user ? user.discriminator : '0');
     }
 
     static userDefaultAvatar(userID: Snowflake, discriminator: number | `${number}`): URL {

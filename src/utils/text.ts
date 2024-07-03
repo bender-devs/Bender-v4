@@ -1,5 +1,12 @@
 import * as CONSTANTS from '../data/constants.js';
-import type { Emoji, Snowflake, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import type {
+    Emoji,
+    Message,
+    PartialEmoji,
+    Snowflake,
+    TimestampFormat,
+    UnixTimestampMillis,
+} from '../types/types.js';
 import { TIMESTAMP_FORMATS } from '../types/types.js';
 
 function _getRegex(chars: string, exact: boolean, caseSensitive = false, timestamp = false) {
@@ -93,8 +100,27 @@ export default class TextUtils {
         parse: (emoji: Emoji, addZeroWidth = false): string => {
             return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}${addZeroWidth ? '\u200B' : ''}>`;
         },
-        parseDisplay: (emoji: Emoji, nameOnly = false) => {
-            return nameOnly ? `:${emoji.name}:` : TextUtils.emoji.parse(emoji);
+        parseDisplay: (emoji: PartialEmoji, nameOnly = false): string => {
+            if (nameOnly) {
+                return `:${emoji.name}:`;
+            }
+            if (!emoji.id) {
+                return emoji.name || '';
+            }
+            if (emoji.name === null) {
+                return '';
+            }
+            /*
+             * Typescript can be so fucking braindead sometimes...
+             * it already forgot the type narrowing for emoji.name from the block above,
+             * therefore we need to copy the emoji object
+             */
+            const emojiCopy: Emoji = {
+                name: emoji.name,
+                id: emoji.id,
+                animated: emoji.animated,
+            };
+            return TextUtils.emoji.parse(emojiCopy);
         },
         parseReaction: (emoji: Emoji): string => {
             return `${emoji.name}:${emoji.id}`;
@@ -147,4 +173,13 @@ export default class TextUtils {
         const suffixLength = suffix.length + 4;
         return len > length ? `${text.substring(0, length - suffixLength)}${suffix} ...` : text;
     }
+
+    static message = {
+        getLink: (message: Message & { guild_id: Snowflake }): string => {
+            return `${CONSTANTS.DISCORD_DOMAIN}/channels/${message.guild_id}/${message.channel_id}/${message.id}`;
+        },
+        getLinkByIDs: (guild_id: Snowflake, channel_id: Snowflake, message_id: Snowflake): string => {
+            return `${CONSTANTS.DISCORD_DOMAIN}/channels/${guild_id}/${channel_id}/${message_id}`;
+        },
+    };
 }

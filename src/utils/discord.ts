@@ -1,8 +1,20 @@
 import { CHANNEL_TYPES } from '../types/numberTypes.js';
-import type { Channel, Member, PartialMember, Role, Snowflake, URL, User } from '../types/types.js';
+import type {
+    Channel,
+    Member,
+    Message,
+    PartialMember,
+    Role,
+    Snowflake,
+    URL,
+    User,
+    WebhookUser,
+} from '../types/types.js';
 import type { ImageFormatAnimated, ImageSize } from './cdn.js';
 import CDNUtils from './cdn.js';
 import TimeUtils from './time.js';
+
+type MediaResult = { images: URL[]; videos: URL[] };
 
 export default class DiscordUtils {
     static member = {
@@ -101,7 +113,7 @@ export default class DiscordUtils {
             }
         },
         getAvatar: (
-            user: User,
+            user: User | WebhookUser,
             memberData?: { member: Member | PartialMember; guild_id: Snowflake },
             format?: ImageFormatAnimated,
             size?: ImageSize
@@ -110,6 +122,66 @@ export default class DiscordUtils {
                 return CDNUtils.memberAvatar(memberData.guild_id, user.id, memberData.member.avatar, format, size);
             }
             return CDNUtils.resolveUserAvatar(user, format, size);
+        },
+    };
+
+    static message = {
+        /** Get an image or video from a message */
+        getImage: (message: Message) => {
+            return this.message.getImages(message)[0];
+        },
+        /** Get all images and videos from a message */
+        getImages: (message: Message) => {
+            const media: URL[] = [];
+            if (message.attachments) {
+                for (const attachment of message.attachments) {
+                    if (
+                        attachment.content_type?.startsWith('image/') ||
+                        attachment.content_type?.startsWith('video/')
+                    ) {
+                        media.push(attachment.url as URL);
+                    }
+                }
+            }
+            if (message.embeds) {
+                for (const embed of message.embeds) {
+                    if (embed.image) {
+                        media.push(embed.image.url as URL);
+                    }
+                    if (embed.video) {
+                        media.push(embed.video.url as URL);
+                    }
+                }
+            }
+            // remove duplicates
+            return [...new Set(media)];
+        },
+        getMedia: (message: Message): MediaResult => {
+            const media: MediaResult = {
+                images: [],
+                videos: [],
+            };
+            if (message.attachments) {
+                for (const attachment of message.attachments) {
+                    if (attachment.content_type?.startsWith('image/')) {
+                        media.images.push(attachment.url as URL);
+                    } else if (attachment.content_type?.startsWith('video/')) {
+                        media.videos.push(attachment.url as URL);
+                    }
+                }
+            }
+            if (message.embeds) {
+                for (const embed of message.embeds) {
+                    if (embed.image) {
+                        media.images.push(embed.image.url as URL);
+                    }
+                    if (embed.video) {
+                        media.videos.push(embed.video.url as URL);
+                    }
+                }
+            }
+            // remove duplicates
+            return media;
         },
     };
 }

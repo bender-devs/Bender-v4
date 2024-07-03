@@ -406,7 +406,7 @@ export type ReactionAddData = {
     message_id: types.Snowflake;
     guild_id?: types.Snowflake;
     member?: types.Member;
-    emoji: types.Emoji;
+    emoji: types.PartialEmoji;
     message_author_id?: types.Snowflake;
 };
 

@@ -1017,7 +1017,7 @@ interface UserMember extends User {
     member: PartialMember;
 }
 
-type WebhookUser = Pick<User, 'id' | 'username' | 'avatar'>;
+export type WebhookUser = Pick<User, 'id' | 'username' | 'avatar'>;
 
 // https://discord.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference
 export type AllowedMentions = {
@@ -1038,12 +1038,18 @@ export interface PartialMessage extends Partial<Message> {
     id: Snowflake;
 }
 
+export type MessageDataAttachment = {
+    name: string;
+    data: Buffer;
+    /** MIME type */
+    content_type: string;
+};
+
 export interface MessageData
-    extends Partial<
-        Pick<Message, 'content' | 'tts' | 'embeds' | 'message_reference' | 'components' | 'attachments' | 'flags'>
-    > {
+    extends Partial<Pick<Message, 'content' | 'tts' | 'embeds' | 'message_reference' | 'components' | 'flags'>> {
     allowed_mentions?: AllowedMentions;
     sticker_ids?: Snowflake[];
+    upload_attachments?: MessageDataAttachment[];
 }
 
 export type MessageActivity = {
@@ -1063,6 +1069,7 @@ export type Attachment = {
     id: Snowflake;
     filename: string;
     description?: string;
+    /** MIME type */
     content_type?: string;
     size: number;
     url: string;

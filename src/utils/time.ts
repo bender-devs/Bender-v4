@@ -1,7 +1,7 @@
 import { DURATION_REGEX } from '../data/constants.js';
 import type { LangKey } from '../text/languageList.js';
 import { DURATION_UNITS } from '../types/numberTypes.js';
-import type { Locale, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
+import type { Locale, Snowflake, Timestamp, TimestampFormat, UnixTimestampMillis } from '../types/types.js';
 import LangUtils from './language.js';
 import TextUtils from './text.js';
 
@@ -10,6 +10,12 @@ type UnitName = keyof typeof DURATION_UNITS;
 export default class TimeUtils {
     static parseTimestampMillis(timestamp: Timestamp): UnixTimestampMillis {
         return Date.parse(timestamp);
+    }
+    static parseTimestamp(timestampMs: UnixTimestampMillis): Timestamp {
+        return new Date(timestampMs).toISOString() as Timestamp;
+    }
+    static parseTimestampFromSnowflake(snowflake: Snowflake): Timestamp {
+        return this.parseTimestamp(TextUtils.timestamp.fromSnowflake(snowflake));
     }
 
     static sinceTimestamp(timestamp: Timestamp) {
