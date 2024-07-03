@@ -225,11 +225,16 @@ type DotFormatKeys<KeyMap extends ObjectLevel2> = {
     [Key in keyof KeyMap]: Key extends string ? DotFormat<Key, KeyMap[Key]> : never;
 }[keyof KeyMap];
 
+// Now works with mixed nesting, i.e. {a: {b1: 'foo', b2: {c: 'bar'}}}
 type DotFormatKeysNested<KeyMap extends ObjectLevel2> = {
     [Key in keyof KeyMap]: Key extends string
-        ? KeyMap[Key] extends ObjectLevel2
-            ? `${Key}.${DotFormatKeys<KeyMap[Key]>}`
-            : never
+        ? {
+              [SubKey in keyof Required<KeyMap[Key]>]: SubKey extends string
+                  ? Required<KeyMap[Key]>[SubKey] extends ObjectLevel1
+                      ? DotFormat<`${Key}.${SubKey}`, Required<KeyMap[Key]>[SubKey]>
+                      : never
+                  : never;
+          }[keyof KeyMap[Key]]
         : never;
 }[keyof KeyMap];
 
