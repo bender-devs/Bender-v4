@@ -6,6 +6,7 @@ import type {
     Snowflake,
     TimestampFormat,
     UnixTimestampMillis,
+    URL,
 } from '../types/types.js';
 import { TIMESTAMP_FORMATS } from '../types/types.js';
 
@@ -175,11 +176,19 @@ export default class TextUtils {
     }
 
     static message = {
-        getLink: (message: Message & { guild_id: Snowflake }): string => {
+        getLink: (message: Message & { guild_id: Snowflake }): URL => {
             return `${CONSTANTS.DISCORD_DOMAIN}/channels/${message.guild_id}/${message.channel_id}/${message.id}`;
         },
-        getLinkByIDs: (guild_id: Snowflake, channel_id: Snowflake, message_id: Snowflake): string => {
+        getLinkByIDs: (guild_id: Snowflake, channel_id: Snowflake, message_id: Snowflake): URL => {
             return `${CONSTANTS.DISCORD_DOMAIN}/channels/${guild_id}/${channel_id}/${message_id}`;
+        },
+    };
+
+    static premium = {
+        storeLink: (app_id: Snowflake, sku_id?: Snowflake): URL => {
+            return `${CONSTANTS.DISCORD_DOMAIN}/application-directory/${app_id}/store${
+                sku_id ? `/${sku_id}` : ''
+            }`;
         },
     };
 }

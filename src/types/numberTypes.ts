@@ -228,12 +228,23 @@ export const enum INTERACTION_CALLBACK_TYPES {
     UPDATE_MESSAGE,
     APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
     MODAL,
+    /** @deprecated */
+    PREMIUM_REQUIRED,
 }
 
 // https://discord.com/developers/docs/interactions/slash-commands#interaction-response-object-interaction-application-command-callback-data-flags
 export const enum INTERACTION_CALLBACK_FLAGS {
     SUPPRESS_EMBEDS = 1 << 2,
     EPHEMERAL = 1 << 6,
+}
+
+// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-context-types
+export const enum INTERACTION_CONTEXT_TYPES {
+    GUILD = 0,
+    /** DM between user and bot */
+    BOT_DM,
+    /** Group DM or DM between users */
+    PRIVATE_CHANNEL,
 }
 
 // https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types
@@ -279,12 +290,19 @@ export const enum MESSAGE_COMPONENT_TYPES {
 }
 
 // https://discord.com/developers/docs/interactions/message-components#button-object-button-styles
+export const enum BUTTON_STYLES_GENERIC {
+    PRIMARY = 1,
+    SECONDARY,
+    SUCCESS,
+    DANGER,
+}
 export const enum BUTTON_STYLES {
     PRIMARY = 1,
     SECONDARY,
     SUCCESS,
     DANGER,
     LINK,
+    PREMIUM,
 }
 
 // https://discord.com/developers/docs/interactions/message-components#text-input-object-text-input-styles
@@ -305,6 +323,12 @@ export const enum APPLICATION_FLAGS {
     GATEWAY_MESSAGE_CONTENT = 1 << 18,
     GATEWAY_MESSAGE_CONTENT_LIMITED = 1 << 19,
     APPLICATION_COMMAND_BADGE = 1 << 23,
+}
+
+// https://discord.com/developers/docs/resources/application#application-object-application-integration-types
+export const enum APPLICATION_INTEGRATION_TYPES {
+    GUILD_INSTALL = '0',
+    USER_INSTALL = '1',
 }
 
 // https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum
@@ -339,6 +363,7 @@ export const enum AUTOMOD_TRIGGER_TYPES {
     SPAM = 3,
     KEYWORD_PRESET,
     MENTION_SPAM,
+    MEMBER_PROFILE,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types
@@ -351,6 +376,7 @@ export const enum AUTOMOD_KEYWORD_PRESET_TYPES {
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types
 export const enum AUTOMOD_EVENT_TYPES {
     MESSAGE_SEND = 1,
+    MEMBER_UPDATE,
 }
 
 // https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-action-object-action-types
@@ -358,6 +384,7 @@ export const enum AUTOMOD_ACTION_TYPES {
     BLOCK_MESSAGE = 1,
     SEND_ALERT_MESSAGE,
     TIMEOUT,
+    BLOCK_MEMBER_INTERACTION,
 }
 
 // https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events
@@ -418,6 +445,17 @@ export const enum AUDIT_LOG_ENTRY_TYPES {
     AUTO_MODERATION_USER_COMMUNICATION_DISABLED,
     CREATOR_MONETIZATION_REQUEST_CREATED = 150,
     CREATOR_MONETIZATION_TERMS_ACCEPTED,
+}
+
+// https://discord.com/developers/docs/monetization/entitlements#entitlement-object-entitlement-types
+export const enum ENTITLEMENT_TYPES {
+    PURCHASE = 1,
+    PREMIUM_SUBSCRIPTION,
+    DEVELOPER_GIFT,
+    TEST_MODE_PURCHASE,
+    FREE_PURCHASE,
+    PREMIUM_PURCHASE,
+    APPLICATION_SUBSCRIPTION,
 }
 
 // https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-opcodes
@@ -526,6 +564,14 @@ export const PERMISSIONS = {
     SEND_MESSAGES_IN_THREADS: 1n << 38n,
     USE_EMBEDDED_ACTIVITIES: 1n << 39n,
     MODERATE_MEMBERS: 1n << 40n,
+    VIEW_CREATOR_MONETIZATION_ANALYTICS: 1n << 41n,
+    USE_SOUNDBOARD: 1n << 42n,
+    CREATE_GUILD_EXPRESSIONS: 1n << 43n,
+    CREATE_EVENTS: 1n << 44n,
+    USE_EXTERNAL_SOUNDS: 1n << 45n,
+    SEND_VOICE_MESSAGES: 1n << 46n,
+    SEND_POLLS: 1n << 49n,
+    USE_EXTERNAL_APPS: 1n << 50n,
 };
 
 export const ALL_PERMISSIONS = 0b1111111111111111111111111111111111111111; // 40 digits

@@ -813,6 +813,9 @@ export type InteractionBase = {
     channel_id?: Snowflake;
     /** User's locale. Not present in ping interactions. */
     locale: Locale;
+    entitlements: Entitlement[];
+    authorizing_integration_owners: AuthorizingIntegrationOwners;
+    context?: num.INTERACTION_CONTEXT_TYPES;
 };
 export interface GuildInteraction extends InteractionBase {
     guild: PartialGuild;
@@ -888,6 +891,9 @@ export type MessageInteraction = {
     user: User;
 };
 
+// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object
+export type AuthorizingIntegrationOwners = Record<num.APPLICATION_INTEGRATION_TYPES, Snowflake | '0'>;
+
 /****** application command types ******/
 
 export const LOCALE_LIST = [
@@ -925,19 +931,26 @@ export const LOCALE_LIST = [
 export type Locale = (typeof LOCALE_LIST)[number];
 export type LocaleDict = Partial<Record<Locale, string | string[]>>;
 
+// https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure
 export type CommandBase = {
     name?: string;
     name_localizations?: LocaleDict;
     description?: string;
     description_localizations?: LocaleDict;
     options?: CommandOption[];
+    /** @deprecated */
+    default_permission?: boolean;
     default_member_permissions?: Bitfield | null;
+    /** @deprecated */
     dm_permission?: boolean | null;
     type?: num.COMMAND_TYPES;
 };
 export interface CommandCreateData extends CommandBase {
     name: string;
     description: string;
+    nsfw?: boolean;
+    integration_types?: num.APPLICATION_INTEGRATION_TYPES[];
+    contexts?: num.INTERACTION_CONTEXT_TYPES[];
 }
 export type CommandEditData = Omit<CommandBase, 'type'>;
 
@@ -986,6 +999,7 @@ export type CommandPermissionsData = {
 };
 
 /************ message types ************/
+// https://discord.com/developers/docs/resources/channel#message-object
 
 export type Message = {
     id: Snowflake;
@@ -1014,6 +1028,7 @@ export type Message = {
     message_reference?: MessageReference;
     flags?: num.MESSAGE_FLAGS;
     referenced_message?: Message | null;
+    interaction_metadata?: MessageInteractionMetadata;
     interaction?: MessageInteraction;
     thread?: ThreadChannel;
     components?: MessageComponent[];
@@ -1041,6 +1056,13 @@ export type MessageReference = {
     channel_id?: Snowflake;
     guild_id?: Snowflake;
     fail_if_not_exists?: boolean;
+};
+
+// https://discord.com/developers/docs/resources/channel#message-interaction-metadata-object
+export type MessageInteractionMetadata = {
+    id: Snowflake;
+    type: num.INTERACTION_REQUEST_TYPES;
+    user: User;
 };
 
 export interface PartialMessage extends Partial<Message> {
@@ -1111,15 +1133,32 @@ export interface MessageComponentRow<ComponentType extends MessageComponent = Me
     type: num.MESSAGE_COMPONENT_TYPES.ACTION_ROW;
     components: ComponentType[];
 }
-export interface MessageComponentButton extends MessageComponentBase {
+interface MessageComponentButtonBase extends MessageComponentBase {
     type: num.MESSAGE_COMPONENT_TYPES.BUTTON;
-    custom_id?: string;
     disabled?: boolean;
-    style: num.BUTTON_STYLES;
+}
+interface MessageComponentButtonGeneric extends MessageComponentButtonBase {
+    disabled?: boolean;
     label?: string;
     emoji?: PartialEmoji;
-    url?: URL;
 }
+export interface MessageComponentButtonNormal extends MessageComponentButtonGeneric {
+    style: num.BUTTON_STYLES_GENERIC;
+    custom_id: string;
+}
+export interface MessageComponentButtonLink extends MessageComponentButtonGeneric {
+    style: num.BUTTON_STYLES.LINK;
+    url: URL;
+}
+export interface MessageComponentButtonPremium extends MessageComponentButtonBase {
+    style: num.BUTTON_STYLES.PREMIUM;
+    sku_id: Snowflake;
+}
+export type MessageComponentButton =
+    | MessageComponentButtonNormal
+    | MessageComponentButtonLink
+    | MessageComponentButtonPremium;
+
 export interface Select extends MessageComponentBase {
     type:
         | num.MESSAGE_COMPONENT_TYPES.CHANNEL_SELECT
@@ -1218,6 +1257,7 @@ export type EmbedField = {
 };
 
 /************ application types ************/
+// https://discord.com/developers/docs/resources/application#application-object
 
 export type Application = {
     id: Snowflake;
@@ -1242,10 +1282,14 @@ export type Application = {
     install_params?: ApplicationInstallParams;
     custom_install_url?: URL;
     role_connections_verification_url?: URL;
+    integration_types_config?: Record<num.APPLICATION_INTEGRATION_TYPES, InstallParamsWrapper>;
 };
 
 export type PartialApplication = Pick<Application, 'id' | 'flags'>;
 
+type InstallParamsWrapper = {
+    oauth2_install_params: ApplicationInstallParams;
+};
 export type ApplicationInstallParams = {
     scopes: string[];
     permissions: string;
@@ -1306,7 +1350,9 @@ export type AutoModAction = {
 
 type AutoModActionMetadata = {
     channel_id?: Snowflake;
+    /** maximum of 2419200 seconds (4 weeks) */
     duration_seconds?: number;
+    /** maximum of 150 characters */
     custom_message?: string;
 };
 
@@ -1337,6 +1383,22 @@ export interface ExtendedInvite extends Invite {
     temporary: boolean;
     created_at: Timestamp;
 }
+
+/************ entitlement types ************/
+// https://discord.com/developers/docs/monetization/entitlements#entitlement-object
+
+export type Entitlement = {
+    id: Snowflake;
+    sku_id: Snowflake;
+    application_id: Snowflake;
+    user_id?: Snowflake;
+    type: num.ENTITLEMENT_TYPES;
+    deleted: boolean;
+    starts_at?: Timestamp;
+    ends_at?: Timestamp;
+    guild_id?: Snowflake;
+    consumed?: boolean;
+};
 
 /************ misc types ************/
 
