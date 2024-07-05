@@ -276,7 +276,7 @@ export default class SlashCommandManager {
         if (interaction.locale) {
             localizedMatch = this.#findCommandLocalized(name, interaction.locale);
         }
-        if (!localizedMatch && interaction.guild_locale) {
+        if (!localizedMatch && 'guild_locale' in interaction && interaction.guild_locale) {
             localizedMatch = this.#findCommandLocalized(name, interaction.guild_locale);
         }
         if (localizedMatch) {

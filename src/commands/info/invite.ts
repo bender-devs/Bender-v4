@@ -26,12 +26,13 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
         return this.respondKey(interaction, 'INVITE_INFO_FETCH_FAILED', 'ERROR', { ephemeral: true });
     }
 
-    const userID = interaction.member?.user.id;
+    const authorID = 'member' in interaction ? interaction.member.user.id : interaction.user.id;
     let fullInvite: ExtendedInvite | null = null;
     if (
-        userID &&
+        'guild_id' in interaction &&
+        authorID &&
         invite.guild.id === interaction.guild_id &&
-        this.bot.perms.matchesMemberCache(userID, 'MANAGE_GUILD', interaction.guild_id)
+        this.bot.perms.matchesMemberCache(authorID, 'MANAGE_GUILD', interaction.guild_id)
     ) {
         const invites = await this.bot.api.invite.list(interaction.guild_id).catch(() => null);
         if (invites) {
@@ -42,7 +43,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
     let description = `**ID:** ${invite.guild.id}`;
     if (invite.channel) {
         let cachedChannel: Channel | null = null;
-        if (invite.guild.id === interaction.guild_id) {
+        if ('guild_id' in interaction && invite.guild.id === interaction.guild_id) {
             cachedChannel = this.bot.cache.channels.get(interaction.guild_id, invite.channel.id);
         } else {
             cachedChannel = this.bot.cache.channels.find(invite.channel.id);
@@ -52,7 +53,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
             `INVITE_INFO${isVoice ? '_VOICE' : ''}_CHANNEL`,
             {
                 channel:
-                    invite.guild.id === interaction.guild_id
+                    'guild_id' in interaction && invite.guild.id === interaction.guild_id
                         ? TextUtils.mention.parseChannel(invite.channel.id)
                         : `#${invite.channel.name}`,
             },

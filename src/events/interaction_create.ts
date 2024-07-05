@@ -11,10 +11,10 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
     }
 
     cacheHandler = (eventData: InteractionCreateData) => {
-        if (eventData.guild_id && eventData.member) {
+        if ('guild_id' in eventData) {
             this.bot.cache.members.set(eventData.guild_id, eventData.member);
-        }
-        if (eventData.user) {
+            this.bot.cache.users.set(eventData.member.user);
+        } else {
             this.bot.cache.users.set(eventData.user);
         }
         // TODO: cache interactions?
@@ -27,7 +27,7 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
                 // this should never happen
                 return null;
             }
-            if (eventData.guild_id === DEV_SERVER) {
+            if ('guild_id' in eventData && eventData.guild_id === DEV_SERVER) {
                 const devCmd = this.bot.commandManager.developer_commands.find((command) => command.name === name);
                 if (devCmd) {
                     this.bot.logger.debug('INTERACTION', `Received developer command: /${name}`);
@@ -43,7 +43,7 @@ export default class InteractionCreateHandler extends EventHandler<InteractionCr
                     });
                 }
             }
-            if (eventData.guild_id) {
+            if ('guild_id' in eventData && eventData.guild_id) {
                 // TODO: check db for guild (custom) commands
                 //this.bot.logger.debug('INTERACTION', `Guild command not found: /${name} [Guild ID: ${eventData.guild_id}]`);
             }

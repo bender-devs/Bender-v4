@@ -22,7 +22,7 @@ export default async function (
             partialUser = interaction.data.resolved.users[userID as types.Snowflake];
         }
     } else {
-        partialUser = interaction.member?.user || interaction.user || null;
+        partialUser = 'member' in interaction ? interaction.member.user : interaction.user;
     }
     if (!partialUser) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
@@ -39,7 +39,7 @@ export default async function (
         member = interaction.data.resolved.members[userID as types.Snowflake];
     }
     let guild: types.Guild | CachedGuild | null = null;
-    if (interaction.guild_id) {
+    if ('guild_id' in interaction) {
         if (!member) {
             member = await this.bot.api.member.fetch(interaction.guild_id, user.id).catch(() => null);
         }

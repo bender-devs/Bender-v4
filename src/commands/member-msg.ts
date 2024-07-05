@@ -215,12 +215,12 @@ export default class MemberMsgCommand extends SlashCommand {
     }
 
     async run(interaction: Interaction): CommandResponse {
-        const authorID = interaction.member?.user.id || interaction.user?.id;
+        if (!('guild_id' in interaction)) {
+            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
+        }
+        const authorID = interaction.member.user.id;
         if (!authorID) {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
-        }
-        if (!interaction.guild_id) {
-            return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
         }
 
         const subcommand = interaction.data?.options?.[0];

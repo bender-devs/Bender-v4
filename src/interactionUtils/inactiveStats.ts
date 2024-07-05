@@ -18,7 +18,7 @@ export default class RestrictEmojiUtils {
 
     async submitRoles(interactionData: InactiveStatsInteraction, newInteraction: Interaction) {
         const inter = interactionData.interaction;
-        if (!inter.guild_id) {
+        if (!('guild_id' in inter)) {
             this.bot.logger.debug(
                 'PENDING INTERACTIONS',
                 'Inactive stats: Initial interaction is missing guild_id:',

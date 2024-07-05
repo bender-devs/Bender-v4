@@ -11,7 +11,7 @@ export default async function (
     userID?: types.CommandOptionValue
 ) {
     let partialUser: types.PartialUser | null = null;
-    if (!userID && !interaction.guild_id) {
+    if (!userID && 'user' in interaction) {
         if (!interaction.user) {
             return this.respondKey(interaction, 'BANNER_INFO_MISSING_USER', 'WARNING', { ephemeral: true });
         }
@@ -70,7 +70,7 @@ export default async function (
     }
 
     let guild: types.Guild | CachedGuild | null = null;
-    if (interaction.guild_id) {
+    if ('guild_id' in interaction) {
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     if (!guild) {

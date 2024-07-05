@@ -485,7 +485,7 @@ export default class BlackjackUtils {
     }
 
     async processPlayerAction(interactionData: BlackjackInteraction, newInteraction: Interaction) {
-        const author = newInteraction.member?.user || newInteraction.user;
+        const author = 'member' in newInteraction ? newInteraction.member.user : newInteraction.user;
         if (!author) {
             this.bot.logger.debug('BLACKJACK', 'Interaction has no author:', newInteraction);
             return;

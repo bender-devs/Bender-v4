@@ -36,7 +36,11 @@ export default class MiscUtils {
                 ? EMOTES[emojiKey]
                 : SHITTY_EMOTES[emojiKey];
         }
-        return this.getEmojiText(emojiKey, interaction.guild_id, interaction.channel_id);
+        return this.getEmojiText(
+            emojiKey,
+            'guild_id' in interaction ? interaction.guild_id : undefined,
+            interaction.channel_id
+        );
     }
 
     static getDefaultEmoji(emojiKey: EmojiKey) {

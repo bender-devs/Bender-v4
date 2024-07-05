@@ -221,8 +221,8 @@ export default class TicTacToeUtils {
     }
 
     async processPlayerMove(interactionData: TicTacToeInteraction, newInteraction: Interaction) {
-        const author = newInteraction.member?.user.id || newInteraction.user?.id;
-        if (!author) {
+        const authorID = 'member' in newInteraction ? newInteraction.member.user.id : newInteraction.user.id;
+        if (!authorID) {
             this.bot.logger.debug(
                 'PENDING INTERACTIONS',
                 'Tic-tac-toe interaction has no author:',
@@ -230,7 +230,7 @@ export default class TicTacToeUtils {
             );
             return;
         }
-        if (author !== interactionData.author && author !== interactionData.target) {
+        if (authorID !== interactionData.author && authorID !== interactionData.target) {
             let failResponse = LangUtils.get('FUN_TTT_INTERACTION_UNINVITED', newInteraction.locale);
             failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
@@ -242,8 +242,8 @@ export default class TicTacToeUtils {
             });
         }
         if (
-            (interactionData.targetTurn && author !== interactionData.target) ||
-            (!interactionData.targetTurn && author !== interactionData.author)
+            (interactionData.targetTurn && authorID !== interactionData.target) ||
+            (!interactionData.targetTurn && authorID !== interactionData.author)
         ) {
             let failResponse = LangUtils.get('FUN_TTT_OUT_OF_TURN', newInteraction.locale);
             failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
@@ -280,7 +280,7 @@ export default class TicTacToeUtils {
             );
             return;
         }
-        interactionData.board[cellID] = author === interactionData.target ? 2 : 1;
+        interactionData.board[cellID] = authorID === interactionData.target ? 2 : 1;
 
         // ACK the current interaction
         await this.bot.api.interaction

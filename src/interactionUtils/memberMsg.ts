@@ -18,7 +18,7 @@ export default class MemberMsgUtils {
 
     async submit(interactionData: MemberMsgInteraction, newInteraction: Interaction) {
         const inter = interactionData.interaction;
-        if (!inter.guild_id) {
+        if (!('guild_id' in inter)) {
             this.bot.logger.debug(
                 'PENDING INTERACTIONS',
                 '[Member messages]',

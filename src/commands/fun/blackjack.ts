@@ -5,7 +5,7 @@ import MiscUtils from '../../utils/misc.js';
 import type FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction) {
-    const author = interaction.member?.user || interaction.user;
+    const author = 'member' in interaction ? interaction.member.user : interaction.user;
     if (!author) {
         return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
     }

@@ -125,8 +125,8 @@ export default class RPSUtils {
     }
 
     async processPlayerChoice(interactionData: RockPaperScissorsInteraction, newInteraction: Interaction) {
-        const author = newInteraction.member?.user.id || newInteraction.user?.id;
-        if (!author) {
+        const authorID = 'member' in newInteraction ? newInteraction.member.user.id : newInteraction.user.id;
+        if (!authorID) {
             this.bot.logger.debug(
                 'PENDING INTERACTIONS',
                 'Rock-paper-scissors interaction has no author:',
@@ -134,7 +134,7 @@ export default class RPSUtils {
             );
             return;
         }
-        if (author !== interactionData.author && author !== interactionData.target) {
+        if (authorID !== interactionData.author && authorID !== interactionData.target) {
             let failResponse = LangUtils.get('FUN_RPS_INTERACTION_UNINVITED', newInteraction.locale);
             failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
@@ -146,8 +146,8 @@ export default class RPSUtils {
             });
         }
         if (
-            (interactionData.targetChoice && author === interactionData.target) ||
-            (interactionData.authorChoice && author === interactionData.author)
+            (interactionData.targetChoice && authorID === interactionData.target) ||
+            (interactionData.authorChoice && authorID === interactionData.author)
         ) {
             let failResponse = LangUtils.get('FUN_RPS_ALREADY_CHOSE', newInteraction.locale);
             failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
@@ -176,7 +176,7 @@ export default class RPSUtils {
             );
             return;
         }
-        if (author === interactionData.author) {
+        if (authorID === interactionData.author) {
             interactionData.authorChoice = choice as RPSShow;
         } else {
             interactionData.targetChoice = choice as RPSShow;

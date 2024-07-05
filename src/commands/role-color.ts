@@ -94,8 +94,12 @@ export default class RoleColorCommand extends SlashCommand {
     }
 
     async run(interaction: Interaction): CommandResponse {
-        if (!interaction.guild_id) {
+        if (!('guild_id' in interaction)) {
             return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
+        }
+        const authorID = interaction.member.user.id;
+        if (!authorID) {
+            return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
         }
         if (!interaction.member) {
             return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');

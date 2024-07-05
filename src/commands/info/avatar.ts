@@ -11,7 +11,7 @@ export default async function (
     userID?: types.CommandOptionValue
 ) {
     let partialUser: types.PartialUser | null = null;
-    if (!userID && !interaction.guild_id) {
+    if (!userID && 'user' in interaction) {
         if (!interaction.user) {
             return this.respondKey(interaction, 'AVATAR_INFO_MISSING_USER', 'WARNING', { ephemeral: true });
         }
@@ -47,7 +47,7 @@ export default async function (
         const name = member?.nick ?? user.username;
 
         let avatarLink: types.URL;
-        if (member?.avatar && interaction.guild_id) {
+        if ('guild_id' in interaction && member?.avatar) {
             avatarLink = CDNUtils.memberAvatar(interaction.guild_id, user.id, member.avatar, undefined, 2048);
         } else if (user.avatar) {
             avatarLink = CDNUtils.userAvatar(user.id, user.avatar, undefined, 2048);
@@ -75,7 +75,7 @@ export default async function (
     }
 
     let guild: types.Guild | CachedGuild | null = null;
-    if (interaction.guild_id) {
+    if ('guild_id' in interaction) {
         guild = await this.bot.api.guild.fetch(interaction.guild_id);
     }
     if (!guild) {

@@ -186,7 +186,7 @@ export class CommandUtils {
     ) {
         const permNames = perms.map((perm) => LangUtils.getPermissionName(perm, interaction.locale));
         const key: LangKey = `${forUser ? 'USER_' : ''}MISSING_${
-            context === interaction.guild_id ? 'GUILD_' : ''
+            'guild_id' in interaction && context === interaction.guild_id ? 'GUILD_' : ''
         }PERMISSIONS`;
         return this.respondKeyReplace(
             interaction,

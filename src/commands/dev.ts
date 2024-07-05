@@ -231,8 +231,8 @@ export default class DevCommand extends SlashCommand {
     ];
 
     async run(interaction: Interaction): CommandResponse {
-        const user = (interaction.member || interaction).user;
-        if (!PermissionUtils.isOwner(user)) {
+        const author = 'member' in interaction ? interaction.member.user : interaction.user;
+        if (!PermissionUtils.isOwner(author)) {
             return this.respondKey(interaction, 'COMMAND_UNAUTHORIZED', 'AUTH', { ephemeral: true });
         }
         const args = interaction.data?.options;

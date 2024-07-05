@@ -27,8 +27,8 @@ export default async function (
     if (!partialChannel) {
         return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
     }
-    if (!interaction.guild_id) {
-        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: 'info channel' }, 'GUILD');
+    if (!('guild_id' in interaction)) {
+        return this.respondKeyReplace(interaction, 'GUILD_ONLY', { command: this.name }, 'GUILD');
     }
     if (!(BigInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(

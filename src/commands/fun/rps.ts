@@ -11,7 +11,7 @@ export default async function (
     show?: CommandOptionValue,
     userID?: CommandOptionValue
 ) {
-    const authorID = interaction.member?.user.id || interaction.user?.id;
+    const authorID = 'member' in interaction ? interaction.member.user.id : interaction.user.id;
     if (!authorID) {
         return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
     }

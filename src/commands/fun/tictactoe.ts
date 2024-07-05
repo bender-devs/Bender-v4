@@ -10,7 +10,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
     if (userString && typeof userString !== 'string') {
         return this.handleUnexpectedError(interaction, 'ARGS_INVALID_TYPE');
     }
-    const authorID = interaction.member?.user.id || interaction.user?.id;
+    const authorID = 'member' in interaction ? interaction.member.user.id : interaction.user.id;
     if (!authorID) {
         return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
     }

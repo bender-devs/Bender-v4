@@ -799,22 +799,31 @@ export type IntegrationApplication = {
 
 /************ interaction types ************/
 
-export type Interaction = {
+// https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object
+export type InteractionBase = {
     id: Snowflake;
     application_id: Snowflake;
     type: num.INTERACTION_REQUEST_TYPES;
     data?: InteractionData;
-    guild_id?: Snowflake;
-    channel_id?: Snowflake;
-    member?: Member;
-    user?: PartialUser;
     token: string;
     version: 1;
+    /** only present for component interactions */
     message?: Message;
-    app_permissions?: Bitfield;
-    locale?: Locale;
-    guild_locale?: Locale;
+    app_permissions: Bitfield;
+    channel_id?: Snowflake;
+    /** User's locale. Not present in ping interactions. */
+    locale: Locale;
 };
+export interface GuildInteraction extends InteractionBase {
+    guild: PartialGuild;
+    guild_id: Snowflake;
+    member: Member;
+    guild_locale?: Locale;
+}
+export interface NonGuildInteraction extends InteractionBase {
+    user: PartialUser;
+}
+export type Interaction = GuildInteraction | NonGuildInteraction;
 
 export type InteractionData = {
     id: Snowflake;
