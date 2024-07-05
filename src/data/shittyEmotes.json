@@ -30,6 +30,7 @@
     "LOADING":     "⌛",
     "INFO":        "ℹ",
     "HAL":         "🔴",
+    "HIERARCHY":   "🔥",
 
     "GUILD":      "🛠",
     "AUTH":       "🔑",

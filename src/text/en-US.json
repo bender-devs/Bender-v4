@@ -20,6 +20,10 @@
     "USER_OR_GUILD_NOT_FOUND": "Couldn't find user or server.",
     "CHANNEL_FETCH_FAILED": "Failed to get channel info.",
     "USER_FETCH_FAILED": "Failed to get user info.",
+    "MEMBER_FETCH_FAILED": "Failed to get member info.",
+    "GUILD_CACHE_FAILED": "Failed to get info about the server.",
+    "ROLE_LIST_FETCH_FAILED": "Failed to get info about the server's roles.",
+    "BOT_MEMBER_FETCH_FAILED": "Failed to fetch bot's member info.",
     "SEND_PROMPT_FAILED": "Failed to send prompt message.",
     "MESSAGE_TOO_LONG": "Message is too long! Please shorten it to {{chars}} or fewer characters.",
 
@@ -805,6 +809,10 @@
     "ROLE_COLOR_SET_UNNECESSARY": "The color of {{role}} is already set to `{{color}}`.",
     "ROLE_COLOR_SET_SUCCESS": "Set the color of {{role}} to `{{color}}`.",
     "ROLE_COLOR_SET_FAILED": "Failed to set the color of {{role}} to `{{color}}`.",
+
+    "ROLE_COLOR_EVERYONE": "The color of the @everyone role cannot be changed.",
+    "ROLE_COLOR_PERMISSION_USER": "You do not have permission to edit {{role}} as it's higher than or the same as your highest role.",
+    "ROLE_COLOR_PERMISSION_BOT": "I can't edit {{role}} as it's higher than or the same as my highest role.",
 
 
 
