@@ -1034,7 +1034,13 @@ export type Message = {
     components?: MessageComponent[];
     sticker_items?: StickerItem[];
     stickers?: Sticker[];
+    /** deduplicate messages using {@link Message.nonce} - only valid upon creating message */
     enforce_nonce?: boolean;
+    position?: number;
+    role_subscription_data?: RoleSubscriptionData;
+    resolved?: InteractionDataResolved;
+    poll?: Poll;
+    call?: Call;
 };
 
 interface UserMember extends User {
@@ -1042,6 +1048,56 @@ interface UserMember extends User {
 }
 
 export type WebhookUser = Pick<User, 'id' | 'username' | 'avatar'>;
+
+export type RoleSubscriptionData = {
+    role_subscription_listing_id: Snowflake;
+    tier_name: string;
+    total_months_subscribed: number;
+    is_renewal: boolean;
+};
+
+// https://discord.com/developers/docs/resources/poll#poll-object
+export type PollCreateData = {
+    question: PollMedia;
+    answers: PollAnswer[];
+    duration?: number;
+    allow_multiselect?: boolean;
+    layout_type?: num.POLL_LAYOUT_TYPES;
+};
+
+export interface Poll extends Required<Omit<PollCreateData, 'duration'>> {
+    /** Number of hours the poll should be open for */
+    expiry: Timestamp | null;
+    results?: PollResults;
+}
+
+export type PollMedia = {
+    text?: string;
+    emoji?: PartialEmoji;
+};
+
+export type PollAnswer = {
+    answer_id: number;
+    poll_media: PollMedia;
+};
+
+export type PollResults = {
+    is_finalized: boolean;
+    answer_counts: PollAnswerCount[];
+};
+
+export type PollAnswerCount = {
+    /** matches answer_id from {@link PollAnswer} */
+    id: number;
+    count: number;
+    me_voted: boolean;
+};
+
+// https://discord.com/developers/docs/resources/channel#message-call-object
+export type Call = {
+    participants: Snowflake[];
+    ended_timestamp?: Timestamp | null;
+};
 
 // https://discord.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference
 export type AllowedMentions = {

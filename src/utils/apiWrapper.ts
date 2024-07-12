@@ -816,6 +816,30 @@ export default class APIWrapper {
         },
     };
 
+    static poll = {
+        async getVoters(
+            channel_id: types.Snowflake,
+            message_id: types.Snowflake,
+            answer_id: number,
+            after?: types.Snowflake,
+            limit?: number
+        ) {
+            return APIWrapper.makeRequest<{ users: types.User[] }>(
+                'GET',
+                `/channels/${channel_id}/polls/${message_id}/answers/${answer_id}`,
+                {
+                    query: { after, limit },
+                    headers: AUTH_HEADER,
+                }
+            );
+        },
+        async end(channel_id: types.Snowflake, message_id: types.Snowflake) {
+            return APIWrapper.makeRequest<null>('POST', `/channels/${channel_id}/polls/${message_id}/expire`, {
+                headers: AUTH_HEADER,
+            });
+        },
+    };
+
     static gateway = {
         async fetchURL() {
             return APIWrapper.makeRequest<GatewayInfo>('GET', `/gateway`, {

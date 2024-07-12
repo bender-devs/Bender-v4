@@ -149,6 +149,11 @@ export const enum MESSAGE_FLAGS {
     FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = 1 << 8,
 }
 
+// https://discord.com/developers/docs/resources/poll#layout-type
+export const enum POLL_LAYOUT_TYPES {
+    DEFAULT = 1,
+}
+
 // https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
 export const enum SYSTEM_CHANNEL_FLAGS {
     SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0,

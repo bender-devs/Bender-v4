@@ -908,4 +908,26 @@ export default class APIInterface {
                 .catch(this.handleError.bind(this));
         },
     };
+
+    poll = {
+        getVoters: async (
+            channel_id: types.Snowflake,
+            message_id: types.Snowflake,
+            answer_id: number,
+            after?: types.Snowflake,
+            limit?: number
+        ) => {
+            return APIWrapper.poll
+                .getVoters(channel_id, message_id, answer_id, after, limit)
+                .then((res) => res.body)
+                .catch(this.handleError.bind(this));
+        },
+        /** can only be used by creator of the poll */
+        end: async (channel_id: types.Snowflake, message_id: types.Snowflake) => {
+            return APIWrapper.poll
+                .end(channel_id, message_id)
+                .then((res) => res.body)
+                .catch(this.handleError.bind(this));
+        },
+    };
 }
