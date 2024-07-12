@@ -897,11 +897,13 @@ export type AuthorizingIntegrationOwners = Record<num.APPLICATION_INTEGRATION_TY
 /****** application command types ******/
 
 export const LOCALE_LIST = [
+    'id', // Indonesian	    Bahasa Indonesia
     'da', // Danish          Dansk
     'de', // German          Deutsch
     'en-GB', // English, UK
     'en-US', // English, US
     'es-ES', // Spanish         Español
+    'es-419', //Spanish, LATAM	Español, LATAM
     'fr', // French          Français
     'hr', // Croation        Hrvatski
     'it', // Italian         Italiano
