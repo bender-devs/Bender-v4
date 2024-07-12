@@ -188,5 +188,13 @@
     "PERMISSION_USE_EXTERNAL_STICKERS": "Externe stickers gebruiken",
     "PERMISSION_SEND_MESSAGES_IN_THREADS": "Berichten sturen in threads",
     "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Activiteiten gebruiken",
-    "PERMISSION_MODERATE_MEMBERS": "Leden time-out geven"
+    "PERMISSION_MODERATE_MEMBERS": "Leden time-out geven",
+    "PERMISSION_VIEW_CREATOR_MONETIZATION_ANALYTICS": "Creatorinzichten bekijken",
+    "PERMISSION_USE_SOUNDBOARD": "Soundboard gebruiken",
+    "PERMISSION_CREATE_GUILD_EXPRESSIONS": "Uitdrukkingen creëren",
+    "PERMISSION_CREATE_EVENTS": "Evenementen creëren",
+    "PERMISSION_USE_EXTERNAL_SOUNDS": "Externe geluiden gebruiken",
+    "PERMISSION_SEND_VOICE_MESSAGES": "Spraakberichten versturen",
+    "PERMISSION_SEND_POLLS": "Peilingen aanmaken",
+    "PERMISSION_USE_EXTERNAL_APPS": "Gebruik externe apps"
 }

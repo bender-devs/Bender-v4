@@ -179,5 +179,13 @@
     "PERMISSION_USE_EXTERNAL_STICKERS": "Externe Sticker verwenden",
     "PERMISSION_SEND_MESSAGES_IN_THREADS": "Nachrichten in Threads senden",
     "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Aktivitäten nutzen",
-    "PERMISSION_MODERATE_MEMBERS": "Mitglieder im Timeout"
+    "PERMISSION_MODERATE_MEMBERS": "Mitglieder im Timeout",
+    "PERMISSION_VIEW_CREATOR_MONETIZATION_ANALYTICS": "Creator-Einblicke anzeigen",
+    "PERMISSION_USE_SOUNDBOARD": "Soundboard verwenden",
+    "PERMISSION_CREATE_GUILD_EXPRESSIONS": "Ausdrücke erstellen",
+    "PERMISSION_CREATE_EVENTS": "Events erstellen",
+    "PERMISSION_USE_EXTERNAL_SOUNDS": "Externe Sounds verwenden",
+    "PERMISSION_SEND_VOICE_MESSAGES": "Sprachnachrichten senden",
+    "PERMISSION_SEND_POLLS": "Umfragen erstellen",
+    "PERMISSION_USE_EXTERNAL_APPS": "Externe App verwenden"
 }
