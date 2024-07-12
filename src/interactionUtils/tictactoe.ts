@@ -1,6 +1,6 @@
 import type Bot from '../structures/bot.js';
 import {
-    BUTTON_STYLES,
+    BUTTON_STYLES_GENERIC,
     INTERACTION_CALLBACK_FLAGS,
     INTERACTION_CALLBACK_TYPES,
     MESSAGE_COMPONENT_TYPES,
@@ -49,7 +49,7 @@ export default class TicTacToeUtils {
         return {
             type: MESSAGE_COMPONENT_TYPES.BUTTON,
             custom_id: `ttt_${id}_${index}`,
-            style: BUTTON_STYLES.SECONDARY,
+            style: BUTTON_STYLES_GENERIC.SECONDARY,
             emoji: { name: TicTacToeUtils.getCellEmoji(index, value), id: null },
             disabled: win || value > 0,
         };

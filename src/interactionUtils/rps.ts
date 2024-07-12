@@ -1,6 +1,6 @@
 import type Bot from '../structures/bot.js';
 import {
-    BUTTON_STYLES,
+    BUTTON_STYLES_GENERIC,
     INTERACTION_CALLBACK_FLAGS,
     INTERACTION_CALLBACK_TYPES,
     MESSAGE_COMPONENT_TYPES,
@@ -34,21 +34,21 @@ export default class RPSUtils {
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `rps_${id}_r`,
-                        style: BUTTON_STYLES.PRIMARY,
+                        style: BUTTON_STYLES_GENERIC.PRIMARY,
                         emoji: { name: MiscUtils.getDefaultEmoji('ROCK'), id: null },
                         disabled,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `rps_${id}_p`,
-                        style: BUTTON_STYLES.PRIMARY,
+                        style: BUTTON_STYLES_GENERIC.PRIMARY,
                         emoji: { name: MiscUtils.getDefaultEmoji('PAPER'), id: null },
                         disabled,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `rps_${id}_s`,
-                        style: BUTTON_STYLES.PRIMARY,
+                        style: BUTTON_STYLES_GENERIC.PRIMARY,
                         emoji: { name: MiscUtils.getDefaultEmoji('SCISSORS'), id: null },
                         disabled,
                     },

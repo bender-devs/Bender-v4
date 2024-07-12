@@ -1,5 +1,9 @@
 import type Bot from '../structures/bot.js';
-import { BUTTON_STYLES, INTERACTION_CALLBACK_TYPES, MESSAGE_COMPONENT_TYPES } from '../types/numberTypes.js';
+import {
+    BUTTON_STYLES_GENERIC,
+    INTERACTION_CALLBACK_TYPES,
+    MESSAGE_COMPONENT_TYPES,
+} from '../types/numberTypes.js';
 import type { Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
 import CDNUtils from '../utils/cdn.js';
 import LangUtils from '../utils/language.js';
@@ -97,28 +101,28 @@ export default class BlackjackUtils {
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_hit`,
-                        style: BUTTON_STYLES.DANGER,
+                        style: BUTTON_STYLES_GENERIC.DANGER,
                         label: LangUtils.get('FUN_BJ_HIT', locale),
                         disabled: !canHit || disable,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_stand`,
-                        style: BUTTON_STYLES.SUCCESS,
+                        style: BUTTON_STYLES_GENERIC.SUCCESS,
                         label: LangUtils.get('FUN_BJ_STAND', locale),
                         disabled: interactionData.stand || perfect || disable,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_double`,
-                        style: BUTTON_STYLES.SECONDARY,
+                        style: BUTTON_STYLES_GENERIC.SECONDARY,
                         label: LangUtils.get('FUN_BJ_DOUBLE', locale),
                         disabled: !!rightHand || !canDouble || disable,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_split`,
-                        style: BUTTON_STYLES.PRIMARY,
+                        style: BUTTON_STYLES_GENERIC.PRIMARY,
                         label: LangUtils.get('FUN_BJ_SPLIT', locale),
                         disabled: !!rightHand || !canSplit || disable,
                     },
@@ -136,14 +140,14 @@ export default class BlackjackUtils {
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_hitRight`,
-                        style: BUTTON_STYLES.DANGER,
+                        style: BUTTON_STYLES_GENERIC.DANGER,
                         label: LangUtils.get('FUN_BJ_HIT_RIGHT', locale),
                         disabled: !canHitRight || disable,
                     },
                     {
                         type: MESSAGE_COMPONENT_TYPES.BUTTON,
                         custom_id: `bj_${id}_standRight`,
-                        style: BUTTON_STYLES.SUCCESS,
+                        style: BUTTON_STYLES_GENERIC.SUCCESS,
                         label: LangUtils.get('FUN_BJ_STAND_RIGHT', locale),
                         disabled: interactionData.standRight || perfectRight || disable,
                     },
