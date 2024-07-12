@@ -944,13 +944,13 @@ export type CommandBase = {
     /** @deprecated */
     dm_permission?: boolean | null;
     type?: num.COMMAND_TYPES;
+    nsfw?: boolean;
+    integration_types?: num.APPLICATION_INTEGRATION_TYPES[];
+    contexts?: num.INTERACTION_CONTEXT_TYPES[];
 };
 export interface CommandCreateData extends CommandBase {
     name: string;
     description: string;
-    nsfw?: boolean;
-    integration_types?: num.APPLICATION_INTEGRATION_TYPES[];
-    contexts?: num.INTERACTION_CONTEXT_TYPES[];
 }
 export type CommandEditData = Omit<CommandBase, 'type'>;
 
