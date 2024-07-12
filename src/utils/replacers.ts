@@ -42,8 +42,8 @@ export default class Replacers {
     ) {
         const mc = guild.approximate_member_count || '??';
         const replaceObj: ReplaceMap = {
-            user: DiscordUtils.user.getTag(user),
-            member: TextUtils.mention.parseUser(user.id),
+            user: DiscordUtils.user.tag(user),
+            member: TextUtils.user.format(user.id),
             id: user.id,
             server: guild.name,
             count: mc,
@@ -70,8 +70,8 @@ export default class Replacers {
         return this.replace(
             message,
             {
-                user: DiscordUtils.user.getTag(user),
-                moderator: DiscordUtils.user.getTag(moderator),
+                user: DiscordUtils.user.tag(user),
+                moderator: DiscordUtils.user.tag(moderator),
                 reason: reason || LangUtils.get('NONE', locale),
                 server: guildName,
             },

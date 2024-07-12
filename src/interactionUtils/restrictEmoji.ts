@@ -44,7 +44,7 @@ export default class RestrictEmojiUtils {
                         'REM_SET_ROLES',
                         {
                             emoji: interactionData.emojiText,
-                            roles: values.map((id) => TextUtils.mention.parseRole(id)).join(', '),
+                            roles: values.map((id) => TextUtils.role.format(id)).join(', '),
                         },
                         inter.locale
                     );

@@ -190,7 +190,7 @@ export default class StarboardUtils extends EventUtilsItem {
         message: Message,
         existingStarboardMessage?: Message
     ): Promise<MessageData> => {
-        const emojiText = TextUtils.emoji.parseDisplay(eventData.emoji);
+        const emojiText = TextUtils.emoji.format(eventData.emoji);
         const footer = LangUtils.getAndReplace(
             'MESSAGE_ID_FOOTER',
             { messageId: message.id },
@@ -207,7 +207,7 @@ export default class StarboardUtils extends EventUtilsItem {
         const embed: Embed = {
             author: {
                 name: message.author.username,
-                icon_url: DiscordUtils.user.getAvatar(message.author),
+                icon_url: DiscordUtils.user.avatar(message.author),
             },
             description: message.content,
             color: DEFAULT_COLOR, // TODO: get color from author roles

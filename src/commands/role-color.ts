@@ -123,7 +123,7 @@ export default class RoleColorCommand extends SlashCommand {
             return this.handleUnexpectedError(interaction, 'ARGS_UNRESOLVED');
         }
 
-        const roleMention = TextUtils.mention.parseRole(role.id);
+        const roleMention = TextUtils.role.format(role.id);
 
         if (subcommand === LangUtils.get('ROLE_COLOR_SUBCOMMAND_VIEW')) {
             if (!role.color) {
@@ -181,10 +181,7 @@ export default class RoleColorCommand extends SlashCommand {
                 return this.respondKey(interaction, 'ROLE_LIST_FETCH_FAILED', 'ERROR', { ephemeral: true });
             }
             if (!authorAdmin) {
-                const maxAuthorPosition = DiscordUtils.member.getHighestRole(
-                    interaction.member,
-                    roleList
-                )?.position;
+                const maxAuthorPosition = DiscordUtils.member.highestRole(interaction.member, roleList)?.position;
                 if (!maxAuthorPosition || role.position >= maxAuthorPosition) {
                     const response = LangUtils.getAndReplace(
                         'ROLE_COLOR_PERMISSION_USER',
@@ -203,7 +200,7 @@ export default class RoleColorCommand extends SlashCommand {
                 }
             }
             if (!botAdmin) {
-                const maxBotPosition = DiscordUtils.member.getHighestRole(botMember, roleList)?.position;
+                const maxBotPosition = DiscordUtils.member.highestRole(botMember, roleList)?.position;
                 if (!maxBotPosition || role.position >= maxBotPosition) {
                     return this.respondKeyReplace(
                         interaction,

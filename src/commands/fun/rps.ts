@@ -41,7 +41,7 @@ export default async function (
             const response = LangUtils.getAndReplace(
                 'FUN_RPS_BOT',
                 {
-                    bot: TextUtils.mention.parseUser(user.id),
+                    bot: TextUtils.user.format(user.id),
                 },
                 interaction.locale
             );
@@ -51,8 +51,8 @@ export default async function (
         const content = LangUtils.getAndReplace(
             'FUN_RPS_START',
             {
-                author: TextUtils.mention.parseUser(authorID),
-                user: TextUtils.mention.parseUser(userID as Snowflake),
+                author: TextUtils.user.format(authorID),
+                user: TextUtils.user.format(userID as Snowflake),
             },
             interaction.locale
         );

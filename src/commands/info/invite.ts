@@ -54,7 +54,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
             {
                 channel:
                     'guild_id' in interaction && invite.guild.id === interaction.guild_id
-                        ? TextUtils.mention.parseChannel(invite.channel.id)
+                        ? TextUtils.channel.format(invite.channel.id)
                         : `#${invite.channel.name}`,
             },
             interaction.locale
@@ -80,7 +80,7 @@ export default async function (this: InfoCommand, interaction: Interaction, invi
     };
 
     if (invite.inviter) {
-        const userTag = DiscordUtils.user.getTag(invite.inviter);
+        const userTag = DiscordUtils.user.tag(invite.inviter);
         const userText = LangUtils.getAndReplace('INVITE_INFO_CREATED_BY', { user: userTag }, interaction.locale);
         const userAvatar = CDNUtils.resolveUserAvatar(invite.inviter);
 

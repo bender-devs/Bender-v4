@@ -47,41 +47,50 @@ export default class TextUtils {
 
     static extractAny(text: string, exact = true): Snowflake | Emoji | number | null {
         return (
-            this.mention.extractUserID(text, exact) ||
-            this.mention.extractRoleID(text, exact) ||
-            this.mention.extractChannelID(text, exact) ||
+            this.user.extract(text, exact) ||
+            this.role.extract(text, exact) ||
+            this.channel.extract(text, exact) ||
             this.emoji.extract(text, exact) ||
             this.timestamp.extract(text, exact)
         );
     }
 
-    static mention = {
-        extractUserID: (text: string, exact = true): NullableID => {
+    static user = {
+        extract: (text: string, exact = true): NullableID => {
             const regex = exact ? USER_MENTION_REGEX_EXACT : USER_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
-        parseUser: (id: Snowflake): string => {
+        format: (id: Snowflake): string => {
             return `<@${id}>`;
         },
-        extractRoleID: (text: string, exact = true): NullableID => {
+    };
+
+    static role = {
+        extract: (text: string, exact = true): NullableID => {
             const regex = exact ? ROLE_MENTION_REGEX_EXACT : ROLE_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
-        parseRole: (id: Snowflake): string => {
+        format: (id: Snowflake): string => {
             return `<@&${id}>`;
         },
-        extractChannelID: (text: string, exact = true): NullableID => {
+    };
+
+    static channel = {
+        extract: (text: string, exact = true): NullableID => {
             const regex = exact ? CHANNEL_MENTION_REGEX_EXACT : CHANNEL_MENTION_REGEX;
             return this.#getFirstMatch(text, regex) as NullableID;
         },
-        parseChannel: (id: Snowflake): string => {
+        format: (id: Snowflake): string => {
             return `<#${id}>`;
         },
-        extractCommandID: (text: string, exact = true): NullableID => {
+    };
+
+    static command = {
+        extract: (text: string, exact = true): string => {
             const regex = exact ? COMMAND_LINK_REGEX_EXACT : COMMAND_LINK_REGEX;
-            return this.#getFirstMatch(text, regex) as NullableID;
+            return this.#getFirstMatch(text, regex) as string;
         },
-        parseCommand: (cmdString: string, id: Snowflake): string => {
+        format: (cmdString: string, id: Snowflake): string => {
             return `</${cmdString}:${id}>`;
         },
     };
@@ -98,10 +107,10 @@ export default class TextUtils {
                   }
                 : null;
         },
-        parse: (emoji: Emoji, addZeroWidth = false): string => {
+        formatCustom: (emoji: Emoji, addZeroWidth = false): string => {
             return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}${addZeroWidth ? '\u200B' : ''}>`;
         },
-        parseDisplay: (emoji: PartialEmoji, nameOnly = false): string => {
+        format: (emoji: PartialEmoji, nameOnly = false): string => {
             if (nameOnly) {
                 return `:${emoji.name}:`;
             }
@@ -121,9 +130,9 @@ export default class TextUtils {
                 id: emoji.id,
                 animated: emoji.animated,
             };
-            return TextUtils.emoji.parse(emojiCopy);
+            return TextUtils.emoji.formatCustom(emojiCopy);
         },
-        parseReaction: (emoji: Emoji): string => {
+        formatReaction: (emoji: Emoji): string => {
             return `${emoji.name}:${emoji.id}`;
         },
     };
@@ -134,7 +143,7 @@ export default class TextUtils {
             const match = this.#getFirstMatch(text, regex);
             return match ? parseInt(match) * 1000 : null;
         },
-        parse: (timestamp: UnixTimestampMillis, format?: TimestampFormat): string => {
+        format: (timestamp: UnixTimestampMillis, format?: TimestampFormat): string => {
             return `<t:${Math.round(timestamp / 1000)}${format ? `:${format}` : ''}>`;
         },
         // https://discord.com/developers/docs/reference#snowflakes-snowflake-id-format-structure-left-to-right
@@ -156,7 +165,7 @@ export default class TextUtils {
         extractAll: (text: string): string[] | null => {
             return text.match(CONSTANTS.INVITE_REGEX_GLOBAL);
         },
-        parse: (code: string): string => {
+        format: (code: string): string => {
             return CONSTANTS.INVITE_LINK_PREFIX + code;
         },
     };

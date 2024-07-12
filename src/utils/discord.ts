@@ -18,7 +18,7 @@ type MediaResult = { images: URL[]; videos: URL[] };
 
 export default class DiscordUtils {
     static member = {
-        getHighestRole: (member: Member | PartialMember, guildRoles: Role[]) => {
+        highestRole: (member: Member | PartialMember, guildRoles: Role[]) => {
             let highest: Role | null = null;
             for (const role of guildRoles) {
                 if (!highest || (role.position > highest.position && member.roles.includes(role.id))) {
@@ -27,11 +27,11 @@ export default class DiscordUtils {
             }
             return highest;
         },
-        getSortedRoles: (member: Member | PartialMember, guildRoles: Role[]) => {
+        sortedRoles: (member: Member | PartialMember, guildRoles: Role[]) => {
             const sortedGuildRoles = DiscordUtils.roles.sort(guildRoles);
             return sortedGuildRoles.filter((role) => member.roles.includes(role.id));
         },
-        getColor: (member: Member | PartialMember, guildRoles: Role[]) => {
+        color: (member: Member | PartialMember, guildRoles: Role[]) => {
             let highestWithColor: Role | null = null;
             for (const role of guildRoles) {
                 if (
@@ -52,7 +52,7 @@ export default class DiscordUtils {
     };
 
     static guild = {
-        getHighestRole: (guildRoles: Role[]) => {
+        highestRole: (guildRoles: Role[]) => {
             let highest: Role | null = null;
             for (const role of guildRoles) {
                 if (!highest || role.position > highest.position) {
@@ -61,7 +61,7 @@ export default class DiscordUtils {
             }
             return highest;
         },
-        getColor: (guildRoles: Role[]) => {
+        color: (guildRoles: Role[]) => {
             let highestWithColor: Role | null = null;
             for (const role of guildRoles) {
                 if (role.color && (!highestWithColor || role.position > highestWithColor.position)) {
@@ -99,7 +99,7 @@ export default class DiscordUtils {
     };
 
     static user = {
-        getTag: (user: User) => {
+        tag: (user: User) => {
             const discrimInt = parseInt(user.discriminator);
             if (discrimInt) {
                 // bot or user that hasn't migrated
@@ -112,7 +112,7 @@ export default class DiscordUtils {
                 return `@${user.username}`;
             }
         },
-        getAvatar: (
+        avatar: (
             user: User | WebhookUser,
             memberData?: { member: Member | PartialMember; guild_id: Snowflake },
             format?: ImageFormatAnimated,

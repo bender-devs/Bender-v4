@@ -32,7 +32,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
         const response = LangUtils.getAndReplace(
             'FUN_TTT_BOT',
             {
-                bot: TextUtils.mention.parseUser(user.id),
+                bot: TextUtils.user.format(user.id),
             },
             interaction.locale
         );
@@ -50,8 +50,8 @@ export default async function (this: FunCommand, interaction: Interaction, userS
         startText = LangUtils.getAndReplace(
             'FUN_TTT_START',
             {
-                user: TextUtils.mention.parseUser(userID),
-                first: TextUtils.mention.parseUser(botGoesFirst ? userID : authorID),
+                user: TextUtils.user.format(userID),
+                first: TextUtils.user.format(botGoesFirst ? userID : authorID),
             },
             interaction.locale
         );

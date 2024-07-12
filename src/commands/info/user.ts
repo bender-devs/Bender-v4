@@ -77,7 +77,7 @@ export default async function (
         footer: { text: footer },
     };
 
-    let userNames = DiscordUtils.user.getTag(user);
+    let userNames = DiscordUtils.user.tag(user);
     if (user.global_name) {
         userNames = `${user.global_name} | ${userNames}`;
     }
@@ -113,7 +113,7 @@ export default async function (
                     ? LangUtils.getAndReplace(
                           'USER_INFO_ROLES',
                           {
-                              roles: member.roles.map(TextUtils.mention.parseRole).join(', '),
+                              roles: member.roles.map(TextUtils.role.format).join(', '),
                               count: member.roles.length,
                           },
                           interaction.locale
@@ -124,7 +124,7 @@ export default async function (
 
             const roleList = await this.bot.api.role.list(guild.id);
             if (roleList && member.roles.length) {
-                const highestRole = isOwner ? null : DiscordUtils.member.getHighestRole(member, roleList);
+                const highestRole = isOwner ? null : DiscordUtils.member.highestRole(member, roleList);
                 if (highestRole) {
                     let roleIcon = '🔘';
                     const perms = BigInt(highestRole.permissions);
@@ -139,12 +139,12 @@ export default async function (
                     }
                     userRank = `${roleIcon} ${highestRole.name}`;
                 }
-                const sortedRoles = DiscordUtils.member.getSortedRoles(member, roleList);
+                const sortedRoles = DiscordUtils.member.sortedRoles(member, roleList);
                 if (sortedRoles.length) {
                     roles = `\n\n${LangUtils.getAndReplace(
                         'USER_INFO_ROLES',
                         {
-                            roles: sortedRoles.map((role) => TextUtils.mention.parseRole(role.id)).join(', '),
+                            roles: sortedRoles.map((role) => TextUtils.role.format(role.id)).join(', '),
                             count: sortedRoles.length,
                         },
                         interaction.locale
@@ -160,9 +160,9 @@ export default async function (
                 );
             }
             if (roleList && !user.accent_color) {
-                let color = DiscordUtils.member.getColor(member, roleList);
+                let color = DiscordUtils.member.color(member, roleList);
                 if (!color) {
-                    color = DiscordUtils.guild.getColor(roleList);
+                    color = DiscordUtils.guild.color(roleList);
                 }
                 if (color) {
                     embed.color = color;

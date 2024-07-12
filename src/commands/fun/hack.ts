@@ -34,7 +34,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
     const progressText = LangUtils.getAndReplace(
         'FUN_HACK_PROGRESS',
         {
-            user: TextUtils.mention.parseUser(userID),
+            user: TextUtils.user.format(userID),
             progress,
         },
         interaction.locale
@@ -63,7 +63,7 @@ export default async function (this: FunCommand, interaction: Interaction, userS
     const completedText = LangUtils.getAndReplace(
         'FUN_HACK_COMPLETE',
         {
-            user: TextUtils.mention.parseUser(userID),
+            user: TextUtils.user.format(userID),
             progress,
             token: `${part1}.${part2}.${part3}`,
         },

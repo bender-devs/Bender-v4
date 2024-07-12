@@ -80,7 +80,7 @@ export default class HelpCommand extends SlashCommand {
             const cachedCommand = await this.bot.db.command.getByName(command.name);
             const formattedSubcommands = subcommands.map((subcmd) => {
                 if (cachedCommand?.id) {
-                    return TextUtils.mention.parseCommand(`${commandName} ${subcmd}`, cachedCommand.id);
+                    return TextUtils.command.format(`${commandName} ${subcmd}`, cachedCommand.id);
                 }
                 return `\`/${commandName} ${subcmd}\``;
             });

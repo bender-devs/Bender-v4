@@ -26,7 +26,7 @@ export default class ReadyHandler extends EventHandler<ReadyData> {
     };
 
     handler = (/*eventData: ReadyData*/) => {
-        const userTag = DiscordUtils.user.getTag(this.bot.user);
+        const userTag = DiscordUtils.user.tag(this.bot.user);
         this.bot.logger.moduleLog(
             'LOGGED IN',
             `\nLocked and loaded. Time to kill all humans?\n[${userTag} | v${VERSION} | mode: ${process.env.RUNTIME_MODE}]\n`

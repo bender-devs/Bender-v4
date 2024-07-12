@@ -33,7 +33,7 @@ export default async function (
     if (!(BigInt(partialChannel.permissions) & PERMISSIONS.VIEW_CHANNEL)) {
         return this.respondMissingPermissions(
             interaction,
-            TextUtils.mention.parseChannel(chanID),
+            TextUtils.channel.format(chanID),
             ['VIEW_CHANNEL'],
             true
         );
@@ -47,7 +47,7 @@ export default async function (
     if (hasPermissionCached === false) {
         return this.respondMissingPermissions(
             interaction,
-            TextUtils.mention.parseChannel(chanID),
+            TextUtils.channel.format(chanID),
             ['VIEW_CHANNEL'],
             true
         );
@@ -59,9 +59,7 @@ export default async function (
         channel = await this.bot.api.channel.fetch(chanID);
     } catch (err) {
         if (err instanceof APIError && err.code === API_ERRORS.MISSING_ACCESS) {
-            return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(chanID), [
-                'VIEW_CHANNEL',
-            ]);
+            return this.respondMissingPermissions(interaction, TextUtils.channel.format(chanID), ['VIEW_CHANNEL']);
         }
         this.bot.logger.handleError('FETCH CHANNEL', err);
         return this.respondKey(interaction, 'CHANNEL_FETCH_FAILED', 'ERROR', { ephemeral: true });
@@ -114,7 +112,7 @@ export default async function (
 
         let channels = this.bot.cache.channels
             .listCategory(channel.guild_id, channel.id)
-            ?.map((chan) => TextUtils.mention.parseChannel(chan.id));
+            ?.map((chan) => TextUtils.channel.format(chan.id));
         if (channels && channels.length > CATEGORY_MAX_CHANNELS) {
             const remainder = channels.length - CATEGORY_MAX_CHANNELS;
             channels = channels.slice(0, CATEGORY_MAX_CHANNELS);

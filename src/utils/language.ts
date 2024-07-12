@@ -126,7 +126,7 @@ export default class LanguageUtils {
      */
     static getCommandLink(langKeys: LangKey[], commandID: Snowflake) {
         const cmdNames = langKeys.map((key) => this.get(key));
-        return TextUtils.mention.parseCommand(cmdNames.join(' '), commandID);
+        return TextUtils.command.format(cmdNames.join(' '), commandID);
     }
     /** create a localized text version of a command link; used when a command isn't cached */
     static getCommandText(langKeys: LangKey[], locale?: Locale) {

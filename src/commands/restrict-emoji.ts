@@ -90,7 +90,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
         const botCanUse =
             !currentRoles.length ||
             this.bot.perms.matchesMemberCache(this.bot.user.id, currentRoles, interaction.guild_id);
-        const emojiText = TextUtils.emoji.parseDisplay(emoji, !botCanUse);
+        const emojiText = TextUtils.emoji.format(emoji, !botCanUse);
 
         if (subcommand === LangUtils.get('REM_SUBCOMMAND_VIEW')) {
             if (!currentRoles.length) {
@@ -105,7 +105,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
                 'REM_VIEW_ROLES',
                 {
                     emoji: emojiText,
-                    roles: currentRoles.map((id) => TextUtils.mention.parseRole(id)).join(', '),
+                    roles: currentRoles.map((id) => TextUtils.role.format(id)).join(', '),
                 },
                 interaction.locale
             );

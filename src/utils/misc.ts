@@ -68,7 +68,7 @@ export default class MiscUtils {
         if (activity.type === ACTIVITY_TYPES.CUSTOM) {
             if (activity.emoji) {
                 const emojiObject = activity.emoji.id ? this.bot.cache.emojis.find(activity.emoji.id) : null;
-                const emojiText = emojiObject ? TextUtils.emoji.parse(emojiObject) : activity.emoji.name;
+                const emojiText = emojiObject ? TextUtils.emoji.formatCustom(emojiObject) : activity.emoji.name;
                 if (emojiText) {
                     status += ` ${emojiText}${activity.state ? ` **${activity.state}**` : ''}`;
                 } else if (presence.activities.length > 1) {

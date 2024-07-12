@@ -30,7 +30,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     description += LangUtils.getAndReplace(
         'EMOJI_INFO_RAW_FORMAT',
         {
-            emoji: TextUtils.emoji.parse(emoji, !cachedEmoji),
+            emoji: TextUtils.emoji.formatCustom(emoji, !cachedEmoji),
         },
         interaction.locale
     );
@@ -48,7 +48,7 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
         description += `\n${LangUtils.getAndReplace(
             'EMOJI_INFO_RESTRICTED',
             {
-                roles: emoji.roles.map(TextUtils.mention.parseRole).join(', '),
+                roles: emoji.roles.map(TextUtils.role.format).join(', '),
             },
             interaction.locale
         )}`;

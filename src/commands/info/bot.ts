@@ -112,13 +112,13 @@ export default async function (this: InfoCommand, interaction: Interaction) {
 
     const joeEmoji = this.bot.utils.getEmoji('JOE', interaction);
     const joe = await this.bot.api.user.fetch(OWNERS[0]);
-    let devInfo = `${joeEmoji} \`${joe ? DiscordUtils.user.getTag(joe) : 'Joe'}\``;
+    let devInfo = `${joeEmoji} \`${joe ? DiscordUtils.user.tag(joe) : 'Joe'}\``;
     const markEmoji = this.bot.utils.getEmoji('MARK', interaction);
     const mark = await this.bot.api.user.fetch(OWNERS[1]);
-    devInfo += ` | ${markEmoji} \`${mark ? DiscordUtils.user.getTag(mark) : 'Mark'}\``;
+    devInfo += ` | ${markEmoji} \`${mark ? DiscordUtils.user.tag(mark) : 'Mark'}\``;
     const lucyEmoji = this.bot.utils.getEmoji('LUCY', interaction);
     const lucy = await this.bot.api.user.fetch(OWNERS[2]);
-    devInfo += ` | ${lucyEmoji} \`${lucy ? DiscordUtils.user.getTag(lucy) : 'Lucy'}\``;
+    devInfo += ` | ${lucyEmoji} \`${lucy ? DiscordUtils.user.tag(lucy) : 'Lucy'}\``;
 
     description += LangUtils.getAndReplace('BOT_INFO_DEVELOPERS', { devInfo }, interaction.locale);
     description += `\n${LangUtils.get('BOT_INFO_LIBRARY', interaction.locale)}`;

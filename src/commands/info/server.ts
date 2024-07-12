@@ -76,7 +76,7 @@ export default async function (this: InfoCommand, interaction: Interaction) {
         `SERVER_INFO_OWNER${owner ? '' : '_UNKNOWN'}`,
         {
             userEmoji: this.getEmoji('USER', interaction),
-            owner: owner ? DiscordUtils.user.getTag(owner.user) : '',
+            owner: owner ? DiscordUtils.user.tag(owner.user) : '',
             nickInfo: owner?.nick ? ` ~ ${owner.nick}` : '',
         },
         interaction.locale

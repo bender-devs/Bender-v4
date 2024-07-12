@@ -167,7 +167,7 @@ export default class TicTacToeUtils {
                 winText = LangUtils.getAndReplace(
                     'FUN_TTT_RESULT',
                     {
-                        user: TextUtils.mention.parseUser(interactionData.author),
+                        user: TextUtils.user.format(interactionData.author),
                     },
                     newInteraction.locale
                 );
@@ -187,7 +187,7 @@ export default class TicTacToeUtils {
                 winText = LangUtils.getAndReplace(
                     'FUN_TTT_RESULT',
                     {
-                        user: TextUtils.mention.parseUser(interactionData.target),
+                        user: TextUtils.user.format(interactionData.target),
                     },
                     newInteraction.locale
                 );
@@ -316,7 +316,7 @@ export default class TicTacToeUtils {
             turnText = LangUtils.getAndReplace(
                 'FUN_TTT_TURN',
                 {
-                    user: TextUtils.mention.parseUser(
+                    user: TextUtils.user.format(
                         interactionData.targetTurn ? interactionData.target : interactionData.author
                     ),
                 },

@@ -102,14 +102,14 @@ export default class RPSUtils {
         }
         let winner, wChoice, loser, lChoice;
         if (win === 2) {
-            winner = TextUtils.mention.parseUser(interactionData.target);
+            winner = TextUtils.user.format(interactionData.target);
             wChoice = RPSUtils.getChoiceText(interactionData.targetChoice);
-            loser = TextUtils.mention.parseUser(interactionData.author);
+            loser = TextUtils.user.format(interactionData.author);
             lChoice = RPSUtils.getChoiceText(interactionData.authorChoice);
         } else {
-            winner = TextUtils.mention.parseUser(interactionData.author);
+            winner = TextUtils.user.format(interactionData.author);
             wChoice = RPSUtils.getChoiceText(interactionData.authorChoice);
-            loser = TextUtils.mention.parseUser(interactionData.target);
+            loser = TextUtils.user.format(interactionData.target);
             lChoice = RPSUtils.getChoiceText(interactionData.targetChoice);
         }
         const winText = LangUtils.getAndReplace(
@@ -200,7 +200,7 @@ export default class RPSUtils {
         let waitText = LangUtils.getAndReplace(
             'FUN_RPS_TURN',
             {
-                user: TextUtils.mention.parseUser(
+                user: TextUtils.user.format(
                     interactionData.authorChoice ? interactionData.target : interactionData.author
                 ),
             },

@@ -77,7 +77,7 @@ export default class TimeUtils {
             date = date.getTime();
         }
         const timestamp: UnixTimestampMillis = Math.round(date); // should always be an int but just in case
-        return TextUtils.timestamp.parse(timestamp, format);
+        return TextUtils.timestamp.format(timestamp, format);
     }
 
     static relative(date: Date | Timestamp | UnixTimestampMillis) {

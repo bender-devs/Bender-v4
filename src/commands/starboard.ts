@@ -241,7 +241,7 @@ export default class StarboardCommand extends SlashCommand {
             replyText += LangUtils.getAndReplace(
                 'STARBOARD_CHANNEL',
                 {
-                    channel: TextUtils.mention.parseChannel(starboard.channel),
+                    channel: TextUtils.channel.format(starboard.channel),
                 },
                 interaction.locale
             );
@@ -254,7 +254,7 @@ export default class StarboardCommand extends SlashCommand {
             replyText += LangUtils.getAndReplace(
                 'STARBOARD_BLACKLIST',
                 {
-                    blacklist: starboard.blacklist.map((id) => TextUtils.mention.parseChannel(id)).join(', '),
+                    blacklist: starboard.blacklist.map((id) => TextUtils.channel.format(id)).join(', '),
                 },
                 interaction.locale
             );
@@ -323,7 +323,7 @@ export default class StarboardCommand extends SlashCommand {
         // if the bot does not have the required permissions to send messages,
         if (!PermissionUtils.has(channel.permissions, 'SEND_MESSAGES')) {
             // return an error response
-            return this.respondMissingPermissions(interaction, TextUtils.mention.parseChannel(channel.id), [
+            return this.respondMissingPermissions(interaction, TextUtils.channel.format(channel.id), [
                 'SEND_MESSAGES',
             ]);
         }
@@ -483,7 +483,7 @@ export default class StarboardCommand extends SlashCommand {
                                 type: 'UPDATE',
                                 result: result.changes ? 'SUCCESS' : 'UNNECESSARY',
                             },
-                            TextUtils.mention.parseChannel(channelOrResponse.id)
+                            TextUtils.channel.format(channelOrResponse.id)
                         );
                     })
                     .catch((err) => {
@@ -524,7 +524,7 @@ export default class StarboardCommand extends SlashCommand {
                             },
                             typeof resolvedEmoji === 'string'
                                 ? resolvedEmoji
-                                : TextUtils.emoji.parse(resolvedEmoji)
+                                : TextUtils.emoji.formatCustom(resolvedEmoji)
                         );
                     })
                     .catch((err) => {

@@ -208,8 +208,8 @@ export default class MemberMsgCommand extends SlashCommand {
             );
         }
 
-        const setupCmd = TextUtils.mention.parseCommand(`${commandName} ${setupSubcmd}`, cachedCommand.id);
-        const setupDMCmd = TextUtils.mention.parseCommand(`${commandName} ${setupDMSubcmd}`, cachedCommand.id);
+        const setupCmd = TextUtils.command.format(`${commandName} ${setupSubcmd}`, cachedCommand.id);
+        const setupDMCmd = TextUtils.command.format(`${commandName} ${setupDMSubcmd}`, cachedCommand.id);
 
         return LangUtils.getAndReplace('MEMBER_MSG_DETAILS', { setupCmd, setupDMCmd }, locale);
     }
@@ -261,7 +261,7 @@ export default class MemberMsgCommand extends SlashCommand {
                 replyText += `\n${this.getEmoji('CHANNEL_TEXT', interaction)} `;
                 replyText += `__**${LangUtils.get('MEMBER_MSG_CHANNEL', interaction.locale)}**__ `;
                 if (msgs?.channel) {
-                    replyText += TextUtils.mention.parseChannel(msgs.channel);
+                    replyText += TextUtils.channel.format(msgs.channel);
                 } else {
                     replyText += LangUtils.get('NONE', interaction.locale);
                 }
@@ -303,11 +303,9 @@ export default class MemberMsgCommand extends SlashCommand {
                     return this.respondKey(interaction, 'ARGS_UNRESOLVED', 'ERROR', { ephemeral: true });
                 }
                 if (!PermissionUtils.has(channel.permissions, 'SEND_MESSAGES')) {
-                    return this.respondMissingPermissions(
-                        interaction,
-                        TextUtils.mention.parseChannel(channel.id),
-                        ['SEND_MESSAGES']
-                    );
+                    return this.respondMissingPermissions(interaction, TextUtils.channel.format(channel.id), [
+                        'SEND_MESSAGES',
+                    ]);
                 }
 
                 return this.bot.db.guild
