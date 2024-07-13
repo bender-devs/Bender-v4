@@ -121,7 +121,7 @@ export default async function (
                 { count: remainder },
                 interaction.locale
             );
-            channels.push(truncatedMsg);
+            channels.push(`*${truncatedMsg}*`);
         }
         let channelsInfo = '';
         if (channels?.length) {

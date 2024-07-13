@@ -80,6 +80,7 @@
     "BLOCKED":     "🚫",
     "TIC_TAC_TOE": "#️⃣",
     "WAITING":     "⏳",
+    "BLACKJACK":   "🃏",
 
     "ENABLED":   "<:online:681561477706154029>",
     "DISABLED":  "<:offline:681561593011503157>",

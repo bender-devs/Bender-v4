@@ -80,13 +80,14 @@ export default async function (
     }
 
     if (!show) {
-        const showMsg = LangUtils.getAndReplace(
-            'FUN_RPS_NO_SHOW',
+        let showMsg = LangUtils.get('FUN_RPS_NO_SHOW', interaction.locale);
+        showMsg += `\n-# ${LangUtils.getAndReplace(
+            'FUN_RPS_NO_SHOW_SUBTEXT',
             {
                 showOpt: LangUtils.get('FUN_RPS_OPTION', interaction.locale),
             },
             interaction.locale
-        );
+        )}`;
         return this.respond(interaction, showMsg, 'WARNING').catch(this.handleAPIError.bind(this));
     }
     if (typeof show !== 'string' || !['r', 'p', 's'].includes(show)) {
@@ -108,6 +109,7 @@ export default async function (
         replyString += LangUtils.get('FUN_RPS_WIN', interaction.locale);
     } else {
         replyString += LangUtils.get('FUN_RPS_LOSS', interaction.locale);
+        replyString += `\n-# ${LangUtils.get('FUN_RPS_LOSS_SUBTEXT', interaction.locale)}`;
     }
 
     return this.respond(interaction, replyString, choiceKey).catch(this.handleAPIError.bind(this));

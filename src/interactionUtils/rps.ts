@@ -135,8 +135,15 @@ export default class RPSUtils {
             return;
         }
         if (authorID !== interactionData.author && authorID !== interactionData.target) {
-            let failResponse = LangUtils.get('FUN_RPS_INTERACTION_UNINVITED', newInteraction.locale);
-            failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
+            const failResponseText = LangUtils.get('FUN_RPS_INTERACTION_UNINVITED', newInteraction.locale);
+            const failResponseSubtext = `\n-# ${LangUtils.get(
+                'FUN_RPS_INTERACTION_UNINVITED_SUBTEXT',
+                newInteraction.locale
+            )}`;
+            const failResponse = `${this.bot.utils.getEmoji(
+                'BLOCKED',
+                newInteraction
+            )} ${failResponseText}${failResponseSubtext}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {

@@ -101,12 +101,12 @@
     "USER_INFO_HUMAN": "{{userEmoji}} Mens",
     "USER_INFO_OWNER": "{{ownerEmoji}} Server Eigenaar",
     "USER_INFO_MEMBER": "{{userEmoji}} Lid",
-    "USER_INFO_UNKNOWN_STATUS": "*Onbekende status*",
+    "USER_INFO_UNKNOWN_STATUS": "Onbekende status",
     "USER_INFO_BOOST_INFO": "**Server Booster** sinds {{dateRelative}}",
     "USER_INFO_JOINED_AT": "**Lid geworden op:** {{dateRelative}}",
     "USER_INFO_CREATED_AT": "**Gecreeërd op:** {{dateRelative}}",
-    "USER_INFO_NO_ROLES": "*Lid heeft geen rollen.*",
-    "USER_INFO_BANNER": "**Banner:**",
+    "USER_INFO_NO_ROLES": "Lid heeft geen rollen.",
+    "USER_INFO_BANNER": "Banner:",
 
     "------- /info emoji -------": "",
 
@@ -196,5 +196,7 @@
     "PERMISSION_USE_EXTERNAL_SOUNDS": "Externe geluiden gebruiken",
     "PERMISSION_SEND_VOICE_MESSAGES": "Spraakberichten versturen",
     "PERMISSION_SEND_POLLS": "Peilingen aanmaken",
-    "PERMISSION_USE_EXTERNAL_APPS": "Gebruik externe apps"
+    "PERMISSION_USE_EXTERNAL_APPS": "Gebruik externe apps",
+
+    "PERMISSION_SHORTENED_MENTION_EVERYONE": "Vermeld @everyone"
 }

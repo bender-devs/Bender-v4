@@ -148,11 +148,18 @@ export default async function (this: InfoCommand, interaction: Interaction, role
             );
     }
 
-    description += '\n\n' + LangUtils.get(`ROLE_INFO_${role.hoist ? '' : 'NOT_'}HOISTED`, interaction.locale);
-    description +=
-        '\n' + LangUtils.get(`ROLE_INFO_${role.mentionable ? '' : 'NOT_'}MENTIONABLE`, interaction.locale);
+    description += `\n\n*${LangUtils.get(`ROLE_INFO_${role.hoist ? '' : 'NOT_'}HOISTED`, interaction.locale)}*`;
+    if (role.mentionable) {
+        description += `\n*${LangUtils.get('ROLE_INFO_MENTIONABLE', interaction.locale)}*`;
+    } else {
+        description += `\n*${LangUtils.getAndReplace(
+            'ROLE_INFO_NOT_MENTIONABLE',
+            { mentionPerm: LangUtils.get('PERMISSION_SHORTENED_MENTION_EVERYONE', interaction.locale) },
+            interaction.locale
+        )}*`;
+    }
     if (role.managed) {
-        description += '\n' + LangUtils.get('ROLE_INFO_MANAGED', interaction.locale);
+        description += `\n*${LangUtils.get('ROLE_INFO_MANAGED', interaction.locale)}*`;
     }
 
     const embed: Embed = { title, description };

@@ -107,7 +107,7 @@ export default async function (
             );
         }
         if (member) {
-            const noRolesText = LangUtils.get('USER_INFO_NO_ROLES', interaction.locale);
+            const noRolesText = `*${LangUtils.get('USER_INFO_NO_ROLES', interaction.locale)}*`;
             roles = `\n\n${
                 member.roles.length
                     ? LangUtils.getAndReplace(
@@ -185,7 +185,7 @@ export default async function (
                 avatar = CDNUtils.memberAvatar(guild.id, user.id, member.avatar);
             }
         } else {
-            memberNote = `\n\n${LangUtils.get('USER_INFO_NON_MEMBER', interaction.locale)}`;
+            memberNote = `\n\n-# ${LangUtils.get('USER_INFO_NON_MEMBER', interaction.locale)}`;
         }
     }
     const createdAt = TextUtils.timestamp.fromSnowflake(user.id);
@@ -193,7 +193,7 @@ export default async function (
 
     let bannerNote = '';
     if (user.banner) {
-        bannerNote = `${memberNote ? '' : '\n'}\n${LangUtils.get('USER_INFO_BANNER', interaction.locale)}`;
+        bannerNote = `${memberNote ? '' : '\n'}\n**${LangUtils.get('USER_INFO_BANNER', interaction.locale)}**`;
         embed.image = {
             url: CDNUtils.userBanner(user.id, user.banner, undefined, 256),
         };
@@ -209,7 +209,7 @@ export default async function (
         }
     } else {
         // if not a member, don't show status (sandboxing)
-        userStatus = LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale);
+        userStatus = `*${LangUtils.get('USER_INFO_UNKNOWN_STATUS', interaction.locale)}*`;
     }
 
     const description = TextUtils.truncate(

@@ -1,6 +1,7 @@
 import type Bot from '../structures/bot.js';
 import {
     BUTTON_STYLES_GENERIC,
+    INTERACTION_CALLBACK_FLAGS,
     INTERACTION_CALLBACK_TYPES,
     MESSAGE_COMPONENT_TYPES,
 } from '../types/numberTypes.js';
@@ -332,7 +333,8 @@ export default class BlackjackUtils {
 
         let result = BlackjackUtils.getWinner(interactionData);
 
-        let content = LangUtils.get('FUN_BJ_TITLE_START', locale);
+        const bjEmoji = this.bot.utils.getEmoji('BLACKJACK', interactionData.interaction);
+        let content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE_START', locale)}`;
         let userStatus = '',
             userStatusRight = '',
             botStatus = '';
@@ -341,26 +343,28 @@ export default class BlackjackUtils {
             userStatusRight = LangUtils.get('FUN_BJ_USER_BJ_RIGHT', locale);
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
         } else if (userBj && botBj) {
-            content = LangUtils.get('FUN_BJ_TITLE', locale);
+            content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE', locale)}`;
             content += `\n${LangUtils.get('FUN_BJ_PUSH', locale)}`;
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
             botStatus = LangUtils.get('FUN_BJ_BOT_BJ', locale);
         } else if (botBj) {
-            content = LangUtils.get('FUN_BJ_TITLE', locale);
-            content += `\n${LangUtils.get('FUN_BJ_LOSS', locale)}`;
+            content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE', locale)}`;
+            content += `\n**${LangUtils.get('FUN_BJ_LOSS', locale)}**`;
+            content += `\n-# ${LangUtils.get('FUN_BJ_LOSS_SUBTEXT', locale)}`;
             botStatus = LangUtils.get('FUN_BJ_BOT_BJ', locale);
             const userSum = BlackjackUtils.getSum(interactionData.authorHand);
             userStatus = LangUtils.getAndReplace('FUN_BJ_USER_HAS', { value: userSum }, locale);
         } else if (userBj) {
-            content = LangUtils.get('FUN_BJ_TITLE', locale);
-            content += `\n${LangUtils.get('FUN_BJ_WIN', locale)}`;
+            content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE', locale)}`;
+            content += `\n**${LangUtils.get('FUN_BJ_WIN', locale)}**`;
+            content += `\n-# ${LangUtils.get('FUN_BJ_WIN_SUBTEXT', locale)}`;
             userStatus = LangUtils.get('FUN_BJ_USER_BJ', locale);
             const botSum = BlackjackUtils.getSum(interactionData.botHand);
             botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_HAS', { value: botSum }, locale);
         } else {
             if (interactionData.authorRightHand || interactionData.authorHand.length > 2) {
                 // user has performed an action, don't show "Blackjack started" title
-                content = LangUtils.get('FUN_BJ_TITLE', locale);
+                content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE', locale)}`;
             }
             const botSum = BlackjackUtils.getSum(interactionData.botHand);
             if (botSum > 21) {
@@ -417,23 +421,27 @@ export default class BlackjackUtils {
                 }
             }
             if (result) {
-                content = `${LangUtils.get('FUN_BJ_TITLE', locale)}\n`;
+                content = `## ${bjEmoji} ${LangUtils.get('FUN_BJ_TITLE', locale)}\n`;
                 if (result.overall === RESULTS.BOT) {
                     if (interactionData.double) {
-                        content += LangUtils.get('FUN_BJ_LOSS_DOUBLE', locale);
+                        content += `**${LangUtils.get('FUN_BJ_LOSS_DOUBLE', locale)}**`;
                     } else {
-                        content += LangUtils.get('FUN_BJ_LOSS', locale);
+                        content += `**${LangUtils.get('FUN_BJ_LOSS', locale)}**`;
                     }
+                    content += `\n-# ${LangUtils.get('FUN_BJ_LOSS_SUBTEXT', locale)}`;
                 } else if (result.overall === RESULTS.PUSH) {
-                    content += LangUtils.get('FUN_BJ_PUSH', locale);
+                    content += `**${LangUtils.get('FUN_BJ_PUSH', locale)}**`;
                 } else if (result.overall === RESULTS.SPLIT) {
-                    content += LangUtils.get('FUN_BJ_SPLIT', locale);
+                    content += `**${LangUtils.get('FUN_BJ_SPLIT', locale)}**`;
                 } else if (result.overall === RESULTS.SPLIT_PUSH) {
-                    content += LangUtils.get('FUN_BJ_SPLIT_PUSH', locale);
+                    content += `**${LangUtils.get('FUN_BJ_SPLIT_PUSH', locale)}**`;
+                    content += `\n-# ${LangUtils.get('FUN_BJ_SPLIT_PUSH_SUBTEXT', locale)}`;
                 } else if (interactionData.double) {
-                    content += LangUtils.get('FUN_BJ_WIN_DOUBLE', locale);
+                    content += `**${LangUtils.get('FUN_BJ_WIN_DOUBLE', locale)}**`;
+                    content += `\n-# ${LangUtils.get('FUN_BJ_WIN_SUBTEXT', locale)}`;
                 } else {
-                    content += LangUtils.get('FUN_BJ_WIN', locale);
+                    content += `**${LangUtils.get('FUN_BJ_WIN', locale)}**`;
+                    content += `\n-# ${LangUtils.get('FUN_BJ_WIN_SUBTEXT', locale)}`;
                 }
             }
         }
@@ -502,6 +510,25 @@ export default class BlackjackUtils {
         if (!action || !BJ_ACTIONS.includes(action)) {
             this.bot.logger.debug('BLACKJACK', 'Interaction has an invalid custom ID:', newInteraction);
             return;
+        }
+
+        if (author.id !== interactionData.author) {
+            const failResponseText = LangUtils.get('FUN_BJ_INTERACTION_UNINVITED', newInteraction.locale);
+            const failResponseSubtext = `\n-# ${LangUtils.get(
+                'FUN_BJ_INTERACTION_UNINVITED_SUBTEXT',
+                newInteraction.locale
+            )}`;
+            const failResponse = `${this.bot.utils.getEmoji(
+                'BLOCKED',
+                newInteraction
+            )} ${failResponseText}${failResponseSubtext}`;
+            return this.bot.api.interaction.sendResponse(newInteraction, {
+                type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: failResponse,
+                    flags: INTERACTION_CALLBACK_FLAGS.EPHEMERAL,
+                },
+            });
         }
 
         // ACK the current interaction

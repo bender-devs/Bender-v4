@@ -92,12 +92,12 @@
     "USER_INFO_HUMAN": "{{userEmoji}} Mensch",
     "USER_INFO_OWNER": "{{ownerEmoji}} Besitzer",
     "USER_INFO_MEMBER": "{{userEmoji}} Member",
-    "USER_INFO_UNKNOWN_STATUS": "*unbekannter Status*",
+    "USER_INFO_UNKNOWN_STATUS": "unbekannter Status",
     "USER_INFO_BOOST_INFO": "**Server Booster** seit {{dateRelative}}",
     "USER_INFO_JOINED_AT": "**Beigetreten am:** {{dateRelative}}",
     "USER_INFO_CREATED_AT": "**Erstellt am:** {{dateRelative}}",
-    "USER_INFO_NO_ROLES": "*Member hat keine Rollen.*",
-    "USER_INFO_BANNER": "**Banner:**",
+    "USER_INFO_NO_ROLES": "Member hat keine Rollen.",
+    "USER_INFO_BANNER": "Banner:",
 
     "------- /info emoji -------": "",
 
@@ -187,5 +187,7 @@
     "PERMISSION_USE_EXTERNAL_SOUNDS": "Externe Sounds verwenden",
     "PERMISSION_SEND_VOICE_MESSAGES": "Sprachnachrichten senden",
     "PERMISSION_SEND_POLLS": "Umfragen erstellen",
-    "PERMISSION_USE_EXTERNAL_APPS": "Externe App verwenden"
+    "PERMISSION_USE_EXTERNAL_APPS": "Externe App verwenden",
+
+    "PERMISSION_SHORTENED_MENTION_EVERYONE": "Erwähne @everyone"
 }

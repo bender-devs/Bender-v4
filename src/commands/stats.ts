@@ -119,7 +119,10 @@ export default class StatsCommand extends SlashCommand {
                             { inactive, days },
                             interaction.locale
                         );
-                        resultMessage += `\n${LangUtils.get('STATS_INACTIVE_INCLUDE_ROLES', interaction.locale)}`;
+                        resultMessage += `\n*${LangUtils.get(
+                            'STATS_INACTIVE_INCLUDE_ROLES',
+                            interaction.locale
+                        )}*`;
 
                         return this.deferredResponse(
                             interaction,
@@ -183,6 +186,19 @@ export default class StatsCommand extends SlashCommand {
                     })?.length || 0;
 
                 if (!count) {
+                    if (game) {
+                        const replyText = LangUtils.getAndReplace(
+                            'STATS_PLAYING_RESULT_EMPTY',
+                            { game },
+                            interaction.locale
+                        );
+                        const replySubtext = LangUtils.getAndReplace(
+                            'STATS_PLAYING_RESULT_EMPTY_SUBTEXT',
+                            { game },
+                            interaction.locale
+                        );
+                        return this.respond(interaction, `${replyText}\n-# ${replySubtext}`, 'WARNING');
+                    }
                     return this.respondKeyReplace(
                         interaction,
                         `STATS_PLAYING_RESULT${game ? '' : '_GENERIC'}_EMPTY`,

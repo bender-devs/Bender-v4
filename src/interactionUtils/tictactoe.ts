@@ -161,38 +161,28 @@ export default class TicTacToeUtils {
 
     checkWinAndReply(interactionData: TicTacToeInteraction, newInteraction: Interaction) {
         const win = TicTacToeUtils.checkForWin(interactionData.board);
-        if (win === 1) {
-            let winText = LangUtils.get('FUN_TTT_RESULT_USER', newInteraction.locale);
-            if (interactionData.target) {
-                winText = LangUtils.getAndReplace(
-                    'FUN_TTT_RESULT',
-                    {
-                        user: TextUtils.user.format(interactionData.author),
-                    },
-                    newInteraction.locale
-                );
+        if (win === 1 || win === 2) {
+            let winText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} `;
+            if (win === 1) {
+                // author won
+                winText += LangUtils.get('FUN_TTT_RESULT_USER', newInteraction.locale);
+                winText += `\n-# ${LangUtils.get('FUN_TTT_RESULT_USER_SUBTEXT', newInteraction.locale)}`;
+            } else if (win === 2) {
+                if (interactionData.target) {
+                    // challenged user won
+                    winText = LangUtils.getAndReplace(
+                        'FUN_TTT_RESULT',
+                        {
+                            user: TextUtils.user.format(interactionData.target),
+                        },
+                        newInteraction.locale
+                    );
+                } else {
+                    // bot won
+                    winText += LangUtils.get('FUN_TTT_RESULT_BOT', newInteraction.locale);
+                    winText += `\n-# ${LangUtils.get('FUN_TTT_RESULT_BOT_SUBTEXT', newInteraction.locale)}`;
+                }
             }
-            winText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} ${winText}`;
-            return this.bot.api.interaction.editResponse(interactionData.interaction, {
-                content: winText,
-                components: TicTacToeUtils.getComponents(
-                    interactionData.board,
-                    interactionData.interaction.id,
-                    true
-                ),
-            });
-        } else if (win === 2) {
-            let winText = LangUtils.get('FUN_TTT_RESULT_BOT', newInteraction.locale);
-            if (interactionData.target) {
-                winText = LangUtils.getAndReplace(
-                    'FUN_TTT_RESULT',
-                    {
-                        user: TextUtils.user.format(interactionData.target),
-                    },
-                    newInteraction.locale
-                );
-            }
-            winText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} ${winText}`;
             return this.bot.api.interaction.editResponse(interactionData.interaction, {
                 content: winText,
                 components: TicTacToeUtils.getComponents(
@@ -202,22 +192,21 @@ export default class TicTacToeUtils {
                 ),
             });
         }
+
+        // no win - check for tie
         const playable = TicTacToeUtils.emptySpacesExist(interactionData.board);
-        if (!playable) {
-            const tieText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} ${LangUtils.get(
-                'FUN_TTT_RESULT_TIE',
-                newInteraction.locale
-            )}`;
-            return this.bot.api.interaction.editResponse(interactionData.interaction, {
-                content: tieText,
-                components: TicTacToeUtils.getComponents(
-                    interactionData.board,
-                    interactionData.interaction.id,
-                    true
-                ),
-            });
+        if (playable) {
+            return null;
         }
-        return null;
+
+        const tieText = `${this.bot.utils.getEmoji('TIC_TAC_TOE', newInteraction)} ${LangUtils.get(
+            'FUN_TTT_RESULT_TIE',
+            newInteraction.locale
+        )}`;
+        return this.bot.api.interaction.editResponse(interactionData.interaction, {
+            content: tieText,
+            components: TicTacToeUtils.getComponents(interactionData.board, interactionData.interaction.id, true),
+        });
     }
 
     async processPlayerMove(interactionData: TicTacToeInteraction, newInteraction: Interaction) {
@@ -231,8 +220,13 @@ export default class TicTacToeUtils {
             return;
         }
         if (authorID !== interactionData.author && authorID !== interactionData.target) {
-            let failResponse = LangUtils.get('FUN_TTT_INTERACTION_UNINVITED', newInteraction.locale);
-            failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
+            const failResponseText = LangUtils.get('FUN_TTT_INTERACTION_UNINVITED', newInteraction.locale);
+            const failResponseSubtext = LangUtils.get(
+                'FUN_TTT_INTERACTION_UNINVITED_SUBTEXT',
+                newInteraction.locale
+            );
+            const failEmoji = this.bot.utils.getEmoji('BLOCKED', newInteraction);
+            const failResponse = `${failEmoji} ${failResponseText}\n-# ${failResponseSubtext}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
@@ -245,8 +239,10 @@ export default class TicTacToeUtils {
             (interactionData.targetTurn && authorID !== interactionData.target) ||
             (!interactionData.targetTurn && authorID !== interactionData.author)
         ) {
-            let failResponse = LangUtils.get('FUN_TTT_OUT_OF_TURN', newInteraction.locale);
-            failResponse = `${this.bot.utils.getEmoji('BLOCKED', newInteraction)} ${failResponse}`;
+            const failResponseText = LangUtils.get('FUN_TTT_OUT_OF_TURN', newInteraction.locale);
+            const failResponseSubtext = LangUtils.get('FUN_TTT_OUT_OF_TURN_SUBTEXT', newInteraction.locale);
+            const failEmoji = this.bot.utils.getEmoji('BLOCKED', newInteraction);
+            const failResponse = `${failEmoji} ${failResponseText}\n-# ${failResponseSubtext}`;
             return this.bot.api.interaction.sendResponse(newInteraction, {
                 type: INTERACTION_CALLBACK_TYPES.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {

@@ -235,8 +235,7 @@ export default class StarboardUtils extends EventUtilsItem {
 
         const messageLink = TextUtils.message.getLinkByIDs(guild.id, eventData.channel_id, message.id);
         const messageData: MessageData = {
-            // TODO: replace footer *italic* with -# subtext when it's re-implemented
-            content: `# ${emojiText} **${reactionCount}**   •   ${messageLink}\n*${footer}*${imageLinks}`,
+            content: `# ${emojiText} **${reactionCount}**   •   ${messageLink}\n-# ${footer}${imageLinks}`,
             embeds: [embed],
         };
         // TODO: resolve buffers from URLs
