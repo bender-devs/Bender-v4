@@ -515,7 +515,7 @@
     "FUN_BJ_LOSS_DOUBLE": "You doubled down and lost!",
     "FUN_BJ_LOSS_SUBTEXT": "Get rekt.",
 
-    "FUN_BJ_BOT_FIRST": "My first card is:",
+    "FUN_BJ_BOT_FIRST": "My first card is: (value = **{{value}}**)",
     "FUN_BJ_BOT_HAS": "I have **{{value}}**:",
     "FUN_BJ_BOT_BJ": "I have a blackjack:",
     "FUN_BJ_BOT_BUST": "I went bust! (Total: {{value}})",

@@ -372,7 +372,8 @@ export default class BlackjackUtils {
             } else if (result) {
                 botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_HAS', { value: botSum }, locale);
             } else {
-                botStatus = LangUtils.get('FUN_BJ_BOT_FIRST', locale);
+                const botFirstCard = BlackjackUtils.getSum(interactionData.botHand.slice(0, 1));
+                botStatus = LangUtils.getAndReplace('FUN_BJ_BOT_FIRST', { value: botFirstCard }, locale);
             }
 
             const sum = BlackjackUtils.getSum(interactionData.authorHand);
