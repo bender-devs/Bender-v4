@@ -117,11 +117,12 @@
 
     "EMOJI_INFO_TITLE": "Emoji informatie- :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Gecreeërd op:** {{dateRelative}}",
-    "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`\n^ *kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is, zoals kanaal onderwerpen*",
-    "EMOJI_INFO_MANAGED": "{{infoEmoji}} *Deze emoji wordt beheerd door een externe dienst (zoals Twitch).*",
+    "EMOJI_INFO_RAW_FORMAT": "**Onbewerkt formaat:** `{{emoji}}`",
+    "EMOJI_INFO_RAW_FORMAT_SUBTEXT": "Kan gebruikt worden om emoji's te plaatsen waar er geen automatische aanvulling is",
+    "EMOJI_INFO_MANAGED": "Deze emoji wordt beheerd door een externe dienst (zoals Twitch).",
     "EMOJI_INFO_RESTRICTED": "De emoji is beperkt tot de volgende rollen: {{roles}}",
-    "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.*",
-    "EMOJI_INFO_LINK": "{{linkEmoji}} Bekijk de emoji in de browser",
+    "EMOJI_INFO_ANIMATED": "Deze emoji is geanimeerd, en kan alleen worden gebruikt door gebruikers met Nitro.",
+    "EMOJI_INFO_LINK": "Bekijk de emoji in de browser",
 
 
 

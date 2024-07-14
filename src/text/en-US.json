@@ -3,7 +3,8 @@
 
     "GUILD_ONLY": "`/{{command}}` is only available in servers, not DMs.",
     "COMMAND_UNAUTHORIZED": "You aren't authorized to use this command.",
-    "INTERACTION_ERROR_NOTICE": "*Errors like this shouldn't happen; if it persists, please report it in our support server:* {{invite}}",
+    "INTERACTION_ERROR_SUBTEXT": "Errors like this shouldn't happen.",
+    "INTERACTION_ERROR_NOTICE": "If this happens more than once, please report it in our support server: {{invite}}",
     "ARGS_MISSING": "No required arguments supplied.",
     "ARGS_INCOMPLETE": "Not all required arguments supplied.",
     "ARGS_INVALID_TYPE": "Some arguments had an invalid type.",
@@ -173,11 +174,12 @@
 
     "EMOJI_INFO_TITLE": "Emoji info - :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Created:** {{dateRelative}}",
-    "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`\n^ *can be used to put emojis where there's no autocomplete, such as channel topics*",
-    "EMOJI_INFO_MANAGED": "{{infoEmoji}} *This emoji is managed by an external service (such as Twitch.)*",
+    "EMOJI_INFO_RAW_FORMAT": "**Raw format:** `{{emoji}}`",
+    "EMOJI_INFO_RAW_FORMAT_SUBTEXT": "Can be used to type emojis without autocomplete",
+    "EMOJI_INFO_MANAGED": "This emoji is managed by an external service (such as Twitch.)",
     "EMOJI_INFO_RESTRICTED": "It is restricted to the following roles: {{roles}}",
-    "EMOJI_INFO_ANIMATED": "{{nitroEmoji}} *This emoji is animated, and can only be used by users with Nitro.*",
-    "EMOJI_INFO_LINK": "{{linkEmoji}} View emoji in browser",
+    "EMOJI_INFO_ANIMATED": "This emoji is animated, and can only be used by users with Nitro.",
+    "EMOJI_INFO_LINK": "View emoji in browser",
 
     "------- /info channel -------": "",
 
@@ -646,7 +648,7 @@
     "MINAGE_OPTION_RESET": "reset",
     "MINAGE_OPTION_RESET_DESCRIPTION": "Reset the message to default.",
 
-    "MINAGE_TITLE": "## Minimum account age settings",
+    "MINAGE_TITLE": "Minimum account age settings",
     "MINAGE_DURATION": "Minimum account age: **{{duration}}**",
     "MINAGE_DURATION_NONE": "Minimum account age: *Not configured*",
     "MINAGE_ACTION": "Action (when account is too new): **{{action}}**",
@@ -712,7 +714,7 @@
     "MEMBER_MSG_SUBCOMMAND_KICK_DM_DESCRIPTION": "Set the DM that's sent to members when they get kicked from the server.",
     "MEMBER_MSG_OPTION_KICK_DM_DESCRIPTION": "Example: You've been kicked by {moderator} for {reason}.",
 
-    "MEMBER_MSG_TITLE": "## Member messages",
+    "MEMBER_MSG_TITLE": "Member messages",
     "MEMBER_MSG_CHANNEL": "Member message channel:",
     "MEMBER_MSG_JOIN": "Join message:",
     "MEMBER_MSG_LEAVE": "Leave message:",
@@ -773,7 +775,7 @@
     "STARBOARD_SUBCOMMAND_BLACKLIST": "blacklist",
     "STARBOARD_SUBCOMMAND_BLACKLIST_DESCRIPTION": "Set channels where starboard should not be active.",
 
-    "STARBOARD_TITLE": "## Starboard settings",
+    "STARBOARD_TITLE": "Starboard settings",
     "STARBOARD_COUNT": "Number of reactions needed: **{{count}}**",
     "STARBOARD_CHANNEL_NONE": "Channel: *Not configured*",
     "STARBOARD_CHANNEL": "Channel: {{channel}}",

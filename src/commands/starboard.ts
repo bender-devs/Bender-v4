@@ -212,7 +212,7 @@ export default class StarboardCommand extends SlashCommand {
     }
 
     getSettingsOverview(interaction: Interaction, starboard?: GuildSettings['starboard']) {
-        let replyText = LangUtils.get('STARBOARD_TITLE', interaction.locale);
+        let replyText = `## ${LangUtils.get('STARBOARD_TITLE', interaction.locale)}`;
 
         const emojiKey = starboard?.enabled ? 'ENABLED' : 'DISABLED';
         replyText += `\n${this.getEmoji(emojiKey, interaction)} `;

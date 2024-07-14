@@ -256,7 +256,7 @@ export default class MemberMsgCommand extends SlashCommand {
 
         switch (subcommand?.name) {
             case LangUtils.get('MEMBER_MSG_SUBCOMMAND_VIEW'): {
-                let replyText = LangUtils.get('MEMBER_MSG_TITLE', interaction.locale);
+                let replyText = `## ${LangUtils.get('MEMBER_MSG_TITLE', interaction.locale)}`;
 
                 replyText += `\n${this.getEmoji('CHANNEL_TEXT', interaction)} `;
                 replyText += `__**${LangUtils.get('MEMBER_MSG_CHANNEL', interaction.locale)}**__ `;

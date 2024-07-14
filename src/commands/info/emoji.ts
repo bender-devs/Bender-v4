@@ -34,15 +34,11 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
         },
         interaction.locale
     );
+    description += `\n-# ^ ${LangUtils.get('EMOJI_INFO_RAW_FORMAT_SUBTEXT', interaction.locale)}`;
 
     if (emoji.managed) {
-        description += `\n${LangUtils.getAndReplace(
-            'EMOJI_INFO_MANAGED',
-            {
-                infoEmoji: this.getEmoji('INFO', interaction),
-            },
-            interaction.locale
-        )}`;
+        const infoEmoji = this.getEmoji('INFO', interaction);
+        description += `\n${infoEmoji}*${LangUtils.get('EMOJI_INFO_MANAGED', interaction.locale)}*`;
     }
     if (emoji.roles?.length) {
         description += `\n${LangUtils.getAndReplace(
@@ -55,26 +51,16 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     }
 
     if (emoji.animated) {
-        description += `\n${LangUtils.getAndReplace(
-            'EMOJI_INFO_ANIMATED',
-            {
-                nitroEmoji: this.getEmoji('NITRO', interaction),
-            },
-            interaction.locale
-        )}`;
+        const nitroEmoji = this.getEmoji('NITRO', interaction);
+        description += `\n${nitroEmoji} *${LangUtils.get('EMOJI_INFO_ANIMATED', interaction.locale)}*`;
     }
 
     const title = LangUtils.getAndReplace('EMOJI_INFO_TITLE', { emojiName: emoji.name }, interaction.locale);
     const url = CDNUtils.emojiURL(emoji.id, emoji.animated || false);
-    const linkTitle = LangUtils.getAndReplace(
-        'EMOJI_INFO_LINK',
-        {
-            linkEmoji: this.getEmoji('LINK', interaction),
-        },
-        interaction.locale
-    );
+    const linkEmoji = this.getEmoji('LINK', interaction);
+    const linkTitle = LangUtils.get('EMOJI_INFO_LINK', interaction.locale);
 
-    description += `\n\n[${linkTitle}](${url})`;
+    description += `\n\n[${linkEmoji} ${linkTitle}](${url})`;
 
     const embed: Embed = {
         color: DEFAULT_COLOR,

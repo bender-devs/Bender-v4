@@ -240,13 +240,21 @@ export class CommandUtils {
 
     async handleUnexpectedError(interaction: types.Interaction, messageLangKey: LangKey) {
         const args = interaction.data?.options;
+
         const message = LangUtils.get(messageLangKey, interaction.locale);
-        const supportNotice = LangUtils.getAndReplace('INTERACTION_ERROR_NOTICE', {
-            invite: SUPPORT_SERVER,
-        });
+        const noticeSubtext = LangUtils.get('INTERACTION_ERROR_SUBTEXT', interaction.locale);
+        const supportNotice = LangUtils.getAndReplace(
+            'INTERACTION_ERROR_NOTICE',
+            {
+                invite: SUPPORT_SERVER,
+            },
+            interaction.locale
+        );
         this.bot.logger.handleError(`COMMAND FAILED: /${this.name}`, message);
         this.bot.logger.debug(`Arguments passed to /${this.name}:`, inspect(args, false, 69, true));
-        return this.respond(interaction, `${message}\n${supportNotice}`, 'ERROR', { ephemeral: true });
+        return this.respond(interaction, `${message}\n-# ${noticeSubtext}\n${supportNotice}`, 'ERROR', {
+            ephemeral: true,
+        });
     }
 }
 

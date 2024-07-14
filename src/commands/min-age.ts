@@ -203,7 +203,7 @@ export default class MinAgeCommand extends SlashCommand {
         const subcommand = interaction.data?.options?.[0];
         switch (subcommand?.name) {
             case LangUtils.get('MINAGE_SUBCOMMAND_VIEW'): {
-                let replyText = LangUtils.get('MINAGE_TITLE', interaction.locale);
+                let replyText = `## ${LangUtils.get('MINAGE_TITLE', interaction.locale)}`;
                 const emojiKey = min?.enabled ? 'ENABLED' : 'DISABLED';
                 replyText += `\n${this.getEmoji(emojiKey, interaction)} `;
                 replyText += LangUtils.get(`STATUS_${emojiKey}`, interaction.locale);
