@@ -405,11 +405,14 @@ export type PruneData = {
 
 /****** emoji types ******/
 
+// https://discord.com/developers/docs/resources/emoji#emoji-object
 export type Emoji = {
     name: string;
     id: Snowflake;
     animated?: boolean;
+    /** roles allowed to use this emoji */
     roles?: Snowflake[];
+    /** user that created this emoji */
     user?: User;
     require_colons?: boolean;
     managed?: boolean;

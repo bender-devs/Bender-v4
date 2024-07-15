@@ -1,6 +1,7 @@
 import { DEFAULT_COLOR, ID_REGEX_EXACT } from '../../data/constants.js';
 import type { CommandOptionValue, Embed, Emoji, Interaction, Snowflake } from '../../types/types.js';
 import CDNUtils from '../../utils/cdn.js';
+import DiscordUtils from '../../utils/discord.js';
 import LangUtils from '../../utils/language.js';
 import TextUtils from '../../utils/text.js';
 import type InfoCommand from '../info.js';
@@ -20,13 +21,20 @@ export default async function (this: InfoCommand, interaction: Interaction, emoj
     if (!emoji) {
         return this.respondKey(interaction, 'EMOJI_NOT_FOUND', 'WARNING', { ephemeral: true });
     }
-
-    const createdAt = TextUtils.timestamp.fromSnowflake(emoji.id);
-    let description = LangUtils.formatDateAgo('EMOJI_INFO_CREATED_AT', createdAt, interaction.locale);
-    description += `\n**ID:** ${emoji.id}\n`;
     if (!cachedEmoji) {
         cachedEmoji = this.bot.cache.emojis.find(emoji.id);
     }
+
+    const createdAt = TextUtils.timestamp.fromSnowflake(emoji.id);
+    let description = LangUtils.formatDateAgo('EMOJI_INFO_CREATED_AT', createdAt, interaction.locale);
+    if (emoji.user) {
+        description += `\n${LangUtils.getAndReplace(
+            'EMOJI_INFO_CREATED_BY',
+            { user: DiscordUtils.user.tag(emoji.user) },
+            interaction.locale
+        )}`;
+    }
+    description += `\n**ID:** ${emoji.id}\n`;
     description += LangUtils.getAndReplace(
         'EMOJI_INFO_RAW_FORMAT',
         {
