@@ -154,14 +154,7 @@ export default class RoleColorCommand extends SlashCommand {
                 ephemeral: true,
             });
         }
-        if (
-            !this.bot.perms.matchesMemberCache(
-                this.bot.user.id,
-                'MANAGE_ROLES',
-                interaction.guild_id,
-                interaction.channel_id
-            )
-        ) {
+        if (!this.bot.perms.matchesMemberCache(this.bot.user.id, 'MANAGE_ROLES', interaction.guild_id)) {
             return this.respondMissingPermissions(interaction, interaction.guild_id, ['MANAGE_ROLES']);
         }
 

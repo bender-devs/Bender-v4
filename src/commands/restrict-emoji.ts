@@ -115,14 +115,7 @@ export default class RestrictEmojiCommand extends SlashCommand {
             });
         }
 
-        if (
-            !this.bot.perms.matchesMemberCache(
-                this.bot.user.id,
-                'MANAGE_EXPRESSIONS',
-                interaction.guild_id,
-                interaction.channel_id
-            )
-        ) {
+        if (!this.bot.perms.matchesMemberCache(this.bot.user.id, 'MANAGE_EXPRESSIONS', interaction.guild_id)) {
             return this.respondMissingPermissions(interaction, interaction.guild_id, ['MANAGE_EXPRESSIONS']);
         }
 
