@@ -39,6 +39,15 @@ export const enum ROLE_FLAGS {
     IN_PROMPT = 1 << 0,
 }
 
+// https://discord.com/developers/docs/resources/guild#guild-member-object-guild-member-flags
+export const enum MEMBER_FLAGS {
+    DID_REJOIN = 1 << 0,
+    COMPLETED_ONBOARDING = 1 << 1,
+    /** editable */
+    BYPASSES_VERIFICATION = 1 << 2,
+    STARTED_ONBOARDING = 1 << 3,
+}
+
 // https://discord.com/developers/docs/resources/channel#attachment-object-attachment-flags
 export const enum ATTACHMENT_FLAGS {
     IS_REMIX = 1 << 2,

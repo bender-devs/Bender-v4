@@ -500,20 +500,22 @@ export type RolePositionData = {
 /************ member types ************/
 
 export type MemberData = {
-    nick?: string;
+    nick?: string | null;
     roles?: Snowflake[];
     deaf?: boolean;
     mute?: boolean;
+    flags?: num.MEMBER_FLAGS;
     channel_id?: Snowflake | null;
 };
 
 export interface PartialMember {
     /** Not included in MESSAGE_CREATE and MESSAGE_UPDATE member objects */
     user?: User;
-    nick?: string;
+    nick?: string | null;
     roles: Snowflake[];
     joined_at: Timestamp;
     premium_since?: Timestamp | null;
+    flags?: num.MEMBER_FLAGS;
     /** member screening, only included in GUILD_* events */
     pending?: boolean;
     /** only provided in Interaction objects; includes overwrites */
