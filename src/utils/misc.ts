@@ -3,7 +3,17 @@ import EMOTES from '../data/emotes.json' assert { type: 'json' };
 import SHITTY_EMOTES from '../data/shittyEmotes.json' assert { type: 'json' };
 import type Bot from '../structures/bot.js';
 import { ACTIVITY_TYPES } from '../types/numberTypes.js';
-import type { Emoji, Interaction, Locale, Snowflake, Status } from '../types/types.js';
+import type {
+    Emoji,
+    Interaction,
+    Locale,
+    Member,
+    PartialMember,
+    Role,
+    Snowflake,
+    Status,
+} from '../types/types.js';
+import DiscordUtils from './discord.js';
 import LangUtils from './language.js';
 import PermissionUtils from './permissions.js';
 import TextUtils, { EMOJI_REGEX_EXACT } from './text.js';
@@ -131,6 +141,88 @@ export default class MiscUtils {
             fetchedEmoji = partialEmoji ? await this.bot.api.emoji.fetch(guildID, partialEmoji.id) : null;
         }
         return fetchedEmoji || cachedEmoji;
+    }
+
+    async editable(memberOrRole: Member | PartialMember | Role, guild_id: Snowflake) {
+        if ('roles' in memberOrRole) {
+            const roleList = await this.bot.api.role.list(guild_id);
+            if (!roleList) {
+                return null;
+            }
+            const maxMemberPosition = DiscordUtils.member.highestRole(memberOrRole, roleList)?.position;
+            if (maxMemberPosition === undefined) {
+                return null;
+            }
+            return this._editable(maxMemberPosition, guild_id);
+        } else {
+            return this._editable(memberOrRole.position, guild_id);
+        }
+    }
+
+    async _editable(position: number, guild_id: Snowflake) {
+        const cachedGuild = this.bot.cache.guilds.get(guild_id);
+        if (!cachedGuild) {
+            return null;
+        }
+        const botMember = await this.bot.api.member.fetch(guild_id, this.bot.user.id);
+        if (!botMember) {
+            return null;
+        }
+        const botAdmin = PermissionUtils.matchesMember(botMember, 'ADMINISTRATOR', cachedGuild);
+        if (botAdmin) {
+            return true;
+        }
+        const roleList = await this.bot.api.role.list(guild_id);
+        if (!roleList) {
+            return null;
+        }
+        const maxBotPosition = DiscordUtils.member.highestRole(botMember, roleList)?.position;
+        if (maxBotPosition === undefined) {
+            return null;
+        }
+        if (!maxBotPosition || position >= maxBotPosition) {
+            return false;
+        }
+        return true;
+    }
+
+    async editableBy(memberOrRole: Member | PartialMember | Role, guild_id: Snowflake, editor: Member) {
+        if ('roles' in memberOrRole) {
+            const roleList = await this.bot.api.role.list(guild_id);
+            if (!roleList) {
+                return null;
+            }
+            const maxMemberPosition = DiscordUtils.member.highestRole(memberOrRole, roleList)?.position;
+            if (maxMemberPosition === undefined) {
+                return null;
+            }
+            return this._editableBy(maxMemberPosition, guild_id, editor);
+        } else {
+            return this._editableBy(memberOrRole.position, guild_id, editor);
+        }
+    }
+
+    async _editableBy(position: number, guild_id: Snowflake, editor: Member) {
+        const cachedGuild = this.bot.cache.guilds.get(guild_id);
+        if (!cachedGuild) {
+            return null;
+        }
+        const editorAdmin = PermissionUtils.matchesMember(editor, 'ADMINISTRATOR', cachedGuild);
+        if (editorAdmin) {
+            return true;
+        }
+        const roleList = await this.bot.api.role.list(guild_id);
+        if (!roleList) {
+            return null;
+        }
+        const maxEditorPosition = DiscordUtils.member.highestRole(editor, roleList)?.position;
+        if (maxEditorPosition === undefined) {
+            return null;
+        }
+        if (!maxEditorPosition || position >= maxEditorPosition) {
+            return false;
+        }
+        return true;
     }
 
     static randomNumber(max: number, min = 0) {

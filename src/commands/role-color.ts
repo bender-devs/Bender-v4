@@ -15,8 +15,6 @@ import type {
 import LangUtils from '../utils/language.js';
 import TextUtils from '../utils/text.js';
 import colorNames from '../data/colorNames.json' assert { type: 'json' };
-import DiscordUtils from '../utils/discord.js';
-import PermissionUtils from '../utils/permissions.js';
 
 const roleOption: CommandOption = {
     type: COMMAND_OPTION_TYPES.ROLE,
@@ -158,52 +156,46 @@ export default class RoleColorCommand extends SlashCommand {
             return this.respondMissingPermissions(interaction, interaction.guild_id, ['MANAGE_ROLES']);
         }
 
-        const cachedGuild = await this.bot.cache.guilds.get(interaction.guild_id);
-        if (!cachedGuild) {
+        const editable = await this.bot.utils.editable(role, interaction.guild_id);
+        if (editable === null) {
             return this.respondKey(interaction, 'GUILD_CACHE_FAILED', 'ERROR', { ephemeral: true });
         }
-        const authorAdmin = PermissionUtils.matchesMember(interaction.member, 'ADMINISTRATOR', cachedGuild);
-        const botMember = await this.bot.api.member.fetch(interaction.guild_id, this.bot.user.id);
-        if (!botMember) {
-            return this.respondKey(interaction, 'BOT_MEMBER_FETCH_FAILED', 'ERROR', { ephemeral: true });
+        if (!editable) {
+            const response = LangUtils.getAndReplace(
+                'ROLE_COLOR_PERMISSION_BOT',
+                { role: roleMention },
+                interaction.locale
+            );
+            return this.respond(
+                interaction,
+                {
+                    content: response,
+                    allowed_mentions: { parse: [] }, // don't @everyone
+                },
+                'HIERARCHY',
+                { ephemeral: true }
+            );
         }
-        const botAdmin = PermissionUtils.matchesMember(botMember, 'ADMINISTRATOR', cachedGuild);
-        if (!authorAdmin || !botAdmin) {
-            const roleList = await this.bot.api.role.list(interaction.guild_id);
-            if (!roleList) {
-                return this.respondKey(interaction, 'ROLE_LIST_FETCH_FAILED', 'ERROR', { ephemeral: true });
-            }
-            if (!authorAdmin) {
-                const maxAuthorPosition = DiscordUtils.member.highestRole(interaction.member, roleList)?.position;
-                if (!maxAuthorPosition || role.position >= maxAuthorPosition) {
-                    const response = LangUtils.getAndReplace(
-                        'ROLE_COLOR_PERMISSION_USER',
-                        { role: roleMention },
-                        interaction.locale
-                    );
-                    return this.respond(
-                        interaction,
-                        {
-                            content: response,
-                            allowed_mentions: { parse: [] }, // don't @everyone
-                        },
-                        'HIERARCHY',
-                        { ephemeral: true }
-                    );
-                }
-            }
-            if (!botAdmin) {
-                const maxBotPosition = DiscordUtils.member.highestRole(botMember, roleList)?.position;
-                if (!maxBotPosition || role.position >= maxBotPosition) {
-                    return this.respondKeyReplace(
-                        interaction,
-                        'ROLE_COLOR_PERMISSION_BOT',
-                        { role: roleMention },
-                        'HIERARCHY',
-                        { ephemeral: true }
-                    );
-                }
-            }
+
+        const editableByAuthor = await this.bot.utils.editableBy(role, interaction.guild_id, interaction.member);
+        if (editableByAuthor === null) {
+            return this.respondKey(interaction, 'GUILD_CACHE_FAILED', 'ERROR', { ephemeral: true });
+        }
+        if (!editableByAuthor) {
+            const response = LangUtils.getAndReplace(
+                'ROLE_COLOR_PERMISSION_USER',
+                { role: roleMention },
+                interaction.locale
+            );
+            return this.respond(
+                interaction,
+                {
+                    content: response,
+                    allowed_mentions: { parse: [] }, // don't @everyone
+                },
+                'HIERARCHY',
+                { ephemeral: true }
+            );
         }
 
         if (subcommand === LangUtils.get('ROLE_COLOR_SUBCOMMAND_RESET')) {
