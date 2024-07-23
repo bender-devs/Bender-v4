@@ -23,6 +23,7 @@ import RoleColorCommand from '../commands/role-color.js';
 import StarboardCommand from '../commands/starboard.js';
 import StatsCommand from '../commands/stats.js';
 import TextCommand from '../commands/text.js';
+import SetNickCommand from '../commands/set-nick.js';
 
 export default class SlashCommandManager {
     bot: Bot;
@@ -47,6 +48,7 @@ export default class SlashCommandManager {
         this.commands.push(new MemberMsgCommand(this.bot));
         this.commands.push(new StarboardCommand(this.bot));
         this.commands.push(new RoleColorCommand(this.bot));
+        this.commands.push(new SetNickCommand(this.bot));
 
         this.developer_commands = [];
         this.developer_commands.push(new DevCommand(this.bot));

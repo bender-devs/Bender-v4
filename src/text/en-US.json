@@ -832,6 +832,29 @@
 
 
 
+
+    "----------- /set-nick -----------": "",
+
+    "SET_NICK_NAME": "set-nick",
+    "SET_NICK_DESCRIPTION": "Set or reset the nickname of a user.",
+
+    "SET_NICK_OPTION_USER": "user",
+    "SET_NICK_OPTION_USER_DESCRIPTION": "The user whose nickname should be changed.",
+    "SET_NICK_OPTION_NICK": "nickname",
+    "SET_NICK_OPTION_NICK_DESCRIPTION": "The nickname to set. Leave this empty to reset.",
+
+    "SET_NICK_SUCCESS": "Set {{user}}'s nickname to **{{nick}}**.",
+    "SET_NICK_FAILED": "Failed to set {{user}}'s nickname to **{{nick}}**.",
+    "SET_NICK_UNNECESSARY": "{{user}}'s nickname is already **{{nick}}**.",
+    "SET_NICK_RESET_SUCCESS": "Reset {{user}}'s nickname.",
+    "SET_NICK_RESET_UNNECESSARY": "{{user}} already has no nickname.",
+    "SET_NICK_RESET_FAILED": "Failed to reset {{user}}'s nickname.",
+
+    "SET_NICK_PERMISSION_USER": "You do not have permission to set {{user}}'s nickname, as their highest role is higher than or the same as your highest role.",
+    "SET_NICK_PERMISSION_BOT": "I can't set {{user}}'s nickname, as their highest role is higher than or the same as my highest role.",
+
+
+
     "----------- Presences -----------": "",
 
     "STATUS_ONLINE": "Online",
