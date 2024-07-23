@@ -90,7 +90,9 @@ export default class BlackjackUtils {
         const locale = interactionData.interaction.locale;
         const id = interactionData.interaction.id;
 
-        const canSplit = !rightHand && hand.length === 2 && hand[0].num === hand[1].num;
+        const firstCardValue = this.getSum(hand.slice(0, 1));
+        const secondCardValue = this.getSum(hand.slice(1, 2));
+        const canSplit = !rightHand && hand.length === 2 && firstCardValue === secondCardValue;
         const canHit = !interactionData.stand && this.getSum(hand) < 21;
         const canDouble = canHit && hand.length === 2;
         const perfect = this.getSum(hand) === 21;
