@@ -6,6 +6,7 @@ import {
     MESSAGE_COMPONENT_TYPES,
 } from '../types/numberTypes.js';
 import type { Interaction, Locale, MessageComponent, MessageData, User } from '../types/types.js';
+import CardUtils, { SUITS, VALUES, type Card } from '../utils/card.js';
 import CDNUtils from '../utils/cdn.js';
 import LangUtils from '../utils/language.js';
 import MiscUtils from '../utils/misc.js';
@@ -19,16 +20,6 @@ export interface BlackjackInteraction extends PendingInteractionBase {
     double?: boolean;
     standRight?: boolean;
 }
-
-const SUITS = ['HEARTS', 'SPADES', 'CLUBS', 'DIAMONDS'] as const;
-const VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as const;
-export type Card = {
-    suit: (typeof SUITS)[number];
-    num: (typeof VALUES)[number];
-};
-
-const CARD_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
-type CardValue = (typeof CARD_VALUES)[number];
 
 const BJ_ACTIONS = ['hit', 'stand', 'double', 'split', 'hitRight', 'standRight'] as const;
 type BlackjackAction = (typeof BJ_ACTIONS)[number];
@@ -52,25 +43,15 @@ type WinData = {
 
 export default class BlackjackUtils {
     bot: Bot;
+    cardUtils: CardUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
-    }
-
-    static getValue(card: Card): CardValue {
-        if (card.num === 1) {
-            // an ace can be treated as a 1 or 11; treat it as 11 for now
-            return 11;
-        }
-        if (card.num === 11 || card.num === 12 || card.num === 13) {
-            // jack, queen, king all treated as 10
-            return 10;
-        }
-        return card.num;
+        this.cardUtils = new CardUtils(bot);
     }
 
     static getSum(hand: Card[]): number {
-        const values = hand.map((card) => BlackjackUtils.getValue(card));
+        const values = hand.map((card) => CardUtils.getValue(card));
         let sum = (values as number[]).reduce((prev, current) => prev + current);
         const aces = values.filter((val) => val === 11).length;
         if (aces && sum > 21) {
@@ -161,18 +142,6 @@ export default class BlackjackUtils {
         return buttonRows;
     }
 
-    static _getAvailableCards(usedCards: Card[]): Card[] {
-        const cards: Card[] = [];
-        for (const suit of SUITS) {
-            for (const num of VALUES) {
-                if (usedCards.find((card) => card.suit == suit && card.num === num)) {
-                    continue;
-                }
-                cards.push({ suit, num });
-            }
-        }
-        return cards;
-    }
     static getAvailableCards(interactionData: BlackjackInteraction): Card[] {
         const cards: Card[] = [];
         for (const suit of SUITS) {
@@ -308,25 +277,6 @@ export default class BlackjackUtils {
         return data;
     }
 
-    getCardText(card: Card, interaction: Interaction) {
-        return this.bot.utils.getEmoji(`${card.suit}_${card.num}`, interaction);
-    }
-
-    getLargeCards(cards: Card[], interaction: Interaction) {
-        if (!cards.length) {
-            return '';
-        }
-        const cardsText = cards.map((card) => this.getCardText(card, interaction));
-
-        if (cardsText[0].startsWith('<:')) {
-            // using "real" emojis
-            return `# ${cardsText.join('')}`;
-        } else {
-            // using fallback emojis; reduce size and add |
-            return `## ${cardsText.join(' | ')}`;
-        }
-    }
-
     getMessageData(interactionData: BlackjackInteraction, author: User, locale?: Locale): MessageData {
         const userBj = BlackjackUtils.hasBlackjack(interactionData.authorHand);
         const botBj = BlackjackUtils.hasBlackjack(interactionData.botHand);
@@ -452,14 +402,14 @@ export default class BlackjackUtils {
         const inter = interactionData.interaction;
         const components = BlackjackUtils.getComponents(interactionData, !!result);
 
-        const authorCards = this.getLargeCards(interactionData.authorHand, inter);
+        const authorCards = this.cardUtils.getLargeCards(interactionData.authorHand, inter);
         let authorDescription = `${userStatus}\n${authorCards}`;
         if (interactionData.authorRightHand) {
-            const authorCardsRight = this.getLargeCards(interactionData.authorRightHand, inter);
+            const authorCardsRight = this.cardUtils.getLargeCards(interactionData.authorRightHand, inter);
             authorDescription += `\n\n${userStatusRight}\n${authorCardsRight}`;
         }
 
-        const botCards = this.getLargeCards(
+        const botCards = this.cardUtils.getLargeCards(
             result ? interactionData.botHand : [interactionData.botHand[0]],
             inter
         );

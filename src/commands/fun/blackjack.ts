@@ -1,7 +1,6 @@
 import type { BlackjackInteraction } from '../../interactionUtils/blackjack.js';
-import BlackjackUtils from '../../interactionUtils/blackjack.js';
 import type { Interaction } from '../../types/types.js';
-import MiscUtils from '../../utils/misc.js';
+import CardUtils from '../../utils/card.js';
 import type FunCommand from '../fun.js';
 
 export default async function (this: FunCommand, interaction: Interaction) {
@@ -10,15 +9,13 @@ export default async function (this: FunCommand, interaction: Interaction) {
         return this.handleUnexpectedError(interaction, 'AUTHOR_UNKNOWN');
     }
 
-    const userCard1 = MiscUtils.randomItem(BlackjackUtils._getAvailableCards([]));
-    const userCard2 = MiscUtils.randomItem(BlackjackUtils._getAvailableCards([userCard1]));
-    const botCard1 = MiscUtils.randomItem(BlackjackUtils._getAvailableCards([userCard1, userCard2]));
-    const botCard2 = MiscUtils.randomItem(BlackjackUtils._getAvailableCards([userCard1, userCard2, botCard1]));
+    const userCards = CardUtils.drawCards(2);
+    const botCards = CardUtils.drawCards(2, userCards);
 
     const gameData: BlackjackInteraction = {
         author: author.id,
-        authorHand: [userCard1, userCard2],
-        botHand: [botCard1, botCard2],
+        authorHand: userCards,
+        botHand: botCards,
         interaction,
     };
 
