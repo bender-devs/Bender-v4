@@ -7,6 +7,8 @@ import type { InactiveStatsInteraction } from './inactiveStats.js';
 import InactiveStatsUtils from './inactiveStats.js';
 import type { MemberMsgInteraction } from './memberMsg.js';
 import MemberMsgUtils from './memberMsg.js';
+import type { PokerInteraction } from './poker.js';
+import PokerUtils from './poker.js';
 import type { RestrictEmojiInteraction } from './restrictEmoji.js';
 import RestrictEmojiUtils from './restrictEmoji.js';
 import type { RockPaperScissorsInteraction } from './rps.js';
@@ -27,7 +29,8 @@ export type PendingInteraction =
     | BlackjackInteraction
     | RestrictEmojiInteraction
     | InactiveStatsInteraction
-    | MemberMsgInteraction;
+    | MemberMsgInteraction
+    | PokerInteraction;
 
 export default class PendingInteractionUtils {
     bot: Bot;
@@ -38,6 +41,7 @@ export default class PendingInteractionUtils {
     remUtils: RestrictEmojiUtils;
     inactiveUtils: InactiveStatsUtils;
     memberMsgUtils: MemberMsgUtils;
+    pokerUtils: PokerUtils;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -48,6 +52,7 @@ export default class PendingInteractionUtils {
         this.remUtils = new RestrictEmojiUtils(bot);
         this.inactiveUtils = new InactiveStatsUtils(bot);
         this.memberMsgUtils = new MemberMsgUtils(bot);
+        this.pokerUtils = new PokerUtils(bot);
     }
 
     addItem(interactionData: PendingInteraction) {
@@ -121,6 +126,8 @@ export default class PendingInteractionUtils {
                 return this.inactiveUtils.submitRoles(interactionData as InactiveStatsInteraction, interaction);
             case 'mm':
                 return this.memberMsgUtils.submit(interactionData as MemberMsgInteraction, interaction);
+            case 'poker':
+                return this.pokerUtils.processPlayerAction(interactionData as PokerInteraction, interaction);
         }
     }
 }

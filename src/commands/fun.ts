@@ -11,6 +11,7 @@ import choose from './fun/choose.js';
 import coinflip from './fun/coinflip.js';
 import dice from './fun/dice.js';
 import hack from './fun/hack.js';
+import poker from './fun/poker.js';
 import random from './fun/random.js';
 import rps from './fun/rps.js';
 import tictactoe from './fun/tictactoe.js';
@@ -273,6 +274,15 @@ export default class FunCommand extends SlashCommand {
             description: LangUtils.get('FUN_BJ_SUBCOMMAND_DESCRIPTION'),
             description_localizations: LangUtils.getLocalizationMap('FUN_BJ_SUBCOMMAND_DESCRIPTION'),
         },
+        {
+            type: COMMAND_OPTION_TYPES.SUB_COMMAND,
+
+            name: LangUtils.get('FUN_POKER_SUBCOMMAND'),
+            name_localizations: LangUtils.getLocalizationMap('FUN_POKER_SUBCOMMAND'),
+
+            description: LangUtils.get('FUN_POKER_SUBCOMMAND_DESCRIPTION'),
+            description_localizations: LangUtils.getLocalizationMap('FUN_POKER_SUBCOMMAND_DESCRIPTION'),
+        },
     ];
 
     run(interaction: Interaction): CommandResponse {
@@ -322,6 +332,8 @@ export default class FunCommand extends SlashCommand {
                 return tictactoe.bind(this)(interaction, firstArg);
             case LangUtils.get('FUN_BJ_SUBCOMMAND'):
                 return blackjack.bind(this)(interaction);
+            case LangUtils.get('FUN_POKER_SUBCOMMAND'):
+                return poker.bind(this)(interaction);
         }
         return this.handleUnexpectedError(interaction, 'INVALID_SUBCOMMAND');
     }

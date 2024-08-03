@@ -81,6 +81,9 @@
     "TIC_TAC_TOE": "#️⃣",
     "WAITING":     "⏳",
     "BLACKJACK":   "🃏",
+    "POKER":       "♣",
+    "HOLD_ON":     "🔒",
+    "HOLD_OFF":    "🔓",
 
     "ENABLED":   "<:online:681561477706154029>",
     "DISABLED":  "<:offline:681561593011503157>",

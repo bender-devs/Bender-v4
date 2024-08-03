@@ -540,6 +540,41 @@
     "FUN_BJ_HIT_RIGHT": "Hit (Right hand)",
     "FUN_BJ_STAND_RIGHT": "Stand (Right hand)",
 
+    "------- /fun poker -------": "",
+
+    "FUN_POKER_SUBCOMMAND": "poker",
+    "FUN_POKER_SUBCOMMAND_DESCRIPTION": "Feed your gambling addiction with video poker!",
+
+    "FUN_POKER_TITLE": "Video Poker",
+    "FUN_POKER_HOLD": "Hold",
+    "FUN_POKER_UNHOLD": "Un-hold",
+    "FUN_POKER_DEAL": "Deal",
+    "FUN_POKER_AUTOHOLD": "Hold winning cards and deal",
+
+    "FUN_POKER_INTERACTION_UNINVITED": "This is not your game of poker.",
+    "FUN_POKER_INTERACTION_UNINVITED_SUBTEXT": "Gamble elsewhere, meatbag.",
+
+    "FUN_POKER_RESULT_NO_WIN": "No win!",
+    "FUN_POKER_RESULT_PREWIN": "You already have a winning hand ({{hand}})!",
+    "FUN_POKER_RESULT_PREWIN_5CARD_SUBTEXT": "To hold all 5 cards and end the game, press {{autohold}}.",
+    "FUN_POKER_RESULT_PREWIN_SUBTEXT": "To hold these cards and deal for the chance of a better hand, press `{{autohold}}`.",
+
+    "FUN_POKER_RESULT_WIN": "You won! **{{hand}}** pays out **{{multiplier}}**x.",
+    "FUN_POKER_HAND_JACKS_OR_BETTER": "Jacks or Better",
+    "FUN_POKER_HAND_TWO_PAIR": "Two Pair",
+    "FUN_POKER_HAND_THREE_OF_A_KIND": "Three of a Kind",
+
+    "FUN_POKER_RESULT_BIG_WIN": "Big win!! **{{hand}}** pays out {{multiplier}}x!",
+    "FUN_POKER_HAND_STRAIGHT": "Straight",
+    "FUN_POKER_HAND_FLUSH": "Flush",
+    "FUN_POKER_HAND_FULL_HOUSE": "Full House",
+    
+    "FUN_POKER_RESULT_FOUR_OF_A_KIND": "Huge win!!! Four of a Kind pays out {{multiplier}}x!",
+    "FUN_POKER_HAND_FOUR_OF_A_KIND": "Four of a Kind",
+    "FUN_POKER_RESULT_STRAIGHT_FLUSH": "Super win!!!! Straight Flush pays out {{multiplier}}x!!",
+    "FUN_POKER_HAND_STRAIGHT_FLUSH": "Straight Flush",
+    "FUN_POKER_RESULT_ROYAL_FLUSH": "Jackpot!!!!! Royal Flush pays out {{multiplier}}x!!!",
+
 
 
     "------- /stats -------": "",
