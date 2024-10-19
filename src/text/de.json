@@ -69,24 +69,24 @@
     "----------- /info -----------": "",
 
     "INFO_NAME": "info",
-    "INFO_DESCRIPTION": "Zeigt Informationen Über eine(n) Person, Rolle, Kanal, Invite, Emoji, Banner oder aktueller Server an.",
+    "INFO_DESCRIPTION": "Zeigt Informationen Über eine(n) Person, Rolle, Kanal, Invite, Emoji, Banner oder den aktueller Server an.",
 
     "------- /info user -------": "",
 
     "USER_INFO_SUBCOMMAND": "user",
-    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen eines Servermitgliedes oder Benutzer an",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen eines Mitgliedes oder Benutzer an",
     "USER_INFO_OPTION": "user",
-    "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen.",
+    "USER_INFO_OPTION_DESCRIPTION": "Das Mitglied oder Benutzer zum anzeigen von Informationen.",
 
     "USER_INFO_BOT": "{{botEmoji}} Bot",
     "USER_INFO_HUMAN": "{{userEmoji}} Mensch",
     "USER_INFO_OWNER": "{{ownerEmoji}} Besitzer",
-    "USER_INFO_MEMBER": "{{userEmoji}} Member",
+    "USER_INFO_MEMBER": "{{userEmoji}} Mitglied",
     "USER_INFO_UNKNOWN_STATUS": "unbekannter Status",
     "USER_INFO_BOOST_INFO": "**Server Booster** seit {{dateRelative}}",
     "USER_INFO_JOINED_AT": "**Beigetreten am:** {{dateRelative}}",
     "USER_INFO_CREATED_AT": "**Erstellt am:** {{dateRelative}}",
-    "USER_INFO_NO_ROLES": "Member hat keine Rollen.",
+    "USER_INFO_NO_ROLES": "Mitglied hat keine Rollen.",
     "USER_INFO_BANNER": "Banner:",
 
     "------- /info emoji -------": "",
@@ -167,7 +167,7 @@
     "PERMISSION_SEND_MESSAGES_IN_THREADS": "Nachrichten in Threads senden",
     "PERMISSION_USE_EMBEDDED_ACTIVITIES": "Aktivitäten nutzen",
     "PERMISSION_MODERATE_MEMBERS": "Mitglieder im Timeout",
-    "PERMISSION_VIEW_CREATOR_MONETIZATION_ANALYTICS": "Creator-Einblicke anzeigen",
+    "PERMISSION_VIEW_CREATOR_MONETIZATION_ANALYTICS": "Creator-Analysen anzeigen",
     "PERMISSION_USE_SOUNDBOARD": "Soundboard verwenden",
     "PERMISSION_CREATE_GUILD_EXPRESSIONS": "Ausdrücke erstellen",
     "PERMISSION_CREATE_EVENTS": "Events erstellen",
