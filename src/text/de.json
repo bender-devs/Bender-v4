@@ -2,44 +2,36 @@
     "----------- Generic command errors -----------": "",
 
     "GUILD_ONLY": "`/{{command}}` ",
-    "COMMAND_UNAUTHORIZED": "du bist nicht berechtigt um diesen Kommand zu benutzen",
+    "COMMAND_UNAUTHORIZED": "Du bist nicht berechtigt um diesen Command zu benutzen",
     "INTERACTION_ERROR_NOTICE": "*Fehler wie dieser sollten nicht passieren, sollte er bestehen bleiben, melde Ihn bitte in dem Support Server:* {{invite}}",
     "ARGS_MISSING": "Keine der erforderlichen Argumente angegeben.",
     "ARGS_INCOMPLETE": "Nicht alle erforderlichen Argumente wurden angegeben.",
-    "ARGS_INVALID_TYPE": "mansche der Argumente wurden falsch angegeben.",
-    "ARGS_UNRESOLVED": "Einige der Argumente konnten nicht verarbeitet verden.",
+    "ARGS_INVALID_TYPE": "Manche der Argumente wurden falsch angegeben.",
+    "ARGS_UNRESOLVED": "Einige der Argumente konnten nicht verarbeitet werden.",
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Nicht alle Subcommands oder Argumente wurden angegeben.",
     "INVALID_SUBCOMMAND": "Invalider Subcommand.",
     "INVALID_SUBCOMMAND_GROUP": "Invalide Sub command Gruppe.",
-    "STRINGIFYING_FAILED": "Error stringifying payload.",
+    "STRINGIFYING_FAILED": "Konnte es nicht in einen Payload umwandeln.",
 
     "TEXT_TOO_LONG": "Text ist zu lang!",
     "EMOJI_NOT_FOUND": "Konnte das Emoji nicht finden.",
 
-
-
     "----------- /ping -----------": "",
 
     "PING_NAME": "ping",
-    "PING_DESCRIPTION": "teste die erreichbarkeit des Bottes",
+    "PING_DESCRIPTION": "Teste ob der Bot erreichbar ist.",
     "PONG_API": "Pong! `{{millis}}ms`",
-    "PONG_ROUNDTRIP": "Pong! `{{millis}}ms` (Roundtrip: `{{roundtrip}}ms`)",
-
-
+    "PONG_ROUNDTRIP": "Pong! `{{millis}}ms` (Laufzeit: `{{roundtrip}}ms`)",
 
     "----------- /dev -----------": "",
 
     "DEV_NAME": "dev",
-    "DEV_DESCRIPTION": "Super mega geheime Developer dinge.",
-
-
+    "DEV_DESCRIPTION": "Super mega geheime Developer Dinge.",
 
     "----------- /text -----------": "",
 
     "TEXT_NAME": "text",
-    "TEXT_DESCRIPTION": "Füge einene Effect zu einem Text hinzu. Es werden nur Englishe Zeichen (ASCII) werden unterstützt.",
-
-
+    "TEXT_DESCRIPTION": "Füge einen Effekt zu einem Text hinzu. Es werden nur Englische Zeichen (ASCII) werden unterstützt.",
 
     "----------- /convert-text -----------": "",
 
@@ -52,10 +44,10 @@
     "CONVERT_TEXT_OPTION_MODE_DECODE": "decode",
 
     "CONVERT_TEXT_OPTION_TEXT": "text",
-    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "Der Text zum encoden oder decoden.",
+    "CONVERT_TEXT_OPTION_TEXT_DESCRIPTION": "Der Text zum encodieren oder decodieren.",
 
     "CONVERT_TEXT_SUBCOMMAND_BINARY": "binär",
-    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Enkode- oder dekodierte Text in Binär",
+    "CONVERT_TEXT_SUBCOMMAND_BINARY_DESCRIPTION": "Encode- oder dekodierte Text in Binär",
     "CONVERT_TEXT_ENCODED_BINARY": "Encodierter Binärtext:",
     "CONVERT_TEXT_DECODED_BINARY": "Decodierter Binärtext:",
 
@@ -67,26 +59,24 @@
     "CONVERT_TEXT_SUBCOMMAND_HASH": "hash",
     "CONVERT_TEXT_SUBCOMMAND_HASH_DESCRIPTION": "Lässt Text durch einen Hash-Algorithmus laufen",
     "CONVERT_TEXT_COMPUTED_HASH": "Berechneter Hash:",
-    
+
     "CONVERT_TEXT_OPTION_ALGORITHM": "algorithmus",
-    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der hash Algorithmus, der benutzt werden soll.",
+    "CONVERT_TEXT_OPTION_ALGORITHM_DESCRIPTION": "Der Hash-Algorithmus, der benutzt werden soll.",
 
     "CONVERT_TEXT_OPTION_HASHTEXT": "text",
-    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "Der Text zum erstellen des Hashes",
-
-
+    "CONVERT_TEXT_OPTION_HASHTEXT_DESCRIPTION": "Der Text zum erstellen des Hashes.",
 
     "----------- /info -----------": "",
 
     "INFO_NAME": "info",
-    "INFO_DESCRIPTION": "Zeige informations about eine(n) user, Rolle, Kanal, Invite, Emoji, Banner oder aktueller Server",
+    "INFO_DESCRIPTION": "Zeigt Informationen Über eine(n) Person, Rolle, Kanal, Invite, Emoji, Banner oder aktueller Server an.",
 
     "------- /info user -------": "",
 
     "USER_INFO_SUBCOMMAND": "user",
-    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über einen Servermember oder User",
+    "USER_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen eines Servermitgliedes oder Benutzer an",
     "USER_INFO_OPTION": "user",
-    "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen",
+    "USER_INFO_OPTION_DESCRIPTION": "Der Member oder User zum anzeigen von Informationen.",
 
     "USER_INFO_BOT": "{{botEmoji}} Bot",
     "USER_INFO_HUMAN": "{{userEmoji}} Mensch",
@@ -102,23 +92,21 @@
     "------- /info emoji -------": "",
 
     "EMOJI_INFO_SUBCOMMAND": "emoji",
-    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über ein Emoji.",
+    "EMOJI_INFO_SUBCOMMAND_DESCRIPTION": "Zeige Informationen über ein Emoji an.",
     "EMOJI_INFO_OPTION": "emoji",
-    "EMOJI_INFO_OPTION_DESCRIPTION": "Das Emoji zum Informationen anzeigen",
+    "EMOJI_INFO_OPTION_DESCRIPTION": "Das Emoji zum Informationen anzeigen.",
 
     "EMOJI_INFO_TITLE": "Emoji Info - :{{emojiName}}:",
     "EMOJI_INFO_CREATED_AT": "**Erstellt:** {{dateRelative}}",
     "EMOJI_INFO_RAW_FORMAT": "**Roher Format:** `{{emoji}}`",
-    "EMOJI_INFO_RAW_FORMAT_SUBTEXT": "Kann benutzt werden wo es keine auto-vervolständigung für Emojis gibt",
-    "EMOJI_INFO_MANAGED": "Dieses Emoji ist verwalted durch einen externen Service (z.B. Twitch)",
-    "EMOJI_INFO_RESTRICTED": "Die benutzung ist begrenzt auf die volgenden Rollen: {{roles}}",
+    "EMOJI_INFO_RAW_FORMAT_SUBTEXT": "Kann benutzt werden wo es keine auto-vervollständigung für Emojis gibt",
+    "EMOJI_INFO_MANAGED": "Dieses Emoji ist verwaltet durch einen externen Service (z.B. Twitch)",
+    "EMOJI_INFO_RESTRICTED": "Die Benutzung ist begrenzt auf die folgenden Rollen: {{roles}}",
     "EMOJI_INFO_ANIMATED": "Dieses Emoji ist animiert und kann nur von Usern mit Discord Nitro",
     "EMOJI_INFO_LINK": "Zeige das Emoji im Browser an",
 
-
-
     "----------- Date/time formatting -----------": "",
-    
+
     "DURATION_MILLISECOND": "1 Millisekunde",
     "DURATION_MILLISECONDS": "{{number}} Millisekunden",
     "DURATION_SECOND": "1 Sekunde",
@@ -136,8 +124,6 @@
     "DURATION_YEAR": "1 Jahr",
     "DURATION_YEARS": "{{number}} Jahre(n)",
 
-
-
     "----------- Discord permissions -----------": "",
 
     "PERMISSION_CREATE_INSTANT_INVITE": "Einladung erstellen",
@@ -148,7 +134,7 @@
     "PERMISSION_MANAGE_GUILD": "Server verwalten",
     "PERMISSION_ADD_REACTIONS": "Reaktionen hinzufügen",
     "PERMISSION_VIEW_AUDIT_LOG": "Audit-Log einsehen",
-    "PERMISSION_PRIORITY_SPEAKER": "Very Important Speaker",
+    "PERMISSION_PRIORITY_SPEAKER": "Priorisierter Sprecher",
     "PERMISSION_STREAM": "Video",
     "PERMISSION_VIEW_CHANNEL": "Kanäle ansehen",
     "PERMISSION_SEND_MESSAGES": "Nachrichten senden",
@@ -162,12 +148,12 @@
     "PERMISSION_VIEW_GUILD_INSIGHTS": "Server-Einblicke anzeigen",
     "PERMISSION_CONNECT": "Verbinden",
     "PERMISSION_SPEAK": "Sprechen",
-    "PERMISSION_MUTE_MEMBERS": "Mitglieder stummschalten",
+    "PERMISSION_MUTE_MEMBERS": "Mitglieder stumm-schalten",
     "PERMISSION_DEAFEN_MEMBERS": "Ein- und Ausgabe von Mitgliedern deaktivieren",
     "PERMISSION_MOVE_MEMBERS": "Mitglieder verschieben",
     "PERMISSION_USE_VAD": "Sprachaktivierung verwenden",
-    "PERMISSION_CHANGE_NICKNAME": "Nickname ändern",
-    "PERMISSION_MANAGE_NICKNAMES": "Nicknames verwalten",
+    "PERMISSION_CHANGE_NICKNAME": "Spitznamen ändern",
+    "PERMISSION_MANAGE_NICKNAMES": "Spitznamen verwalten",
     "PERMISSION_MANAGE_ROLES": "Rollen verwalten",
     "PERMISSION_MANAGE_WEBHOOKS": "WebHooks verwalten",
     "PERMISSION_MANAGE_EXPRESSIONS": "Ausdrücke verwalten",
