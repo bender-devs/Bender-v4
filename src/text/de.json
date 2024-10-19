@@ -69,7 +69,7 @@
     "----------- /info -----------": "",
 
     "INFO_NAME": "info",
-    "INFO_DESCRIPTION": "Zeigt Informationen Über eine(n) Person, Rolle, Kanal, Invite, Emoji, Banner oder den aktueller Server an.",
+    "INFO_DESCRIPTION": "Zeigt Informationen Über eine(n) Benutzer, Rolle, Kanal, Invite, Emoji, Banner oder den aktueller Server an.",
 
     "------- /info user -------": "",
 
