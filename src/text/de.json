@@ -10,8 +10,8 @@
     "ARGS_UNRESOLVED": "Einige der Argumente konnten nicht verarbeitet werden.",
     "SUBCOMMANDS_OR_ARGS_INCOMPLETE": "Nicht alle Subcommands oder Argumente wurden angegeben.",
     "INVALID_SUBCOMMAND": "Invalider Subcommand.",
-    "INVALID_SUBCOMMAND_GROUP": "Invalide Sub command Gruppe.",
-    "STRINGIFYING_FAILED": "Konnte es nicht in einen Payload umwandeln.",
+    "INVALID_SUBCOMMAND_GROUP": "Invalide Subcommand Gruppe.",
+    "STRINGIFYING_FAILED": "Konnte die Daten nicht in einen String umwandeln.",
 
     "TEXT_TOO_LONG": "Text ist zu lang!",
     "EMOJI_NOT_FOUND": "Konnte das Emoji nicht finden.",
